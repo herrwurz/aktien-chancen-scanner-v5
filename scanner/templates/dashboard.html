@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="60">
+  <title>Chancen-Scanner V6</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #101923; color: #e6edf3; }
+    body { max-width: 1200px; margin: 3rem auto; padding: 0 1.2rem; }
+    h1 { font-size: 2rem; } h2 { margin-top: 2rem; font-size: 1.25rem; }
+    a { color: #81d8cd; } .note { border-left: 3px solid #eac46a; padding: 1rem; background: #202b36; }
+    .scroll { overflow-x: auto; } table { border-collapse: collapse; width: 100%; }
+    th, td { padding: .8rem; text-align: left; border-bottom: 1px solid #34404e; white-space: nowrap; }
+    th { color: #91a5b8; } small, .muted { color: #a4b4c4; } code { color: #81d8cd; }
+  </style>
+</head>
+<body>
+  <small>PHASE 1 · MARKTBEOBACHTUNG</small>
+  <h1>Multi-Asset Chancen-Scanner V6</h1>
+  <p class="note"><strong>Keine Handelsfreigabe.</strong> Volumensignale sind Beobachtungen.
+    Bitpanda-Verfügbarkeit, Spreads und Gebühren sind nicht geprüft. Keine automatischen Käufe.</p>
+  <p>Konfigurierter Anbieter: <code>{{ configured_provider }}</code> · Zeitangaben in UTC · Aktualisierung alle 60 Sekunden</p>
+  {% if configured_provider == 'fixture' %}
+  <p class="note">Demo-Modus: synthetische Fixture-Daten, keine realen Marktdaten.</p>
+  {% endif %}
+  <h2>Volumensignale</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Markt</th><th>Anbieter</th><th>Raster</th><th>Kerzenschluss UTC</th><th>Volumenfaktor</th><th>Quote-Volumen</th><th>Erkannt UTC</th></tr></thead>
+    <tbody>{% for s in signals %}<tr>
+      <td>{{ s.symbol }}</td><td>{{ s.provider }}</td><td>{{ s.interval }}</td>
+      <td>{{ s.candle_close_time.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ '%.2f'|format(s.ratio|float) }}×</td><td>{{ '%.2f'|format(s.quote_volume|float) }}</td>
+      <td>{{ s.evaluated_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+    </tr>{% else %}<tr><td colspan="7">Noch keine Signale. Worker-Status und Datenanbieter prüfen.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  <h2>Letzte Durchläufe</h2>
+  <ul>{% for r in runs %}<li>{{ r.started_at.strftime('%Y-%m-%d %H:%M:%S') }} UTC · {{ r.provider }} · {{ r.status }} · {{ r.error_count }} Fehler
+    {% for e in r.errors %}<small>{{ e.symbol }} {{ e.interval }}: {{ e.error }}</small>{% endfor %}</li>
+    {% else %}<li>Noch kein Durchlauf. Worker starten.</li>{% endfor %}</ul>
+  <p><a href="/docs">API-Dokumentation</a> · <a href="/api/evaluations">Entscheidungen mit Ablehnungsgründen</a> · <a href="/api/ready">Datenbankstatus</a></p>
+  <p class="muted">Historische DOOD-/ZEREBRO-Fälle sind in Phase 1 nicht validiert. Vergangene Daten werden beim Import ausgewertet; der Erkennungszeitpunkt bleibt separat sichtbar.</p>
+</body>
+</html>

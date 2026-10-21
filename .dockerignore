@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.superpowers
+*.egg-info
+*.db
+tests
+docs
+build
+dist

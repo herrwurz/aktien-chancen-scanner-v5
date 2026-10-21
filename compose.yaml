@@ -1,0 +1,95 @@
+name: chancen-scanner-v6
+
+x-environment: &environment
+  POSTGRES_HOST: db
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: scanner
+  POSTGRES_USER: scanner
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+  PROVIDER: ${PROVIDER:-binance_spot}
+  SYMBOLS: '${SYMBOLS:-["BTCUSDT","ETHUSDT"]}'
+  INTERVALS: '${INTERVALS:-["5m","15m"]}'
+  SCAN_SECONDS: ${SCAN_SECONDS:-60}
+  VOLUME_LOOKBACK: ${VOLUME_LOOKBACK:-20}
+  VOLUME_THRESHOLD: ${VOLUME_THRESHOLD:-3}
+  MIN_QUOTE_VOLUME: ${MIN_QUOTE_VOLUME:-100000}
+
+x-app: &app
+  image: chancen-scanner-v6:local
+  build: .
+  environment: *environment
+  init: true
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  mem_limit: 512m
+  cpus: 0.5
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  db:
+    image: postgres:17.6-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: scanner
+      POSTGRES_USER: scanner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - scanner_postgres:/var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U scanner -d scanner"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    mem_limit: 512m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+  migrate:
+    <<: *app
+    restart: "no"
+    command: [alembic, upgrade, head]
+    networks: [backend]
+    depends_on:
+      db: {condition: service_healthy}
+
+  api:
+    <<: *app
+    command: [uvicorn, scanner.main:create_app, --factory, --host, "0.0.0.0", --port, "8000"]
+    ports:
+      - "127.0.0.1:${DASHBOARD_PORT:-8066}:8000"
+    networks: [backend, web]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/ready', timeout=5)"]
+      interval: 30s
+      timeout: 6s
+      retries: 3
+      start_period: 15s
+
+  worker:
+    <<: *app
+    command: [python, -m, scanner.worker]
+    networks: [backend, egress]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    stop_grace_period: 30s
+
+volumes:
+  scanner_postgres:
+
+networks:
+  backend:
+    internal: true
+  egress:
+  web:
