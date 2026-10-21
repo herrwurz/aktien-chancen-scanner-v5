@@ -13,7 +13,7 @@ from scanner.providers.base import MarketDataProvider
 logger = logging.getLogger(__name__)
 
 
-def ingest(session, candles: list[Candle], detector: VolumeDetector, now: datetime):
+def ingest(session, candles: list[Candle], detector: VolumeDetector, now: datetime, *, clock=None):
     """Immutable first-observation import; caller owns transaction and worker lock."""
     insert = pg_insert if session.bind.dialect.name == "postgresql" else sqlite_insert
     for candle in sorted(candles, key=lambda c: c.open_time):
@@ -52,7 +52,7 @@ def ingest(session, candles: list[Candle], detector: VolumeDetector, now: dateti
         evaluation = Evaluation(
             candle_id=record.id,
             detector_key=detector.config_key,
-            evaluated_at=now,
+            evaluated_at=clock() if clock else now,
             is_signal=decision.is_signal,
             reason=decision.reason,
             baseline_volume=decision.baseline_volume,
@@ -66,9 +66,10 @@ def ingest(session, candles: list[Candle], detector: VolumeDetector, now: dateti
 
 
 async def scan_once(sessions, provider: MarketDataProvider, symbols, intervals, detector, now=None):
-    now = now or datetime.now(UTC)
+    started_at = datetime.now(UTC)
+    cutoff = now or started_at
     with sessions.begin() as session:
-        run = ScanRun(started_at=now, provider=provider.name, status="running", errors=[])
+        run = ScanRun(started_at=started_at, provider=provider.name, status="running", errors=[])
         session.add(run)
         session.flush()
         run_id = run.id
@@ -82,7 +83,7 @@ async def scan_once(sessions, provider: MarketDataProvider, symbols, intervals, 
                     symbol,
                     interval,
                     limit=detector.lookback + 2,
-                    now=now,
+                    now=cutoff,
                 )
                 if not candles:
                     raise ValueError("No closed candles")
@@ -95,7 +96,13 @@ async def scan_once(sessions, provider: MarketDataProvider, symbols, intervals, 
                 ):
                     raise ValueError("Provider returned another market")
                 with sessions.begin() as session:
-                    ingest(session, candles, detector, now)
+                    ingest(
+                        session,
+                        candles,
+                        detector,
+                        datetime.now(UTC),
+                        clock=lambda: datetime.now(UTC),
+                    )
             except Exception as exc:
                 # Persist only class and market; URLs, passwords and payloads stay out of logs.
                 errors.append({"symbol": symbol, "interval": interval, "error": type(exc).__name__})

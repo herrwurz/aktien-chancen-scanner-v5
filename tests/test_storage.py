@@ -109,3 +109,38 @@ def test_rollback_keeps_batch_atomic(sessions):
         raise RuntimeError("rollback")
     with sessions() as session:
         assert session.scalar(select(func.count()).select_from(MarketCandle)) == 0
+
+
+def test_audit_times_follow_each_provider_response(sessions, monkeypatch):
+    from datetime import datetime
+
+    import scanner.service as service
+
+    current = START + timedelta(hours=1)
+    received = {}
+
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return current
+
+    class Provider:
+        name = "fixture"
+        asset_class = "crypto"
+
+        async def fetch_candles(self, symbol, interval, **kwargs):
+            nonlocal current
+            current += timedelta(seconds=30)
+            received[symbol] = current
+            return [candle(0, symbol=symbol), candle(1, "40", symbol=symbol)]
+
+    monkeypatch.setattr(service, "datetime", Clock)
+    asyncio.run(
+        scan_once(sessions, Provider(), ["BTCUSDT", "ETHUSDT"], ["5m"], VolumeDetector(lookback=1))
+    )
+    with sessions() as session:
+        run = session.scalar(select(ScanRun))
+        for evaluation in session.scalars(select(Evaluation)):
+            assert run.started_at < received[evaluation.candle.symbol]
+            assert received[evaluation.candle.symbol] <= evaluation.candle.observed_at
+            assert evaluation.candle.observed_at <= evaluation.evaluated_at <= run.finished_at

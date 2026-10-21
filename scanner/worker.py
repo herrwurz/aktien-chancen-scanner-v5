@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 async def run_worker(settings: Settings, once=False):
     engine = create_db(settings)
-    sessions = create_sessions(engine)
     stop = asyncio.Event()
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -34,6 +33,7 @@ async def run_worker(settings: Settings, once=False):
                 try:
                     with worker_lock(engine) as acquired:
                         if acquired:
+                            sessions = create_sessions(acquired, require_lock=True)
                             status = await scan_once(
                                 sessions, provider, settings.symbols, settings.intervals, detector
                             )
@@ -64,6 +64,7 @@ def main():
     parser.add_argument("--once", action="store_true", help="One scan, nonzero exit on failure")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     raise SystemExit(asyncio.run(run_worker(Settings(), once=args.once)))
 
 

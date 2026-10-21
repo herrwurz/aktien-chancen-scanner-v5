@@ -88,3 +88,60 @@ def test_fixture_is_closed_deterministic_and_has_spike():
     assert len(a) == 21
     assert a[-1].volume == a[-2].volume * 4
     assert all(c.close_time <= now for c in a)
+
+
+def test_fixture_values_do_not_change_when_replayed_later():
+    provider = FixtureProvider()
+    now = START + timedelta(hours=6)
+    first = asyncio.run(provider.fetch_candles("BTCUSDT", "5m", limit=22, now=now))
+    later = asyncio.run(
+        provider.fetch_candles("BTCUSDT", "5m", limit=22, now=now + timedelta(minutes=5))
+    )
+    original = {c.open_time: c for c in first}
+    shared = [c for c in later if c.open_time in original]
+    assert shared
+    assert all(original[c.open_time] == c for c in shared)
+
+
+def test_transport_timeout_has_bounded_retries():
+    attempts = []
+
+    def handler(request):
+        attempts.append(request)
+        raise httpx.ConnectTimeout("fixture timeout")
+
+    with pytest.raises(ProviderError):
+        fetch(handler)
+    assert len(attempts) == 3
+
+
+def test_ip_ban_is_not_retried():
+    attempts = []
+
+    def handler(request):
+        attempts.append(request)
+        return httpx.Response(418)
+
+    with pytest.raises(ProviderError):
+        fetch(handler)
+    assert len(attempts) == 1
+
+
+def test_retry_after_is_capped(monkeypatch):
+    waits = []
+    attempts = []
+
+    async def sleep(delay):
+        waits.append(delay)
+
+    def handler(request):
+        attempts.append(request)
+        return (
+            httpx.Response(429, headers={"Retry-After": "9999"})
+            if len(attempts) == 1
+            else httpx.Response(200, json=[row()])
+        )
+
+    monkeypatch.setattr("scanner.providers.binance.asyncio.sleep", sleep)
+    assert len(fetch(handler)) == 1
+    assert waits == [30]

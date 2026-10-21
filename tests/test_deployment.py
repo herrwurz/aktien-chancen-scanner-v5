@@ -7,8 +7,9 @@ def test_compose_is_isolated_and_database_private():
     cfg = yaml.safe_load(Path("compose.yaml").read_text())
     assert cfg["name"] == "chancen-scanner-v6"
     assert set(cfg["volumes"]) == {"scanner_postgres"}
-    assert set(cfg["networks"]) == {"backend", "egress"}
+    assert set(cfg["networks"]) == {"backend", "egress", "web"}
     assert cfg["networks"]["backend"]["internal"] is True
+    assert cfg["services"]["api"]["networks"] == ["backend", "web"]
     assert "ports" not in cfg["services"]["db"]
     assert cfg["services"]["api"]["ports"] == ["127.0.0.1:${DASHBOARD_PORT:-8066}:8000"]
     assert "container_name" not in str(cfg)
