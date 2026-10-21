@@ -10,7 +10,7 @@ class ProviderError(Exception):
 
 class MarketDataProvider(Protocol):
     name: str
-    asset_class: Literal['crypto', 'stock']
+    asset_class: Literal["crypto", "stock"]
 
     async def fetch_candles(
         self, symbol: str, interval: str, *, limit: int, now: datetime
