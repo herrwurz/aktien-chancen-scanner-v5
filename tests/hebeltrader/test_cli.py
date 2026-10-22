@@ -55,6 +55,16 @@ def test_cli_import_report_inspect_review_and_export(tmp_path, monkeypatch, caps
     target = tmp_path / "features.json"
     assert main(["export", "--as-of", "2025-02-15T00:00:00+01:00", "--output", str(target)]) == 0
     assert len(json.loads(target.read_text())) == 1
+    quality = tmp_path / "quality.json"
+    assert main(["quality", "--output", str(quality)]) == 0
+    report = json.loads(quality.read_text())
+    assert report["mode"] == "read_only_candidate_replay"
+    assert report["after"]["recommendations"] == 1
+    assert report["missing_documents"] == []
+    assert report["after"]["errors"] == 0
+    assert quality.stat().st_mode & 0o777 == 0o600
+    assert main(["quality", "--output", str(quality)]) == 2
+    assert json.loads(quality.read_text()) == report
 
 
 def test_count_mismatch_returns_nonzero_and_reports_it(tmp_path, monkeypatch, capsys):

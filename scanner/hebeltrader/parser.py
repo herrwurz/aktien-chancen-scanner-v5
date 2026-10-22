@@ -1,13 +1,18 @@
 import re
+import unicodedata
 from datetime import date, datetime
 from decimal import Decimal
 
+from scanner.hebeltrader.calculations import calculate_crv
 from scanner.hebeltrader.domain import Extraction, RecommendationData
 from scanner.hebeltrader.pdf import read_pdf
 
 HEADER = re.compile(r"(\d{2}\.\d{2}\.\d{4})\s*[·•]?\s*#\s*(\d+)\s*/\s*(\d{4})")
 PRODUCT = re.compile(
-    r"^(Optionsschein|Turbo|Knock.?Out|Faktor.?Zertifikat|Hebelzertifikat)\b", re.I
+    r"(?:Optionsschein(?:[ -]+(?:Call|Put))?|(?:Call|Put)[ -]+Optionsschein|"
+    r"Turbo(?:[ -]+Unlimited)?(?:[ -]+(?:Long|Short))?|"
+    r"(?:Knock[ -]?Out|Faktor[ -]?Zertifikat|Hebelzertifikat)(?:[ -]+(?:Long|Short))?)",
+    re.I,
 )
 NUMBER = re.compile(r"^(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?$")
 
@@ -83,7 +88,7 @@ def parse_fields(rec, lines, stock=False):
         ),
         (r"ISIN\s+(.+)", prefix + "_isin", isin),
         (
-            r"(?:Akt\.?\s*Kurs\*{0,2}|Aktueller Kurs)\s+(.+)",
+            r"(?:Akt\.?\s*Kurs\s*\*{0,2}|Aktueller Kurs|Einstiegskurs)\s*:?\s+(.+)",
             "stock_price" if stock else "entry_price",
             parse_number,
         ),
@@ -96,7 +101,15 @@ def parse_fields(rec, lines, stock=False):
         (r"CRV\s*:?\s*(.+)", "crv", parse_number),
     ]
     for i, line in enumerate(lines):
-        text = line["text"]
+        text = unicodedata.normalize("NFKC", line["text"]).replace("\u00ad", "").strip()
+        open_end = re.fullmatch(
+            r"(?:(?:Laufzeit|Fälligkeit)\s*:?\s*)?(?:open[ -]*end|unbefristet|unbegrenzt)",
+            text,
+            re.I,
+        )
+        if open_end:
+            add(rec, "term_text", text, line, lambda _: "open end", "explicit-open-end-v21")
+            continue
         if text in ("Laufzeit", "Fälligkeit"):
             for neighbor in lines[max(0, i - 1) : i + 2]:
                 if re.fullmatch(r"\d{2}\.\d{2}\.\d{2,4}", neighbor["text"]):
@@ -108,7 +121,7 @@ def parse_fields(rec, lines, stock=False):
                         parse_date,
                         "adjacent-date-v1",
                     )
-        if re.fullmatch(r"[\d /½]+\s*(?:Monate?|Jahre?)", text):
+        if re.fullmatch(r"[\d., /½]+\s*(?:Monate?|Jahre?)", text):
             add(rec, "term_text", text, line)
         if text.startswith("Basiswert "):
             add(rec, "stock_name", text.removeprefix("Basiswert "), line)
@@ -141,7 +154,70 @@ def parse_fields(rec, lines, stock=False):
             if field == "omega":
                 add(rec, "omega_label", text[: match.start(1)].strip(), line)
             if field == "entry_price":
-                add(rec, "entry_kind", "indication", line)
+                add(
+                    rec,
+                    "entry_kind",
+                    "recommended_entry" if text.lower().startswith("einstieg") else "indication",
+                    line,
+                )
+
+
+def product_heading(lines, index):
+    text = unicodedata.normalize("NFKC", lines[index]["text"]).strip()
+    consumed = 1
+    if re.fullmatch(r"Turbo(?: Unlimited)?", text, re.I) and index + 1 < len(lines):
+        direction = lines[index + 1]["text"].strip()
+        if re.fullmatch(r"Long|Short", direction, re.I):
+            text += " " + direction
+            consumed = 2
+    if not PRODUCT.fullmatch(text):
+        return None
+    nearby = lines[index + consumed : index + consumed + 16]
+    if not any(re.match(r"(?:WKN|ISIN)\b", row["text"], re.I) for row in nearby):
+        return None
+    if not any(
+        re.match(r"(?:Akt\.?\s*Kurs|Aktueller Kurs|Einstiegskurs)\b", row["text"], re.I)
+        for row in nearby
+    ):
+        return None
+    return text.title(), consumed, text
+
+
+def prose_crv(rec, page):
+    number = r"(\d[\d.,]*)(?=\s|$|[!;:?)])"
+    patterns = [
+        r"\(CRV\)\s*(?:von|:|=)?\s*" + number,
+        r"\(CRV\)\s+für\s+den\s+empfohlenen\s+Derivate[-\s]*Trade\s+" + number,
+        r"Chance[-\s]*Risiko[-\s]*Verhältnis\s+(?:von|:)\s*" + number,
+    ]
+    for lines in page["regions"]:
+        text = " ".join(row["text"] for row in lines)
+        offsets = []
+        pos = 0
+        for row in lines:
+            offsets.append((pos, pos + len(row["text"]), row))
+            pos += len(row["text"]) + 1
+        for pattern in patterns:
+            for match in re.finditer(pattern, text, re.I):
+                source = [
+                    row
+                    for start, end, row in offsets
+                    if start < match.end() and end > match.start()
+                ]
+                bbox = [
+                    min(r["bbox"][0] for r in source),
+                    min(r["bbox"][1] for r in source),
+                    max(r["bbox"][2] for r in source),
+                    max(r["bbox"][3] for r in source),
+                ]
+                add(
+                    rec,
+                    "crv",
+                    match[1].removesuffix("."),
+                    dict(page=page["number"], bbox=bbox, text=" ".join(r["text"] for r in source)),
+                    parse_number,
+                    "prose-crv-v21",
+                )
 
 
 def _invalid():
@@ -192,12 +268,20 @@ def extract_pdf(data: bytes) -> Extraction:
     stock_sections = []
     for page in result.pages:
         for lines in page["regions"]:
-            products = [i for i, line in enumerate(lines) if PRODUCT.match(line["text"])]
+            products = [i for i in range(len(lines)) if product_heading(lines, i)]
             if products:
                 for n, start in enumerate(products):
                     end = products[n + 1] - 1 if n + 1 < len(products) else len(lines)
                     rec = RecommendationData()
-                    add(rec, "product_type", lines[start]["text"], lines[start])
+                    canonical, consumed, raw = product_heading(lines, start)
+                    add(
+                        rec,
+                        "product_type",
+                        raw,
+                        lines[start],
+                        lambda _, canonical=canonical: canonical,
+                        "product-heading-v21",
+                    )
                     if start > 0 and not HEADER.search(lines[start - 1]["text"]):
                         add(
                             rec,
@@ -206,7 +290,7 @@ def extract_pdf(data: bytes) -> Extraction:
                             lines[start - 1],
                             rule="product-heading-v1",
                         )
-                    body = lines[start + 1 : end]
+                    body = lines[start + consumed : end]
                     basis = next(
                         (i for i, row in enumerate(body) if row["text"].startswith("Basiswert ")),
                         None,
@@ -240,19 +324,7 @@ def extract_pdf(data: bytes) -> Extraction:
     if len(result.recommendations) == 1:
         rec = result.recommendations[0]
         for page in result.pages:
-            for match in re.finditer(r"\(CRV\)\s*(?:von|:)?\s*([\d.,]+)", page["text"]):
-                add(
-                    rec,
-                    "crv",
-                    match[1],
-                    dict(
-                        page=page["number"],
-                        bbox=[0, 0, page["width"], page["height"]],
-                        text=match[0],
-                    ),
-                    parse_number,
-                    "prose-crv-v1",
-                )
+            prose_crv(rec, page)
             if "CHARTTECHNISCHES BILD AKTIE" in page["text"] and not rec.values.get(
                 "technical_notes"
             ):
@@ -303,6 +375,8 @@ def extract_pdf(data: bytes) -> Extraction:
             "stock_stop1",
             "stock_stop2",
         ):
+            if field == "maturity_date" and rec.values.get("term_text") == "open end":
+                continue
             if rec.values.get(field) is None:
                 rec.flags.append(dict(code="missing_field", field=field))
         maturity = rec.values.get("maturity_date")
@@ -312,4 +386,8 @@ def extract_pdf(data: bytes) -> Extraction:
             and maturity < result.publication_date
         ):
             rec.flags.append(dict(code="expired_at_publication", field="maturity_date"))
+        if rec.values.get("term_text") == "open end" and maturity is not None:
+            rec.values["maturity_date"] = None
+            rec.flags.append(dict(code="conflicting_term", field="maturity_date"))
+        calculate_crv(rec)
     return result

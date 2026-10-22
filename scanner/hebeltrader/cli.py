@@ -5,13 +5,14 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from scanner.db import create_db, create_sessions
 from scanner.hebeltrader.analysis import FEATURE_FIELDS, export_features, review_document
 from scanner.hebeltrader.config import ImportSettings
 from scanner.hebeltrader.importer import import_folder
 from scanner.hebeltrader.models import Document, HistoricalRecommendation, SourceLocation
+from scanner.hebeltrader.quality import preview_database
 
 
 def write_json(path, value):
@@ -58,6 +59,7 @@ def inspect_document(session, sha):
                 ordinal=r.ordinal,
                 values={k: getattr(r, k) for k in (*FEATURE_FIELDS, "source_commentary")},
                 evidence=r.evidence,
+                calculated_crv=r.evidence.get("_calculated_crv", []),
                 flags=r.flags,
             )
             for r in recs
@@ -90,6 +92,10 @@ def main(argv=None):
     export = commands.add_parser("export")
     export.add_argument("--as-of", required=True)
     export.add_argument("--output", type=Path, required=True)
+    quality = commands.add_parser(
+        "quality", help="Read-only replay; never update existing extractions"
+    )
+    quality.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     engine = None
     try:
@@ -132,6 +138,14 @@ def main(argv=None):
                     availability_evidence=args.availability_evidence,
                 )
             print(json.dumps(dict(sha256=args.sha, action=args.action)))
+        elif args.command == "quality":
+            with sessions() as session:
+                if engine.dialect.name == "postgresql":
+                    session.execute(text("SET TRANSACTION READ ONLY"))
+                report = preview_database(session)
+            write_json(args.output, report)
+            print(json.dumps(dict(before=report["before"], after=report["after"]), default=str))
+            return 2 if report["after"]["errors"] else 0
         else:
             as_of = datetime.fromisoformat(args.as_of)
             with sessions() as session:

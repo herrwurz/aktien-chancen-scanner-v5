@@ -1,0 +1,282 @@
+{
+  "parser_version": "hebeltrader-rules-v2.1",
+  "mode": "read_only_candidate_replay",
+  "before": {
+    "documents": 118,
+    "recommendations": 123,
+    "errors": 0,
+    "fields": {
+      "stock_name": {
+        "present": 122,
+        "missing": 1
+      },
+      "stock_wkn": {
+        "present": 114,
+        "missing": 9
+      },
+      "stock_isin": {
+        "present": 0,
+        "missing": 123
+      },
+      "derivative_wkn": {
+        "present": 118,
+        "missing": 5
+      },
+      "derivative_isin": {
+        "present": 0,
+        "missing": 123
+      },
+      "product_type": {
+        "present": 123,
+        "missing": 0
+      },
+      "issuer": {
+        "present": 0,
+        "missing": 123
+      },
+      "strike": {
+        "present": 118,
+        "missing": 5
+      },
+      "strike_currency": {
+        "present": 118,
+        "missing": 5
+      },
+      "maturity_date": {
+        "present": 115,
+        "missing": 8
+      },
+      "term_text": {
+        "present": 110,
+        "missing": 13
+      },
+      "entry_price": {
+        "present": 118,
+        "missing": 5
+      },
+      "entry_kind": {
+        "present": 118,
+        "missing": 5
+      },
+      "omega": {
+        "present": 118,
+        "missing": 5
+      },
+      "omega_label": {
+        "present": 118,
+        "missing": 5
+      },
+      "stock_price": {
+        "present": 116,
+        "missing": 7
+      },
+      "derivative_target1": {
+        "present": 118,
+        "missing": 5
+      },
+      "derivative_target2": {
+        "present": 118,
+        "missing": 5
+      },
+      "derivative_stop1": {
+        "present": 118,
+        "missing": 5
+      },
+      "derivative_stop2": {
+        "present": 118,
+        "missing": 5
+      },
+      "stock_target1": {
+        "present": 116,
+        "missing": 7
+      },
+      "stock_target2": {
+        "present": 115,
+        "missing": 8
+      },
+      "stock_stop1": {
+        "present": 116,
+        "missing": 7
+      },
+      "stock_stop2": {
+        "present": 116,
+        "missing": 7
+      },
+      "crv": {
+        "present": 50,
+        "missing": 73
+      },
+      "derivative_currency": {
+        "present": 118,
+        "missing": 5
+      },
+      "stock_currency": {
+        "present": 116,
+        "missing": 7
+      }
+    },
+    "computed_crv": {
+      "derivative_target1": 0,
+      "derivative_target2": 0
+    },
+    "review_hints": {
+      "document:ambiguous_stock_section": 2,
+      "invalid_value:crv": 4,
+      "invalid_value:stock_target2": 1,
+      "missing_field:crv": 73,
+      "missing_field:derivative_stop1": 5,
+      "missing_field:derivative_stop2": 5,
+      "missing_field:derivative_target1": 5,
+      "missing_field:derivative_target2": 5,
+      "missing_field:derivative_wkn": 5,
+      "missing_field:entry_price": 5,
+      "missing_field:issuer": 123,
+      "missing_field:maturity_date": 8,
+      "missing_field:omega": 5,
+      "missing_field:stock_name": 1,
+      "missing_field:stock_price": 7,
+      "missing_field:stock_stop1": 7,
+      "missing_field:stock_stop2": 7,
+      "missing_field:stock_target1": 7,
+      "missing_field:stock_target2": 8,
+      "missing_field:stock_wkn": 9,
+      "missing_field:strike": 5
+    }
+  },
+  "after": {
+    "documents": 118,
+    "recommendations": 118,
+    "errors": 0,
+    "fields": {
+      "stock_name": {
+        "present": 118,
+        "missing": 0
+      },
+      "stock_wkn": {
+        "present": 114,
+        "missing": 4
+      },
+      "stock_isin": {
+        "present": 0,
+        "missing": 118
+      },
+      "derivative_wkn": {
+        "present": 118,
+        "missing": 0
+      },
+      "derivative_isin": {
+        "present": 0,
+        "missing": 118
+      },
+      "product_type": {
+        "present": 118,
+        "missing": 0
+      },
+      "issuer": {
+        "present": 0,
+        "missing": 118
+      },
+      "strike": {
+        "present": 118,
+        "missing": 0
+      },
+      "strike_currency": {
+        "present": 118,
+        "missing": 0
+      },
+      "maturity_date": {
+        "present": 115,
+        "missing": 3
+      },
+      "term_text": {
+        "present": 118,
+        "missing": 0
+      },
+      "entry_price": {
+        "present": 118,
+        "missing": 0
+      },
+      "entry_kind": {
+        "present": 118,
+        "missing": 0
+      },
+      "omega": {
+        "present": 118,
+        "missing": 0
+      },
+      "omega_label": {
+        "present": 118,
+        "missing": 0
+      },
+      "stock_price": {
+        "present": 116,
+        "missing": 2
+      },
+      "derivative_target1": {
+        "present": 118,
+        "missing": 0
+      },
+      "derivative_target2": {
+        "present": 118,
+        "missing": 0
+      },
+      "derivative_stop1": {
+        "present": 118,
+        "missing": 0
+      },
+      "derivative_stop2": {
+        "present": 118,
+        "missing": 0
+      },
+      "stock_target1": {
+        "present": 116,
+        "missing": 2
+      },
+      "stock_target2": {
+        "present": 115,
+        "missing": 3
+      },
+      "stock_stop1": {
+        "present": 116,
+        "missing": 2
+      },
+      "stock_stop2": {
+        "present": 116,
+        "missing": 2
+      },
+      "crv": {
+        "present": 88,
+        "missing": 30
+      },
+      "derivative_currency": {
+        "present": 118,
+        "missing": 0
+      },
+      "stock_currency": {
+        "present": 116,
+        "missing": 2
+      }
+    },
+    "computed_crv": {
+      "derivative_target1": 118,
+      "derivative_target2": 118
+    },
+    "review_hints": {
+      "document:ambiguous_stock_section": 2,
+      "invalid_value:stock_target2": 1,
+      "missing_field:crv": 30,
+      "missing_field:issuer": 118,
+      "missing_field:stock_price": 2,
+      "missing_field:stock_stop1": 2,
+      "missing_field:stock_stop2": 2,
+      "missing_field:stock_target1": 2,
+      "missing_field:stock_target2": 3,
+      "missing_field:stock_wkn": 4
+    }
+  },
+  "retained_source_values": 2618,
+  "source_value_changes": [],
+  "baseline_unidentified_rows": 5,
+  "missing_documents": [],
+  "added_documents": []
+}
