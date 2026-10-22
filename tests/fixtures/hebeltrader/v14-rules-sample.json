@@ -1,0 +1,793 @@
+{
+  "fixture_kind": "Short original column excerpts; exclude five problem cases, then select SHA-sorted positions (2,22,42,62,82,112); not full PDFs",
+  "cases": [
+    {
+      "source_sha": "0825fd22a15d97fe075be1242ce0897b1c6acc5be4db4c1301595db9ede5160e",
+      "publication_date": "2025-02-03",
+      "pages": [
+        {
+          "number": 3,
+          "regions": [
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  333.4475,
+                  530.9476,
+                  342.9475
+                ]
+              },
+              {
+                "text": "wurde, sollten Anleger die Hälfte ihrer",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  347.4505,
+                  550.69905,
+                  356.9505
+                ]
+              },
+              {
+                "text": "Aktien verkaufen, um erste Gewinne",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  361.45349999999996,
+                  543.29855,
+                  370.95349999999996
+                ]
+              },
+              {
+                "text": "zu realisieren. Der neue Stoppkurs",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  375.45649999999995,
+                  534.38755,
+                  384.95649999999995
+                ]
+              },
+              {
+                "text": "sollte dann auf den Wert des ersten",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  389.45949999999993,
+                  539.80255,
+                  398.95949999999993
+                ]
+              },
+              {
+                "text": "Kursziels angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  403.4624999999999,
+                  540.63,
+                  412.9624999999999
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamt-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  417.4654999999999,
+                  545.9975,
+                  426.9654999999999
+                ]
+              },
+              {
+                "text": "position in jedem Fall später mit Ge-",
+                "page": 3,
+                "bbox": [
+                  392.1259999999999,
+                  431.4684999999999,
+                  543.8314999999999,
+                  440.9684999999999
+                ]
+              },
+              {
+                "text": "winn geschlossen wird. Mit Erreichen",
+                "page": 3,
+                "bbox": [
+                  392.12599999999986,
+                  445.4714999999999,
+                  545.209,
+                  454.9714999999999
+                ]
+              },
+              {
+                "text": "von Kursziel 2 kann die zweite Hälfte",
+                "page": 3,
+                "bbox": [
+                  392.12599999999986,
+                  459.47449999999986,
+                  542.8900499999999,
+                  468.97449999999986
+                ]
+              },
+              {
+                "text": "Ihrer Aktien verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.12599999999986,
+                  473.47749999999985,
+                  514.9704999999999,
+                  482.97749999999985
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_sha": "35919d4d21c89570cb31bc6735601f454db20a0039cee6552fd412707224b720",
+      "publication_date": "2026-08-13",
+      "pages": [
+        {
+          "number": 3,
+          "regions": [
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_sha": "5af7b6845034bb6099e3955a665349eff1ad30fe1fda31125d9fe38afadfa61d",
+      "publication_date": "2025-07-24",
+      "pages": [
+        {
+          "number": 3,
+          "regions": [
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_sha": "8074931b7043cca10f707871d63549d6bba8868e69ac87b0ed5a9071269af572",
+      "publication_date": "2025-04-29",
+      "pages": [
+        {
+          "number": 3,
+          "regions": [
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_sha": "abcf2973a37e6754cafae4ca066f0e85962974cdcd640bceebee886c56f83605",
+      "publication_date": "2025-10-01",
+      "pages": [
+        {
+          "number": 3,
+          "regions": [
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "source_sha": "fc16a36c9f4f324f4ac2f7fb9bd564ed5c47e5ed2a5485a526cc7112b2594acf",
+      "publication_date": "2026-08-06",
+      "pages": [
+        {
+          "number": 3,
+          "regions": [
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

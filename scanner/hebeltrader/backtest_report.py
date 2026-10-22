@@ -27,6 +27,9 @@ def document_rules(doc, rec, spec, run_at):
     if not spec:
         return None, None, "missing_documented_rules"
     try:
+        if spec.get("conditional_loss_exit") is not None or spec.get("target2_sale") is not None:
+            # Preparation proposals are not supported by the V1.3 execution engine.
+            raise ValueError
         if (
             spec.get("requires_manual_review")
             or spec.get("review_status", "approved") != "approved"

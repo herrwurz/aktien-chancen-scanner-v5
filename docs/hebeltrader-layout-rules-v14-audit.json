@@ -1,0 +1,1054 @@
+{
+  "automatically_corrected_records": 0,
+  "current": {
+    "after_target1": 114,
+    "conditional_loss_exit": 104,
+    "exit_after": 0,
+    "partial_fraction": 118,
+    "target2_sale": 117
+  },
+  "database_sha256_before_and_after": "812be771674f3c207d2e2a5b6087242260e0a80d1c51c270c58b61c77de3ab79",
+  "input_and_result_sha256": "9c12f64e24296649ad6626109fe8a7b0eda4e6f2d6b87dae967c8bc09b509526",
+  "previous": {
+    "after_target1": 28,
+    "conditional_loss_exit": 0,
+    "exit_after": 0,
+    "partial_fraction": 0,
+    "target2_sale": 0
+  },
+  "problem_cases_supported": 5,
+  "proposals": [
+    {
+      "document_sha": "0423a87f642930be6ceb136c98edf1e1f003befa1f4a181c96b7eb874003a603",
+      "ordinal": 1,
+      "proposals": [
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "0423a87f642930be6ceb136c98edf1e1f003befa1f4a181c96b7eb874003a603",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                146.91920000000005,
+                420.0158,
+                156.41920000000005
+              ],
+              "page": 3,
+              "quote": "WKN"
+            },
+            {
+              "bbox": [
+                506.0319,
+                143.2192,
+                547.0869,
+                153.7192
+              ],
+              "page": 3,
+              "quote": "ENAG99"
+            }
+          ],
+          "field": "stock_wkn",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.3055,
+                99.10149999999999,
+                457.67010000000005,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "E.on Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0868999999999,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert E.on"
+            }
+          ],
+          "value": "ENAG99"
+        }
+      ],
+      "publication_date": "2025-09-08"
+    },
+    {
+      "document_sha": "52e053b7c8ab4eae122a4ce64603d717659f2046db506d77d29e67b38064ca2f",
+      "ordinal": 1,
+      "proposals": [
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "52e053b7c8ab4eae122a4ce64603d717659f2046db506d77d29e67b38064ca2f",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                206.44680000000005,
+                547.0871,
+                217.2468
+              ],
+              "page": 3,
+              "quote": "Kursziel 2 91,20 €"
+            }
+          ],
+          "field": "stock_target2",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.2919,
+                99.10149999999999,
+                491.35450000000003,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Innodata-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.087,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Innodata"
+            }
+          ],
+          "value": "91.20"
+        }
+      ],
+      "publication_date": "2025-02-06"
+    },
+    {
+      "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+      "ordinal": 1,
+      "proposals": [
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                146.91920000000005,
+                547.0871000000001,
+                157.7192
+              ],
+              "page": 3,
+              "quote": "WKN 851921"
+            }
+          ],
+          "field": "stock_wkn",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "851921"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                166.7618,
+                547.0872,
+                177.56179999999995
+              ],
+              "page": 3,
+              "quote": "Akt. Kurs 51,53 $"
+            }
+          ],
+          "field": "stock_price",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "51.53"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                166.7618,
+                547.0872,
+                177.56179999999995
+              ],
+              "page": 3,
+              "quote": "Akt. Kurs 51,53 $"
+            }
+          ],
+          "field": "stock_currency",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "USD"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                186.60429999999997,
+                547.0871999999999,
+                197.40429999999992
+              ],
+              "page": 3,
+              "quote": "Kursziel 1 62,00 $"
+            }
+          ],
+          "field": "stock_target1",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "62.00"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                206.44680000000005,
+                547.0871999999999,
+                217.2468
+              ],
+              "page": 3,
+              "quote": "Kursziel 2 78,50 $"
+            }
+          ],
+          "field": "stock_target2",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "78.50"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                226.28930000000003,
+                547.0871,
+                237.08929999999998
+              ],
+              "page": 3,
+              "quote": "Stopp 1 45,00 $"
+            }
+          ],
+          "field": "stock_stop1",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "45.00"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                246.1318,
+                547.0872,
+                256.93179999999995
+              ],
+              "page": 3,
+              "quote": "Stopp 2 51,53 $"
+            }
+          ],
+          "field": "stock_stop2",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.1165,
+                99.10149999999999,
+                502.5751,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Occidental-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.08625,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Occidental"
+            },
+            {
+              "bbox": [
+                42.5384,
+                357.853,
+                321.2475,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Occidental Petroleum (kurz: Occidental) ist der Inbegriff einer anti-"
+            }
+          ],
+          "value": "51.53"
+        }
+      ],
+      "publication_date": "2026-02-20"
+    },
+    {
+      "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+      "ordinal": 1,
+      "proposals": [
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                146.91920000000005,
+                547.0866000000001,
+                157.7192
+              ],
+              "page": 3,
+              "quote": "WKN 893579"
+            }
+          ],
+          "field": "stock_wkn",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "893579"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                166.7618,
+                547.0871999999999,
+                177.56179999999995
+              ],
+              "page": 3,
+              "quote": "Akt. Kurs 235,22 $"
+            }
+          ],
+          "field": "stock_price",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "235.22"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                166.7618,
+                547.0871999999999,
+                177.56179999999995
+              ],
+              "page": 3,
+              "quote": "Akt. Kurs 235,22 $"
+            }
+          ],
+          "field": "stock_currency",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "USD"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                186.60429999999997,
+                547.0871,
+                197.40429999999992
+              ],
+              "page": 3,
+              "quote": "Kursziel 1 269,00 $"
+            }
+          ],
+          "field": "stock_target1",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "269.00"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                206.44680000000005,
+                547.0873,
+                217.2468
+              ],
+              "page": 3,
+              "quote": "Kursziel 2 316,00 $"
+            }
+          ],
+          "field": "stock_target2",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "316.00"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                226.28930000000003,
+                547.0873,
+                237.08929999999998
+              ],
+              "page": 3,
+              "quote": "Stopp 1 220,00 $"
+            }
+          ],
+          "field": "stock_stop1",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "220.00"
+        },
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                246.1318,
+                547.0871999999999,
+                256.93179999999995
+              ],
+              "page": 3,
+              "quote": "Stopp 2 235,22 $"
+            }
+          ],
+          "field": "stock_stop2",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                391.0718,
+                99.10149999999999,
+                512.9264000000001,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Waste Mgmt-Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0875,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Waste Mgmt"
+            },
+            {
+              "bbox": [
+                42.413,
+                357.853,
+                313.29505000000006,
+                367.353
+              ],
+              "page": 1,
+              "quote": "Waste Management (kurz: Waste Mgmt) zeigt eindrucksvoll, dass"
+            }
+          ],
+          "value": "235.22"
+        }
+      ],
+      "publication_date": "2026-02-18"
+    },
+    {
+      "document_sha": "e73f23ac103ca150c6a4da031e2f174a208c89342d275bd16dc35697a0f29b0e",
+      "ordinal": 1,
+      "proposals": [
+        {
+          "confidence": "high_source_support_not_approval",
+          "current_value": null,
+          "document_sha": "e73f23ac103ca150c6a4da031e2f174a208c89342d275bd16dc35697a0f29b0e",
+          "evidence": [
+            {
+              "bbox": [
+                397.7953,
+                146.91920000000005,
+                420.0158,
+                156.41920000000005
+              ],
+              "page": 3,
+              "quote": "WKN"
+            },
+            {
+              "bbox": [
+                505.7698,
+                143.2192,
+                547.0872999999999,
+                153.7192
+              ],
+              "page": 3,
+              "quote": "A1JWVX"
+            }
+          ],
+          "field": "stock_wkn",
+          "method": "stock-table-geometry-v14",
+          "ordinal": 1,
+          "requires_manual_review": true,
+          "review_status": "pending",
+          "stock_scope_evidence": [
+            {
+              "bbox": [
+                392.3055,
+                99.10149999999999,
+                462.27610000000004,
+                113.10149999999999
+              ],
+              "page": 3,
+              "quote": "Meta Aktie"
+            },
+            {
+              "bbox": [
+                397.7953,
+                127.07669999999996,
+                547.0867999999999,
+                137.87669999999991
+              ],
+              "page": 3,
+              "quote": "Basiswert Meta"
+            }
+          ],
+          "value": "A1JWVX"
+        }
+      ],
+      "publication_date": "2025-05-07"
+    }
+  ],
+  "reproducible_files": 8,
+  "run_at": "2026-10-22T00:00:00+00:00",
+  "source": "Read-only local 118-document V1.3 inventory; original PDF bytes SHA checked; no Hetzner access",
+  "stop_scope_conflicts": [
+    "0825fd22a15d97fe075be1242ce0897b1c6acc5be4db4c1301595db9ede5160e:1",
+    "323490abfd12103870ba5d32ea33bdce15c1470e8f3a431476b198991ad910d8:1",
+    "374b61f102043379fd39ca4bc02a43f08a13c9aa1771db7df83511562c2c6677:1",
+    "f0f3176706f90d8f525ca30ffd54a91d18f6e13655d6eb51e26131c371f3c5fb:1"
+  ],
+  "summary": {
+    "automatically_approved_rules": 0,
+    "backtest_readiness": "not_assessed",
+    "count_matches": true,
+    "documents": 118,
+    "expected_count": 118,
+    "identities_with_candidates": 0,
+    "layout_rule_candidate_kinds": {
+      "after_target1": 281,
+      "conditional_loss_exit": 214,
+      "partial_fraction": 355,
+      "target2_sale": 234
+    },
+    "manual_review_recommendations": 118,
+    "original_sha_valid": 118,
+    "quality": {
+      "stock_currency": {
+        "missing": 2,
+        "unverified": 0
+      },
+      "stock_identity": {
+        "missing": 4,
+        "unverified": 0
+      },
+      "stock_stop1": {
+        "missing": 2,
+        "unverified": 0
+      },
+      "stock_target1": {
+        "missing": 2,
+        "unverified": 0
+      },
+      "stock_target2": {
+        "missing": 3,
+        "unverified": 1
+      }
+    },
+    "quality_affected_documents": 5,
+    "recommendations": 118,
+    "recommendations_with_action_drafts": 118,
+    "recommendations_with_layout_repairs": 5,
+    "recommendations_with_rule_candidates": 118,
+    "rule_candidate_kinds": {
+      "after_target1": 40,
+      "derivative_target1": 118,
+      "derivative_target2": 118,
+      "exit_after": 96,
+      "partial_fraction": 416,
+      "stock_target1": 116,
+      "stock_target2": 115
+    },
+    "stock_wkn_occurrences": 114,
+    "structured_rule_recommendations": {
+      "after_target1": 114,
+      "conditional_loss_exit": 104,
+      "exit_after": 0,
+      "partial_fraction": 118,
+      "target2_sale": 117
+    },
+    "unique_stock_wkn": 96,
+    "verified_identities": 0
+  },
+  "version": "1.4-layout-rules"
+}
