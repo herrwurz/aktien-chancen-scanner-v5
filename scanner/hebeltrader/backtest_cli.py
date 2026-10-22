@@ -51,7 +51,7 @@ def write_report(path, payload):
             json.dump(payload, stream, indent=2, default=str, ensure_ascii=False)
             stream.write("\n")
         else:
-            writer = csv.DictWriter(stream, fieldnames=CSV_FIELDS)
+            writer = csv.DictWriter(stream, fieldnames=CSV_FIELDS, lineterminator="\n")
             writer.writeheader()
             audit = {k: v for k, v in payload.items() if k != "results"}
             for row in payload["results"]:

@@ -136,6 +136,7 @@ def test_cli_json_csv_are_exclusive_and_private(tmp_path, monkeypatch):
     assert main([*args, "--output", str(csv)]) == 0
     assert csv.read_text().startswith("recommendation_id,")
     assert csv.stat().st_mode & 0o777 == 0o600
+    assert b"\r" not in csv.read_bytes()
 
 
 def test_real_provider_rule_evidence_and_partial_exit_end_to_end(sessions, tmp_path):
