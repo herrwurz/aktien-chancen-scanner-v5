@@ -32,5 +32,8 @@ jobs:
       - run: docker compose config --quiet
         env:
           POSTGRES_PASSWORD: ci-disposable-only
+      - run: docker compose --profile analysis config --quiet
+        env:
+          POSTGRES_PASSWORD: ci-disposable-only
       - run: docker build -t scanner-ci .
       - run: docker run --rm -e DATABASE_URL=sqlite:////tmp/image-test.db scanner-ci alembic upgrade head
