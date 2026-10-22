@@ -213,4 +213,149 @@ def suggest_rules(doc, rec, *, run_at: datetime) -> dict:
         elif supported and len(supported) == len(items):
             draft[field] = supported[0]["value"]
             draft["evidence"].extend(e for c in supported for e in c["evidence"])
+    layout_hints = suggest_layout_rule_hints(doc, rec)
+    result["layout_rule_candidates"] = layout_hints
+    for field in ("partial_fraction", "after_target1", "target2_sale", "conditional_loss_exit"):
+        items = [c for c in layout_hints if c["kind"] == field]
+        values = {repr(c["value"]) for c in items}
+        if len(values) == 1:
+            # Separate scoped candidates remain available even if manual scope binding is needed.
+            draft[field] = items[0]["value"]
+            draft["evidence"].extend(e for c in items for e in c["evidence"])
+        elif len(values) > 1:
+            draft.pop(field, None)
+            hints.append("contradictory_layout_" + field)
     return finish()
+
+
+def suggest_layout_rule_hints(doc, rec):
+    """Recognize cited column-local prose; never promotes it to executable rules."""
+    if hashlib.sha256(doc.original_pdf).hexdigest() != doc.sha256 or rec.document_sha != doc.sha256:
+        return []
+    candidates = []
+    for page in doc.pages:
+        for region_index, region in enumerate(page.get("regions", [])):
+            lines = region.get("lines", []) if isinstance(region, dict) else region
+            if any(not isinstance(line, dict) or "bbox" not in line for line in lines):
+                continue
+            groups = []
+            for line in lines:
+                if not groups or line["bbox"][1] - groups[-1][-1]["bbox"][3] > 18:
+                    groups.append([])
+                groups[-1].append(line)
+            for group in groups:
+                raw = _normal(" ".join(line["text"] for line in group))
+                sentences = re.split(r"(?<=[.!?])\s+", raw)
+                previous = ""
+                for sentence in sentences:
+                    # Matching is dehyphenated; evidence is the untouched source sequence.
+                    match_text = re.sub(r"(?<=\w)-\s+(?=\w)", "", sentence).casefold()
+                    context = re.sub(r"(?<=\w)-\s+(?=\w)", "", previous).casefold()
+                    scope_text = context + " " + match_text
+                    scope = (
+                        "derivative_mentioned"
+                        if "derivat" in scope_text
+                        else "stock_mentioned"
+                        if re.search(r"aktien?\b", scope_text)
+                        else "instrument_unverified"
+                    )
+
+                    def add_hint(
+                        kind,
+                        value,
+                        quote,
+                        notes=(),
+                        *,
+                        scope=scope,
+                        page=page,
+                        group=group,
+                        region_index=region_index,
+                    ):
+                        candidates.append(
+                            dict(
+                                kind=kind,
+                                value=value,
+                                instrument_scope=scope,
+                                confidence="medium",
+                                requires_manual_review=True,
+                                review_hints=["scope_requires_manual_review", *notes],
+                                evidence=[
+                                    dict(
+                                        page=page["number"],
+                                        quote=quote,
+                                        bbox=[
+                                            min(r["bbox"][0] for r in group),
+                                            min(r["bbox"][1] for r in group),
+                                            max(r["bbox"][2] for r in group),
+                                            max(r["bbox"][3] for r in group),
+                                        ],
+                                        region=region_index,
+                                        document_sha=doc.sha256,
+                                        ordinal=rec.ordinal,
+                                        fields=[kind],
+                                    )
+                                ],
+                            )
+                        )
+
+                    negated = bool(re.search(r"\b(?:nicht|kein\w*)\b", match_text))
+                    first = bool(
+                        re.search(r"erste[nsrm]?\s+kursziel|kursziel\s*1|ziel\s*1", match_text)
+                    )
+                    if first and "hälfte" in match_text and "verkauf" in match_text and not negated:
+                        add_hint("partial_fraction", 0.5, sentence)
+                    if (
+                        "stopp" in match_text
+                        and re.search(
+                            r"einstands?kurs|einstand|einstiegskurs|"
+                            r"auf den wert des ersten kursziels",
+                            match_text,
+                        )
+                        and (
+                            first
+                            or (
+                                "dann" in match_text
+                                and re.search(r"erste[nsrm]?\s+kursziel|kursziel\s*1", context)
+                            )
+                        )
+                        and not negated
+                    ):
+                        add_hint(
+                            "after_target1",
+                            "target1"
+                            if "auf den wert des ersten kursziels" in match_text
+                            else "entry",
+                            (previous + " " + sentence).strip(),
+                        )
+                    if (
+                        re.search(r"kursziel\s*2|zweite[nsrm]?\s+kursziel", match_text)
+                        and "hälfte" in match_text
+                        and "verkauf" in match_text
+                        and not negated
+                    ):
+                        add_hint("target2_sale", dict(fraction=0.5, trigger="target2"), sentence)
+                    duration = re.search(r"\b(\d+)\s+(handels|kalender)?tagen?\b", match_text)
+                    if (
+                        duration
+                        and "im minus" in match_text
+                        and "geschlossen" in match_text
+                        and not negated
+                    ):
+                        unit = {"handels": "trading_sessions", "kalender": "calendar_days"}.get(
+                            duration[2]
+                        )
+                        add_hint(
+                            "conditional_loss_exit",
+                            dict(
+                                days=int(duration[1]),
+                                unit=unit,
+                                condition="position_in_loss",
+                                threshold="at_least"
+                                if "oder länger" in match_text
+                                else "unspecified",
+                            ),
+                            sentence,
+                            ["time_unit_unverified"] if unit is None else [],
+                        )
+                    previous = sentence
+    return candidates

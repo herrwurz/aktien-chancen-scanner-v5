@@ -1,0 +1,1411 @@
+{
+  "fixture_kind": "Minimal original table excerpts; not full PDFs; synthetic byte bindings in unit tests; real SHA references are source_sha",
+  "cases": [
+    {
+      "source_sha": "0423a87f642930be6ceb136c98edf1e1f003befa1f4a181c96b7eb874003a603",
+      "publication_date": "2025-09-08",
+      "stock_name": "E.on",
+      "pages": [
+        {
+          "number": 3,
+          "text": "E.on Aktie\nBasiswert E.on\nENAG99\nWKN\nAkt. Kurs 15,18 €\nKursziel 1 16,50 €\nKursziel 2 21,00 €\nStopp 1 14,30 €\nStopp 2 15,18 €\nGD50 15,55 €\nGD200 14,43 €",
+          "regions": [
+            [
+              {
+                "text": "E.on Aktie",
+                "page": 3,
+                "bbox": [
+                  392.3055,
+                  99.10149999999999,
+                  457.67010000000005,
+                  113.10149999999999
+                ]
+              },
+              {
+                "text": "Basiswert E.on",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  127.07669999999996,
+                  547.0868999999999,
+                  137.87669999999991
+                ]
+              },
+              {
+                "text": "ENAG99",
+                "page": 3,
+                "bbox": [
+                  506.0319,
+                  143.2192,
+                  547.0869,
+                  153.7192
+                ]
+              },
+              {
+                "text": "WKN",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  146.91920000000005,
+                  420.0158,
+                  156.41920000000005
+                ]
+              },
+              {
+                "text": "Akt. Kurs 15,18 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  166.7618,
+                  547.0871000000001,
+                  177.56179999999995
+                ]
+              },
+              {
+                "text": "Kursziel 1 16,50 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  186.60429999999997,
+                  547.0872,
+                  197.40429999999992
+                ]
+              },
+              {
+                "text": "Kursziel 2 21,00 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  206.44680000000005,
+                  547.0872,
+                  217.2468
+                ]
+              },
+              {
+                "text": "Stopp 1 14,30 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  226.28930000000003,
+                  547.0872,
+                  237.08929999999998
+                ]
+              },
+              {
+                "text": "Stopp 2 15,18 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  246.1318,
+                  547.0872,
+                  256.93179999999995
+                ]
+              },
+              {
+                "text": "GD50 15,55 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  265.97439999999995,
+                  547.0871999999999,
+                  276.7743999999999
+                ]
+              },
+              {
+                "text": "GD200 14,43 €",
+                "page": 3,
+                "bbox": [
+                  397.7954,
+                  285.81690000000003,
+                  547.0871999999999,
+                  296.6169
+                ]
+              }
+            ],
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "missing": [
+        "stock_wkn"
+      ],
+      "flags": [
+        {
+          "code": "missing_field",
+          "field": "stock_wkn"
+        },
+        {
+          "code": "missing_field",
+          "field": "issuer"
+        }
+      ],
+      "original_values": {
+        "stock_wkn": null,
+        "stock_currency": "EUR",
+        "stock_price": "15.179999999999999716",
+        "stock_target1": "16.500000000000000000",
+        "stock_target2": "21.000000000000000000",
+        "stock_stop1": "14.300000000000000711",
+        "stock_stop2": "15.179999999999999716"
+      }
+    },
+    {
+      "source_sha": "52e053b7c8ab4eae122a4ce64603d717659f2046db506d77d29e67b38064ca2f",
+      "publication_date": "2025-02-06",
+      "stock_name": "Innodata",
+      "pages": [
+        {
+          "number": 3,
+          "text": "Innodata-Aktie\nBasiswert Innodata\nWKN 907651\nAkt. Kurs 36,98 €\nKursziel 1 55,50 €\nKursziel 2 91,20 €\nStopp 1 31,00 €\nStopp 2 36,98 €\nGD50 37,72 €\nGD200 21,31 €",
+          "regions": [
+            [
+              {
+                "text": "Innodata-Aktie",
+                "page": 3,
+                "bbox": [
+                  392.2919,
+                  99.10149999999999,
+                  491.35450000000003,
+                  113.10149999999999
+                ]
+              },
+              {
+                "text": "Basiswert Innodata",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  127.07669999999996,
+                  547.087,
+                  137.87669999999991
+                ]
+              },
+              {
+                "text": "WKN 907651",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  146.91920000000005,
+                  547.0870000000001,
+                  157.7192
+                ]
+              },
+              {
+                "text": "Akt. Kurs 36,98 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  166.7618,
+                  547.087,
+                  177.56179999999995
+                ]
+              },
+              {
+                "text": "Kursziel 1 55,50 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  186.60429999999997,
+                  547.0871,
+                  197.40429999999992
+                ]
+              },
+              {
+                "text": "Kursziel 2 91,20 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  206.44680000000005,
+                  547.0871,
+                  217.2468
+                ]
+              },
+              {
+                "text": "Stopp 1 31,00 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  226.28930000000003,
+                  547.0873,
+                  237.08929999999998
+                ]
+              },
+              {
+                "text": "Stopp 2 36,98 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  246.1318,
+                  547.087,
+                  256.93179999999995
+                ]
+              },
+              {
+                "text": "GD50 37,72 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  265.97439999999995,
+                  547.0867000000001,
+                  276.7743999999999
+                ]
+              },
+              {
+                "text": "GD200 21,31 €",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  285.81690000000003,
+                  547.0871999999999,
+                  296.6169
+                ]
+              }
+            ],
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wur-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  333.4475,
+                  552.752,
+                  342.9475
+                ]
+              },
+              {
+                "text": "de, sollten Anleger die Hälfte ihrer Ak-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  347.4505,
+                  551.8875,
+                  356.9505
+                ]
+              },
+              {
+                "text": "tien verkaufen, um erste Gewinne zu",
+                "page": 3,
+                "bbox": [
+                  392.12600000000003,
+                  361.45349999999996,
+                  543.4040000000001,
+                  370.95349999999996
+                ]
+              },
+              {
+                "text": "realisieren. Der neue Stoppkurs sollte",
+                "page": 3,
+                "bbox": [
+                  392.12600000000003,
+                  375.45649999999995,
+                  547.337,
+                  384.95649999999995
+                ]
+              },
+              {
+                "text": "dann auf den Wert des Einstiegskur-",
+                "page": 3,
+                "bbox": [
+                  392.12600000000003,
+                  389.45949999999993,
+                  543.8315,
+                  398.95949999999993
+                ]
+              },
+              {
+                "text": "ses angehoben werden. Somit wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  403.4624999999999,
+                  538.008,
+                  412.9624999999999
+                ]
+              },
+              {
+                "text": "sichergestellt, dass die Gesamtposi-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  417.4654999999999,
+                  542.9185500000001,
+                  426.9654999999999
+                ]
+              },
+              {
+                "text": "tion in jedem Fall später mit Gewinn",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  431.4684999999999,
+                  541.7415,
+                  440.9684999999999
+                ]
+              },
+              {
+                "text": "geschlossen wird. Mit Erreichen von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  445.4714999999999,
+                  540.8865,
+                  454.9714999999999
+                ]
+              },
+              {
+                "text": "Kursziel 2 kann die zweite Hälfte Ihrer",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  459.47449999999986,
+                  548.021,
+                  468.97449999999986
+                ]
+              },
+              {
+                "text": "Aktien verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  473.47749999999985,
+                  492.864,
+                  482.97749999999985
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "missing": [
+        "stock_target2"
+      ],
+      "flags": [
+        {
+          "code": "invalid_value",
+          "field": "stock_target2",
+          "page": 3
+        },
+        {
+          "code": "missing_field",
+          "field": "issuer"
+        },
+        {
+          "code": "missing_field",
+          "field": "crv"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_target2"
+        }
+      ],
+      "original_values": {
+        "stock_wkn": "907651",
+        "stock_currency": "EUR",
+        "stock_price": "36.979999999999996874",
+        "stock_target1": "55.500000000000000000",
+        "stock_target2": null,
+        "stock_stop1": "31.000000000000000000",
+        "stock_stop2": "36.979999999999996874"
+      }
+    },
+    {
+      "source_sha": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+      "publication_date": "2026-02-20",
+      "stock_name": "Occidental Petroleum",
+      "pages": [
+        {
+          "number": 3,
+          "text": "Occidental-Aktie\nBasiswert Occidental\nWKN 851921\nAkt. Kurs 51,53 $\nKursziel 1 62,00 $\nKursziel 2 78,50 $\nStopp 1 45,00 $\nStopp 2 51,53 $\nGD50 44,22 $\nGD200 44,31 $",
+          "regions": [
+            [
+              {
+                "text": "Occidental-Aktie",
+                "page": 3,
+                "bbox": [
+                  392.1165,
+                  99.10149999999999,
+                  502.5751,
+                  113.10149999999999
+                ]
+              },
+              {
+                "text": "Basiswert Occidental",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  127.07669999999996,
+                  547.08625,
+                  137.87669999999991
+                ]
+              },
+              {
+                "text": "WKN 851921",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  146.91920000000005,
+                  547.0871000000001,
+                  157.7192
+                ]
+              },
+              {
+                "text": "Akt. Kurs 51,53 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  166.7618,
+                  547.0872,
+                  177.56179999999995
+                ]
+              },
+              {
+                "text": "Kursziel 1 62,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  186.60429999999997,
+                  547.0871999999999,
+                  197.40429999999992
+                ]
+              },
+              {
+                "text": "Kursziel 2 78,50 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  206.44680000000005,
+                  547.0871999999999,
+                  217.2468
+                ]
+              },
+              {
+                "text": "Stopp 1 45,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  226.28930000000003,
+                  547.0871,
+                  237.08929999999998
+                ]
+              },
+              {
+                "text": "Stopp 2 51,53 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  246.1318,
+                  547.0872,
+                  256.93179999999995
+                ]
+              },
+              {
+                "text": "GD50 44,22 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  265.97439999999995,
+                  547.087,
+                  276.7743999999999
+                ]
+              },
+              {
+                "text": "GD200 44,31 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  285.81690000000003,
+                  547.0871,
+                  296.6169
+                ]
+              }
+            ],
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "number": 1,
+          "text": "Occidental Petroleum (kurz: Occidental)",
+          "regions": [
+            [
+              {
+                "page": 1,
+                "text": "Occidental Petroleum (kurz: Occidental)",
+                "bbox": [
+                  42,
+                  96,
+                  325,
+                  107
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "missing": [
+        "stock_wkn",
+        "stock_currency",
+        "stock_price",
+        "stock_target1",
+        "stock_target2",
+        "stock_stop1",
+        "stock_stop2"
+      ],
+      "flags": [
+        {
+          "code": "missing_field",
+          "field": "stock_wkn"
+        },
+        {
+          "code": "missing_field",
+          "field": "issuer"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_price"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_target1"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_target2"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_stop1"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_stop2"
+        }
+      ],
+      "original_values": {
+        "stock_wkn": null,
+        "stock_currency": null,
+        "stock_price": null,
+        "stock_target1": null,
+        "stock_target2": null,
+        "stock_stop1": null,
+        "stock_stop2": null
+      }
+    },
+    {
+      "source_sha": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+      "publication_date": "2026-02-18",
+      "stock_name": "Waste Management",
+      "pages": [
+        {
+          "number": 3,
+          "text": "Waste Mgmt-Aktie\nBasiswert Waste Mgmt\nWKN 893579\nAkt. Kurs 235,22 $\nKursziel 1 269,00 $\nKursziel 2 316,00 $\nStopp 1 220,00 $\nStopp 2 235,22 $\nGD50 223,52 $\nGD200 220,54 $",
+          "regions": [
+            [
+              {
+                "text": "Waste Mgmt-Aktie",
+                "page": 3,
+                "bbox": [
+                  391.0718,
+                  99.10149999999999,
+                  512.9264000000001,
+                  113.10149999999999
+                ]
+              },
+              {
+                "text": "Basiswert Waste Mgmt",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  127.07669999999996,
+                  547.0875,
+                  137.87669999999991
+                ]
+              },
+              {
+                "text": "WKN 893579",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  146.91920000000005,
+                  547.0866000000001,
+                  157.7192
+                ]
+              },
+              {
+                "text": "Akt. Kurs 235,22 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  166.7618,
+                  547.0871999999999,
+                  177.56179999999995
+                ]
+              },
+              {
+                "text": "Kursziel 1 269,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  186.60429999999997,
+                  547.0871,
+                  197.40429999999992
+                ]
+              },
+              {
+                "text": "Kursziel 2 316,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  206.44680000000005,
+                  547.0873,
+                  217.2468
+                ]
+              },
+              {
+                "text": "Stopp 1 220,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  226.28930000000003,
+                  547.0873,
+                  237.08929999999998
+                ]
+              },
+              {
+                "text": "Stopp 2 235,22 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  246.1318,
+                  547.0871999999999,
+                  256.93179999999995
+                ]
+              },
+              {
+                "text": "GD50 223,52 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  265.97439999999995,
+                  547.0871,
+                  276.7743999999999
+                ]
+              },
+              {
+                "text": "GD200 220,54 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  285.81690000000003,
+                  547.0871999999999,
+                  296.6169
+                ]
+              }
+            ],
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        },
+        {
+          "number": 1,
+          "text": "Waste Management (kurz: Waste Mgmt)",
+          "regions": [
+            [
+              {
+                "page": 1,
+                "text": "Waste Management (kurz: Waste Mgmt)",
+                "bbox": [
+                  42,
+                  96,
+                  325,
+                  107
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "missing": [
+        "stock_wkn",
+        "stock_currency",
+        "stock_price",
+        "stock_target1",
+        "stock_target2",
+        "stock_stop1",
+        "stock_stop2"
+      ],
+      "flags": [
+        {
+          "code": "missing_field",
+          "field": "stock_wkn"
+        },
+        {
+          "code": "missing_field",
+          "field": "issuer"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_price"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_target1"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_target2"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_stop1"
+        },
+        {
+          "code": "missing_field",
+          "field": "stock_stop2"
+        }
+      ],
+      "original_values": {
+        "stock_wkn": null,
+        "stock_currency": null,
+        "stock_price": null,
+        "stock_target1": null,
+        "stock_target2": null,
+        "stock_stop1": null,
+        "stock_stop2": null
+      }
+    },
+    {
+      "source_sha": "e73f23ac103ca150c6a4da031e2f174a208c89342d275bd16dc35697a0f29b0e",
+      "publication_date": "2025-05-07",
+      "stock_name": "Meta",
+      "pages": [
+        {
+          "number": 3,
+          "text": "Meta Aktie\nBasiswert Meta\nA1JWVX\nWKN\nAkt. Kurs 587,31 $\nKursziel 1 720,00 $\nKursziel 2 862,00 $\nStopp 1 550,00 $\nStopp 2 587,31 $\nGD50 580,19 $\nGD200 580,87 $",
+          "regions": [
+            [
+              {
+                "text": "Meta Aktie",
+                "page": 3,
+                "bbox": [
+                  392.3055,
+                  99.10149999999999,
+                  462.27610000000004,
+                  113.10149999999999
+                ]
+              },
+              {
+                "text": "Basiswert Meta",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  127.07669999999996,
+                  547.0867999999999,
+                  137.87669999999991
+                ]
+              },
+              {
+                "text": "A1JWVX",
+                "page": 3,
+                "bbox": [
+                  505.7698,
+                  143.2192,
+                  547.0872999999999,
+                  153.7192
+                ]
+              },
+              {
+                "text": "WKN",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  146.91920000000005,
+                  420.0158,
+                  156.41920000000005
+                ]
+              },
+              {
+                "text": "Akt. Kurs 587,31 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  166.7618,
+                  547.087,
+                  177.56179999999995
+                ]
+              },
+              {
+                "text": "Kursziel 1 720,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  186.60429999999997,
+                  547.0871999999999,
+                  197.40429999999992
+                ]
+              },
+              {
+                "text": "Kursziel 2 862,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  206.44680000000005,
+                  547.0871999999999,
+                  217.2468
+                ]
+              },
+              {
+                "text": "Stopp 1 550,00 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  226.28930000000003,
+                  547.0873,
+                  237.08929999999998
+                ]
+              },
+              {
+                "text": "Stopp 2 587,31 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  246.1318,
+                  547.087,
+                  256.93179999999995
+                ]
+              },
+              {
+                "text": "GD50 580,19 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  265.97439999999995,
+                  547.0871999999999,
+                  276.7743999999999
+                ]
+              },
+              {
+                "text": "GD200 580,87 $",
+                "page": 3,
+                "bbox": [
+                  397.7953,
+                  285.81690000000003,
+                  547.087,
+                  296.6169
+                ]
+              }
+            ],
+            [
+              {
+                "text": "Sobald das erste Kursziel erreicht wurde,",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  332.9405,
+                  535.0516,
+                  340.9405
+                ]
+              },
+              {
+                "text": "sollten Anleger die Hälfte ihres Derivats ver-",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  343.9405,
+                  547.9739999999999,
+                  351.9405
+                ]
+              },
+              {
+                "text": "kaufen, um erste Gewinne zu realisieren. Der",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  354.9405,
+                  549.0683999999999,
+                  362.9405
+                ]
+              },
+              {
+                "text": "neue Stoppkurs sollte dann auf den Wert des",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  365.9405,
+                  548.5228000000001,
+                  373.9405
+                ]
+              },
+              {
+                "text": "Einstiegskurses angehoben werden. Somit",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  376.9405,
+                  540.3163999999999,
+                  384.9405
+                ]
+              },
+              {
+                "text": "wird sichergestellt, dass die Gesamtposition",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  387.9405,
+                  546.2044,
+                  395.9405
+                ]
+              },
+              {
+                "text": "in jedem Fall später mit Gewinn geschlossen",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  398.9405,
+                  546.9084,
+                  406.9405
+                ]
+              },
+              {
+                "text": "wird. Mit Erreichen von Kursziel 2 kann die",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  409.9405,
+                  539.2524,
+                  417.9405
+                ]
+              },
+              {
+                "text": "zweite Hälfte des Derivats verkauft werden.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  420.9405,
+                  546.5084,
+                  428.9405
+                ]
+              },
+              {
+                "text": "Eine Position, die nach einer Haltedauer von",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  442.9405,
+                  546.8116,
+                  450.9405
+                ]
+              },
+              {
+                "text": "20 Tagen oder länger im Minus notiert, wird",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  453.9405,
+                  545.4676,
+                  461.9405
+                ]
+              },
+              {
+                "text": "geschlossen.",
+                "page": 3,
+                "bbox": [
+                  392.126,
+                  464.9405,
+                  436.88599999999997,
+                  472.9405
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "missing": [
+        "stock_wkn"
+      ],
+      "flags": [
+        {
+          "code": "missing_field",
+          "field": "stock_wkn"
+        },
+        {
+          "code": "missing_field",
+          "field": "issuer"
+        },
+        {
+          "code": "missing_field",
+          "field": "crv"
+        }
+      ],
+      "original_values": {
+        "stock_wkn": null,
+        "stock_currency": "USD",
+        "stock_price": "587.309999999999945430",
+        "stock_target1": "720.000000000000000000",
+        "stock_target2": "862.000000000000000000",
+        "stock_stop1": "550.000000000000000000",
+        "stock_stop2": "587.309999999999945430"
+      }
+    }
+  ]
+}

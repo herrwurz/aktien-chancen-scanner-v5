@@ -7,6 +7,7 @@ from collections import Counter
 from sqlalchemy import select
 
 from scanner.hebeltrader.identity_assistant import suggest_identity, validate_source_cache
+from scanner.hebeltrader.layout_proposals import suggest_stock_repairs
 from scanner.hebeltrader.models import Document, HistoricalRecommendation
 from scanner.hebeltrader.preparation_quality import assess_quality, group_quality
 from scanner.hebeltrader.rule_assistant import suggest_rules
@@ -50,6 +51,7 @@ def build_preparation(
                     stock_isin=rec.stock_isin,
                     original_sha_valid="original_sha_mismatch" not in rules["review_hints"],
                     rules=rules,
+                    layout_repairs=suggest_stock_repairs(doc, rec),
                     quality_findings=defects,
                     requires_manual_review=True,
                     hypothetical=True,
@@ -70,6 +72,13 @@ def build_preparation(
             )
         )
     quality = group_quality(findings)
+    for document in quality["documents"]:
+        document["repair_proposals"] = [
+            p
+            for row in results
+            if row["document_sha"] == document["document_sha"]
+            for p in row["layout_repairs"]["proposals"]
+        ]
     summary = dict(
         recommendations=len(results),
         documents=len({r["document_sha"] for r in results}),
@@ -90,6 +99,26 @@ def build_preparation(
         stock_wkn_occurrences=sum(bool(r["stock_wkn"]) for r in results),
         unique_stock_wkn=len(identities),
         identities_with_candidates=sum(bool(i["candidates"]) for i in identities),
+        layout_rule_candidate_kinds=dict(
+            sorted(
+                Counter(
+                    c["kind"] for r in results for c in r["rules"].get("layout_rule_candidates", [])
+                ).items()
+            )
+        ),
+        structured_rule_recommendations={
+            field: sum(field in r["rules"]["rules_json_candidate"] for r in results)
+            for field in (
+                "partial_fraction",
+                "after_target1",
+                "target2_sale",
+                "conditional_loss_exit",
+                "exit_after",
+            )
+        },
+        recommendations_with_layout_repairs=sum(
+            bool(r["layout_repairs"]["proposals"]) for r in results
+        ),
         verified_identities=0,
         automatically_approved_rules=0,
         manual_review_recommendations=len(results),
