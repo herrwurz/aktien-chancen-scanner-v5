@@ -1,0 +1,9 @@
+{
+  "status": "pending",
+  "reviewer": null,
+  "reviewed_at": null,
+  "policy": "raw_price_only_exclude_cash_dividends",
+  "splits_policy": "block",
+  "dividend_cashflows_included": false,
+  "raw_manifests": {"splits": null, "div": null}
+}

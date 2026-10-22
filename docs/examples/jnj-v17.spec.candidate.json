@@ -1,0 +1,15 @@
+{
+  "wkn": "853260",
+  "isin": "US4781601046",
+  "symbol": "JNJ.US",
+  "venue": "XNYS",
+  "timezone": "America/New_York",
+  "currency": "USD",
+  "identity_status": "unverified",
+  "identity_reference": "User-supplied candidate; historical proof required",
+  "identity_valid_from": "2025-08-04T00:00:00-04:00",
+  "identity_valid_until": "2026-01-16T23:59:59-05:00",
+  "coverage_start": "2025-08-04T00:00:00-04:00",
+  "coverage_end": "2026-01-16T23:59:59-05:00",
+  "calendar_reference": "UNREVIEWED: replace with actual archived exchange-calendar reference"
+}

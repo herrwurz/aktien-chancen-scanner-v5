@@ -1,0 +1,25 @@
+{
+  "0223ed07b672b4f02379cff6477d24290de3801d89179a0fa4c0e9c2a44268fc:1": {
+    "rule_version": "1.6",
+    "document_sha": "0223ed07b672b4f02379cff6477d24290de3801d89179a0fa4c0e9c2a44268fc",
+    "ordinal": 1,
+    "instrument_scope": "stock",
+    "review_status": "pending",
+    "requires_manual_review": true,
+    "reviewer": null,
+    "reviewed_at": null,
+    "partial_fraction": 0.5,
+    "after_target1": "entry",
+    "target2_sale": {"fraction": 0.5, "trigger": "target2"},
+    "conditional_loss_exit": {
+      "days": 20,
+      "unit": null,
+      "loss_basis": null,
+      "condition": "position_in_loss",
+      "threshold": "at_least",
+      "evaluation": "completed_close",
+      "execution": "next_session_open"
+    },
+    "evidence": []
+  }
+}
