@@ -258,3 +258,9 @@ Der Parser ist eine nachvollziehbare erste Layoutimplementierung, keine
 garantierte Vollerkennung aller 118 Ausgaben. Ein vollständiger Bestandsimport
 mit anschließender manueller Qualitätsprüfung bleibt ein eigener Lauf beim
 Betreiber. Tatsächlich ausgeführte Prüfungen: [hebeltrader-test-results.md](hebeltrader-test-results.md).
+
+## Parser V2.1
+
+Diagnose, geprüfter Vergleich aller 118 Originale und der ausschließlich lesende
+`quality`-Befehl: [hebeltrader-v21.md](hebeltrader-v21.md). Bestehende Importe und
+manuell geprüfte Daten werden durch einen Wiederholungsimport nicht neu geparst.

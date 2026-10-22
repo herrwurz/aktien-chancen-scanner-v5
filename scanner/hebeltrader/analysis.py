@@ -143,6 +143,7 @@ def export_features(session, as_of):
                 ),
                 availability_evidence=document.availability_evidence,
                 features=fields,
+                calculated_crv=rec.evidence.get("_calculated_crv", []),
             )
         )
     return rows
