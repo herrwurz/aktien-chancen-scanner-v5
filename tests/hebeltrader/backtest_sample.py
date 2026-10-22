@@ -41,7 +41,7 @@ def seed_sample(session):
         revision_conflict=False,
         pages=[dict(number=1, text="\n".join(lines))],
         flags=[],
-        metadata_evidence=[],
+        metadata_evidence=[dict(page=1, raw=lines[1], rule="header-v1")],
         verified_available_at=AVAILABLE,
         availability_evidence="Synthetic archive at 08:00 UTC",
     )

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
 
-VERSION = "hebel-stock-ohlc-v1.1"
+VERSION = "hebel-stock-ohlc-v1.2"
 UNKNOWN = "unknown"
 
 

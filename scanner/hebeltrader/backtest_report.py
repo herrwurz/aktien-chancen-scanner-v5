@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import select
 
 from scanner.hebeltrader.backtest import VERSION, Rules, simulate_stock
+from scanner.hebeltrader.backtest_availability import entry_policy
 from scanner.hebeltrader.models import Document, HistoricalRecommendation, Publication
 
 
@@ -93,7 +94,11 @@ def _availability(doc, as_of, selected_sha=None):
     return None
 
 
-def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
+def build_report(
+    session, provider, mapping, rule_specs, *, as_of, run_at, analysis_mode="verified"
+):
+    if analysis_mode not in {"verified", "research"}:
+        raise ValueError("analysis_mode must be verified or research")
     if not aware(as_of) or not aware(run_at) or as_of > run_at:
         raise ValueError("as_of and run_at must be aware and as_of must not be future")
     results = []
@@ -120,6 +125,9 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
                 review_status=doc.review_status,
                 source_verified=source_verified,
                 training_eligible=False,
+                analysis_mode=analysis_mode,
+                hypothetical=True,
+                modeled_entry_at=None,
                 method_version=VERSION,
                 instrument=dict(
                     wkn=rec.stock_wkn, isin=rec.stock_isin, currency=rec.stock_currency
@@ -141,6 +149,16 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
                     reason="missing_timestamped_derivative_bid_ask",
                 ),
             )
+            strict_reason = _availability(doc, as_of, selected.selected_sha if selected else None)
+            spec = mapping.get(rec.stock_wkn) or mapping.get(rec.stock_isin)
+            cutoff, reason, policy_audit = entry_policy(
+                doc,
+                as_of,
+                analysis_mode,
+                strict_reason,
+                spec.get("timezone") if isinstance(spec, dict) else None,
+            )
+            row.update(policy_audit)
             row["input_sha256"] = fingerprint(
                 dict(
                     document_sha=doc.sha256,
@@ -151,10 +169,15 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
                     },
                     evidence=rec.evidence,
                     available_at=row["available_at"],
+                    analysis_mode=analysis_mode,
+                    entry_policy=policy_audit,
                 )
             )
-            reason = _availability(doc, as_of, selected.selected_sha if selected else None)
-            row["source_verified"] = source_verified and reason is None
+            row["source_verified"] = (
+                analysis_mode == "verified" and source_verified and strict_reason is None
+            )
+            if analysis_mode == "research" and doc.revision_conflict and strict_reason is not None:
+                reason = "unresolved_revision_conflict"
             if not reason and hashlib.sha256(bytes(doc.original_pdf)).hexdigest() != doc.sha256:
                 reason = "original_hash_mismatch"
             if not reason:
@@ -188,7 +211,7 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
                     history = provider.load(
                         spec,
                         instrument=row["instrument"],
-                        available_at=doc.verified_available_at,
+                        available_at=cutoff,
                         as_of=as_of,
                     )
                     row["source"] = history.source
@@ -203,8 +226,10 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
                     if history.issues:
                         reason = "data_unavailable"
                     else:
+                        if history.bars:
+                            row["modeled_entry_at"] = history.bars[0].at.isoformat()
                         row["result"] = simulate_stock(
-                            available_at=doc.verified_available_at,
+                            available_at=cutoff,
                             bars=history.bars,
                             target1=rec.stock_target1,
                             target2=rec.stock_target2,
@@ -227,7 +252,13 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
                     modeled_return_pct=None,
                 )
             row["model_assumptions"] = dict(
-                entry="first_complete_session_open_strictly_after_verified_availability",
+                entry=(
+                    "first_complete_session_after_publication_day"
+                    if analysis_mode == "research"
+                    else "first_complete_session_open_strictly_after_verified_availability"
+                ),
+                historical_availability_claimed=analysis_mode == "verified"
+                and strict_reason is None,
                 execution="hypothetical_not_observed",
                 target1_fraction="0.5",
                 spread=None,
@@ -244,6 +275,7 @@ def build_report(session, provider, mapping, rule_specs, *, as_of, run_at):
     return dict(
         method_version=VERSION,
         mode="read_only",
+        analysis_mode=analysis_mode,
         as_of=as_of.isoformat(),
         generated_at=run_at.isoformat(),
         count=len(results),

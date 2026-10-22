@@ -1,11 +1,15 @@
 # Historisches HEBELTRADER-Backtesting V1
 
-Issue #4 / PR #5. Methode: `hebel-stock-ohlc-v1.1`.
+Issue #4 / PR #5. Methode: `hebel-stock-ohlc-v1.2`.
 Die bestehende PDF-/PostgreSQL-Architektur bleibt erhalten. V1 liefert eine
 Offline-Engine mit Provider-Schnittstelle und ausschließlich lesender CLI.
 Keine Migration, Outcome-Persistierung, Scheduler, Marktdaten-Abos oder Trades.
 Archivordner `all`, `half`, `fail` und PDF-Dateinamen werden nicht abgefragt,
 nicht gruppiert und niemals als Ground Truth verwendet.
+
+V1.2 ergänzt einen ausdrücklich gewählten [Forschungsmodus](hebeltrader-backtest-v12.md).
+Die folgenden strengen Availability-Anforderungen gelten weiterhin für den
+Standardmodus `verified`; `research` dokumentiert getrennte Modellannahmen.
 
 ## Datenmodell und Ablauf
 
