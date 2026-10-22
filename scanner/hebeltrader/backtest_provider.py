@@ -156,6 +156,10 @@ class CsvStockProvider:
             try:
                 all_sessions = {}
                 for row in calendar:
+                    # Future sessions cannot change a historical observation window.
+                    # An unparseable open remains an error: its scope is unknown.
+                    if _at(row["timestamp"]) > as_of:
+                        continue
                     opened, closed = local_at(row["timestamp"]), local_at(row["end_timestamp"])
                     if closed <= opened or opened in all_sessions:
                         raise ValueError("invalid session")

@@ -25,6 +25,15 @@ CSV_FIELDS = (
     "source_verified",
     "training_eligible",
     "method_version",
+    "analysis_mode",
+    "hypothetical",
+    "availability_status",
+    "publication_evidence",
+    "publication_timezone",
+    "calendar_timezone",
+    "entry_cutoff_exclusive",
+    "cutoff_basis",
+    "modeled_entry_at",
     "status",
     "reason",
     "modeled_return_pct",
@@ -85,6 +94,15 @@ def write_report(path, payload):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Read-only historical stock OHLCV analysis")
+    parser.add_argument(
+        "--analysis-mode",
+        choices=("verified", "research"),
+        default="verified",
+        help=(
+            "verified requires availability proof; "
+            "research uses an explicit publication-date assumption"
+        ),
+    )
     parser.add_argument("--bars-dir", required=True, type=Path)
     parser.add_argument(
         "--map", required=True, type=Path, help="Explicit instrument-to-source JSON"
@@ -113,11 +131,13 @@ def main(argv=None):
                 rules,
                 as_of=as_of,
                 run_at=datetime.now(UTC),
+                analysis_mode=args.analysis_mode,
             )
         write_report(args.output, payload)
         print(
             json.dumps(
                 dict(
+                    analysis_mode=payload["analysis_mode"],
                     count=payload["count"],
                     counts=payload["counts"],
                     coverage=payload["coverage"],

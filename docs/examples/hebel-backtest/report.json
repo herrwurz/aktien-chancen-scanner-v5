@@ -1,6 +1,7 @@
 {
-  "method_version": "hebel-stock-ohlc-v1.1",
+  "method_version": "hebel-stock-ohlc-v1.2",
   "mode": "read_only",
+  "analysis_mode": "verified",
   "as_of": "2026-01-06T20:00:00+00:00",
   "generated_at": "2026-02-01T00:00:00+00:00",
   "count": 1,
@@ -32,7 +33,10 @@
       "review_status": "pending",
       "source_verified": false,
       "training_eligible": false,
-      "method_version": "hebel-stock-ohlc-v1.1",
+      "analysis_mode": "verified",
+      "hypothetical": true,
+      "modeled_entry_at": "2026-01-02T09:30:00+01:00",
+      "method_version": "hebel-stock-ohlc-v1.2",
       "instrument": {
         "wkn": "AB1234",
         "isin": null,
@@ -92,7 +96,7 @@
       },
       "data_issues": [],
       "result": {
-        "method": "hebel-stock-ohlc-v1.1",
+        "method": "hebel-stock-ohlc-v1.2",
         "status": "target1_first",
         "events": [
           {
@@ -137,9 +141,16 @@
         "realized_return_pct": null,
         "reason": "missing_timestamped_derivative_bid_ask"
       },
-      "input_sha256": "d84594442ba21838d5b6170a7bdf9ae35777d41b2848684168ac6808cefd30d7",
+      "availability_status": "verified",
+      "publication_evidence": null,
+      "publication_timezone": "Europe/Berlin",
+      "calendar_timezone": "Europe/Berlin",
+      "entry_cutoff_exclusive": "2026-01-02T08:00:00+00:00",
+      "cutoff_basis": "verified_source_availability",
+      "input_sha256": "25959615962c25c3359940e5f9af9a8850e8c6c44f138f7a5c06e6dc43349cb5",
       "model_assumptions": {
         "entry": "first_complete_session_open_strictly_after_verified_availability",
+        "historical_availability_claimed": true,
         "execution": "hypothetical_not_observed",
         "target1_fraction": "0.5",
         "spread": null,

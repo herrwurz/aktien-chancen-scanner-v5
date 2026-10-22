@@ -29,6 +29,7 @@ def main():
     with sessions.begin() as session:
         doc, rec = seed_sample(session)
         rules = rule_inputs(doc, rec)
+        source_sha = doc.sha256
         (root / "synthetic-source.pdf").write_bytes(doc.original_pdf)
     mapping = market_inputs(root)
     for name, value in (("mapping", mapping), ("rules", rules)):
@@ -39,6 +40,23 @@ def main():
         )
     write_report(root / "report.json", report)
     write_report(root / "report.csv", report)
+    # Separate synthetic research example: deliberately absent availability proof.
+    with sessions.begin() as session:
+        doc = session.get(type(doc), source_sha)
+        doc.verified_available_at = None
+        doc.availability_evidence = None
+    with sessions() as session:
+        research = build_report(
+            session,
+            CsvStockProvider(root),
+            mapping,
+            rules,
+            as_of=AS_OF,
+            run_at=RUN_AT,
+            analysis_mode="research",
+        )
+    write_report(root / "research-report.json", research)
+    write_report(root / "research-report.csv", research)
     engine.dispose()
 
 

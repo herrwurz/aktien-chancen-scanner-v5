@@ -14,11 +14,14 @@ from scanner.hebeltrader.backtest_cli import main
 from scanner.hebeltrader.models import Document, HistoricalOutcome, HistoricalRecommendation
 
 
+@pytest.mark.parametrize("analysis_mode", ["verified", "research"])
 @pytest.mark.postgres
 @pytest.mark.skipif(
     not os.getenv("TEST_DATABASE_URL"), reason="Disposable PostgreSQL not configured"
 )
-def test_118_rows_cli_uses_read_only_transaction_and_preserves_data(tmp_path, monkeypatch):
+def test_118_rows_cli_uses_read_only_transaction_and_preserves_data(
+    tmp_path, monkeypatch, analysis_mode
+):
     url = os.environ["TEST_DATABASE_URL"]
     monkeypatch.setenv("DATABASE_URL", url)
     command.upgrade(Config("alembic.ini"), "head")
@@ -45,6 +48,8 @@ def test_118_rows_cli_uses_read_only_transaction_and_preserves_data(tmp_path, mo
         assert (
             main(
                 [
+                    "--analysis-mode",
+                    analysis_mode,
                     "--bars-dir",
                     str(tmp_path),
                     "--map",
@@ -61,6 +66,7 @@ def test_118_rows_cli_uses_read_only_transaction_and_preserves_data(tmp_path, mo
         assert all(s.startswith(("SELECT", "SET TRANSACTION READ ONLY")) for s in statements)
         event.remove(engine, "before_cursor_execute", capture)
         report = json.loads(output.read_text())
+        assert report["analysis_mode"] == analysis_mode
         own = [r for r in report["results"] if r["document_sha"] in identifiers]
         assert len(own) == 118
         assert all(r["result"]["status"] == "unknown" for r in own)

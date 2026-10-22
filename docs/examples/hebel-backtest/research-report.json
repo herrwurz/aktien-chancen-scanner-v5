@@ -1,0 +1,149 @@
+{
+  "method_version": "hebel-stock-ohlc-v1.2",
+  "mode": "read_only",
+  "analysis_mode": "research",
+  "as_of": "2026-01-06T20:00:00+00:00",
+  "generated_at": "2026-02-01T00:00:00+00:00",
+  "count": 1,
+  "counts": {
+    "unknown": 1
+  },
+  "coverage": {
+    "total": 1,
+    "market_data_complete": 1,
+    "market_data_fraction": "1",
+    "source_verified": 0
+  },
+  "missing_data": {
+    "reasons": {
+      "entry_outside_stop_target_range": 1
+    },
+    "issues": {}
+  },
+  "success_rate": null,
+  "success_rate_reason": "no_verified_executions_or_net_returns",
+  "mapping_sha256": "5823e43d41ebc7f871e869476bf39fc74d97e491d57ad96cd2d005bc955e4842",
+  "rules_sha256": "b126f9398b4e680c3f0c76cbdc63e67a2e92d01289d0905a09868edbb62eb2be",
+  "results": [
+    {
+      "recommendation_id": 1,
+      "ordinal": 1,
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "publication_date": "2026-01-02",
+      "available_at": null,
+      "availability_evidence": null,
+      "review_status": "pending",
+      "source_verified": false,
+      "training_eligible": false,
+      "analysis_mode": "research",
+      "hypothetical": true,
+      "modeled_entry_at": "2026-01-05T09:30:00+01:00",
+      "method_version": "hebel-stock-ohlc-v1.2",
+      "instrument": {
+        "wkn": "AB1234",
+        "isin": null,
+        "currency": "EUR",
+        "levels_as_of": "2026-01-02T00:00:00+01:00"
+      },
+      "published_stock_quote": "10.000000000000000000",
+      "observation_window": {
+        "start": "2026-01-05T09:30:00+01:00",
+        "end": "2026-01-06T20:00:00+00:00",
+        "last_completed_bar": "2026-01-06T17:30:00+01:00"
+      },
+      "source": {
+        "sha256": {
+          "calendar_file": "d444d8b48de62897591c0d835d220a38a65607d5e31662b4395884c1f1bc4054",
+          "corporate_actions_file": "a00999518528f1193c133cad5d3b26130d57c7fcff06ed1dbd07268769edc6d9",
+          "file": "7874b526c7a042c613aca735fcfdbd1ca25f79edb47699b947b9ac194bdd4126"
+        },
+        "file": "bars.csv",
+        "symbol": "SYNTHETIC",
+        "venue": "TEST",
+        "timezone": "Europe/Berlin",
+        "currency": "EUR",
+        "adjustment": "raw",
+        "source_reference": "invented example, no vendor",
+        "license": "CC0 synthetic fixture",
+        "retrieved_at": "2026-02-01T00:00:00+00:00",
+        "calendar_file": "calendar.csv",
+        "calendar_reference": "synthetic session calendar",
+        "corporate_actions_file": "actions.csv",
+        "corporate_actions_reference": "synthetic, no actions",
+        "coverage_start": "2026-01-01T00:00:00+01:00",
+        "coverage_end": "2026-01-06T20:00:00+00:00",
+        "identity_reference": "synthetic identity declaration",
+        "identity_valid_from": "2026-01-01T00:00:00+01:00",
+        "identity_valid_until": "2026-01-06T20:00:00+00:00",
+        "wkn": "AB1234"
+      },
+      "rules": {
+        "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+        "ordinal": 1,
+        "partial_fraction": "0.5",
+        "after_target1": "entry",
+        "reviewer": "synthetic fixture",
+        "reviewed_at": "2026-02-01T00:00:00+00:00",
+        "evidence": [
+          {
+            "page": 1,
+            "quote": "Sell 50% at target 1; move stop to entry.",
+            "fields": [
+              "partial_fraction",
+              "after_target1"
+            ]
+          }
+        ],
+        "sha256": "098920b5fb76b0f921635d1044fd7aedcd46230804333bf63c88eacddb329fa6"
+      },
+      "data_issues": [],
+      "result": {
+        "method": "hebel-stock-ohlc-v1.2",
+        "status": "unknown",
+        "events": [],
+        "realized_return_pct": null,
+        "modeled_return_pct": null,
+        "modeled_entry": "12",
+        "costs": "unknown",
+        "reason": "entry_outside_stop_target_range",
+        "exit_reason": null,
+        "instrument": "stock",
+        "caveat": "OHLC indicative; no executed trades",
+        "expiry_semantics": "trading_sessions: entry session is 1; calendar_days: last session opening on/before entry+N days, requiring completed coverage through deadline",
+        "indicative_entry": "12"
+      },
+      "derivative": {
+        "status": "derivative_unverified",
+        "wkn": null,
+        "isin": null,
+        "product_type": "Turbo Unlimited Long",
+        "maturity_date": null,
+        "term_text": "open end",
+        "realized_return_pct": null,
+        "reason": "missing_timestamped_derivative_bid_ask"
+      },
+      "availability_status": "assumed_from_publication_date",
+      "publication_evidence": {
+        "page": 1,
+        "raw": "02.01.2026 #1/2026",
+        "rule": "header-v1"
+      },
+      "publication_timezone": "Europe/Berlin",
+      "calendar_timezone": "Europe/Berlin",
+      "entry_cutoff_exclusive": "2026-01-02T23:59:59.999999+01:00",
+      "cutoff_basis": "end_of_publication_day_assumption",
+      "input_sha256": "26e7f988ee33498c39fbaa31d70d343cf7f21f5a6e680d71045c2f3eae5b7867",
+      "model_assumptions": {
+        "entry": "first_complete_session_after_publication_day",
+        "historical_availability_claimed": false,
+        "execution": "hypothetical_not_observed",
+        "target1_fraction": "0.5",
+        "spread": null,
+        "fees": null,
+        "slippage": null,
+        "returns": "gross_model_only",
+        "training": "never_promoted_by_backtest"
+      }
+    }
+  ]
+}
