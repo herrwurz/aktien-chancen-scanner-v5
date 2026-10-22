@@ -68,10 +68,16 @@ def inspect_document(session, sha):
 
 
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "backtest":
+        from scanner.hebeltrader.backtest_cli import main as backtest_main
+
+        return backtest_main(argv[1:])
     parser = argparse.ArgumentParser(
         description="Local historical publication analysis; no trading"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("backtest", help="Read-only stock OHLCV analysis (backtest --help)")
     load = commands.add_parser("import")
     load.add_argument("--pdf-dir", type=Path)
     load.add_argument("--report-dir", type=Path)

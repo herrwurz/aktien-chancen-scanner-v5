@@ -1,145 +1,139 @@
-"""Read-only offline backtest. No market download and no database writes."""
+"""Read-only offline analysis; no network, database writes or outcome persistence."""
 
 import argparse
 import csv
-import hashlib
 import json
 import os
-from datetime import datetime
-from decimal import Decimal
+import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
-from sqlalchemy import select, text
+from sqlalchemy import text
 
 from scanner.db import create_db, create_sessions
-from scanner.hebeltrader.backtest import VERSION, Bar, simulate_stock
+from scanner.hebeltrader.backtest_provider import CsvStockProvider
+from scanner.hebeltrader.backtest_report import build_report
 from scanner.hebeltrader.config import ImportSettings
-from scanner.hebeltrader.models import Document, HistoricalRecommendation
+
+CSV_FIELDS = (
+    "recommendation_id",
+    "document_sha",
+    "ordinal",
+    "publication_date",
+    "available_at",
+    "review_status",
+    "source_verified",
+    "training_eligible",
+    "method_version",
+    "status",
+    "reason",
+    "modeled_return_pct",
+    "realized_return_pct",
+    "derivative_status",
+    "instrument",
+    "observation_window",
+    "source",
+    "rules",
+    "data_issues",
+    "events",
+    "audit",
+)
 
 
-def read_bars(path):
-    bars = []
-    with path.open(newline="", encoding="utf-8") as stream:
-        for row in csv.DictReader(stream):
-            bars.append(
-                Bar(
-                    datetime.fromisoformat(row["timestamp"]),
-                    *(Decimal(row[k]) for k in ("open", "high", "low", "close")),
+def write_report(path, payload):
+    path = Path(path)
+    if path.suffix not in {".json", ".csv"}:
+        raise ValueError("Output must use .json or .csv")
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+        if path.suffix == ".json":
+            json.dump(payload, stream, indent=2, default=str, ensure_ascii=False)
+            stream.write("\n")
+        else:
+            writer = csv.DictWriter(stream, fieldnames=CSV_FIELDS)
+            writer.writeheader()
+            audit = {k: v for k, v in payload.items() if k != "results"}
+            for row in payload["results"]:
+                record = {k: row.get(k) for k in CSV_FIELDS if k in row}
+                record.update(
+                    status=row["result"]["status"],
+                    reason=row["result"].get("reason"),
+                    modeled_return_pct=row["result"].get("modeled_return_pct"),
+                    realized_return_pct=None,
+                    derivative_status=row["derivative"]["status"],
+                    events=row["result"]["events"],
+                    audit=dict(
+                        audit,
+                        input_sha256=row["input_sha256"],
+                        result=row["result"],
+                        model_assumptions=row["model_assumptions"],
+                        derivative=row["derivative"],
+                        availability_evidence=row["availability_evidence"],
+                        published_stock_quote=row["published_stock_quote"],
+                    ),
                 )
-            )
-    return bars
+                writer.writerow(
+                    {
+                        k: json.dumps(v, sort_keys=True, default=str, ensure_ascii=False)
+                        if isinstance(v, (dict, list))
+                        else v
+                        for k, v in record.items()
+                    }
+                )
 
 
 def main(argv=None):
-    p = argparse.ArgumentParser(description="Offline, read-only historical stock OHLC backtest")
-    p.add_argument(
-        "--bars-dir", required=True, type=Path, help="Directory of explicitly mapped OHLC CSV files"
+    parser = argparse.ArgumentParser(description="Read-only historical stock OHLCV analysis")
+    parser.add_argument("--bars-dir", required=True, type=Path)
+    parser.add_argument(
+        "--map", required=True, type=Path, help="Explicit instrument-to-source JSON"
     )
-    p.add_argument(
-        "--map",
-        required=True,
-        type=Path,
-        help="JSON mapping of stock WKN to CSV filename, venue and currency",
-    )
-    p.add_argument("--output", required=True, type=Path)
-    p.add_argument("--as-of", required=True, help="UTC-aware ISO timestamp ending the evaluation")
-    args = p.parse_args(argv)
-    as_of = datetime.fromisoformat(args.as_of)
-    if as_of.tzinfo is None:
-        p.error("--as-of needs timezone")
-    mapping = json.loads(args.map.read_text(encoding="utf-8"))
-    # A deliberate WKN-to-file mapping is mandatory; do not infer tickers from names.
-    settings = ImportSettings()
-    engine = create_db(settings)
-    results = []
+    parser.add_argument("--rules", type=Path, help="Document-SHA:ordinal rule interpretations JSON")
+    parser.add_argument("--output", required=True, type=Path, help="New .json or .csv report")
+    parser.add_argument("--as-of", required=True, help="Timezone-aware observation cutoff")
+    args = parser.parse_args(argv)
+    engine = None
     try:
-        sessions = create_sessions(engine)
-        with sessions() as session:
+        as_of = datetime.fromisoformat(args.as_of)
+        mapping = json.loads(args.map.read_text(encoding="utf-8"))
+        rules = json.loads(args.rules.read_text(encoding="utf-8")) if args.rules else {}
+        if not isinstance(mapping, dict) or not isinstance(rules, dict):
+            raise ValueError("Mapping and rules must be objects")
+        if args.output.suffix not in {".json", ".csv"}:
+            raise ValueError("Output must use .json or .csv")
+        engine = create_db(ImportSettings())
+        with create_sessions(engine)() as session:
             if engine.dialect.name == "postgresql":
                 session.execute(text("SET TRANSACTION READ ONLY"))
-            rows = session.execute(
-                select(HistoricalRecommendation, Document)
-                .join(Document, HistoricalRecommendation.document_sha == Document.sha256)
-                .order_by(Document.publication_date, HistoricalRecommendation.id)
-            ).all()
-            for rec, doc in rows:
-                base = dict(
-                    recommendation_id=rec.id,
-                    document_sha=doc.sha256,
-                    publication_date=str(doc.publication_date),
-                    derivative_wkn=rec.derivative_wkn,
-                    stock_wkn=rec.stock_wkn,
-                    method_version=VERSION,
-                    derivative_status="derivative_unverified",
-                    result=None,
-                    source=None,
+            payload = build_report(
+                session,
+                CsvStockProvider(args.bars_dir),
+                mapping,
+                rules,
+                as_of=as_of,
+                run_at=datetime.now(UTC),
+            )
+        write_report(args.output, payload)
+        print(
+            json.dumps(
+                dict(
+                    count=payload["count"],
+                    counts=payload["counts"],
+                    coverage=payload["coverage"],
+                    output=str(args.output),
                 )
-                # Conservative: no intraday proof of release time; only next-day onwards.
-                if doc.publication_date is None:
-                    base["result"] = dict(status="unknown", reason="missing_publication_date")
-                elif doc.publication_date > as_of.date():
-                    base["result"] = dict(status="unknown", reason="future_publication")
-                else:
-                    key = rec.stock_wkn
-                    spec = mapping.get(key) if key else None
-                    if not spec or not all(
-                        spec.get(k) for k in ("file", "venue", "currency", "adjustment")
-                    ):
-                        base["result"] = dict(status="unknown", reason="unmapped_stock_instrument")
-                    else:
-                        filename = spec["file"]
-                        path = (args.bars_dir / filename).resolve()
-                        if not path.is_relative_to(args.bars_dir.resolve()) or not path.is_file():
-                            base["result"] = dict(status="unknown", reason="ohlc_source_missing")
-                        else:
-                            raw = path.read_bytes()
-                            bars = read_bars(path)
-                            from datetime import time, timedelta
-                            from zoneinfo import ZoneInfo
-
-                            available = doc.verified_available_at or datetime.combine(
-                                doc.publication_date + timedelta(days=1),
-                                time.min,
-                                ZoneInfo("Europe/Berlin"),
-                            )
-                            base["result"] = simulate_stock(
-                                available_at=available,
-                                bars=bars,
-                                target1=rec.stock_target1,
-                                target2=rec.stock_target2,
-                                stop1=rec.stock_stop1,
-                                stop2=rec.stock_stop2,
-                                horizon=as_of,
-                            )
-                            base["source"] = dict(
-                                file=filename,
-                                sha256=hashlib.sha256(raw).hexdigest(),
-                                venue=spec["venue"],
-                                currency=spec["currency"],
-                                adjustment=spec["adjustment"],
-                                note="User-provided OHLC; provenance not independently verified",
-                            )
-                results.append(base)
+            )
+        )
+        return 0
+    except Exception as exc:
+        # Do not print SQL statements, credentials, source data or filesystem contents.
+        print(json.dumps(dict(status="error", error=type(exc).__name__)), file=sys.stderr)
+        return 2
     finally:
-        engine.dispose()
-    counts = {}
-    for r in results:
-        status = r["result"]["status"]
-        counts[status] = counts.get(status, 0) + 1
-    payload = dict(
-        method_version=VERSION,
-        as_of=as_of.isoformat(),
-        count=len(results),
-        counts=counts,
-        warning="Research only; OHLC is not derivative bid/ask or executed trades",
-        results=results,
-    )
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    fd = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as stream:
-        json.dump(payload, stream, indent=2, default=str)
-    print(json.dumps(dict(count=len(results), counts=counts, output=str(args.output))))
+        if engine is not None:
+            engine.dispose()
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

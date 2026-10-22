@@ -1,0 +1,23 @@
+{
+  "AB1234": {
+    "file": "bars.csv",
+    "wkn": "AB1234",
+    "symbol": "SYNTHETIC",
+    "venue": "TEST",
+    "timezone": "Europe/Berlin",
+    "currency": "EUR",
+    "adjustment": "raw",
+    "source_reference": "invented example, no vendor",
+    "license": "CC0 synthetic fixture",
+    "retrieved_at": "2026-02-01T00:00:00+00:00",
+    "calendar_file": "calendar.csv",
+    "calendar_reference": "synthetic session calendar",
+    "corporate_actions_file": "actions.csv",
+    "corporate_actions_reference": "synthetic, no actions",
+    "coverage_start": "2026-01-01T00:00:00+01:00",
+    "identity_reference": "synthetic identity declaration",
+    "identity_valid_from": "2026-01-01T00:00:00+01:00",
+    "identity_valid_until": "2026-01-06T20:00:00+00:00",
+    "coverage_end": "2026-01-06T20:00:00+00:00"
+  }
+}

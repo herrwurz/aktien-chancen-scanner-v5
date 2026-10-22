@@ -1,39 +1,67 @@
-"""Evidence-first OHLC event replay. No derivative execution or inferred labels."""
+"""Conservative stock OHLC modeling; never evidence of executed trades."""
 
 from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import datetime
-from decimal import Decimal
+from datetime import datetime, timedelta
+from decimal import Decimal, InvalidOperation
 
-VERSION = "hebel-stock-ohlc-v1"
+VERSION = "hebel-stock-ohlc-v1.1"
 UNKNOWN = "unknown"
+
+
+def _aware(value):
+    return (
+        isinstance(value, datetime) and value.tzinfo is not None and value.utcoffset() is not None
+    )
+
+
+def _decimal(value):
+    try:
+        number = Decimal(str(value))
+        return number if number.is_finite() else None
+    except (InvalidOperation, ValueError, TypeError):
+        return None
 
 
 @dataclass(frozen=True)
 class Bar:
+    """Timestamp is session OPEN; end_at marks the completed interval."""
+
     at: datetime
     open: Decimal
     high: Decimal
     low: Decimal
     close: Decimal
+    end_at: datetime | None = None
+    volume: Decimal | None = None
 
     def __post_init__(self):
-        if self.at.tzinfo is None:
-            raise ValueError("bar timestamp needs a timezone")
-        if (
-            not 0
-            < self.low
-            <= min(self.open, self.close)
-            <= max(self.open, self.close)
-            <= self.high
+        if not _aware(self.at) or (
+            self.end_at is not None and (not _aware(self.end_at) or self.end_at < self.at)
         ):
+            raise ValueError("invalid bar interval/timezone")
+        values = [_decimal(v) for v in (self.open, self.high, self.low, self.close)]
+        if any(v is None for v in values):
+            raise ValueError("nonfinite OHLC")
+        opening, high, low, close = values
+        if not 0 < low <= min(opening, close) <= max(opening, close) <= high:
             raise ValueError("invalid OHLC bar")
+        for field, value in zip(("open", "high", "low", "close"), values, strict=True):
+            object.__setattr__(self, field, value)
+        if self.volume is not None:
+            volume = _decimal(self.volume)
+            if volume is None or volume < 0:
+                raise ValueError("invalid volume")
+            object.__setattr__(self, "volume", volume)
 
 
-def _decimal(value):
-    return Decimal(str(value)) if value is not None else None
+@dataclass(frozen=True)
+class Rules:
+    after_target1: str = "unchanged"
+    close_after_days: int | None = None
+    close_unit: str | None = None
 
 
 def simulate_stock(
@@ -45,128 +73,185 @@ def simulate_stock(
     stop1,
     stop2=None,
     horizon=None,
+    rules: Rules | None = None,
 ):
-    """Conservative event replay: same-bar target/stop is ambiguous, not a win."""
+    """Sell half at target1. Expiry sessions count entry as day one.
+
+    Calendar expiry uses the last session opening on/before entry+N days,
+    only once completed coverage reaches that deadline. Its known close is
+    used. No implicit expiry. Missing end_at is a synthetic instantaneous bar.
+    Intrabar event timestamps identify intervals, never exact fill times.
+    """
     result = dict(
         method=VERSION,
         status=UNKNOWN,
         events=[],
         realized_return_pct=None,
+        modeled_return_pct=None,
+        modeled_entry=None,
+        costs="unknown",
         reason=None,
+        exit_reason=None,
         instrument="stock",
         caveat="OHLC indicative; no executed trades",
+        expiry_semantics=(
+            "trading_sessions: entry session is 1; calendar_days: last session opening "
+            "on/before entry+N days, requiring completed coverage through deadline"
+        ),
     )
-    if available_at.tzinfo is None:
-        result["reason"] = "missing_availability_timezone"
+
+    def unknown(reason):
+        result["reason"] = reason
         return result
+
+    if rules is None:
+        return unknown("missing_documented_rules")
+    if not isinstance(rules, Rules) or rules.after_target1 not in {"unchanged", "entry", "stop2"}:
+        return unknown("invalid_rules")
+    days = rules.close_after_days
+    if (days is None) != (rules.close_unit is None) or (
+        days is not None
+        and (
+            type(days) is not int
+            or days <= 0
+            or rules.close_unit not in {"calendar_days", "trading_sessions"}
+        )
+    ):
+        return unknown("invalid_expiry_rules")
+    if not _aware(available_at):
+        return unknown("missing_availability_timezone")
+    if horizon is not None and (not _aware(horizon) or horizon < available_at):
+        return unknown("invalid_horizon")
     t1, t2, s1, s2 = map(_decimal, (target1, target2, stop1, stop2))
-    if t1 is None or t2 is None or s1 is None or not (0 < s1 < t1 < t2):
-        result["reason"] = "missing_or_invalid_targets"
-        return result
+    if any(v is None for v in (t1, t2, s1)) or not 0 < s1 < t1 < t2:
+        return unknown("missing_or_invalid_targets")
+    if rules.after_target1 == "stop2" and (s2 is None or not 0 < s2 < t1):
+        return unknown("missing_or_invalid_stop2")
     ordered = sorted(bars, key=lambda b: b.at)
     if len({b.at for b in ordered}) != len(ordered):
-        result["reason"] = "duplicate_bar_timestamps"
-        return result
-    ordered = [b for b in ordered if b.at > available_at and (horizon is None or b.at <= horizon)]
+        return unknown("duplicate_bar_timestamps")
+    if any((a.end_at or a.at) > b.at for a, b in zip(ordered, ordered[1:], strict=False)):
+        return unknown("overlapping_bar_intervals")
+    ordered = [
+        b
+        for b in ordered
+        if b.at > available_at and (horizon is None or (b.end_at or b.at) <= horizon)
+    ]
     if not ordered:
-        result["reason"] = "no_post_publication_bars"
-        return result
-    # The first observed OPEN is an indicative entry, not the publication quote.
+        return unknown("no_post_publication_bars")
     entry = ordered[0].open
-    result["indicative_entry"] = str(entry)
-    if not (s1 < entry < t1):
-        result["reason"] = "entry_outside_stop_target_range"
-        return result
-    first_hit = False
+    result["modeled_entry"] = result["indicative_entry"] = str(entry)
+    if not s1 < entry < t1:
+        return unknown("entry_outside_stop_target_range")
+    expiry_index = None
+    if days is not None:
+        if rules.close_unit == "trading_sessions":
+            # Multiple intervals on a date count as one session.
+            session_dates = list(dict.fromkeys(b.at.date() for b in ordered))
+            if len(session_dates) >= days:
+                expiry_index = max(
+                    i for i, b in enumerate(ordered) if b.at.date() == session_dates[days - 1]
+                )
+        else:
+            deadline = ordered[0].at + timedelta(days=days)
+            if (ordered[-1].end_at or ordered[-1].at) >= deadline:
+                expiry_index = max(i for i, b in enumerate(ordered) if b.at <= deadline)
     first_exit = None
-    for b in ordered:
-        # On overnight gaps, observe executable open before any intrabar highs/lows.
-        active_stop = s2 if first_hit and s2 is not None else (entry if first_hit else s1)
-        if b.open <= active_stop:
-            result["events"].append(
-                {"event": "stop", "at": b.at.isoformat(), "at_price": str(b.open), "phase": "open"}
+
+    def active_stop():
+        if first_exit is None or rules.after_target1 == "unchanged":
+            return s1
+        return entry if rules.after_target1 == "entry" else s2
+
+    def event(name, b, price, phase, fraction):
+        result["events"].append(
+            dict(
+                event=name,
+                at=(b.end_at if phase == "close" and b.end_at else b.at).isoformat(),
+                at_price=str(price),
+                phase=phase,
+                fraction=str(fraction),
+                time_precision="bar_interval" if phase == "intrabar" else "observed",
+                interval_start=b.at.isoformat(),
+                interval_end=(b.end_at or b.at).isoformat(),
             )
-            if first_hit:
-                result["status"] = "target1_then_stop"
-                result["realized_return_pct"] = str(
-                    100 * ((first_exit + b.open) / 2 - entry) / entry
-                )
-            else:
-                result["status"] = "stop_first"
-                result["realized_return_pct"] = str(100 * (b.open - entry) / entry)
-            return result
-        if b.open >= (t2 if first_hit else t1):
-            if not first_hit:
-                first_hit, first_exit = True, b.open
-                result["events"].append(
-                    {
-                        "event": "target1",
-                        "at": b.at.isoformat(),
-                        "at_price": str(b.open),
-                        "phase": "open",
-                    }
-                )
-            if b.open >= t2:
-                result["events"].append(
-                    {
-                        "event": "target2",
-                        "at": b.at.isoformat(),
-                        "at_price": str(b.open),
-                        "phase": "open",
-                    }
-                )
-                result["status"] = "target2_after_target1"
-                result["realized_return_pct"] = str(
-                    100 * (((first_exit + b.open) / 2) - entry) / entry
-                )
-                return result
-        hit_stop = b.low <= active_stop
-        hit_target = b.high >= (t2 if first_hit else t1)
-        if hit_stop and hit_target:
-            result["status"] = "ambiguous"
-            result["reason"] = "intrabar_stop_and_target"
-            result["events"].append({"event": "ambiguous", "at": b.at.isoformat()})
-            return result
-        if hit_stop:
-            result["events"].append(
-                {
-                    "event": "stop",
-                    "at": b.at.isoformat(),
-                    "at_price": str(active_stop),
-                    "phase": "intrabar",
-                }
+        )
+
+    def finish(status, reason, price):
+        result.update(status=status, exit_reason=reason)
+        average = price if first_exit is None else (first_exit + price) / 2
+        result["modeled_return_pct"] = str(100 * (average - entry) / entry)
+        return result
+
+    def ambiguous(reason, b):
+        result["events"].append(
+            dict(
+                event="ambiguous_intrabar",
+                at=b.at.isoformat(),
+                phase="intrabar",
+                fraction=None,
+                time_precision="bar_interval",
+                interval_start=b.at.isoformat(),
+                interval_end=(b.end_at or b.at).isoformat(),
             )
-            result["status"] = "target1_then_stop" if first_hit else "stop_first"
-            price = (first_exit + active_stop) / 2 if first_hit else active_stop
-            result["realized_return_pct"] = str(100 * (price - entry) / entry)
-            return result
-        if hit_target:
-            if first_hit:
-                result["status"] = "target2_after_target1"
-                result["events"].append(
-                    {
-                        "event": "target2",
-                        "at": b.at.isoformat(),
-                        "at_price": str(t2),
-                        "phase": "intrabar",
-                    }
-                )
-                result["realized_return_pct"] = str(100 * ((first_exit + t2) / 2 - entry) / entry)
-                return result
-            first_hit, first_exit = True, t1
-            result["events"].append(
-                {
-                    "event": "target1",
-                    "at": b.at.isoformat(),
-                    "at_price": str(t1),
-                    "phase": "intrabar",
-                }
+        )
+        result.update(status="ambiguous", reason=reason)
+        return result
+
+    for index, b in enumerate(ordered):
+        if b.open <= active_stop():
+            event(
+                "stop", b, b.open, "open", Decimal("0.5") if first_exit is not None else Decimal(1)
             )
-            # With daily OHLC, target1 and target2 in same candle imply unknown order of exit.
+            return finish(
+                "target1_first" if first_exit is not None else "stop_first",
+                "target1_then_stop" if first_exit is not None else "stop_first",
+                b.open,
+            )
+        if first_exit is None and b.open >= t1:
+            first_exit = b.open
+            event("target1", b, b.open, "open", Decimal("0.5"))
+        if first_exit is not None and b.open >= t2:
+            event("target2", b, b.open, "open", Decimal("0.5"))
+            return finish("target2_after_target1", "target2", b.open)
+        stop = active_stop()
+        target = t1 if first_exit is None else t2
+        if b.low <= stop and b.high >= target:
+            return ambiguous("intrabar_stop_and_target", b)
+        if b.low <= stop:
+            event(
+                "stop",
+                b,
+                stop,
+                "intrabar",
+                Decimal("0.5") if first_exit is not None else Decimal(1),
+            )
+            return finish(
+                "target1_first" if first_exit is not None else "stop_first",
+                "target1_then_stop" if first_exit is not None else "stop_first",
+                stop,
+            )
+        if b.high >= target:
+            if first_exit is not None:
+                event("target2", b, t2, "intrabar", Decimal("0.5"))
+                return finish("target2_after_target1", "target2", t2)
+            first_exit = t1
+            event("target1", b, t1, "intrabar", Decimal("0.5"))
+            if b.low <= active_stop():
+                return ambiguous("intrabar_target1_and_new_stop", b)
             if b.high >= t2:
-                result["status"] = "ambiguous"
-                result["reason"] = "intrabar_target1_and_target2"
-                return result
-    result["status"] = "target1_open" if first_hit else "not_triggered"
-    result["reason"] = "observation_window_ended"
+                return ambiguous("intrabar_target1_and_target2", b)
+        if index == expiry_index:
+            event(
+                "expiry",
+                b,
+                b.close,
+                "close",
+                Decimal("0.5") if first_exit is not None else Decimal(1),
+            )
+            return finish("expired", "documented_expiry", b.close)
+    result.update(
+        status="target1_first" if first_exit is not None else "not_triggered",
+        reason="observation_window_ended",
+    )
     return result

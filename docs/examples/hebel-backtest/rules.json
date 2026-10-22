@@ -1,0 +1,20 @@
+{
+  "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1": {
+    "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+    "ordinal": 1,
+    "partial_fraction": "0.5",
+    "after_target1": "entry",
+    "reviewer": "synthetic fixture",
+    "reviewed_at": "2026-02-01T00:00:00+00:00",
+    "evidence": [
+      {
+        "page": 1,
+        "quote": "Sell 50% at target 1; move stop to entry.",
+        "fields": [
+          "partial_fraction",
+          "after_target1"
+        ]
+      }
+    ]
+  }
+}
