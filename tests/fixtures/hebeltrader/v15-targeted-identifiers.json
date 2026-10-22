@@ -1,0 +1,113 @@
+{
+  "fixture_kind": "Minimal source-bound identifier excerpts from three original PDFs; no price data or identity approval",
+  "instruments": [
+    {
+      "wkn": "578560",
+      "derivative_wkn": "VC45QX",
+      "stock_name": "Fresenius",
+      "document_sha": "b4a6bf0fb1aebc2bfc2983415cc5ea8de3908f93096d7af699d17cb43b9b50e2",
+      "ordinal": 1,
+      "publication_date": "2025-04-09",
+      "stock_wkn_evidence": [
+        {
+          "page": 3,
+          "bbox": [
+            397.7953,
+            146.91920000000005,
+            547.0868999999999,
+            157.7192
+          ],
+          "raw": "578560",
+          "text": "WKN 578560",
+          "rule": "label-v1"
+        }
+      ],
+      "derivative_wkn_evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            397.7953,
+            356.4377,
+            547.087,
+            367.2377
+          ],
+          "raw": "VC45QX",
+          "text": "WKN VC45QX",
+          "rule": "label-v1"
+        }
+      ]
+    },
+    {
+      "wkn": "SJ6B4A",
+      "derivative_wkn": "SJ6B4A",
+      "stock_name": "Daimler Truck",
+      "document_sha": "dbc17ac8b38fb249afd8a3a61a24307dd36126150e9fca467bf352e2be29bd8b",
+      "ordinal": 1,
+      "publication_date": "2026-01-19",
+      "stock_wkn_evidence": [
+        {
+          "page": 3,
+          "bbox": [
+            397.7953,
+            146.91920000000005,
+            547.3811000000001,
+            157.7192
+          ],
+          "raw": "SJ6B4A",
+          "text": "WKN SJ6B4A",
+          "rule": "label-v1"
+        }
+      ],
+      "derivative_wkn_evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            397.7953,
+            356.4377,
+            547.3811000000001,
+            367.2377
+          ],
+          "raw": "SJ6B4A",
+          "text": "WKN SJ6B4A",
+          "rule": "label-v1"
+        }
+      ]
+    },
+    {
+      "wkn": "578560",
+      "derivative_wkn": "HT23F2",
+      "stock_name": "Fresenius",
+      "document_sha": "f0f3176706f90d8f525ca30ffd54a91d18f6e13655d6eb51e26131c371f3c5fb",
+      "ordinal": 1,
+      "publication_date": "2025-01-31",
+      "stock_wkn_evidence": [
+        {
+          "page": 3,
+          "bbox": [
+            397.7953,
+            146.91920000000005,
+            547.0868999999999,
+            157.7192
+          ],
+          "raw": "578560",
+          "text": "WKN 578560",
+          "rule": "label-v1"
+        }
+      ],
+      "derivative_wkn_evidence": [
+        {
+          "page": 1,
+          "bbox": [
+            397.7953,
+            356.4377,
+            547.0871000000001,
+            367.2377
+          ],
+          "raw": "HT23F2",
+          "text": "WKN HT23F2",
+          "rule": "label-v1"
+        }
+      ]
+    }
+  ]
+}

@@ -69,6 +69,10 @@ def inspect_document(session, sha):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "historical-data":
+        from scanner.hebeltrader.historical_cli import main as historical_main
+
+        return historical_main(argv[1:])
     if argv and argv[0] == "prepare":
         from scanner.hebeltrader.preparation_cli import main as preparation_main
 
