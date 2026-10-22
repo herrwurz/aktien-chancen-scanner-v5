@@ -49,4 +49,4 @@ Files: docs/hebeltrader-backtest-v1.md, docs/examples/hebel-backtest/*.
 - [x] Document source/coverage/cost decision and explicit local start/rollout plan.
 - [x] Generate synthetic example JSON/CSV from actual CLI and test golden outputs.
 - [x] Run pytest with disposable PostgreSQL, Ruff, Compose and Docker smoke checks.
-- [ ] Independent review, resolve findings, push PR #5, await GitHub-CI.
+- [x] Independent review, resolve findings, push PR #5, await GitHub-CI.
