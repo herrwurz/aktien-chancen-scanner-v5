@@ -1,0 +1,115 @@
+{
+  "version": "hebel-coverage-v1.3",
+  "as_of": "2026-10-22T00:00:00+02:00",
+  "generated_at": "2026-10-22T00:00:00+02:00",
+  "count": 118,
+  "expected_count": 118,
+  "warnings": [],
+  "summary": {
+    "publication_evidenced": {
+      "complete": 118,
+      "total": 118
+    },
+    "verified_availability": {
+      "complete": 0,
+      "total": 118
+    },
+    "instrument_identity_verified": {
+      "complete": 0,
+      "total": 118
+    },
+    "rules_documented": {
+      "complete": 0,
+      "total": 118
+    },
+    "market_history_sufficient": {
+      "complete": 0,
+      "total": 118
+    },
+    "modeled_entry_executable": {
+      "complete": 0,
+      "total": 118
+    },
+    "derivative_bid_ask_verified": {
+      "complete": 0,
+      "total": 118
+    }
+  },
+  "field_completeness": {
+    "stock_name": {
+      "present": 118,
+      "missing": 0
+    },
+    "stock_wkn": {
+      "present": 114,
+      "missing": 4
+    },
+    "stock_isin": {
+      "present": 0,
+      "missing": 118
+    },
+    "stock_currency": {
+      "present": 116,
+      "missing": 2
+    },
+    "stock_price": {
+      "present": 116,
+      "missing": 2
+    },
+    "stock_target1": {
+      "present": 116,
+      "missing": 2
+    },
+    "stock_target2": {
+      "present": 115,
+      "missing": 3
+    },
+    "stock_stop1": {
+      "present": 116,
+      "missing": 2
+    },
+    "stock_stop2": {
+      "present": 116,
+      "missing": 2
+    },
+    "derivative_wkn": {
+      "present": 118,
+      "missing": 0
+    },
+    "derivative_isin": {
+      "present": 0,
+      "missing": 118
+    },
+    "product_type": {
+      "present": 118,
+      "missing": 0
+    },
+    "maturity_date": {
+      "present": 115,
+      "missing": 3
+    },
+    "term_text": {
+      "present": 118,
+      "missing": 0
+    }
+  },
+  "blocker_counts": {
+    "derivative_bid_ask_unavailable": 118,
+    "entry_identity_unverified": 118,
+    "entry_market_history_insufficient": 118,
+    "identity_unmapped": 118,
+    "market_directory_not_supplied": 118,
+    "missing_documented_rules": 118,
+    "missing_price_currency_evidence": 2,
+    "missing_stock_identifier": 4,
+    "missing_value:stock_stop1": 2,
+    "missing_value:stock_target1": 2,
+    "missing_value:stock_target2": 3,
+    "no_unique_market_candidate": 118,
+    "unverified_availability": 118,
+    "unverified_value:stock_target2": 1
+  },
+  "methodology": "Local replay of 118 original PDFs in disposable SQLite; no mappings, rules or market files supplied. No Hetzner access.",
+  "source": "Private originals from previously authorized Drive export; no originals or literal excerpts in Git.",
+  "success_rate": null
+}

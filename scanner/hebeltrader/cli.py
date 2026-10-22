@@ -69,6 +69,14 @@ def inspect_document(session, sha):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "coverage":
+        from scanner.hebeltrader.coverage_cli import main as coverage_main
+
+        return coverage_main(argv[1:])
+    if argv and argv[0] == "market-snapshot":
+        from scanner.hebeltrader.market_snapshot import main as snapshot_main
+
+        return snapshot_main(argv[1:])
     if argv and argv[0] == "backtest":
         from scanner.hebeltrader.backtest_cli import main as backtest_main
 
@@ -77,6 +85,8 @@ def main(argv=None):
         description="Local historical publication analysis; no trading"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("coverage", help="Offline evidence and market coverage inventory")
+    commands.add_parser("market-snapshot", help="Freeze local market data with SHA provenance")
     commands.add_parser("backtest", help="Read-only stock OHLCV analysis (backtest --help)")
     load = commands.add_parser("import")
     load.add_argument("--pdf-dir", type=Path)

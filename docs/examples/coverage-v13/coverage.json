@@ -1,0 +1,749 @@
+{
+  "version": "hebel-coverage-v1.3",
+  "mode": "read_only_offline_inventory",
+  "analysis_mode": "research",
+  "as_of": "2026-01-06T20:00:00+00:00",
+  "generated_at": "2026-02-01T00:00:00+00:00",
+  "count": 3,
+  "expected_count": 3,
+  "warnings": [],
+  "summary": {
+    "publication_evidenced": {
+      "complete": 3,
+      "total": 3
+    },
+    "verified_availability": {
+      "complete": 0,
+      "total": 3
+    },
+    "instrument_identity_verified": {
+      "complete": 0,
+      "total": 3
+    },
+    "rules_documented": {
+      "complete": 0,
+      "total": 3
+    },
+    "market_history_sufficient": {
+      "complete": 0,
+      "total": 3
+    },
+    "modeled_entry_executable": {
+      "complete": 0,
+      "total": 3
+    },
+    "derivative_bid_ask_verified": {
+      "complete": 0,
+      "total": 3
+    }
+  },
+  "blocker_counts": {
+    "derivative_bid_ask_unavailable": 3,
+    "entry_identity_unverified": 3,
+    "entry_market_history_insufficient": 3,
+    "identity_unmapped": 3,
+    "market_directory_not_supplied": 3,
+    "missing_documented_rules": 3,
+    "missing_price_currency_evidence": 3,
+    "no_unique_market_candidate": 3,
+    "unverified_availability": 3
+  },
+  "field_completeness": {
+    "stock_name": {
+      "present": 0,
+      "missing": 3
+    },
+    "stock_wkn": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_isin": {
+      "present": 0,
+      "missing": 3
+    },
+    "stock_currency": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_price": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_target1": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_target2": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_stop1": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_stop2": {
+      "present": 0,
+      "missing": 3
+    },
+    "derivative_wkn": {
+      "present": 0,
+      "missing": 3
+    },
+    "derivative_isin": {
+      "present": 0,
+      "missing": 3
+    },
+    "product_type": {
+      "present": 3,
+      "missing": 0
+    },
+    "maturity_date": {
+      "present": 0,
+      "missing": 3
+    },
+    "term_text": {
+      "present": 3,
+      "missing": 0
+    }
+  },
+  "repeated_stock_wkn": {
+    "AB1234": 3
+  },
+  "mapping_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "rules_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "success_rate": null,
+  "results": [
+    {
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "recommendation_id": 2,
+      "publication_date": "2026-01-02",
+      "publication_evidence": {
+        "page": 1,
+        "raw": "02.01.2026 #1/2026",
+        "rule": "header-v1"
+      },
+      "original_sha_valid": true,
+      "review_status": "pending",
+      "revision_conflict": false,
+      "available_at": null,
+      "availability_evidence": null,
+      "values": {
+        "stock_name": null,
+        "stock_wkn": "AB1234",
+        "stock_isin": null,
+        "stock_currency": "EUR",
+        "stock_price": "10.000000000000000000",
+        "stock_target1": "12.000000000000000000",
+        "stock_target2": "15.000000000000000000",
+        "stock_stop1": "8.000000000000000000",
+        "stock_stop2": null,
+        "derivative_wkn": null,
+        "derivative_isin": null,
+        "product_type": "Turbo Unlimited Long",
+        "maturity_date": null,
+        "term_text": "open end"
+      },
+      "quality_flags": {
+        "document": [],
+        "recommendation": []
+      },
+      "rule_candidates": [
+        {
+          "page": 1,
+          "quote": "Stock WKN AB1234\nStock EUR: quote 10; target1 12; target2 15; stop1 8\nSell 50% at target 1; move stop to entry.",
+          "truncated": false,
+          "recommendation_page": true,
+          "requires_manual_review": true,
+          "verified": false
+        },
+        {
+          "page": 1,
+          "quote": "Stock EUR: quote 10; target1 12; target2 15; stop1 8\nSell 50% at target 1; move stop to entry.",
+          "truncated": false,
+          "recommendation_page": true,
+          "requires_manual_review": true,
+          "verified": false
+        }
+      ],
+      "training_eligible": false,
+      "hypothetical": true,
+      "stages": {
+        "publication_evidenced": {
+          "status": "complete",
+          "reasons": []
+        },
+        "verified_availability": {
+          "status": "incomplete",
+          "reasons": [
+            "unverified_availability"
+          ]
+        },
+        "instrument_identity_verified": {
+          "status": "incomplete",
+          "reasons": [
+            "identity_unmapped"
+          ]
+        },
+        "rules_documented": {
+          "status": "incomplete",
+          "reasons": [
+            "missing_documented_rules"
+          ]
+        },
+        "market_history_sufficient": {
+          "status": "incomplete",
+          "reasons": [
+            "market_directory_not_supplied",
+            "no_unique_market_candidate"
+          ],
+          "scope": "candidate_history; identity_confirmation_is_a_separate_stage"
+        },
+        "modeled_entry_executable": {
+          "status": "incomplete",
+          "reasons": [
+            "entry_identity_unverified",
+            "entry_market_history_insufficient",
+            "missing_price_currency_evidence"
+          ],
+          "execution": "hypothetical_session_open_not_a_fill",
+          "rules_required_for_outcomes": true
+        },
+        "derivative_bid_ask_verified": {
+          "status": "incomplete",
+          "reasons": [
+            "derivative_bid_ask_unavailable"
+          ]
+        }
+      },
+      "identity": {
+        "candidates": [],
+        "selected": null,
+        "issues": [
+          "identity_unmapped"
+        ]
+      },
+      "rules": null,
+      "entry_policy": {
+        "availability_status": "assumed_from_publication_date",
+        "publication_evidence": {
+          "page": 1,
+          "raw": "02.01.2026 #1/2026",
+          "rule": "header-v1"
+        },
+        "publication_timezone": "Europe/Berlin",
+        "calendar_timezone": null,
+        "entry_cutoff_exclusive": "2026-01-02T23:59:59.999999+01:00",
+        "cutoff_basis": "end_of_publication_day_assumption"
+      },
+      "market": null,
+      "modeled_entry_at": null,
+      "blockers": [
+        "derivative_bid_ask_unavailable",
+        "entry_identity_unverified",
+        "entry_market_history_insufficient",
+        "identity_unmapped",
+        "market_directory_not_supplied",
+        "missing_documented_rules",
+        "missing_price_currency_evidence",
+        "no_unique_market_candidate",
+        "unverified_availability"
+      ]
+    },
+    {
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "recommendation_id": 1,
+      "publication_date": "2026-01-02",
+      "publication_evidence": {
+        "page": 1,
+        "raw": "02.01.2026 #1/2026",
+        "rule": "header-v1"
+      },
+      "original_sha_valid": true,
+      "review_status": "pending",
+      "revision_conflict": false,
+      "available_at": null,
+      "availability_evidence": null,
+      "values": {
+        "stock_name": null,
+        "stock_wkn": "AB1234",
+        "stock_isin": null,
+        "stock_currency": "EUR",
+        "stock_price": "10.000000000000000000",
+        "stock_target1": "12.000000000000000000",
+        "stock_target2": "15.000000000000000000",
+        "stock_stop1": "8.000000000000000000",
+        "stock_stop2": null,
+        "derivative_wkn": null,
+        "derivative_isin": null,
+        "product_type": "Turbo Unlimited Long",
+        "maturity_date": null,
+        "term_text": "open end"
+      },
+      "quality_flags": {
+        "document": [],
+        "recommendation": []
+      },
+      "rule_candidates": [
+        {
+          "page": 1,
+          "quote": "Stock WKN AB1234\nStock EUR: quote 10; target1 12; target2 15; stop1 8\nSell 50% at target 1; move stop to entry.",
+          "truncated": false,
+          "recommendation_page": true,
+          "requires_manual_review": true,
+          "verified": false
+        },
+        {
+          "page": 1,
+          "quote": "Stock EUR: quote 10; target1 12; target2 15; stop1 8\nSell 50% at target 1; move stop to entry.",
+          "truncated": false,
+          "recommendation_page": true,
+          "requires_manual_review": true,
+          "verified": false
+        }
+      ],
+      "training_eligible": false,
+      "hypothetical": true,
+      "stages": {
+        "publication_evidenced": {
+          "status": "complete",
+          "reasons": []
+        },
+        "verified_availability": {
+          "status": "incomplete",
+          "reasons": [
+            "unverified_availability"
+          ]
+        },
+        "instrument_identity_verified": {
+          "status": "incomplete",
+          "reasons": [
+            "identity_unmapped"
+          ]
+        },
+        "rules_documented": {
+          "status": "incomplete",
+          "reasons": [
+            "missing_documented_rules"
+          ]
+        },
+        "market_history_sufficient": {
+          "status": "incomplete",
+          "reasons": [
+            "market_directory_not_supplied",
+            "no_unique_market_candidate"
+          ],
+          "scope": "candidate_history; identity_confirmation_is_a_separate_stage"
+        },
+        "modeled_entry_executable": {
+          "status": "incomplete",
+          "reasons": [
+            "entry_identity_unverified",
+            "entry_market_history_insufficient",
+            "missing_price_currency_evidence"
+          ],
+          "execution": "hypothetical_session_open_not_a_fill",
+          "rules_required_for_outcomes": true
+        },
+        "derivative_bid_ask_verified": {
+          "status": "incomplete",
+          "reasons": [
+            "derivative_bid_ask_unavailable"
+          ]
+        }
+      },
+      "identity": {
+        "candidates": [],
+        "selected": null,
+        "issues": [
+          "identity_unmapped"
+        ]
+      },
+      "rules": null,
+      "entry_policy": {
+        "availability_status": "assumed_from_publication_date",
+        "publication_evidence": {
+          "page": 1,
+          "raw": "02.01.2026 #1/2026",
+          "rule": "header-v1"
+        },
+        "publication_timezone": "Europe/Berlin",
+        "calendar_timezone": null,
+        "entry_cutoff_exclusive": "2026-01-02T23:59:59.999999+01:00",
+        "cutoff_basis": "end_of_publication_day_assumption"
+      },
+      "market": null,
+      "modeled_entry_at": null,
+      "blockers": [
+        "derivative_bid_ask_unavailable",
+        "entry_identity_unverified",
+        "entry_market_history_insufficient",
+        "identity_unmapped",
+        "market_directory_not_supplied",
+        "missing_documented_rules",
+        "missing_price_currency_evidence",
+        "no_unique_market_candidate",
+        "unverified_availability"
+      ]
+    },
+    {
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "recommendation_id": 3,
+      "publication_date": "2026-01-02",
+      "publication_evidence": {
+        "page": 1,
+        "raw": "02.01.2026 #1/2026",
+        "rule": "header-v1"
+      },
+      "original_sha_valid": true,
+      "review_status": "pending",
+      "revision_conflict": false,
+      "available_at": null,
+      "availability_evidence": null,
+      "values": {
+        "stock_name": null,
+        "stock_wkn": "AB1234",
+        "stock_isin": null,
+        "stock_currency": "EUR",
+        "stock_price": "10.000000000000000000",
+        "stock_target1": "12.000000000000000000",
+        "stock_target2": "15.000000000000000000",
+        "stock_stop1": "8.000000000000000000",
+        "stock_stop2": null,
+        "derivative_wkn": null,
+        "derivative_isin": null,
+        "product_type": "Turbo Unlimited Long",
+        "maturity_date": null,
+        "term_text": "open end"
+      },
+      "quality_flags": {
+        "document": [],
+        "recommendation": []
+      },
+      "rule_candidates": [
+        {
+          "page": 1,
+          "quote": "Stock WKN AB1234\nStock EUR: quote 10; target1 12; target2 15; stop1 8\nSell 50% at target 1; move stop to entry.",
+          "truncated": false,
+          "recommendation_page": true,
+          "requires_manual_review": true,
+          "verified": false
+        },
+        {
+          "page": 1,
+          "quote": "Stock EUR: quote 10; target1 12; target2 15; stop1 8\nSell 50% at target 1; move stop to entry.",
+          "truncated": false,
+          "recommendation_page": true,
+          "requires_manual_review": true,
+          "verified": false
+        }
+      ],
+      "training_eligible": false,
+      "hypothetical": true,
+      "stages": {
+        "publication_evidenced": {
+          "status": "complete",
+          "reasons": []
+        },
+        "verified_availability": {
+          "status": "incomplete",
+          "reasons": [
+            "unverified_availability"
+          ]
+        },
+        "instrument_identity_verified": {
+          "status": "incomplete",
+          "reasons": [
+            "identity_unmapped"
+          ]
+        },
+        "rules_documented": {
+          "status": "incomplete",
+          "reasons": [
+            "missing_documented_rules"
+          ]
+        },
+        "market_history_sufficient": {
+          "status": "incomplete",
+          "reasons": [
+            "market_directory_not_supplied",
+            "no_unique_market_candidate"
+          ],
+          "scope": "candidate_history; identity_confirmation_is_a_separate_stage"
+        },
+        "modeled_entry_executable": {
+          "status": "incomplete",
+          "reasons": [
+            "entry_identity_unverified",
+            "entry_market_history_insufficient",
+            "missing_price_currency_evidence"
+          ],
+          "execution": "hypothetical_session_open_not_a_fill",
+          "rules_required_for_outcomes": true
+        },
+        "derivative_bid_ask_verified": {
+          "status": "incomplete",
+          "reasons": [
+            "derivative_bid_ask_unavailable"
+          ]
+        }
+      },
+      "identity": {
+        "candidates": [],
+        "selected": null,
+        "issues": [
+          "identity_unmapped"
+        ]
+      },
+      "rules": null,
+      "entry_policy": {
+        "availability_status": "assumed_from_publication_date",
+        "publication_evidence": {
+          "page": 1,
+          "raw": "02.01.2026 #1/2026",
+          "rule": "header-v1"
+        },
+        "publication_timezone": "Europe/Berlin",
+        "calendar_timezone": null,
+        "entry_cutoff_exclusive": "2026-01-02T23:59:59.999999+01:00",
+        "cutoff_basis": "end_of_publication_day_assumption"
+      },
+      "market": null,
+      "modeled_entry_at": null,
+      "blockers": [
+        "derivative_bid_ask_unavailable",
+        "entry_identity_unverified",
+        "entry_market_history_insufficient",
+        "identity_unmapped",
+        "market_directory_not_supplied",
+        "missing_documented_rules",
+        "missing_price_currency_evidence",
+        "no_unique_market_candidate",
+        "unverified_availability"
+      ]
+    }
+  ],
+  "manual_review": [
+    {
+      "priority": 20,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "verified_availability",
+      "reason": "unverified_availability"
+    },
+    {
+      "priority": 20,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "verified_availability",
+      "reason": "unverified_availability"
+    },
+    {
+      "priority": 20,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "verified_availability",
+      "reason": "unverified_availability"
+    },
+    {
+      "priority": 30,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "instrument_identity_verified",
+      "reason": "identity_unmapped"
+    },
+    {
+      "priority": 30,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "instrument_identity_verified",
+      "reason": "identity_unmapped"
+    },
+    {
+      "priority": 30,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "instrument_identity_verified",
+      "reason": "identity_unmapped"
+    },
+    {
+      "priority": 40,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "rules_documented",
+      "reason": "missing_documented_rules"
+    },
+    {
+      "priority": 40,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "rules_documented",
+      "reason": "missing_documented_rules"
+    },
+    {
+      "priority": 40,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "rules_documented",
+      "reason": "missing_documented_rules"
+    },
+    {
+      "priority": 50,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "market_history_sufficient",
+      "reason": "market_directory_not_supplied"
+    },
+    {
+      "priority": 50,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "market_history_sufficient",
+      "reason": "no_unique_market_candidate"
+    },
+    {
+      "priority": 50,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "market_history_sufficient",
+      "reason": "market_directory_not_supplied"
+    },
+    {
+      "priority": 50,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "market_history_sufficient",
+      "reason": "no_unique_market_candidate"
+    },
+    {
+      "priority": 50,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "market_history_sufficient",
+      "reason": "market_directory_not_supplied"
+    },
+    {
+      "priority": 50,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "market_history_sufficient",
+      "reason": "no_unique_market_candidate"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "entry_identity_unverified"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "entry_market_history_insufficient"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "missing_price_currency_evidence"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "entry_identity_unverified"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "entry_market_history_insufficient"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "missing_price_currency_evidence"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "entry_identity_unverified"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "entry_market_history_insufficient"
+    },
+    {
+      "priority": 60,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "modeled_entry_executable",
+      "reason": "missing_price_currency_evidence"
+    },
+    {
+      "priority": 70,
+      "recommendation_key": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609:1",
+      "document_sha": "7cacdb1d66877776d1a2ff7ad39a6877869402eaa307bfaf8109341d203ce609",
+      "ordinal": 1,
+      "stage": "derivative_bid_ask_verified",
+      "reason": "derivative_bid_ask_unavailable"
+    },
+    {
+      "priority": 70,
+      "recommendation_key": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53:1",
+      "document_sha": "de7437bb36884b65438db259d0c50f911e22b17670b3a0f633ee46d9ec5f7b53",
+      "ordinal": 1,
+      "stage": "derivative_bid_ask_verified",
+      "reason": "derivative_bid_ask_unavailable"
+    },
+    {
+      "priority": 70,
+      "recommendation_key": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33:1",
+      "document_sha": "f3c6a259b8be21993541daf02ac473db6b258a6e38f7dfbee2c66e0fb1dd2f33",
+      "ordinal": 1,
+      "stage": "derivative_bid_ask_verified",
+      "reason": "derivative_bid_ask_unavailable"
+    }
+  ]
+}
