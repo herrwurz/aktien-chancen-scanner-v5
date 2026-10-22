@@ -27,6 +27,11 @@ def document_rules(doc, rec, spec, run_at):
     if not spec:
         return None, None, "missing_documented_rules"
     try:
+        if (
+            spec.get("requires_manual_review")
+            or spec.get("review_status", "approved") != "approved"
+        ):
+            raise ValueError
         if spec["document_sha"] != doc.sha256 or spec["ordinal"] != rec.ordinal:
             raise ValueError
         if not isinstance(spec["reviewer"], str) or not spec["reviewer"].strip():

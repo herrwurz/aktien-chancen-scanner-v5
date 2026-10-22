@@ -1,0 +1,56 @@
+{
+  "input_and_result_sha256": "fd498e304d780b175f54bd9bc5f4402458611407044f45bb04f2287c0f31ce26",
+  "public_lookup": "ConnectError; no source data collected; all identities unverified",
+  "reproducible_export_files": 8,
+  "run_at": "2026-10-22T00:00:00+00:00",
+  "source": "Read-only local V1.3 inventory; no server access",
+  "summary": {
+    "automatically_approved_rules": 0,
+    "backtest_readiness": "not_assessed",
+    "count_matches": true,
+    "documents": 118,
+    "expected_count": 118,
+    "identities_with_candidates": 0,
+    "manual_review_recommendations": 118,
+    "original_sha_valid": 118,
+    "quality": {
+      "stock_currency": {
+        "missing": 2,
+        "unverified": 0
+      },
+      "stock_identity": {
+        "missing": 4,
+        "unverified": 0
+      },
+      "stock_stop1": {
+        "missing": 2,
+        "unverified": 0
+      },
+      "stock_target1": {
+        "missing": 2,
+        "unverified": 0
+      },
+      "stock_target2": {
+        "missing": 3,
+        "unverified": 1
+      }
+    },
+    "quality_affected_documents": 5,
+    "recommendations": 118,
+    "recommendations_with_action_drafts": 28,
+    "recommendations_with_rule_candidates": 118,
+    "rule_candidate_kinds": {
+      "after_target1": 40,
+      "derivative_target1": 118,
+      "derivative_target2": 118,
+      "exit_after": 96,
+      "partial_fraction": 416,
+      "stock_target1": 116,
+      "stock_target2": 115
+    },
+    "stock_wkn_occurrences": 114,
+    "unique_stock_wkn": 96,
+    "verified_identities": 0
+  },
+  "version": "1.4"
+}
