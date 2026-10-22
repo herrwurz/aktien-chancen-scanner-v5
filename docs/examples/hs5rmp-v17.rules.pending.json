@@ -1,0 +1,10 @@
+{
+  "target1": "0.70",
+  "target2": "2.30",
+  "stop1": "0.05",
+  "partial_fraction": "0.5",
+  "after_target1": "entry",
+  "loss_after_days": 20,
+  "loss_unit": null,
+  "review_status": "pending"
+}

@@ -22,6 +22,9 @@ def test_archived_synthetic_history_produces_separate_observations_and_stock_mod
     assert report["quality"]["classification"] == "research_only"
     assert report["data_classification"] == "synthetic"
     assert report["derivative_observations"]["return_pct"] is None
+    assert report["primary_success_metric"] == "verified_executable_HS5RMP_bid_ask_return"
+    assert report["derivative_observations"]["primary_pilot_instrument"] is True
+    assert report["derivative_observations"]["modeled_or_implied_prices_used"] is False
     assert report["price_events"] and all("ohlcv" in e for e in report["price_events"])
     assert report["historical_market_data"]["missing_sessions"] == []
     assert report["training_eligible"] is False

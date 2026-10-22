@@ -134,6 +134,10 @@ def build_pilot_report(
         else "local_original; vendor_inputs_not_implied",
         recommendation_key=f"{document_sha}:1",
         analysis_mode=analysis_mode,
+        primary_success_metric="verified_executable_HS5RMP_bid_ask_return",
+        underlying_market_data_role=(
+            "context_and_separate_stock_research_only; never a derivative-price substitute"
+        ),
         window=dict(
             start_date="2025-08-05",
             end_date=str(end_date),
@@ -170,6 +174,21 @@ def build_pilot_report(
                 "costs_and_execution_model",
             ],
             stock_ohlcv_substitution=False,
+            primary_pilot_instrument=True,
+            product_terms=dict(
+                wkn="HS5RMP",
+                issuer=None,
+                isin=None,
+                ratio=None,
+                strike=None,
+                maturity_from_recommendation="2026-01-16",
+                last_trading_at=None,
+                settlement=None,
+                verification_status="pending_original_product_document",
+                requires_manual_review=True,
+            ),
+            quote_window=dict(start="2025-08-05", end="2026-01-16"),
+            modeled_or_implied_prices_used=False,
         ),
         rule_audit=dict(original_scope="derivative", stock_scope="hypothetical_projection_only"),
         quality=dict(
