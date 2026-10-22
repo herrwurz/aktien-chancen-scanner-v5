@@ -69,6 +69,14 @@ def inspect_document(session, sha):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "prepare":
+        from scanner.hebeltrader.preparation_cli import main as preparation_main
+
+        return preparation_main(argv[1:])
+    if argv and argv[0] == "identity-collect":
+        from scanner.hebeltrader.identity_assistant import main as identity_main
+
+        return identity_main(["collect", *argv[1:]])
     if argv and argv[0] == "coverage":
         from scanner.hebeltrader.coverage_cli import main as coverage_main
 
