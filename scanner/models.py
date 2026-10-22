@@ -121,3 +121,7 @@ class ScanRun(Base):
     status: Mapped[str] = mapped_column(String(16))
     error_count: Mapped[int] = mapped_column(Integer, default=0)
     errors: Mapped[list] = mapped_column(JSON, default=list)
+
+
+# Register additive publication tables on the shared metadata for Alembic and readiness.
+from scanner.hebeltrader import models as _hebeltrader_models  # noqa: E402,F401

@@ -1,5 +1,9 @@
 # Multi-Asset Chancen-Scanner V6
 
+Historisches HEBELTRADER-Modul: [Import, Datenmodell, Prüfung und Deployment](docs/hebeltrader.md).
+Es verwendet dieselbe Datenbank mit additiver Migration `0002` und einen optionalen
+Compose-Service im Profil `analysis`; der normale Krypto-Scanner bleibt getrennt.
+
 Docker-based Python scanner for crypto, stocks and future leveraged-instrument analysis.
 
 ## MVP

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import date
 
-EXTRACTOR_VERSION = 'hebeltrader-rules-v1'
+EXTRACTOR_VERSION = "hebeltrader-rules-v1"
 
 
 @dataclass

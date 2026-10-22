@@ -1,4 +1,7 @@
-# Historische HEBELTRADER-Analyse – Entwurf zur Prüfung
+# Historische HEBELTRADER-Analyse – freigegebener Entwurf
+
+Vom Nutzer im Gespräch freigegeben. Die technische Umsetzung und nachgewiesenen
+Grenzen sind in `docs/hebeltrader.md` und `docs/hebeltrader-test-results.md` dokumentiert.
 
 ## Ziel und bestehende Architektur
 

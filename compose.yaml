@@ -33,6 +33,30 @@ x-app: &app
       max-file: "3"
 
 services:
+  pdf-import:
+    <<: *app
+    profiles: [analysis]
+    restart: "no"
+    command: [python, -m, scanner.hebeltrader, import]
+    environment:
+      <<: *environment
+      HEBELTRADER_PDF_DIR: /input
+      HEBELTRADER_REPORT_DIR: /reports
+      HEBELTRADER_EXPECTED_COUNT: ${HEBELTRADER_EXPECTED_COUNT:-118}
+    networks: [backend]
+    volumes:
+      - type: bind
+        source: ${HEBELTRADER_PDF_DIR:-./data/hebeltrader}
+        target: /input
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${HEBELTRADER_REPORT_DIR:-./reports/hebeltrader}
+        target: /reports
+        bind: {create_host_path: false}
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+
   db:
     image: postgres:17.6-bookworm
     restart: unless-stopped

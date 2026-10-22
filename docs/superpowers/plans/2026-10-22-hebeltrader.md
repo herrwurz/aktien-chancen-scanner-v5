@@ -24,28 +24,28 @@ additive Alembic-Migration und optionaler Compose-Importservice.
 Files: `scanner/hebeltrader/{domain,pdf,parser}.py`, `tests/hebeltrader/`.
 Interface: `extract_pdf(bytes) -> Extraction`, mit Seiten, Tabellen,
 Empfehlungen, Feldbelegen und Prüfbefunden.
-- [ ] Synthetische PDF-Beispiele und Tests für Text/Tabellen, zwei Instrumente,
+- [x] Synthetische PDF-Beispiele und Tests für Text/Tabellen, zwei Instrumente,
   mehrere Empfehlungen, deutsche Zahlen, Metadatenkonflikte und OCR-Bedarf schreiben.
-- [ ] Tests ausführen: fehlende Implementierung muss scheitern.
-- [ ] Belegorientierte Extraktion implementieren; keine Schätzung fehlender Daten.
-- [ ] Tests ausführen und committen.
+- [x] Tests ausführen: fehlende Implementierung muss scheitern.
+- [x] Belegorientierte Extraktion implementieren; keine Schätzung fehlender Daten.
+- [x] Tests ausführen und committen.
 
 ## Task 2: Persistenz, Import, Analyseexport
 Files: `scanner/hebeltrader/{models,importer,analysis,cli}.py`, Migration `0002`,
 Anbindung der Metadaten in `scanner/models.py`.
 Interfaces: `import_folder(sessions, root) -> summary`,
 `export_features(session, as_of) -> list[dict]`.
-- [ ] Tests für SHA-Deduplizierung, Ausgabenidentität, Varianten, Belege,
+- [x] Tests für SHA-Deduplizierung, Ausgabenidentität, Varianten, Belege,
   Dateifehlerisolation, Importbericht und konservativen zeitbezogenen Export schreiben.
-- [ ] Fehlende Funktionen im Testlauf nachweisen.
-- [ ] Additive Tabellen, transaktionalen Import und lesende Analysefunktionen implementieren.
-- [ ] SQLite-/PostgreSQL-Migrationsprüfung und Gesamtsuite ausführen, committen.
+- [x] Fehlende Funktionen im Testlauf nachweisen.
+- [x] Additive Tabellen, transaktionalen Import und lesende Analysefunktionen implementieren.
+- [x] SQLite-/PostgreSQL-Migrationsprüfung und Gesamtsuite ausführen, committen.
 
 ## Task 3: Betrieb und Prüfung
 Files: Compose-Profil `analysis`, Locks, Dockerfile, README und `docs/hebeltrader.md`.
-- [ ] Optionales Read-only-Quellmount und getrennten Berichtspfad ergänzen.
-- [ ] CLI-Import und Wiederholungsimport im Container prüfen.
-- [ ] Autorisiert geladene Originalausgabe lokal prüfen, ohne Inhalte zu veröffentlichen.
-- [ ] Ruff, vollständige pytest-Suite, Compose und Image-Build prüfen.
-- [ ] Unabhängige Codeprüfung, erforderliche Regressionen und Testergebnisse dokumentieren.
+- [x] Optionales Read-only-Quellmount und getrennten Berichtspfad ergänzen.
+- [x] CLI-Import und Wiederholungsimport im Container prüfen.
+- [x] Autorisiert geladene Originalausgabe lokal prüfen, ohne Inhalte zu veröffentlichen.
+- [x] Ruff, vollständige pytest-Suite, Compose und Image-Build prüfen.
+- [x] Unabhängige Codeprüfung, erforderliche Regressionen und Testergebnisse dokumentieren.
 - [ ] Feature-Branch pushen und Pull Request gegen main öffnen.

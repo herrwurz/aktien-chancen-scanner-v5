@@ -13,3 +13,7 @@ tests
 docs
 build
 dist
+data
+reports
+*.pdf
+*.dump
