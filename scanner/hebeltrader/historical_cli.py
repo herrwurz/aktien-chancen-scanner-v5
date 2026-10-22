@@ -4,18 +4,21 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from sqlalchemy import text
 
 from scanner.db import create_db, create_sessions
 
+from .backtest_pipeline_v16 import build_v16_report, verify_audit, write_verified_audit
 from .cli import write_json
 from .config import ImportSettings
-from .eodhd import ENDPOINTS, EodhdClient
+from .eodhd import ENDPOINTS, EodhdClient, canonical, sha
 from .eodhd_adapter import prepare_snapshot
 from .historical_pipeline import build_pipeline_report, write_audit
+from .openfigi_archive import audit_archive
+from .usage import append_usage
 
 
 def _load(path, default):
@@ -63,6 +66,11 @@ def main(argv=None):
     audit.add_argument("--expected-count", type=int, default=118)
     audit.add_argument("--analysis-mode", choices=["research", "verified"], default="research")
     audit.add_argument("--reported-openfigi-hits", type=int)
+    audit.add_argument("--linked-identities", type=Path)
+    audit.add_argument("--evaluate", action="store_true", help="V1.6 full-rule stock model")
+    audit.add_argument("--synthetic", action="store_true", help="Explicitly label synthetic inputs")
+    verify = commands.add_parser("verify")
+    verify.add_argument("--output-prefix", type=Path, required=True)
     args = parser.parse_args(argv)
     engine = None
     try:
@@ -77,12 +85,56 @@ def main(argv=None):
                 max_api_units=args.max_api_units,
                 monthly_cost_eur=args.monthly_total_eur,
             )
-            records = {
-                endpoint: provider.fetch(
-                    endpoint, args.symbol, start=args.start, end=args.end, delisted=args.delisted
-                )["manifest_sha256"]
-                for endpoint in args.endpoints
-            }
+            journal = args.cache_dir / "usage.jsonl"
+            event = dict(
+                at=datetime.now(UTC).isoformat(),
+                symbol=args.symbol,
+                endpoints=args.endpoints,
+                start=args.start,
+                end=args.end,
+                monthly_total_declared_eur=args.monthly_total_eur,
+                cost_eur=None,
+                cost_status="provider_invoice_not_available",
+                attempted_requests=0,
+                api_units_spent=0,
+            )
+            event["collection_id"] = sha(canonical(event))
+            append_usage(journal, dict(event, status="started"))
+            records = {}
+            try:
+                for endpoint in args.endpoints:
+                    records[endpoint] = provider.fetch(
+                        endpoint,
+                        args.symbol,
+                        start=args.start,
+                        end=args.end,
+                        delisted=args.delisted,
+                    )["manifest_sha256"]
+            except Exception as exc:
+                append_usage(
+                    journal,
+                    dict(
+                        event,
+                        status="error",
+                        error=type(exc).__name__,
+                        at=datetime.now(UTC).isoformat(),
+                        attempted_requests=provider.attempted_requests,
+                        api_units_spent=provider.api_units_spent,
+                    ),
+                )
+                raise
+            append_usage(
+                journal,
+                dict(
+                    event,
+                    status="completed",
+                    raw_manifests=records,
+                    attempted_requests=provider.attempted_requests,
+                    api_units_spent=provider.api_units_spent,
+                    cache_only=provider.attempted_requests == 0,
+                    at=datetime.now(UTC).isoformat(),
+                ),
+            )
             write_json(
                 args.output,
                 dict(
@@ -108,7 +160,20 @@ def main(argv=None):
                     dict(status="normalized", snapshot=bundle["spec"]["snapshot"]["version"])
                 )
             )
+        elif args.command == "verify":
+            verify_audit(args.output_prefix)
+            print(json.dumps(dict(status="integrity_verified")))
         else:
+            archive = None
+            if args.linked_identities and not (args.openfigi and args.openfigi_cache):
+                raise ValueError("linked audit requires original export and raw directory")
+            if args.openfigi and args.openfigi_cache:
+                archive = audit_archive(
+                    args.openfigi,
+                    args.openfigi_cache,
+                    args.linked_identities,
+                    run_at=datetime.fromisoformat(args.run_at),
+                )
             records = []
             for path in (args.openfigi, args.historical_sources):
                 value = _load(path, [])
@@ -122,7 +187,11 @@ def main(argv=None):
                         else "PRAGMA query_only=ON"
                     )
                 )
-                report = build_pipeline_report(
+                builder = build_v16_report if args.evaluate else build_pipeline_report
+                options = (
+                    dict(synthetic=args.synthetic, archive_audit=archive) if args.evaluate else {}
+                )
+                report = builder(
                     session,
                     run_at=datetime.fromisoformat(args.run_at),
                     as_of=datetime.fromisoformat(args.as_of),
@@ -136,8 +205,18 @@ def main(argv=None):
                     expected_count=args.expected_count,
                     analysis_mode=args.analysis_mode,
                     reported_openfigi_hits=args.reported_openfigi_hits,
+                    **options,
                 )
-                write_audit(args.output_prefix, report)
+                if args.evaluate:
+                    write_verified_audit(args.output_prefix, report)
+                else:
+                    if archive:
+                        report.pop("report_sha256", None)
+                        report["openfigi_archive_audit"] = archive
+                        if archive["errors"]:
+                            report["warnings"].append("openfigi_archive_integrity_failed")
+                        report["report_sha256"] = sha(canonical(report))
+                    write_audit(args.output_prefix, report)
             print(json.dumps(report["pipeline_summary"], sort_keys=True))
             return 2 if report["warnings"] else 0
         return 0
