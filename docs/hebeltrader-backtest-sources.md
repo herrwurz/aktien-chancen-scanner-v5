@@ -35,3 +35,15 @@ These are admission/review requirements, not a claim that the current CSV reader
 ## Gate for a later provider integration
 
 Create a per-instrument coverage matrix for the 118 recommendations: WKN/ISIN, selected historical listing and currency, required interval, available interval, raw/adjusted policy, corporate actions, delisted status, license and estimated total cost. Obtain sample exports under an appropriate entitlement and check them against the source documents and session calendar. Only then choose a provider and authorize any paid activation. Until that evidence exists, offline licensed CSV keeps the experiment explicit and reproducible without pretending that absent prices are verified outcomes.
+
+## V1.3: konkrete Coverage statt angenommener Providerabdeckung
+
+Der [118-Empfehlungen-Audit](hebeltrader-coverage-v13-baseline.json) liefert nun
+eine reproduzierbare lokale Ausgangsmatrix. Ohne bereitgestellte Listings,
+Kursdateien und Regelprüfungen liegt die bestätigte historische Abdeckung bei
+0/118; 114 vorhandene Aktien-WKN sind noch kein Beleg für eine bestimmte
+historische Börsennotierung. V1.3 aktiviert deshalb keinen Online-Anbieter:
+LocalIdentityProvider und SnapshotStockProvider bilden die validierte
+Offline-Anbindung. Die oben verlinkten offiziellen Anbieterunterlagen sind ein
+plausibles Konzept für eine spätere Stichprobe, keine belegte EU/US-Abdeckung
+aller benötigten Zeiträume oder Freigabe kostenpflichtiger Nutzung.

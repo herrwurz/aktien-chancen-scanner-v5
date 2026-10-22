@@ -264,3 +264,10 @@ Betreiber. Tatsächlich ausgeführte Prüfungen: [hebeltrader-test-results.md](h
 Diagnose, geprüfter Vergleich aller 118 Originale und der ausschließlich lesende
 `quality`-Befehl: [hebeltrader-v21.md](hebeltrader-v21.md). Bestehende Importe und
 manuell geprüfte Daten werden durch einen Wiederholungsimport nicht neu geparst.
+
+## Coverage V1.3
+
+Die [Coverage-Inventur](hebeltrader-coverage-v13.md) exportiert alle Empfehlungen
+mit unabhängigen Nachweisstufen, Mehrfachblockaden und priorisierter Prüfliste.
+Sie verbindet lokale historische Identitätsnachweise mit unveränderlichen
+Marktdaten-Snapshots und verändert keine gespeicherten Daten.

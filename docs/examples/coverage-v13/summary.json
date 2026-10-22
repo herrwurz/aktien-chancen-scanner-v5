@@ -1,0 +1,115 @@
+{
+  "version": "hebel-coverage-v1.3",
+  "mode": "read_only_offline_inventory",
+  "analysis_mode": "research",
+  "as_of": "2026-01-06T20:00:00+00:00",
+  "generated_at": "2026-02-01T00:00:00+00:00",
+  "count": 3,
+  "expected_count": 3,
+  "warnings": [],
+  "summary": {
+    "publication_evidenced": {
+      "complete": 3,
+      "total": 3
+    },
+    "verified_availability": {
+      "complete": 0,
+      "total": 3
+    },
+    "instrument_identity_verified": {
+      "complete": 0,
+      "total": 3
+    },
+    "rules_documented": {
+      "complete": 0,
+      "total": 3
+    },
+    "market_history_sufficient": {
+      "complete": 0,
+      "total": 3
+    },
+    "modeled_entry_executable": {
+      "complete": 0,
+      "total": 3
+    },
+    "derivative_bid_ask_verified": {
+      "complete": 0,
+      "total": 3
+    }
+  },
+  "blocker_counts": {
+    "derivative_bid_ask_unavailable": 3,
+    "entry_identity_unverified": 3,
+    "entry_market_history_insufficient": 3,
+    "identity_unmapped": 3,
+    "market_directory_not_supplied": 3,
+    "missing_documented_rules": 3,
+    "missing_price_currency_evidence": 3,
+    "no_unique_market_candidate": 3,
+    "unverified_availability": 3
+  },
+  "field_completeness": {
+    "stock_name": {
+      "present": 0,
+      "missing": 3
+    },
+    "stock_wkn": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_isin": {
+      "present": 0,
+      "missing": 3
+    },
+    "stock_currency": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_price": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_target1": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_target2": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_stop1": {
+      "present": 3,
+      "missing": 0
+    },
+    "stock_stop2": {
+      "present": 0,
+      "missing": 3
+    },
+    "derivative_wkn": {
+      "present": 0,
+      "missing": 3
+    },
+    "derivative_isin": {
+      "present": 0,
+      "missing": 3
+    },
+    "product_type": {
+      "present": 3,
+      "missing": 0
+    },
+    "maturity_date": {
+      "present": 0,
+      "missing": 3
+    },
+    "term_text": {
+      "present": 3,
+      "missing": 0
+    }
+  },
+  "repeated_stock_wkn": {
+    "AB1234": 3
+  },
+  "mapping_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "rules_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "success_rate": null
+}
