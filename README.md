@@ -281,3 +281,8 @@ nicht zum normalen Betrieb. Migrationen oder Anbieterfehler erscheinen in den
 Service-Logs; Request-URLs, Payloads und Passwörter werden vom Worker nicht
 protokolliert. Unfertige `running`-Einträge nach hartem Prozessabbruch bleiben
 als solche sichtbar; der nächste Worker-Start beginnt einen neuen Durchlauf.
+
+V1.6 verbindet die historischen Freigabeprüfungen mit einem Vier-Regeln-Aktienmodell:
+[Auditablauf, Datenlücken und Backtest-Semantik](docs/hebeltrader-backtest-v16.md).
+`historical-data audit --evaluate` bleibt schreibgeschützt und benötigt keine
+Netzwerkverbindung; `historical-data verify` prüft die erzeugten JSON-/CSV-Pakete.

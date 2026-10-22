@@ -1,0 +1,124 @@
+{
+  "actual_external_coverage": "unmeasured; real Hetzner exports not available locally",
+  "as_of": "2026-10-22T00:00:00+00:00",
+  "count": 118,
+  "database_sha256_before_and_after": "812be771674f3c207d2e2a5b6087242260e0a80d1c51c270c58b61c77de3ab79",
+  "eodhd_network_requests_executed": 0,
+  "evaluation_summary": {
+    "ambiguous": 0,
+    "censored_open": 0,
+    "confirmed_historical_successes": null,
+    "fully_evaluable": 0,
+    "fully_evaluable_fraction": 0.0,
+    "hypothetical": true,
+    "missing_prerequisites": 118,
+    "recommendations": 118,
+    "training_eligible": false,
+    "warrant_returns": null
+  },
+  "external_reported_openfigi": {
+    "locally_observed_wkn_with_candidates": 0,
+    "provenance": "user-reported Hetzner audit; external files not implied to be locally read",
+    "wkn_with_candidates": 94
+  },
+  "field_completeness": {
+    "derivative_isin": {
+      "missing": 118,
+      "present": 0
+    },
+    "derivative_wkn": {
+      "missing": 0,
+      "present": 118
+    },
+    "maturity_date": {
+      "missing": 3,
+      "present": 115
+    },
+    "product_type": {
+      "missing": 0,
+      "present": 118
+    },
+    "stock_currency": {
+      "missing": 2,
+      "present": 116
+    },
+    "stock_isin": {
+      "missing": 118,
+      "present": 0
+    },
+    "stock_name": {
+      "missing": 0,
+      "present": 118
+    },
+    "stock_price": {
+      "missing": 2,
+      "present": 116
+    },
+    "stock_stop1": {
+      "missing": 2,
+      "present": 116
+    },
+    "stock_stop2": {
+      "missing": 2,
+      "present": 116
+    },
+    "stock_target1": {
+      "missing": 2,
+      "present": 116
+    },
+    "stock_target2": {
+      "missing": 3,
+      "present": 115
+    },
+    "stock_wkn": {
+      "missing": 4,
+      "present": 114
+    },
+    "term_text": {
+      "missing": 0,
+      "present": 118
+    }
+  },
+  "generated_at": "2026-10-22T12:00:00+00:00",
+  "json_csv_replay_byte_identical": true,
+  "matrix_sha256": "64e33ead0d9acbb43d0e33637bf3eeaa02b900a0872e0112dbaad78bce36653d",
+  "measurement_scope": "local_inputs_only; external_Hetzner_coverage_unmeasured",
+  "original_pdf_sha_valid": 118,
+  "pipeline_summary": {
+    "ambiguous_venue_wkn": 0,
+    "classification_conflicts": 1,
+    "historical_identities_verified": 0,
+    "imported_series": 0,
+    "imported_series_with_quality_issues": 0,
+    "maximum_external_monthly_budget_eur": 100,
+    "missing_stock_identifiers": 4,
+    "network_access_during_audit": false,
+    "openfigi_candidates_observed": 0,
+    "openfigi_input_status": "not_supplied",
+    "recommendations_with_sufficient_history": 0,
+    "recommendations_with_verified_identity": 0,
+    "research_backtest_ready": 0,
+    "unique_wkn": 96,
+    "verified_backtest_ready": 0,
+    "warrant_backtest_ready": 0
+  },
+  "remaining_data_gaps": [
+    "derivative_bid_ask_unavailable",
+    "entry_identity_unverified",
+    "entry_market_history_insufficient",
+    "identity_unmapped",
+    "market_directory_not_supplied",
+    "missing_documented_rules",
+    "missing_price_currency_evidence",
+    "missing_stock_identifier",
+    "missing_value:stock_stop1",
+    "missing_value:stock_target1",
+    "missing_value:stock_target2",
+    "no_unique_market_candidate",
+    "stock_derivative_identifier_collision",
+    "unverified_availability",
+    "unverified_value:stock_target2"
+  ],
+  "source_report_sha256": "7ae54d2900b8d8ebb73b242be5a62f06a8cf179587616fe0e240e71b9336cf7e",
+  "version": "hebel-backtest-pipeline-v1.6"
+}

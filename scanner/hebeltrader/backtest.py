@@ -62,6 +62,11 @@ class Rules:
     after_target1: str = "unchanged"
     close_after_days: int | None = None
     close_unit: str | None = None
+    version: str = "1.2"
+    partial_fraction: Decimal = Decimal("0.5")
+    loss_after_days: int | None = None
+    loss_unit: str | None = None
+    loss_basis: str | None = None
 
 
 def simulate_stock(
@@ -82,6 +87,19 @@ def simulate_stock(
     used. No implicit expiry. Missing end_at is a synthetic instantaneous bar.
     Intrabar event timestamps identify intervals, never exact fill times.
     """
+    if isinstance(rules, Rules) and rules.version == "1.6":
+        from .backtest_v16 import simulate_v16
+
+        return simulate_v16(
+            available_at=available_at,
+            bars=bars,
+            target1=target1,
+            target2=target2,
+            stop1=stop1,
+            stop2=stop2,
+            horizon=horizon,
+            rules=rules,
+        )
     result = dict(
         method=VERSION,
         status=UNKNOWN,

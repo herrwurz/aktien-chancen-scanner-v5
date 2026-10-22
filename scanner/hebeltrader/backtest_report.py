@@ -26,6 +26,10 @@ def document_rules(doc, rec, spec, run_at):
     """A human interpretation must cite the exact source; never infer from labels."""
     if not spec:
         return None, None, "missing_documented_rules"
+    if isinstance(spec, dict) and spec.get("rule_version") == "1.6":
+        from .rules_v16 import validate_rules
+
+        return validate_rules(doc, rec, spec, run_at)
     try:
         if spec.get("conditional_loss_exit") is not None or spec.get("target2_sale") is not None:
             # Preparation proposals are not supported by the V1.3 execution engine.
@@ -201,6 +205,8 @@ def build_report(
                     doc, rec, rule_specs.get(f"{doc.sha256}:{rec.ordinal}"), run_at
                 )
                 row["rules"] = audit
+                if audit and audit.get("research_assumption") and analysis_mode == "verified":
+                    reason = "unverified_time_unit_interpretation"
                 if (
                     not reason
                     and rule.after_target1 == "stop2"
@@ -259,6 +265,7 @@ def build_report(
                     realized_return_pct=None,
                     modeled_return_pct=None,
                 )
+            row["method_version"] = row["result"].get("method", VERSION)
             row["model_assumptions"] = dict(
                 entry=(
                     "first_complete_session_after_publication_day"

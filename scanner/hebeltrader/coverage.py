@@ -240,6 +240,8 @@ def build_coverage(
             )
             row["rules"] = audit
             rule_reasons = [rule_issue] if rule_issue else []
+            if audit and audit.get("research_assumption") and analysis_mode == "verified":
+                rule_reasons.append("unverified_time_unit_interpretation")
             if not row["original_sha_valid"]:
                 rule_reasons.append("original_hash_mismatch")
             if (
