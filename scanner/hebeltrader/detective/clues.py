@@ -28,17 +28,31 @@ LEXICONS = {
         "power_grid": ("stromnetz", "netzbetreiber", "power grid"),
         "agriculture_machinery": ("landmaschinen", "traktor", "agrartechnik"),
         "gold_mining": ("goldmine", "goldminen", "goldproduzent"),
+        "insurance": ("versicherer", "versicherung", "insurance"),
     },
     "events": {
+        "quarterly_results": ("quartalszahlen", "quartalsergebnis", "quarterly results"),
         "dividend_growth": ("dividendenwachstum", "dividende seit", "dividendenaristokrat"),
-        "guidance_raise": ("prognose angehoben", "prognoseanhebung", "guidance raise"),
+        "guidance_raise": (
+            "prognose angehoben",
+            "prognoseanhebung",
+            "angehobene jahresprognose",
+            "angehobenen jahresprognose",
+            "guidance raise",
+        ),
         "earnings_beat": ("gewinn über erwartung", "ergebnisüberraschung", "earnings beat"),
-        "acquisition": ("übernahme", "akquisition", "acquisition"),
+        "acquisition_or_stake": ("übernahme", "akquisition", "beteiligung", "acquisition"),
+        "major_contract": ("großauftrag", "bedeutender auftrag", "major contract"),
+        "regulatory_decision": ("zulassung", "regulatorische entscheidung"),
+        "management_change": ("managementwechsel", "ceo-wechsel", "vorstandswechsel"),
+        "share_buyback": ("aktienrückkauf", "share buyback"),
+        "capital_action": ("kapitalmaßnahme", "kapitalerhöhung"),
     },
     "countries": {
         "US": ("us-konzern", "us unternehmen", "amerikanisch", "usa"),
         "DE": ("deutscher konzern", "deutsches unternehmen", "dax"),
         "CA": ("kanadisch", "kanada"),
+        "EU": ("europäisch", "europäischer", "europäische", "europa"),
     },
 }
 
