@@ -1,7 +1,8 @@
-"""V2.0 hypothetical IV-path comparison and BSM price attribution."""
+"""V2.0 hypothetical IV-path comparison and auditable price attribution."""
 
 from __future__ import annotations
 
+import math
 from datetime import date
 from decimal import Decimal
 
@@ -15,18 +16,85 @@ from .derivative_model import (
     build_three_mode_report,
 )
 
-IV_PATHS = ("constant_entry_iv", "rolling_realized_volatility", "explicit_iv_stress")
+STRESS_FACTORS = {
+    "explicit_iv_stress_minus_50": Decimal("0.50"),
+    "explicit_iv_stress_minus_25": Decimal("0.75"),
+    "explicit_iv_stress_neutral": Decimal("1.00"),
+    "explicit_iv_stress_plus_25": Decimal("1.25"),
+    "explicit_iv_stress_plus_50": Decimal("1.50"),
+}
+IV_PATHS = ("constant_entry_iv", "rolling_realized_volatility", *STRESS_FACTORS)
 
 
-def _variant(base, mode, entry_day, stress):
+def _variant(base, mode, entry_day, stress, session_dates):
     result = dict(base)
-    path = {"mode": mode, "entry_date": entry_day.isoformat()}
-    if mode == "explicit_iv_stress":
+    internal_mode = "explicit_iv_stress" if mode in STRESS_FACTORS else mode
+    path = {"mode": internal_mode, "entry_date": entry_day.isoformat()}
+    if mode in STRESS_FACTORS:
         if stress.get("status") != "hypothetical_explicit_stress":
             raise ValueError("IV stress path must be explicitly hypothetical")
-        path.update(stress)
+        sessions = stress.get("sessions", 20)
+        if type(sessions) is not int or sessions < 1:
+            raise ValueError("IV stress sessions must be a positive integer")
+        path.update(
+            start_factor="1",
+            end_factor=_number(STRESS_FACTORS[mode]),
+            stress_sessions=sessions,
+            session_dates=[day.isoformat() for day in session_dates],
+            status=stress["status"],
+            source_note=stress.get("source_note"),
+            variant=mode,
+        )
     result["_iv_path"] = path
     return result
+
+
+def crr_call_value(
+    *,
+    spot,
+    strike,
+    years,
+    volatility,
+    rate,
+    dividend_yield,
+    ratio,
+    fx_usd_per_eur,
+    steps,
+    american=False,
+):
+    """CRR call value with a continuous-dividend approximation."""
+    values = [
+        _decimal(value, positive=True)
+        for value in (spot, strike, volatility, ratio, fx_usd_per_eur)
+    ]
+    spot, strike, volatility, ratio, fx_usd_per_eur = values
+    years, rate, dividend_yield = map(_decimal, (years, rate, dividend_yield))
+    if type(steps) is not int or steps < 1:
+        raise ValueError("CRR steps must be a positive integer")
+    if years <= 0:
+        return max(spot - strike, Decimal(0)) * ratio / fx_usd_per_eur
+    dt = float(years) / steps
+    up = math.exp(float(volatility) * math.sqrt(dt))
+    down = 1 / up
+    growth = math.exp((float(rate) - float(dividend_yield)) * dt)
+    probability = (growth - down) / (up - down)
+    if not 0 <= probability <= 1:
+        raise ValueError("CRR probability outside [0, 1]")
+    discount = math.exp(-float(rate) * dt)
+    s, k = float(spot), float(strike)
+    option = [max(s * up**j * down ** (steps - j) - k, 0) for j in range(steps + 1)]
+    for level in range(steps - 1, -1, -1):
+        next_values = []
+        for node in range(level + 1):
+            continuation = discount * (
+                probability * option[node + 1] + (1 - probability) * option[node]
+            )
+            if american:
+                exercise = max(s * up**node * down ** (level - node) - k, 0)
+                continuation = max(continuation, exercise)
+            next_values.append(continuation)
+        option = next_values
+    return Decimal(str(option[0])) * ratio / fx_usd_per_eur
 
 
 def _price(product, scenario, *, spot, day, volatility, fx):
@@ -150,15 +218,17 @@ def _attribution(bars, product, scenario, historical_inputs, result):
     return rows
 
 
-def _execution_attribution(bars, product, scenario, historical_inputs, result, attribution):
+def _execution_attribution(
+    bars, product, scenario, historical_inputs, result, attribution, partial_fraction
+):
     executions = [
         event for event in result["events"] if event.get("execution_bid_after_slippage") is not None
     ]
-    if len(executions) != 1 or not attribution or result.get("entry_ask") is None:
+    if not executions or not attribution or result.get("entry_ask") is None:
         return {
-            "status": "unavailable_for_multi_leg_or_open_path",
+            "status": "unavailable_without_execution",
             "modeled_pnl_eur": None,
-            "reason": "A single completed execution is required for exact per-unit reconciliation.",
+            "reason": "No completed hypothetical execution is available.",
         }
     entry_bar = bars[0]
     entry_product, entry_scenario, _ = _resolve_market_inputs(
@@ -173,29 +243,213 @@ def _execution_attribution(bars, product, scenario, historical_inputs, result, a
         fx=entry_product["fx_usd_per_eur"],
     )
     entry_ask = _decimal(result["entry_ask"], positive=True)
-    final_fair = _decimal(attribution[-1]["modeled_fair_value_eur"])
-    event = executions[0]
-    before_slippage = _decimal(event["modeled_bid_before_slippage"])
-    after_slippage = _decimal(event["execution_bid_after_slippage"])
-    fair_components = {
-        key: _decimal(value) for key, value in attribution[-1]["components_eur"].items()
+    partial_fraction = _decimal(partial_fraction, positive=True)
+    if partial_fraction >= 1:
+        raise ValueError("partial fraction must be below one")
+    attribution_by_day = {row["date"]: row for row in attribution}
+    remaining = Decimal(1)
+    legs = []
+    totals = {
+        key: Decimal(0)
+        for key in (
+            "stock",
+            "time",
+            "iv",
+            "fx",
+            "interaction",
+            "entry_spread",
+            "exit_spread",
+            "additional_slippage",
+        )
     }
-    components = fair_components | {
-        "entry_spread": entry_fair - entry_ask,
-        "exit_spread": before_slippage - final_fair,
-        "additional_slippage": after_slippage - before_slippage,
-    }
+    exit_value = Decimal(0)
+    for index, event in enumerate(executions):
+        fraction = partial_fraction if event["event"] == "target1" else remaining
+        if fraction <= 0 or fraction > remaining:
+            raise ValueError("invalid execution position fraction")
+        remaining -= fraction
+        before_slippage = _decimal(event["modeled_bid_before_slippage"])
+        after_slippage = _decimal(event["execution_bid_after_slippage"])
+        day_row = attribution_by_day[event["date"]]
+        day_fair = _decimal(day_row["modeled_fair_value_eur"])
+        # A target execution occurs at a derivative bid level, not necessarily at the close.
+        # Preserve the independently calculated one-factor effects and put the exact
+        # event-level difference into the disclosed nonlinear interaction residual.
+        exit_fair = before_slippage / (1 - _decimal(scenario["spread_pct"]) / 2)
+        fair_components = {key: _decimal(value) for key, value in day_row["components_eur"].items()}
+        fair_components["interaction"] += exit_fair - day_fair
+        components = fair_components | {
+            "entry_spread": entry_fair - entry_ask,
+            "exit_spread": before_slippage - exit_fair,
+            "additional_slippage": after_slippage - before_slippage,
+        }
+        weighted = {key: value * fraction for key, value in components.items()}
+        for key, value in weighted.items():
+            totals[key] += value
+        leg_pnl = fraction * (after_slippage - entry_ask)
+        exit_value += fraction * after_slippage
+        legs.append(
+            {
+                "leg": index + 1,
+                "event": event["event"],
+                "date": event["date"],
+                "position_fraction": _number(fraction),
+                "remaining_fraction": _number(remaining),
+                "modeled_exit_fair_value_eur": _number(exit_fair),
+                "modeled_bid_before_slippage_eur": _number(before_slippage),
+                "modeled_bid_after_slippage_eur": _number(after_slippage),
+                "weighted_pnl_eur": _number(leg_pnl),
+                "weighted_components_eur": {key: _number(value) for key, value in weighted.items()},
+            }
+        )
+    realized_cost = entry_ask * (Decimal(1) - remaining)
+    realized_pnl = exit_value - realized_cost
+    total_components = sum(totals.values(), Decimal(0))
+    if abs(total_components - realized_pnl) > Decimal("1e-18"):
+        raise ArithmeticError("multi-leg execution attribution does not reconcile")
+    closed = remaining == 0
     return {
-        "status": "hypothetical_execution_pnl_attribution",
-        "modeled_pnl_eur": _number(after_slippage - entry_ask),
+        "status": (
+            "hypothetical_execution_pnl_attribution"
+            if closed
+            else "hypothetical_realized_legs_open_remainder"
+        ),
+        "position_closed": closed,
+        "open_position_fraction": _number(remaining),
+        "modeled_pnl_eur": _number(realized_pnl) if closed else None,
+        "realized_legs_pnl_eur": _number(realized_pnl),
+        "reconciled_total_return_pct": (
+            _number(realized_pnl / entry_ask * 100) if closed else None
+        ),
         "entry_fair_value_eur": _number(entry_fair),
         "entry_ask_eur": _number(entry_ask),
-        "exit_fair_value_eur": _number(final_fair),
-        "exit_bid_before_slippage_eur": _number(before_slippage),
-        "exit_bid_after_slippage_eur": _number(after_slippage),
-        "components_eur": {key: _number(value) for key, value in components.items()},
-        "caveat": "Per-unit hypothetical BSM and execution bridge; no observed HS5RMP quote.",
+        "legs": legs,
+        "components_eur": {key: _number(value) for key, value in totals.items()},
+        "caveat": (
+            "Weighted hypothetical BSM execution bridge. Open remainder is not marked to an "
+            "invented closing quote; no observed HS5RMP quote is used."
+        ),
     }
+
+
+def _product_sensitivity(product, scenario, entry_bar, historical_inputs, indication, config):
+    resolved_product, resolved_scenario, market = _resolve_market_inputs(
+        product, scenario, entry_bar["date"], historical_inputs
+    )
+    maturity = date.fromisoformat(product["maturity"])
+    years = Decimal((maturity - entry_bar["date"]).days) / Decimal(365)
+    ratios = config.get("ratio_sensitivity", ["0.01", "0.05", "0.1", "0.2"])
+    steps = config.get("crr_steps", 500)
+    baseline = _price(
+        resolved_product,
+        resolved_scenario,
+        spot=entry_bar["open"],
+        day=entry_bar["date"],
+        volatility=resolved_scenario["volatility"],
+        fx=resolved_product["fx_usd_per_eur"],
+    )
+    spread = _decimal(scenario["spread_pct"])
+    baseline_ask = baseline * (1 + spread / 2)
+    rows = []
+    for ratio_value in ratios:
+        ratio = _decimal(ratio_value, positive=True)
+        candidate = dict(resolved_product, ratio=_number(ratio))
+        fair = _price(
+            candidate,
+            resolved_scenario,
+            spot=entry_bar["open"],
+            day=entry_bar["date"],
+            volatility=resolved_scenario["volatility"],
+            fx=resolved_product["fx_usd_per_eur"],
+        )
+        ask = fair * (1 + spread / 2)
+        rows.append(
+            {
+                "ratio": _number(ratio),
+                "modeled_entry_ask_eur": _number(ask),
+                "difference_to_indication_eur": _number(ask - indication),
+                "difference_to_current_model_eur": _number(ask - baseline_ask),
+                "status": "hypothetical_ratio_sensitivity_not_product_terms",
+            }
+        )
+    common = dict(
+        spot=entry_bar["open"],
+        strike=product["strike"],
+        years=years,
+        volatility=resolved_scenario["volatility"],
+        rate=scenario["rate"],
+        dividend_yield=scenario["dividend_yield"],
+        ratio=product["ratio"],
+        fx_usd_per_eur=resolved_product["fx_usd_per_eur"],
+        steps=steps,
+    )
+    bsm = baseline
+    european = crr_call_value(**common, american=False)
+    american = crr_call_value(**common, american=True)
+    return {
+        "status": "hypothetical_product_parameter_sensitivity",
+        "market_inputs": market,
+        "ratio_sensitivity": rows,
+        "binomial_comparison": {
+            "steps": steps,
+            "continuous_dividend_yield_approximation": str(scenario["dividend_yield"]),
+            "bsm_european_call_eur": _number(bsm),
+            "crr_european_call_eur": _number(european),
+            "crr_american_call_eur": _number(american),
+            "american_exercise_is_verified_for_hs5rmp": False,
+        },
+        "calibration_performed": False,
+    }
+
+
+def render_v20_markdown(report):
+    """Render a compact deterministic human review report."""
+    quality = report["base_v19_report"]["underlying_data_quality"]
+    lines = [
+        "# HEBELTRADER HS5RMP – hypothetische V2.0-Modellanalyse",
+        "",
+        "> Keine beobachteten HS5RMP-Geld-/Briefkurse und keine erzielte Rendite. "
+        "Alle Optionsscheinwerte und Ausführungen sind hypothetische Modellwerte.",
+        "",
+        "## Historische Datenqualität",
+        "",
+        (
+            f"- Sitzungen: {quality['bar_count']} "
+            f"({quality['coverage_start']} bis {quality['coverage_end']})"
+        ),
+        f"- Einstiegspolitik: {quality['entry_policy']}",
+        f"- Datenumfang: {quality['price_scope']}",
+        "",
+        "## IV-Pfade und Handelsergebnisse",
+        "",
+        "| Szenario | IV-Pfad | Einstieg Ask | Exitwert | Rendite | Ereignisse |",
+        "|---|---|---:|---:|---:|---|",
+    ]
+    for scenario, scenario_data in report["scenario_analysis"].items():
+        for path_name, path_data in scenario_data["iv_paths"].items():
+            result = path_data["baseline_slippage"]
+            events = ", ".join(f"{e['event']} {e['date']}" for e in result["events"]) or "keine"
+            lines.append(
+                f"| {scenario} | {path_name} | {result.get('entry_ask') or 'n/a'} | "
+                f"{result.get('exit_value') or 'offen'} | "
+                f"{result.get('return_pct') or 'offen'} | {events} |"
+            )
+    lines.extend(["", "## Slippage, Zerlegung und Strategievergleich", ""])
+    lines.append(
+        "Jeder IV-Pfad enthält getrennte Läufe für 0 %, Baseline und Stress-Slippage, eine "
+        "gewichtete Attribution je Verkauf sowie die separate Forschungsstrategie "
+        "`hold_after_loss_signal`. Offene Restpositionen werden nicht künstlich geschlossen."
+    )
+    lines.extend(["", "## Produktparameter-Sensitivität", ""])
+    lines.append(
+        "Bezugsverhältnisse 0,01/0,05/0,1/0,2 sowie europäische und amerikanische "
+        "CRR-Calls werden separat verglichen. Die Dividendenrendite ist eine kontinuierliche "
+        "Modellannahme; Ausübungsart und Bezugsverhältnis von HS5RMP sind nicht verifiziert."
+    )
+    lines.extend(["", "## Modellgrenzen und offene Datenprobleme", ""])
+    for item in report["unverified_product_data"]:
+        lines.append(f"- {item}")
+    return "\n".join(lines) + "\n"
 
 
 def build_v20_report(bars, *, assumptions, publication_at, historical_inputs):
@@ -227,7 +481,13 @@ def build_v20_report(bars, *, assumptions, publication_at, historical_inputs):
     for name, base_scenario in assumptions["scenarios"].items():
         path_results = {}
         for mode in IV_PATHS:
-            scenario = _variant(base_scenario, mode, normalized[0]["date"], stress)
+            scenario = _variant(
+                base_scenario,
+                mode,
+                normalized[0]["date"],
+                stress,
+                [row["date"] for row in normalized],
+            )
             slippage_results = {}
             for label, value in (
                 ("zero", slippage["zero"]),
@@ -279,9 +539,20 @@ def build_v20_report(bars, *, assumptions, publication_at, historical_inputs):
                     historical_inputs,
                     baseline_result,
                     attribution,
+                    rules["partial_fraction"],
                 ),
             }
-        analysis[name] = {"iv_paths": path_results}
+        analysis[name] = {
+            "iv_paths": path_results,
+            "product_sensitivity": _product_sensitivity(
+                product,
+                base_scenario,
+                normalized[0],
+                historical_inputs,
+                _decimal(assumptions["reference_prices"]["indicative_call_price"], positive=True),
+                config,
+            ),
+        }
     reference = assumptions.get("reference_prices", {})
     indication = _decimal(reference.get("indicative_call_price"), positive=True)
     comparisons = {}
@@ -308,6 +579,13 @@ def build_v20_report(bars, *, assumptions, publication_at, historical_inputs):
             "calibration_performed": False,
             "model_comparisons": comparisons,
         },
+        "unverified_product_data": [
+            "HS5RMP Bezugsverhältnis",
+            "HS5RMP europäische oder amerikanische Ausübungsart",
+            "historische HS5RMP Geld-/Briefkurse und ausführbarer Einstieg zu 0,17 EUR",
+            "offizielle Abrechnungs- und letzte Handelsbedingungen",
+            "historische implizite Volatilität von HS5RMP",
+        ],
         "caveat": (
             "All derivative prices, executions and attributions are hypothetical BSM research; "
             "no observed or achieved HS5RMP return is claimed."

@@ -190,10 +190,7 @@ def test_v20_cli_is_opt_in_and_keeps_v19_scenario_command(tmp_path):
     assumptions = json.loads(paths["assumptions.json"].read_bytes())
     assumptions["v20_analysis"] = {
         "iv_stress_path": {
-            "start_date": "2025-08-06",
-            "end_date": "2026-01-15",
-            "start_factor": "1",
-            "end_factor": "0.5",
+            "sessions": 20,
             "status": "hypothetical_explicit_stress",
         },
         "slippage": {
@@ -228,3 +225,8 @@ def test_v20_cli_is_opt_in_and_keeps_v19_scenario_command(tmp_path):
     assert report["status"] == "hypothetical_v20_iv_attribution"
     assert report["base_v19_report"]["status"] == "three_mode_report"
     assert report["observed_hs5rmp_quotes_used"] is False
+    markdown = output.with_suffix(".md").read_text()
+    assert "Historische Datenqualität" in markdown
+    assert "IV-Pfade und Handelsergebnisse" in markdown
+    assert "Keine beobachteten HS5RMP" in markdown
+    assert "Produktparameter-Sensitivität" in markdown
