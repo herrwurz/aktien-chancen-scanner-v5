@@ -1,5 +1,9 @@
 # Multi-Asset Chancen-Scanner V6
 
+Der aktuelle HS5RMP-Derivatepilot ist in
+[Scanner V6 V1.8](docs/hebeltrader-hs5rmp-backtest-v18.md) dokumentiert. Ohne autorisierte,
+ausreichende Bid-/Ask-Historie wird keine Optionsscheinrendite ausgegeben.
+
 Historisches HEBELTRADER-Modul: [Import, Datenmodell, Prüfung und Deployment](docs/hebeltrader.md).
 Es verwendet dieselbe Datenbank mit additiver Migration `0002` und einen optionalen
 Compose-Service im Profil `analysis`; der normale Krypto-Scanner bleibt getrennt.

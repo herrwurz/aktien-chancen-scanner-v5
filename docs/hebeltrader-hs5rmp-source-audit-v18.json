@@ -1,0 +1,62 @@
+{
+  "as_of": "2026-10-23",
+  "instrument": "HS5RMP",
+  "requested_window": {"from": "2025-08-05", "to": "2026-01-16"},
+  "result": "no_authorized_historical_bid_ask_export_available_in_codex",
+  "return_pct": null,
+  "sources": [
+    {
+      "provider": "HSBC",
+      "url": "https://www.hsbc-zertifikate.de/home/faq/Allgemeines.html",
+      "observed": "The issuer states that it does not provide direct access to historical issuer prices and refers investors to the Boerse Stuttgart archive.",
+      "hs5rmp_export_obtained": false,
+      "cost": "not_applicable",
+      "rights": "No quote dataset was obtained."
+    },
+    {
+      "provider": "Boerse Stuttgart",
+      "url": "https://www.boerse-stuttgart.de/de-de/fuer-geschaeftspartner/zugang-zu-boersendaten/",
+      "observed": "Official market-data access information exists; no documented public bulk API or authorized HS5RMP export for the requested expired-product window was obtained.",
+      "hs5rmp_export_obtained": false,
+      "cost": "quote_required",
+      "rights": "Private/internal research and export rights require written confirmation."
+    },
+    {
+      "provider": "Deutsche Boerse",
+      "url": "https://www.mds.deutsche-boerse.com/mds-en/real-time-data/spot-markets/B-rse-Frankfurt-Certificates-and-Warrants-1341024",
+      "observed": "The official product covers traded prices, best bid/ask and volume and is stated to be free of data fees until further notice.",
+      "hs5rmp_export_obtained": false,
+      "cost": "data_fee_currently_zero; access, delivery and licensing costs unconfirmed",
+      "rights": "The product statement does not itself grant historical redistribution rights."
+    },
+    {
+      "provider": "Deutsche Boerse delayed file service",
+      "url": "https://www.mds.deutsche-boerse.com/mds-en/real-time-data/Delayed-data",
+      "observed": "The official service lists Certificates and Warrants post-trade data, not a historical best-bid/best-ask archive for the requested period.",
+      "hs5rmp_export_obtained": false,
+      "cost": "not_determined",
+      "rights": "License review required."
+    },
+    {
+      "provider": "Licensed vendors",
+      "url": "https://www.mds.deutsche-boerse.com/mds-en/real-time-data/vendorlist",
+      "observed": "The official list includes ARIVA.DE and baha for the product; public pages do not establish HS5RMP historical depth or a price within EUR 100/month.",
+      "hs5rmp_export_obtained": false,
+      "cost": "quote_required",
+      "rights": "Vendor contract required."
+    }
+  ],
+  "best_acquisition_path": [
+    "Request an authorized single-instrument export from Boerse Stuttgart for the pilot.",
+    "If incomplete, request historical best-bid/best-ask delivery and internal-research terms from Deutsche Boerse Market Data + Services.",
+    "Only then compare licensed vendors for all 118 recommendations against the EUR 100/month ceiling."
+  ],
+  "missing": [
+    "official HS5RMP product document",
+    "verified ISIN and complete product terms",
+    "timestamped executable bid/ask quotes for 2025-08-05 through last trading day",
+    "venue trading hours, quote interruptions and size evidence",
+    "last trading day and cash-settlement evidence",
+    "written internal-research usage rights"
+  ]
+}

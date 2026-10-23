@@ -1,0 +1,77 @@
+{
+  "product": {
+    "strike": "190",
+    "maturity": "2026-01-16",
+    "ratio": "0.1",
+    "fx_usd_per_eur": "1.15",
+    "exercise_style": "european_call",
+    "currency": "EUR",
+    "parameter_status": "hypothetical",
+    "source_note": "Strike and maturity are recommendation observations. Ratio and constant FX are unverified scenario assumptions, not official HS5RMP terms.",
+    "parameter_evidence": {
+      "strike": {
+        "status": "recommendation_observed",
+        "source": "HEBELTRADER 130/2025 page 1; not an official termsheet"
+      },
+      "maturity": {
+        "status": "recommendation_observed",
+        "source": "HEBELTRADER 130/2025 page 1; not an official termsheet"
+      },
+      "ratio": {
+        "status": "hypothetical",
+        "source": "scenario assumption pending official termsheet"
+      },
+      "fx_usd_per_eur": {
+        "status": "hypothetical",
+        "source": "constant scenario assumption; replace with sourced point-in-time FX series"
+      },
+      "exercise_style": {
+        "status": "hypothetical",
+        "source": "Black-Scholes-Merton scenario assumption pending official termsheet"
+      }
+    }
+  },
+  "scenarios": {
+    "conservative": {
+      "assumption_status": "hypothetical",
+      "source_note": "Scenario bounds, not observed HS5RMP inputs",
+      "volatility": "0.14",
+      "rate": "0.03",
+      "dividend_yield": "0.04",
+      "spread_pct": "0.20",
+      "gap_haircut_pct": "0.15"
+    },
+    "middle": {
+      "assumption_status": "hypothetical",
+      "source_note": "Scenario bounds, not observed HS5RMP inputs",
+      "volatility": "0.20",
+      "rate": "0.035",
+      "dividend_yield": "0.035",
+      "spread_pct": "0.12",
+      "gap_haircut_pct": "0.08"
+    },
+    "optimistic": {
+      "assumption_status": "hypothetical",
+      "source_note": "Scenario bounds, not observed HS5RMP inputs",
+      "volatility": "0.28",
+      "rate": "0.04",
+      "dividend_yield": "0.03",
+      "spread_pct": "0.06",
+      "gap_haircut_pct": "0.03"
+    }
+  },
+  "derivative_rules": {
+    "target1": "0.70",
+    "target2": "2.30",
+    "stop1": "0.05",
+    "partial_fraction": "0.5",
+    "loss_after_days": 20,
+    "loss_unit": "calendar_days",
+    "time_rule_status": "hypothetical_interpretation"
+  },
+  "underlying_levels": {
+    "target1": "190",
+    "target2": "216",
+    "stop1": "160"
+  }
+}
