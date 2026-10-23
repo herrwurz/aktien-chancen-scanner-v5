@@ -19,6 +19,7 @@ from .derivative_quotes import (
     verify_product_terms,
 )
 from .eodhd import sha
+from .historical_inputs import audit_batch_readiness, load_historical_market_inputs
 
 
 def _load(path):
@@ -49,17 +50,57 @@ def main(argv=None):
     prioritize.add_argument("--output-prefix", required=True, type=Path)
     scenario = commands.add_parser("scenario")
     scenario.add_argument("--underlying", required=True, type=Path)
+    scenario.add_argument("--prehistory", type=Path)
+    scenario.add_argument("--fx", type=Path)
+    scenario.add_argument("--input-audit", type=Path)
+    scenario.add_argument("--expected-underlying-manifest-sha256")
+    scenario.add_argument("--expected-current-sessions", type=int)
+    scenario.add_argument("--expected-prehistory-prices", type=int)
+    scenario.add_argument("--expected-fx-fixings", type=int)
+    scenario.add_argument("--expected-dividends", type=int)
+    scenario.add_argument("--expected-splits", type=int)
     scenario.add_argument("--assumptions", required=True, type=Path)
     scenario.add_argument("--publication-at", required=True)
     scenario.add_argument("--output", required=True, type=Path)
+    readiness = commands.add_parser("readiness")
+    readiness.add_argument("--manifest", required=True, type=Path)
+    readiness.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         if args.command == "scenario":
             underlying = _load(args.underlying)
+            if (
+                args.expected_underlying_manifest_sha256 is not None
+                and underlying.get("manifest_sha256") != args.expected_underlying_manifest_sha256
+            ):
+                raise ValueError("underlying manifest mismatch")
+            historical_paths = (args.prehistory, args.fx, args.input_audit)
+            if any(historical_paths) and not all(historical_paths):
+                raise ValueError("prehistory, FX and input audit must be supplied together")
+            historical_inputs = (
+                load_historical_market_inputs(
+                    args.underlying, args.prehistory, args.fx, args.input_audit
+                )
+                if all(historical_paths)
+                else None
+            )
+            if historical_inputs is not None:
+                quality = historical_inputs["quality"]
+                expected_quality = {
+                    "current_session_count": args.expected_current_sessions,
+                    "prehistory_price_count": args.expected_prehistory_prices,
+                    "fx_fixing_count": args.expected_fx_fixings,
+                    "dividend_event_count": args.expected_dividends,
+                    "split_event_count": args.expected_splits,
+                }
+                for key, expected in expected_quality.items():
+                    if expected is not None and quality[key] != expected:
+                        raise ValueError(f"historical input coverage mismatch: {key}")
             result = build_three_mode_report(
                 underlying["bars"],
                 assumptions=_load(args.assumptions),
                 publication_at=datetime.fromisoformat(args.publication_at),
+                historical_inputs=historical_inputs,
             )
             result["underlying_source"] = {
                 key: underlying.get(key) for key in ("provider", "raw_sha256", "manifest_sha256")
@@ -68,6 +109,9 @@ def main(argv=None):
                 "underlying_file": sha(args.underlying.read_bytes()),
                 "assumptions_file": sha(args.assumptions.read_bytes()),
             }
+        elif args.command == "readiness":
+            payload = _load(args.manifest)
+            result = audit_batch_readiness(payload["recommendations"])
         elif args.command == "prioritize":
             result = prioritize_acquisition(_load(args.input))
             write_coverage(args.output_prefix, result)
