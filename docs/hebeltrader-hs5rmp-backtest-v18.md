@@ -7,6 +7,15 @@ offizielle Produktunterlagen vor. Deshalb ist **keine historische Derivatrendite
 Der maschinenlesbare [Quellenaudit](hebeltrader-hs5rmp-source-audit-v18.json) hält die tatsächlich
 geprüften offiziellen Quellen und die verbleibenden Beschaffungswege fest.
 
+Die Auswertung verwendet drei strikt getrennte Modi:
+
+- `OBSERVED_DERIVATIVE`: ausschließlich autorisierte historische Geld-/Briefkurse; ohne Archiv
+  bleibt `return_pct=null`.
+- `MODELED_DERIVATIVE`: Black-Scholes-Merton-Szenarien. Diese Werte sind Schätzungen und weder
+  beobachtete HSBC-Kurse noch ausführbare Transaktionen.
+- `UNDERLYING_SIGNAL`: JNJ-Ziele, Stopps, Zeit bis zur Berührung und maximaler Rückgang aus
+  Aktien-OHLC. Dieser Modus liefert niemals eine Optionsscheinrendite.
+
 ## Ergebnis der Quellenprüfung
 
 HSBC erklärt in seiner [FAQ](https://www.hsbc-zertifikate.de/home/faq/Allgemeines.html), dass
@@ -57,12 +66,71 @@ Mit `--capital`, `--unit-size`, `--fee-per-order` und `--enforce-quote-size` las
 explizit belegte Ausführungsannahmen aktivieren. Fehlt bei erzwungener Größenprüfung die nötige
 Ask- oder Bid-Größe, wird der Lauf blockiert.
 
+## Modellanalyse ohne historische HSBC-Quotes
+
+Die optionale Modellanalyse bewertet einen hypothetischen europäischen Call mit
+Black-Scholes-Merton. Sie verwendet JNJ-OHLC, tägliche Restlaufzeit, Volatilität, risikofreien
+Zins, kontinuierliche Dividendenrendite, USD/EUR-Umrechnung und Bezugsverhältnis. Spread und ein
+zusätzlicher Abschlag bei Kurslücken werden je Szenario ausgewiesen. Bei einer Tageskerze, die
+zugleich Stopp und Ziel berührt, nimmt das konservative Szenario den Stopp zuerst, das mittlere
+Szenario enthält sich eines Ergebnisses und das optimistische Szenario nimmt das Ziel zuerst.
+
+Die Datei
+[`hebeltrader-hs5rmp-model-assumptions-v18.example.json`](hebeltrader-hs5rmp-model-assumptions-v18.example.json)
+ist bewusst **kein HS5RMP-Termsheet**. Basispreis und Laufzeit stammen aus der Empfehlung;
+Bezugsverhältnis, europäische Ausübungsart, konstantes FX-Verhältnis sowie Volatilitäts-, Zins-,
+Dividenden-, Spread- und Gap-Werte sind ausdrücklich hypothetisch. Sie müssen für eine
+wissenschaftliche Auswertung durch zeitpunktbezogene Quellen oder ein offizielles Termsheet
+ersetzt werden. Fehlt ein Pflichtparameter oder dessen Statusbeleg, wird `MODELED_DERIVATIVE`
+blockiert, statt einen Wert zu ergänzen.
+
+Aus einer bereits normalisierten Tiingo-Datei läuft die Analyse vollständig offline:
+
+```bash
+python -m scanner.hebeltrader.cli derivative-data scenario \
+  --underlying reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized.json \
+  --assumptions docs/hebeltrader-hs5rmp-model-assumptions-v18.example.json \
+  --publication-at 2025-08-05T08:15:00+02:00 \
+  --output reports/hebeltrader/tiingo-pilot-jnj/hs5rmp-three-modes.json
+```
+
+Das Ergebnis bleibt `training_eligible=false`. Ein modellierter Gewinn darf weder in
+`OBSERVED_DERIVATIVE` kopiert noch als historisch erzielte Rendite bezeichnet werden.
+
 ## Hetzner-Prüflauf ohne Netzwerkzugriff
 
 Die vorhandene Tiingo-Datei wird mit dem V1.7-Befehl `tiingo import` unverändert archiviert.
 Erwartete 115 Zeilen und Datumsgrenzen müssen am Server gemessen werden. Die Datei dient nur zur
 zeitlichen Plausibilisierung des JNJ-Basiswerts; sie darf kein HS5RMP-Ereignis und keinen
 Optionsscheinpreis erzeugen.
+
+Konkreter Serverablauf für die gemeldete Datei mit 115 Handelstagen:
+
+```bash
+cd /opt/aktien-chancen-scanner-v5
+
+python -m scanner.hebeltrader.cli tiingo import \
+  --input reports/hebeltrader/tiingo-pilot-jnj/jnj-historical.json \
+  --cache-dir reports/hebeltrader/tiingo-pilot-jnj/cache \
+  --output reports/hebeltrader/tiingo-pilot-jnj/import.json \
+  --symbol JNJ --from 2025-08-05 --to 2026-01-16 \
+  --retrieved-at ORIGINALER_ABRUFZEITPUNKT_MIT_ZEITZONE
+
+python -m scanner.hebeltrader.cli tiingo replay \
+  --cache-dir reports/hebeltrader/tiingo-pilot-jnj/cache \
+  --manifest-sha256 MANIFEST_SHA256_AUS_IMPORT_JSON \
+  --output reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized.json
+
+python -m scanner.hebeltrader.cli derivative-data scenario \
+  --underlying reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized.json \
+  --assumptions docs/hebeltrader-hs5rmp-model-assumptions-v18.example.json \
+  --publication-at 2025-08-05T08:15:00+02:00 \
+  --output reports/hebeltrader/tiingo-pilot-jnj/hs5rmp-three-modes.json
+```
+
+Vor Auswertung werden `raw_sha256`, exakt 115 Bars, Zeitraum 05.08.2025 bis 16.01.2026,
+Splits, Dividenden und fehlende Handelssitzungen geprüft. Diese Messwerte werden erst nach dem
+Serverlauf berichtet; die Codex-Umgebung enthält die Datei nicht.
 
 Danach werden Produktunterlagen und Quoteexport privat archiviert, die Metadaten von einem
 Reviewer freigegeben und `derivative-data backtest` ausgeführt. Der JSON-Ausgang bleibt privat,

@@ -328,9 +328,7 @@ def simulate_derivative_quotes(
                 first_units = units // 2 if first is not None else 0
                 second_units = units - first_units
                 proceeds = (
-                    price * units
-                    if first is None
-                    else first * first_units + price * second_units
+                    price * units if first is None else first * first_units + price * second_units
                 )
                 order_count = 2 if first is None else 3
                 final_cash = result["position"]["uninvested_cash"]

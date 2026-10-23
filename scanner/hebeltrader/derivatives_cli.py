@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .cli import write_json
 from .derivative_coverage import prioritize_acquisition, write_coverage
+from .derivative_model import build_three_mode_report
 from .derivative_quotes import (
     DerivativeRules,
     import_quote_file,
@@ -17,6 +18,7 @@ from .derivative_quotes import (
     simulate_derivative_quotes,
     verify_product_terms,
 )
+from .eodhd import sha
 
 
 def _load(path):
@@ -45,9 +47,28 @@ def main(argv=None):
     prioritize = commands.add_parser("prioritize")
     prioritize.add_argument("--input", required=True, type=Path)
     prioritize.add_argument("--output-prefix", required=True, type=Path)
+    scenario = commands.add_parser("scenario")
+    scenario.add_argument("--underlying", required=True, type=Path)
+    scenario.add_argument("--assumptions", required=True, type=Path)
+    scenario.add_argument("--publication-at", required=True)
+    scenario.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "prioritize":
+        if args.command == "scenario":
+            underlying = _load(args.underlying)
+            result = build_three_mode_report(
+                underlying["bars"],
+                assumptions=_load(args.assumptions),
+                publication_at=datetime.fromisoformat(args.publication_at),
+            )
+            result["underlying_source"] = {
+                key: underlying.get(key) for key in ("provider", "raw_sha256", "manifest_sha256")
+            }
+            result["input_sha256"] = {
+                "underlying_file": sha(args.underlying.read_bytes()),
+                "assumptions_file": sha(args.assumptions.read_bytes()),
+            }
+        elif args.command == "prioritize":
             result = prioritize_acquisition(_load(args.input))
             write_coverage(args.output_prefix, result)
         elif args.command == "import-quotes":
