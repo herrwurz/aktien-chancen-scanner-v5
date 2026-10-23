@@ -114,7 +114,50 @@ def _underlying_signal(bars, levels):
     }
 
 
-def _fair(product, scenario, spot, day):
+def _resolve_market_inputs(product, scenario, day, historical_inputs=None):
+    if historical_inputs is None:
+        return (
+            product,
+            scenario,
+            {
+                "fx_usd_per_eur": str(product["fx_usd_per_eur"]),
+                "realized_volatility": None,
+                "modeled_implied_volatility": str(scenario["volatility"]),
+                "iv_status": "fixed_hypothetical_assumption",
+            },
+        )
+    session = historical_inputs.get("sessions", {}).get(day.isoformat())
+    if not session:
+        raise ValueError(f"missing historical inputs for {day.isoformat()}")
+    fx = session.get("fx", {})
+    if not fx.get("usd_per_eur"):
+        raise ValueError(f"missing prior ECB fixing for {day.isoformat()}")
+    window = str(scenario.get("volatility_window", ""))
+    volatility = session.get("realized_volatility", {}).get(window, {})
+    if volatility.get("status") != "available" or not volatility.get("annualized"):
+        raise ValueError(f"missing realized volatility window {window} for {day.isoformat()}")
+    multiplier = _decimal(scenario.get("iv_multiplier"), positive=True)
+    realized = _decimal(volatility["annualized"], positive=True)
+    implied = realized * multiplier
+    resolved_product = dict(product, fx_usd_per_eur=fx["usd_per_eur"])
+    resolved_scenario = dict(scenario, volatility=_number(implied))
+    return (
+        resolved_product,
+        resolved_scenario,
+        {
+            "fx_usd_per_eur": str(fx["usd_per_eur"]),
+            "fx_fixing_date": fx.get("fixing_date"),
+            "realized_volatility": _number(realized),
+            "realized_volatility_window": window,
+            "modeled_implied_volatility": _number(implied),
+            "iv_multiplier": _number(multiplier),
+            "iv_status": "hypothetical_multiplier_on_realized_volatility",
+        },
+    )
+
+
+def _fair(product, scenario, spot, day, historical_inputs=None):
+    product, scenario, _ = _resolve_market_inputs(product, scenario, day, historical_inputs)
     maturity = date.fromisoformat(product["maturity"])
     years = Decimal(max((maturity - day).days, 0)) / Decimal("365")
     return black_scholes_merton_call(
@@ -129,9 +172,17 @@ def _fair(product, scenario, spot, day):
     )
 
 
-def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity=False):
+def _scenario(
+    name,
+    bars,
+    product,
+    scenario,
+    rules,
+    *,
+    coverage_reaches_maturity=False,
+    historical_inputs=None,
+):
     required = {
-        "volatility",
         "rate",
         "dividend_yield",
         "spread_pct",
@@ -139,6 +190,9 @@ def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity
         "assumption_status",
         "source_note",
     }
+    required |= (
+        {"volatility"} if historical_inputs is None else {"volatility_window", "iv_multiplier"}
+    )
     if not required.issubset(scenario) or scenario["assumption_status"] != "hypothetical":
         raise ValueError("incomplete or unlabelled scenario assumptions")
     spread = _decimal(scenario["spread_pct"])
@@ -146,7 +200,26 @@ def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity
     if not Decimal(0) <= spread < Decimal(1) or not Decimal(0) <= gap < Decimal(1):
         raise ValueError("invalid spread or gap assumption")
     targets = {key: _decimal(rules[key], positive=True) for key in ("target1", "target2", "stop1")}
-    fair_entry = _fair(product, scenario, bars[0]["open"], bars[0]["date"])
+    blockers = []
+    for bar in bars:
+        try:
+            _resolve_market_inputs(product, scenario, bar["date"], historical_inputs)
+        except ValueError as exc:
+            blockers.append(str(exc))
+    if blockers:
+        return {
+            "method": "Black-Scholes-Merton scenario",
+            "status": "blocked_missing_historical_input",
+            "return_pct": None,
+            "entry_ask": None,
+            "exit_value": None,
+            "events": [],
+            "path": [],
+            "assumptions": scenario,
+            "blockers": sorted(set(blockers)),
+            "collision_policy": "no execution",
+        }
+    fair_entry = _fair(product, scenario, bars[0]["open"], bars[0]["date"], historical_inputs)
     entry = fair_entry * (1 + spread / 2)
     if entry <= 0:
         return {
@@ -166,8 +239,11 @@ def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity
     loss_after = rules.get("loss_after_days")
     loss_unit = rules.get("loss_unit")
     for session, bar in enumerate(bars, 1):
+        _, _, market_audit = _resolve_market_inputs(
+            product, scenario, bar["date"], historical_inputs
+        )
         fair = {
-            key: _fair(product, scenario, bar[key], bar["date"])
+            key: _fair(product, scenario, bar[key], bar["date"], historical_inputs)
             for key in ("open", "high", "low", "close")
         }
         bid = {key: value * (1 - spread / 2) for key, value in fair.items()}
@@ -177,6 +253,7 @@ def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity
                 "fair_close": _number(fair["close"]),
                 "modeled_bid_close": _number(bid["close"]),
                 "modeled_ask_close": _number(fair["close"] * (1 + spread / 2)),
+                "market_inputs": market_audit,
             }
         )
         stop = entry if first is not None else targets["stop1"]
@@ -243,8 +320,11 @@ def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity
     }
 
 
-def _entry_sensitivity(bar, product, scenario):
+def _entry_sensitivity(bar, product, scenario, historical_inputs=None):
     """One-at-a-time entry-ask sensitivity around the middle hypothetical case."""
+    product, scenario, market_audit = _resolve_market_inputs(
+        product, scenario, bar["date"], historical_inputs
+    )
     spread = _decimal(scenario["spread_pct"])
 
     def entry(candidate_product, candidate_scenario):
@@ -253,15 +333,24 @@ def _entry_sensitivity(bar, product, scenario):
 
     base = entry(product, scenario)
     results = {}
-    for field in ("volatility", "ratio", "fx_usd_per_eur", "spread_pct"):
+    fields = (
+        "implied_volatility" if historical_inputs is not None else "volatility",
+        "ratio",
+        "fx_usd_per_eur",
+        "spread_pct",
+        "rate",
+        "dividend_yield",
+    )
+    for field in fields:
         values = {}
         for label, multiplier in (("minus_10pct", Decimal("0.9")), ("plus_10pct", Decimal("1.1"))):
             candidate_product = dict(product)
             candidate_scenario = dict(scenario)
+            actual_field = "volatility" if field == "implied_volatility" else field
             destination = (
                 candidate_product if field in {"ratio", "fx_usd_per_eur"} else candidate_scenario
             )
-            destination[field] = _number(_decimal(destination[field]) * multiplier)
+            destination[actual_field] = _number(_decimal(destination[actual_field]) * multiplier)
             value = entry(candidate_product, candidate_scenario)
             values[label] = {
                 "entry_ask": _number(value),
@@ -273,6 +362,7 @@ def _entry_sensitivity(bar, product, scenario):
         "method": "one-at-a-time +/-10% around middle scenario",
         "base_entry_ask": _number(base),
         "base_spread_pct": _number(spread),
+        "base_market_inputs": market_audit,
         "one_at_a_time_pct": results,
         "caveat": "Local model sensitivity, not confidence bounds or observed HS5RMP prices.",
     }
@@ -292,7 +382,28 @@ def _closed_scenario(name, assumptions, entry, exit_value, events, path):
     }
 
 
-def build_three_mode_report(bars, *, assumptions, publication_at, observed_derivative=None):
+def _entry_comparison(scenario, indication, reference):
+    modeled = _decimal(scenario["entry_ask"], positive=True)
+    difference = modeled - indication
+    return {
+        "modeled_entry_ask": _number(modeled),
+        "indicative_call_price": _number(indication),
+        "difference_eur": _number(difference),
+        "difference_pct": _number(difference / indication * 100),
+        "status": "hypothetical_model_vs_recommendation_indication",
+        "reference_status": reference.get("status"),
+        "reference_source": reference.get("source"),
+    }
+
+
+def build_three_mode_report(
+    bars,
+    *,
+    assumptions,
+    publication_at,
+    observed_derivative=None,
+    historical_inputs=None,
+):
     if not isinstance(publication_at, datetime) or publication_at.utcoffset() is None:
         raise ValueError("publication timestamp with timezone required")
     split_sessions = [
@@ -312,15 +423,16 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
     if not normalized:
         raise ValueError("no complete underlying session after publication")
     product = assumptions.get("product", {})
-    required = (
+    required = [
         "strike",
         "maturity",
         "ratio",
-        "fx_usd_per_eur",
         "exercise_style",
         "parameter_status",
         "source_note",
-    )
+    ]
+    if historical_inputs is None:
+        required.append("fx_usd_per_eur")
     missing = [key for key in required if not product.get(key)]
     maturity = None
     if product.get("maturity"):
@@ -338,7 +450,10 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
     if split_sessions:
         missing.append("split_terms_reconciliation_required")
     evidence = product.get("parameter_evidence", {})
-    for key in ("strike", "maturity", "ratio", "fx_usd_per_eur", "exercise_style"):
+    evidence_keys = ["strike", "maturity", "ratio", "exercise_style"]
+    if historical_inputs is None:
+        evidence_keys.append("fx_usd_per_eur")
+    for key in evidence_keys:
         if not isinstance(evidence.get(key), dict) or not evidence[key].get("status"):
             missing.append(f"parameter_evidence:{key}")
     modeled = {
@@ -351,6 +466,12 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
         "observed_quote_count": 0,
         "training_eligible": False,
         "caveat": "Model values are estimates, not observed or executable HS5RMP quotes.",
+        "market_input_mode": (
+            "fixed_hypothetical" if historical_inputs is None else "point_in_time_historical"
+        ),
+        "historical_input_provenance": (
+            None if historical_inputs is None else historical_inputs.get("provenance")
+        ),
     }
     rules = assumptions.get("derivative_rules", {})
     if rules.get("partial_fraction") != "0.5":
@@ -385,12 +506,26 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
                         scenarios[name],
                         rules,
                         coverage_reaches_maturity=coverage_reaches_maturity,
+                        historical_inputs=historical_inputs,
                     )
                     for name in names
                 }
-                modeled["entry_price_sensitivity"] = _entry_sensitivity(
-                    normalized[0], product, scenarios["middle"]
-                )
+                available = {
+                    key: value
+                    for key, value in modeled["scenarios"].items()
+                    if value.get("entry_ask") is not None
+                }
+                if "middle" in available:
+                    modeled["entry_price_sensitivity"] = _entry_sensitivity(
+                        normalized[0], product, scenarios["middle"], historical_inputs
+                    )
+                reference = assumptions.get("reference_prices", {})
+                if reference.get("indicative_call_price"):
+                    indication = _decimal(reference["indicative_call_price"], positive=True)
+                    modeled["indicative_entry_comparison"] = {
+                        name: _entry_comparison(value, indication, reference)
+                        for name, value in available.items()
+                    }
     observed = observed_derivative or {
         "status": "unavailable",
         "return_pct": None,

@@ -131,6 +131,8 @@ def test_three_modes_are_separate_and_model_parameters_stay_hypothetical():
         "ratio",
         "fx_usd_per_eur",
         "spread_pct",
+        "rate",
+        "dividend_yield",
     }
     assert sensitivity["status"] == "hypothetical"
 
@@ -312,3 +314,112 @@ def test_bsm_fx_ratio_and_expiry_reference_cases():
     )
     assert abs(scaled - base / Decimal("20")) < Decimal("0.0000001")
     assert expiry == Decimal("1.6")
+
+
+def _historical_inputs():
+    sessions = {}
+    for day, fx, v20, v60, v120 in (
+        ("2025-08-06", "1.1546", "0.26698", "0.20906", "0.23173"),
+        ("2025-08-07", "1.1550", "0.25000", "0.21000", "0.23000"),
+    ):
+        sessions[day] = {
+            "fx": {"usd_per_eur": fx, "fixing_date": "2025-08-05"},
+            "realized_volatility": {
+                "20": {"status": "available", "annualized": v20},
+                "60": {"status": "available", "annualized": v60},
+                "120": {"status": "available", "annualized": v120},
+            },
+        }
+    return {
+        "sessions": sessions,
+        "provenance": {"fx_sha256": "a" * 64, "prehistory_sha256": "b" * 64},
+        "quality": {"lookahead_policy": "strict prior data"},
+    }
+
+
+def _historical_assumptions():
+    assumptions = _assumptions()
+    del assumptions["product"]["fx_usd_per_eur"]
+    del assumptions["product"]["parameter_evidence"]["fx_usd_per_eur"]
+    assumptions["reference_prices"] = {
+        "indicative_call_price": "0.17",
+        "status": "recommendation_observed",
+        "source": "HEBELTRADER page 1",
+    }
+    for name, window, multiplier in (
+        ("conservative", "120", "0.9"),
+        ("middle", "60", "1.0"),
+        ("optimistic", "20", "1.1"),
+    ):
+        scenario = assumptions["scenarios"][name]
+        scenario.pop("volatility")
+        scenario.update(volatility_window=window, iv_multiplier=multiplier)
+    return assumptions
+
+
+def test_historical_inputs_drive_dated_fx_and_explicit_iv_scenarios():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    report = build_three_mode_report(
+        _bars(),
+        assumptions=_historical_assumptions(),
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+        historical_inputs=_historical_inputs(),
+    )
+    modeled = report["modes"]["MODELED_DERIVATIVE"]
+    assert modeled["market_input_mode"] == "point_in_time_historical"
+    conservative = modeled["scenarios"]["conservative"]
+    first = conservative["path"][0]["market_inputs"]
+    assert first["fx_usd_per_eur"] == "1.1546"
+    assert first["fx_fixing_date"] == "2025-08-05"
+    assert first["realized_volatility"] == "0.23173"
+    assert first["realized_volatility_window"] == "120"
+    assert first["modeled_implied_volatility"] == "0.208557"
+    assert first["iv_status"] == "hypothetical_multiplier_on_realized_volatility"
+    assert modeled["historical_input_provenance"]["fx_sha256"] == "a" * 64
+
+
+def test_entry_comparison_and_v19_sensitivity_are_explicitly_hypothetical():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    report = build_three_mode_report(
+        _bars(),
+        assumptions=_historical_assumptions(),
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+        historical_inputs=_historical_inputs(),
+    )
+    modeled = report["modes"]["MODELED_DERIVATIVE"]
+    comparison = modeled["indicative_entry_comparison"]["middle"]
+    assert comparison["indicative_call_price"] == "0.17"
+    assert comparison["status"] == "hypothetical_model_vs_recommendation_indication"
+    assert comparison["difference_eur"] is not None
+    factors = modeled["entry_price_sensitivity"]["one_at_a_time_pct"]
+    assert set(factors) == {
+        "implied_volatility",
+        "ratio",
+        "fx_usd_per_eur",
+        "spread_pct",
+        "rate",
+        "dividend_yield",
+    }
+
+
+def test_missing_historical_window_blocks_only_affected_scenario():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    inputs = _historical_inputs()
+    for session in inputs["sessions"].values():
+        session["realized_volatility"]["120"] = {
+            "status": "insufficient_history",
+            "required_returns": 120,
+        }
+    report = build_three_mode_report(
+        _bars(),
+        assumptions=_historical_assumptions(),
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+        historical_inputs=inputs,
+    )
+    scenarios = report["modes"]["MODELED_DERIVATIVE"]["scenarios"]
+    assert scenarios["conservative"]["status"] == "blocked_missing_historical_input"
+    assert scenarios["conservative"]["return_pct"] is None
+    assert scenarios["middle"]["status"] != "blocked_missing_historical_input"
