@@ -61,14 +61,16 @@ def test_detective_text_api_returns_explained_unconfirmed_candidates(client):
     response = client.post(
         "/api/hebeltrader/detective/analyze",
         json={
-            "teaser_text": "Johnson & Johnson WKN 853260 Call HS5RMP",
+            "teaser_text": (
+                "US-Gesundheitskonzern mit Pharma und Medizintechnik. Call WKN HS5RMP."
+            ),
             "publication_at": "2025-08-05T08:15:00+02:00",
         },
     )
     assert response.status_code == 200
     payload = response.json()
-    assert payload["candidates"][0]["ticker"] == "JNJ"
-    assert payload["candidates"][0]["call_candidates"][0]["confirmed"] is False
+    assert payload["identification"]["selected_wkn"] == "853260"
+    assert payload["derivative_candidate"]["candidates"][0]["confirmed"] is False
     assert payload["automatic_confirmation"] is False
     assert client.post("/api/hebeltrader/detective/analyze", json={}).status_code == 422
 

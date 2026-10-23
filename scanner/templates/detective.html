@@ -37,9 +37,17 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const response=await fetch('/api/hebeltrader/detective/analyze',{method:'POST',
     headers:{'content-type':'application/json'},body:JSON.stringify(body)});
   const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';return}
-  result.innerHTML='<h2>Kandidaten</h2>'+(data.candidates.map((c,i)=>
-    `<article class="candidate"><h3>${i+1}. ${c.name} (${c.ticker})</h3><p>WKN ${c.wkn}, `+
-    `Konfidenz: ${c.confidence}, Score: ${c.score}</p><p>${c.evidence.map(e=>e.value).join(', ')}</p>`+
-    `<p>Bestätigung: manuell erforderlich</p></article>`).join('')||'<p>Keine belastbaren Kandidaten.</p>');
+  result.replaceChildren();const heading=document.createElement('h2');heading.textContent='Kandidaten';
+  result.append(heading);if(!data.candidates.length){const empty=document.createElement('p');
+    empty.textContent='Keine belastbaren Kandidaten.';result.append(empty);return}
+  data.candidates.forEach((c,i)=>{const article=document.createElement('article');
+    article.className='candidate';const title=document.createElement('h3');
+    title.textContent=`${i+1}. ${c.name} (${c.ticker||'ohne Ticker'})`;article.append(title);
+    const summary=document.createElement('p');summary.textContent=`WKN ${c.wkn||'unbekannt'}, `+
+      `Evidenz: ${c.evidence_strength}, Relevanzwert: ${c.relevance_score_not_probability}`;
+    article.append(summary);const evidence=document.createElement('p');
+    evidence.textContent=[...c.hard_facts,...c.supporting_clues].map(e=>e.value).join(', ');
+    article.append(evidence);const status=document.createElement('p');
+    status.textContent='Bestätigung: manuell erforderlich';article.append(status);result.append(article)});
 });
 </script></body></html>
