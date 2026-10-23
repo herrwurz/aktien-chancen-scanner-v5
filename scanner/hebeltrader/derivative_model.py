@@ -49,6 +49,35 @@ def black_scholes_merton_call(
     return Decimal(str(usd)) * ratio / fx_usd_per_eur
 
 
+def modeled_exit_execution(entry, modeled_bid, additional_slippage_pct):
+    """Apply explicit model slippage and retain the pre-slippage bid for audit."""
+    entry = _decimal(entry, positive=True)
+    modeled_bid = _decimal(modeled_bid)
+    slippage = _decimal(additional_slippage_pct)
+    if modeled_bid < 0 or not Decimal(0) <= slippage < Decimal(1):
+        raise ValueError("invalid modeled exit execution")
+    execution = modeled_bid * (1 - slippage)
+    return {
+        "modeled_bid_before_slippage": _number(modeled_bid),
+        "additional_slippage_pct": _number(slippage),
+        "execution_bid_after_slippage": _number(execution),
+        "modeled_bid": _number(execution),
+        "return_pct": str((execution - entry) / entry * 100),
+    }
+
+
+def _execution_event(event, day, entry, modeled_bid, slippage, *, source, **extra):
+    execution = modeled_exit_execution(entry, modeled_bid, slippage)
+    execution.pop("return_pct")
+    return {
+        "event": event,
+        "date": day.isoformat(),
+        **execution,
+        "execution_price_source": source,
+        **extra,
+    }
+
+
 def _normalize_bars(bars):
     result = []
     seen = set()
@@ -235,6 +264,7 @@ def _scenario(
         }
     events = []
     first = None
+    pending_close_signal = None
     modeled_path = []
     loss_after = rules.get("loss_after_days")
     loss_unit = rules.get("loss_unit")
@@ -242,6 +272,31 @@ def _scenario(
         _, _, market_audit = _resolve_market_inputs(
             product, scenario, bar["date"], historical_inputs
         )
+        fair_open = _fair(product, scenario, bar["open"], bar["date"], historical_inputs)
+        bid_open = fair_open * (1 - spread / 2)
+        if pending_close_signal is not None:
+            event = _execution_event(
+                "conditional_loss_exit",
+                bar["date"],
+                entry,
+                bid_open,
+                gap,
+                source="next_session_modeled_bid_open",
+                signal_date=pending_close_signal["date"],
+                decision_uses_session_high_low=False,
+            )
+            events.append(event)
+            modeled_path.append(
+                {
+                    "date": bar["date"].isoformat(),
+                    "modeled_bid_open": _number(bid_open),
+                    "market_inputs": market_audit,
+                    "path_scope": "open only; pending close signal executed before daily range",
+                }
+            )
+            execution = _decimal(event["execution_bid_after_slippage"])
+            average = execution if first is None else (first + execution) / 2
+            return _closed_scenario(name, scenario, entry, average, events, modeled_path)
         fair = {
             key: _fair(product, scenario, bar[key], bar["date"], historical_inputs)
             for key in ("open", "high", "low", "close")
@@ -275,7 +330,15 @@ def _scenario(
         if choose_target:
             event = "target2" if first is not None else "target1"
             events.append(
-                {"event": event, "date": bar["date"].isoformat(), "modeled_bid": _number(target)}
+                _execution_event(
+                    event,
+                    bar["date"],
+                    entry,
+                    target,
+                    Decimal(0),
+                    source="modeled_bid_target_level",
+                    decision_uses_session_high_low=True,
+                )
             )
             if first is None:
                 first = target
@@ -283,24 +346,48 @@ def _scenario(
             average = (first + target) / 2
             return _closed_scenario(name, scenario, entry, average, events, modeled_path)
         if stop_touch:
-            price = min(stop, bid["open"]) * (1 - gap)
-            events.append(
-                {"event": "stop", "date": bar["date"].isoformat(), "modeled_bid": _number(price)}
+            before_slippage = min(stop, bid["open"])
+            event = _execution_event(
+                "stop",
+                bar["date"],
+                entry,
+                before_slippage,
+                gap,
+                source="modeled_bid_stop_or_gap_open",
+                decision_uses_session_high_low=True,
             )
+            events.append(event)
+            price = _decimal(event["execution_bid_after_slippage"])
             average = price if first is None else (first + price) / 2
             return _closed_scenario(name, scenario, entry, average, events, modeled_path)
         elapsed = (bar["date"] - bars[0]["date"]).days if loss_unit == "calendar_days" else session
         if loss_after is not None and elapsed >= loss_after and bid["close"] < entry:
-            price = bid["close"] * (1 - gap)
-            events.append(
-                {
-                    "event": "conditional_loss_exit",
-                    "date": bar["date"].isoformat(),
-                    "modeled_bid": _number(price),
-                    "elapsed": elapsed,
-                    "unit": loss_unit,
-                }
+            if historical_inputs is not None:
+                pending_close_signal = {"date": bar["date"].isoformat()}
+                events.append(
+                    {
+                        "event": "conditional_loss_signal",
+                        "date": bar["date"].isoformat(),
+                        "modeled_bid_close": _number(bid["close"]),
+                        "elapsed": elapsed,
+                        "unit": loss_unit,
+                        "execution_policy": "next admissible session modeled bid open",
+                    }
+                )
+                continue
+            event = _execution_event(
+                "conditional_loss_exit",
+                bar["date"],
+                entry,
+                bid["close"],
+                gap,
+                source="same_session_modeled_bid_close_v18_compatibility",
+                decision_uses_session_high_low=False,
+                elapsed=elapsed,
+                unit=loss_unit,
             )
+            events.append(event)
+            price = _decimal(event["execution_bid_after_slippage"])
             average = price if first is None else (first + price) / 2
             return _closed_scenario(name, scenario, entry, average, events, modeled_path)
     return {

@@ -119,6 +119,15 @@ def test_three_modes_are_separate_and_model_parameters_stay_hypothetical():
     assert all(
         "entry_ask" in item and "exit_value" in item for item in modeled["scenarios"].values()
     )
+    assert all(
+        {
+            "modeled_bid_before_slippage",
+            "additional_slippage_pct",
+            "execution_bid_after_slippage",
+        }.issubset(event)
+        for item in modeled["scenarios"].values()
+        for event in item["events"]
+    )
     underlying = report["modes"]["UNDERLYING_SIGNAL"]
     assert underlying["target1"]["reached"] is True
     assert underlying["target2"]["reached"] is True
@@ -202,6 +211,9 @@ def test_modeled_twenty_day_exit_is_conditional_on_loss():
     )
     for scenario in report["modes"]["MODELED_DERIVATIVE"]["scenarios"].values():
         assert scenario["events"][-1]["event"] == "conditional_loss_exit"
+        assert scenario["events"][-1]["execution_price_source"] == (
+            "same_session_modeled_bid_close_v18_compatibility"
+        )
 
 
 def test_split_session_blocks_modeled_derivative_until_terms_are_reconciled():
@@ -427,3 +439,50 @@ def test_missing_historical_window_blocks_only_affected_scenario():
     assert scenarios["conservative"]["status"] == "blocked_missing_historical_input"
     assert scenarios["conservative"]["return_pct"] is None
     assert scenarios["middle"]["status"] != "blocked_missing_historical_input"
+
+
+def test_v19_close_signal_executes_at_next_session_open_before_daily_range():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    assumptions = _historical_assumptions()
+    assumptions["derivative_rules"].update(target1="99", target2="100", stop1="0.000001")
+    bars = [
+        {"date": "2025-08-05", "open": "171", "high": "172", "low": "170", "close": "171"},
+        {"date": "2025-08-06", "open": "171", "high": "172", "low": "170", "close": "171"},
+        {"date": "2025-08-26", "open": "165", "high": "166", "low": "164", "close": "164"},
+        # The extreme range must not affect an exit already scheduled for this open.
+        {"date": "2025-08-27", "open": "174.69", "high": "400", "low": "1", "close": "200"},
+    ]
+    inputs = _historical_inputs()
+    template = inputs["sessions"]["2025-08-06"]
+    inputs["sessions"] = {row["date"]: json.loads(json.dumps(template)) for row in bars[1:]}
+    report = build_three_mode_report(
+        bars,
+        assumptions=assumptions,
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+        historical_inputs=inputs,
+    )
+    for scenario in report["modes"]["MODELED_DERIVATIVE"]["scenarios"].values():
+        assert scenario["events"][-2]["event"] == "conditional_loss_signal"
+        assert scenario["events"][-2]["date"] == "2025-08-26"
+        execution = scenario["events"][-1]
+        assert execution["event"] == "conditional_loss_exit"
+        assert execution["date"] == "2025-08-27"
+        assert execution["execution_price_source"] == "next_session_modeled_bid_open"
+        assert execution["decision_uses_session_high_low"] is False
+        assert execution["modeled_bid_before_slippage"] is not None
+        assert execution["additional_slippage_pct"] == scenario["assumptions"]["gap_haircut_pct"]
+        assert execution["modeled_bid"] == execution["execution_bid_after_slippage"]
+
+
+def test_reference_exit_returns_match_hetzner_control_values():
+    from scanner.hebeltrader.derivative_model import modeled_exit_execution
+
+    conservative_old = modeled_exit_execution("1", "0.77", "0")
+    conservative_next = modeled_exit_execution("1", "0.966", "0")
+    middle_old = modeled_exit_execution("1", "0.8154", "0")
+    middle_next = modeled_exit_execution("1", "0.9205", "0")
+    assert conservative_old["return_pct"] == "-23.00"
+    assert conservative_next["return_pct"] == "-3.400"
+    assert middle_old["return_pct"] == "-18.4600"
+    assert middle_next["return_pct"] == "-7.9500"

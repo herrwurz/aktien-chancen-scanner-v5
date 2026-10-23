@@ -106,6 +106,28 @@ Die bereits gemeldeten Werte von 26,698 %, 20,906 % und 23,173 % werden erst dur
 Serverausgabe bestätigt. Codex hatte keinen Zugriff auf die vier Dateien und behauptet deshalb
 keinen realen Pilot-Return.
 
+## Ausführungszeitpunkt und Slippage
+
+Die bedingte 20-Tage-Verlustregel erzeugt im historischen V1.9-Pfad am Tagesschluss zunächst nur
+ein `conditional_loss_signal`. Ausgeführt wird vor der Auswertung von Hoch und Tief der nächsten
+vorhandenen Handelssitzung zu deren modelliertem Geldkurs bei Eröffnung. Der Ergebnisbericht nennt
+Signal- und Ausführungsdatum, `modeled_bid_before_slippage`, `additional_slippage_pct` und
+`execution_bid_after_slippage` getrennt. Dadurch kann ein Schlusskurssignal vom 18.09.2025 nicht
+rückwirkend am selben Schlusskurs handeln.
+
+Die Hetzner-Kontrollwerte bleiben Regressionsevidenz für die Ausführungslogik: konservativ
+−23,00 % am bisherigen Schluss gegenüber −3,40 % an der nächsten Eröffnung, mittel −18,46 %
+gegenüber −7,95 %. Sie werden nicht als beobachtete HS5RMP-Quotes interpretiert. Der reale
+19.09.2025-JNJ-Eröffnungskurs von 174,69 USD ist ein Basiswertinput; der daraus modellierte
+Optionsschein-Geldkurs und jede Slippage bleiben hypothetisch.
+
+Stopps, Ziele und signalbasierte Ausstiege verwenden dieselben Ausführungsfelder. Zielausführungen
+haben im Modell keine zusätzliche Slippage, Stopps und signalbasierte Ausstiege verwenden den
+jeweiligen `gap_haircut_pct` als offen ausgewiesene zusätzliche Slippage. Der V1.8-Pfad ohne
+historische Marktinputschicht behält zur Vergleichbarkeit seine Ausführung am gleichen
+modellierten Schluss-Geldkurs und kennzeichnet sie mit
+`same_session_modeled_bid_close_v18_compatibility`.
+
 ## Readiness für 118 Empfehlungen
 
 `readiness` prüft nur, ob vier Marktinput-Typen deklariert und Produktbedingungen verifiziert
