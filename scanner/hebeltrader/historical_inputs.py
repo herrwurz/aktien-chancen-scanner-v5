@@ -116,6 +116,20 @@ def load_historical_market_inputs(underlying_path, prehistory_path, fx_path, aud
     if len({day for day, _ in prices}) != len(prices):
         raise ValueError("duplicate historical price date")
     fx = _fx_rows(fx_path.read_bytes())
+    all_rows = _price_payload(prior_payload)[1] + _price_payload(current_payload)[1]
+    gaps = [
+        (current[0] - previous[0]).days
+        for previous, current in zip(prices, prices[1:], strict=False)
+        if (current[0] - previous[0]).days > 4
+    ]
+    split_events = sum(
+        _decimal(row.get("split_factor", row.get("splitFactor", "1")), positive=True) != Decimal(1)
+        for row in all_rows
+    )
+    dividend_events = sum(
+        _decimal(row.get("dividend_cash", row.get("divCash", "0"))) != Decimal(0)
+        for row in all_rows
+    )
     fx_dates = [row[0] for row in fx]
     sessions = {}
     carried = 0
@@ -149,6 +163,14 @@ def load_historical_market_inputs(underlying_path, prehistory_path, fx_path, aud
             "prehistory_price_count": len(prior_prices),
             "fx_fixing_count": len(fx),
             "carried_fx_session_count": carried,
+            "price_gap_count": len(gaps),
+            "max_price_gap_calendar_days": max(gaps, default=0),
+            "price_gap_definition": "more than four calendar days between provider sessions",
+            "split_event_count": split_events,
+            "dividend_event_count": dividend_events,
+            "corporate_action_policy": (
+                "volatility uses provider adjusted_close; events remain separately disclosed"
+            ),
             "volatility_windows": list(WINDOWS),
             "lookahead_policy": "prior adjusted close and strictly earlier ECB fixing",
             "audit_claims_repeated": False,
@@ -159,4 +181,35 @@ def load_historical_market_inputs(underlying_path, prehistory_path, fx_path, aud
             "fx_sha256": sha(fx_path.read_bytes()),
             "audit_sha256": sha(audit_path.read_bytes()),
         },
+    }
+
+
+def audit_batch_readiness(items):
+    """Audit future batch inputs without executing a pricing model."""
+    results = []
+    required = {"underlying", "prehistory", "fx", "audit"}
+    for item in items:
+        files = item.get("input_files", {})
+        missing = sorted(required - {key for key, value in files.items() if value})
+        verified = item.get("product_evidence_status") == "verified"
+        if missing:
+            status = "blocked_missing_market_inputs"
+        elif not verified:
+            status = "blocked_unverified_product_terms"
+        else:
+            status = "ready_for_manual_model_authorization"
+        results.append(
+            {
+                "recommendation_id": item.get("recommendation_id"),
+                "status": status,
+                "missing_input_types": missing,
+                "product_evidence_status": item.get("product_evidence_status"),
+                "model_executed": False,
+            }
+        )
+    return {
+        "status": "batch_readiness_only",
+        "item_count": len(results),
+        "modeled_count": 0,
+        "items": results,
     }

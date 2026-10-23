@@ -553,6 +553,12 @@ def build_three_mode_report(
             ),
             "price_scope": "raw underlying OHLC; no derivative substitution",
         },
+        "historical_market_input_quality": (
+            None if historical_inputs is None else historical_inputs.get("quality")
+        ),
+        "historical_market_input_provenance": (
+            None if historical_inputs is None else historical_inputs.get("provenance")
+        ),
         "modes": {
             "OBSERVED_DERIVATIVE": observed,
             "MODELED_DERIVATIVE": modeled,

@@ -97,6 +97,10 @@ def test_missing_long_window_is_explicit_and_files_are_sha_bound(tmp_path):
         "audit_sha256",
     }
     assert all(len(value) == 64 for value in result["provenance"].values())
+    assert result["quality"]["price_gap_count"] >= 1
+    assert result["quality"]["max_price_gap_calendar_days"] > 4
+    assert result["quality"]["split_event_count"] == 0
+    assert result["quality"]["dividend_event_count"] == 0
 
 
 def test_provider_mismatch_and_duplicate_dates_are_rejected(tmp_path):
