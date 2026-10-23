@@ -18,12 +18,29 @@ from .derivative_quotes import (
     simulate_derivative_quotes,
     verify_product_terms,
 )
+from .derivative_v20 import build_v20_report, render_v20_markdown
 from .eodhd import sha
 from .historical_inputs import audit_batch_readiness, load_historical_market_inputs
 
 
 def _load(path):
     return json.loads(Path(path).read_bytes())
+
+
+def _add_scenario_arguments(parser, *, require_historical=False):
+    parser.add_argument("--underlying", required=True, type=Path)
+    parser.add_argument("--prehistory", required=require_historical, type=Path)
+    parser.add_argument("--fx", required=require_historical, type=Path)
+    parser.add_argument("--input-audit", required=require_historical, type=Path)
+    parser.add_argument("--expected-underlying-manifest-sha256")
+    parser.add_argument("--expected-current-sessions", type=int)
+    parser.add_argument("--expected-prehistory-prices", type=int)
+    parser.add_argument("--expected-fx-fixings", type=int)
+    parser.add_argument("--expected-dividends", type=int)
+    parser.add_argument("--expected-splits", type=int)
+    parser.add_argument("--assumptions", required=True, type=Path)
+    parser.add_argument("--publication-at", required=True)
+    parser.add_argument("--output", required=True, type=Path)
 
 
 def main(argv=None):
@@ -49,25 +66,15 @@ def main(argv=None):
     prioritize.add_argument("--input", required=True, type=Path)
     prioritize.add_argument("--output-prefix", required=True, type=Path)
     scenario = commands.add_parser("scenario")
-    scenario.add_argument("--underlying", required=True, type=Path)
-    scenario.add_argument("--prehistory", type=Path)
-    scenario.add_argument("--fx", type=Path)
-    scenario.add_argument("--input-audit", type=Path)
-    scenario.add_argument("--expected-underlying-manifest-sha256")
-    scenario.add_argument("--expected-current-sessions", type=int)
-    scenario.add_argument("--expected-prehistory-prices", type=int)
-    scenario.add_argument("--expected-fx-fixings", type=int)
-    scenario.add_argument("--expected-dividends", type=int)
-    scenario.add_argument("--expected-splits", type=int)
-    scenario.add_argument("--assumptions", required=True, type=Path)
-    scenario.add_argument("--publication-at", required=True)
-    scenario.add_argument("--output", required=True, type=Path)
+    _add_scenario_arguments(scenario)
+    scenario_v20 = commands.add_parser("scenario-v20")
+    _add_scenario_arguments(scenario_v20, require_historical=True)
     readiness = commands.add_parser("readiness")
     readiness.add_argument("--manifest", required=True, type=Path)
     readiness.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "scenario":
+        if args.command in {"scenario", "scenario-v20"}:
             underlying = _load(args.underlying)
             if (
                 args.expected_underlying_manifest_sha256 is not None
@@ -96,7 +103,10 @@ def main(argv=None):
                 for key, expected in expected_quality.items():
                     if expected is not None and quality[key] != expected:
                         raise ValueError(f"historical input coverage mismatch: {key}")
-            result = build_three_mode_report(
+            builder = (
+                build_v20_report if args.command == "scenario-v20" else build_three_mode_report
+            )
+            result = builder(
                 underlying["bars"],
                 assumptions=_load(args.assumptions),
                 publication_at=datetime.fromisoformat(args.publication_at),
@@ -159,6 +169,10 @@ def main(argv=None):
                 result["product_source_sha256"] = terms["candidate"]["source_sha256"]
         if args.command != "prioritize":
             write_json(args.output, result)
+            if args.command == "scenario-v20":
+                markdown_output = args.output.with_suffix(".md")
+                markdown_output.parent.mkdir(parents=True, exist_ok=True)
+                markdown_output.write_text(render_v20_markdown(result), encoding="utf-8")
         print(json.dumps({"status": result.get("status", "imported")}))
         return 2 if result.get("status") == "blocked" else 0
     except Exception as exc:

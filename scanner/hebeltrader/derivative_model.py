@@ -167,7 +167,52 @@ def _resolve_market_inputs(product, scenario, day, historical_inputs=None):
         raise ValueError(f"missing realized volatility window {window} for {day.isoformat()}")
     multiplier = _decimal(scenario.get("iv_multiplier"), positive=True)
     realized = _decimal(volatility["annualized"], positive=True)
-    implied = realized * multiplier
+    explicit_iv_path = "_iv_path" in scenario
+    iv_path = scenario.get("_iv_path", {"mode": "rolling_realized_volatility"})
+    mode = iv_path.get("mode", "rolling_realized_volatility")
+    entry_realized = realized
+    stress_factor = None
+    if mode in {"constant_entry_iv", "explicit_iv_stress"}:
+        entry_day = date.fromisoformat(iv_path["entry_date"])
+        entry_session = historical_inputs.get("sessions", {}).get(entry_day.isoformat(), {})
+        entry_volatility = entry_session.get("realized_volatility", {}).get(window, {})
+        if entry_volatility.get("status") != "available":
+            raise ValueError(f"missing entry volatility window {window}")
+        entry_realized = _decimal(entry_volatility["annualized"], positive=True)
+    if mode == "rolling_realized_volatility":
+        implied = realized * multiplier
+        iv_status = (
+            "hypothetical_multiplier_on_rolling_realized_volatility"
+            if explicit_iv_path
+            else "hypothetical_multiplier_on_realized_volatility"
+        )
+    elif mode == "constant_entry_iv":
+        implied = entry_realized * multiplier
+        iv_status = "constant_hypothetical_entry_iv"
+    elif mode == "explicit_iv_stress":
+        start_factor = _decimal(iv_path["start_factor"], positive=True)
+        end_factor = _decimal(iv_path["end_factor"], positive=True)
+        if "session_dates" in iv_path:
+            sessions = [date.fromisoformat(value) for value in iv_path["session_dates"]]
+            if day not in sessions:
+                raise ValueError(f"missing IV stress session {day.isoformat()}")
+            stress_sessions = int(iv_path.get("stress_sessions", 20))
+            if stress_sessions < 1:
+                raise ValueError("invalid IV stress session count")
+            progress = Decimal(min(sessions.index(day), stress_sessions)) / Decimal(stress_sessions)
+        else:  # V2.0 first-release compatibility for archived assumption files.
+            start = date.fromisoformat(iv_path["start_date"])
+            end = date.fromisoformat(iv_path["end_date"])
+            if end <= start:
+                raise ValueError("invalid IV stress interval")
+            progress = Decimal(min(max((day - start).days, 0), (end - start).days)) / Decimal(
+                (end - start).days
+            )
+        stress_factor = start_factor + (end_factor - start_factor) * progress
+        implied = entry_realized * multiplier * stress_factor
+        iv_status = "hypothetical_explicit_iv_stress_path"
+    else:
+        raise ValueError("unknown IV path mode")
     resolved_product = dict(product, fx_usd_per_eur=fx["usd_per_eur"])
     resolved_scenario = dict(scenario, volatility=_number(implied))
     return (
@@ -177,10 +222,13 @@ def _resolve_market_inputs(product, scenario, day, historical_inputs=None):
             "fx_usd_per_eur": str(fx["usd_per_eur"]),
             "fx_fixing_date": fx.get("fixing_date"),
             "realized_volatility": _number(realized),
+            "iv_basis_realized_volatility": _number(entry_realized),
             "realized_volatility_window": window,
             "modeled_implied_volatility": _number(implied),
             "iv_multiplier": _number(multiplier),
-            "iv_status": "hypothetical_multiplier_on_realized_volatility",
+            "iv_status": iv_status,
+            "iv_path_mode": mode,
+            "iv_stress_factor": None if stress_factor is None else _number(stress_factor),
         },
     )
 
@@ -210,7 +258,10 @@ def _scenario(
     *,
     coverage_reaches_maturity=False,
     historical_inputs=None,
+    loss_signal_policy="next_open",
 ):
+    if loss_signal_policy not in {"next_open", "hold"}:
+        raise ValueError("invalid loss signal policy")
     required = {
         "rate",
         "dividend_yield",
@@ -265,6 +316,7 @@ def _scenario(
     events = []
     first = None
     pending_close_signal = None
+    loss_signal_seen = False
     modeled_path = []
     loss_after = rules.get("loss_after_days")
     loss_unit = rules.get("loss_unit")
@@ -363,17 +415,21 @@ def _scenario(
         elapsed = (bar["date"] - bars[0]["date"]).days if loss_unit == "calendar_days" else session
         if loss_after is not None and elapsed >= loss_after and bid["close"] < entry:
             if historical_inputs is not None:
-                pending_close_signal = {"date": bar["date"].isoformat()}
-                events.append(
-                    {
-                        "event": "conditional_loss_signal",
-                        "date": bar["date"].isoformat(),
-                        "modeled_bid_close": _number(bid["close"]),
-                        "elapsed": elapsed,
-                        "unit": loss_unit,
-                        "execution_policy": "next admissible session modeled bid open",
-                    }
-                )
+                if not loss_signal_seen:
+                    loss_signal_seen = True
+                    pending_close_signal = {"date": bar["date"].isoformat()}
+                    events.append(
+                        {
+                            "event": "conditional_loss_signal",
+                            "date": bar["date"].isoformat(),
+                            "modeled_bid_close": _number(bid["close"]),
+                            "elapsed": elapsed,
+                            "unit": loss_unit,
+                            "execution_policy": "next admissible session modeled bid open",
+                        }
+                    )
+                    if loss_signal_policy == "hold":
+                        pending_close_signal = None
                 continue
             event = _execution_event(
                 "conditional_loss_exit",
