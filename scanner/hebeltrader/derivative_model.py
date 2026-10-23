@@ -387,7 +387,9 @@ def _entry_comparison(scenario, indication, reference):
     difference = modeled - indication
     return {
         "modeled_entry_ask": _number(modeled),
+        "modeled_entry_date": scenario["path"][0]["date"],
         "indicative_call_price": _number(indication),
+        "indicative_price_date": reference.get("date"),
         "difference_eur": _number(difference),
         "difference_pct": _number(difference / indication * 100),
         "status": "hypothetical_model_vs_recommendation_indication",

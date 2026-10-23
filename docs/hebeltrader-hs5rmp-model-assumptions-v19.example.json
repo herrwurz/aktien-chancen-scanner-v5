@@ -60,6 +60,7 @@
   },
   "reference_prices": {
     "indicative_call_price": "0.17",
+    "date": "2025-08-05",
     "status": "recommendation_observed",
     "source": "HEBELTRADER 130/2025 page 1; indicative, not an executable quote"
   },

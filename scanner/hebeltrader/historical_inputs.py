@@ -116,7 +116,9 @@ def load_historical_market_inputs(underlying_path, prehistory_path, fx_path, aud
     if len({day for day, _ in prices}) != len(prices):
         raise ValueError("duplicate historical price date")
     fx = _fx_rows(fx_path.read_bytes())
-    all_rows = _price_payload(prior_payload)[1] + _price_payload(current_payload)[1]
+    prior_rows = _price_payload(prior_payload)[1]
+    current_rows = _price_payload(current_payload)[1]
+    all_rows = prior_rows + current_rows
     gaps = [
         (current[0] - previous[0]).days
         for previous, current in zip(prices, prices[1:], strict=False)
@@ -128,7 +130,11 @@ def load_historical_market_inputs(underlying_path, prehistory_path, fx_path, aud
     )
     dividend_events = sum(
         _decimal(row.get("dividend_cash", row.get("divCash", "0"))) != Decimal(0)
-        for row in all_rows
+        for row in current_rows
+    )
+    prehistory_dividend_events = sum(
+        _decimal(row.get("dividend_cash", row.get("divCash", "0"))) != Decimal(0)
+        for row in prior_rows
     )
     fx_dates = [row[0] for row in fx]
     sessions = {}
@@ -168,6 +174,7 @@ def load_historical_market_inputs(underlying_path, prehistory_path, fx_path, aud
             "price_gap_definition": "more than four calendar days between provider sessions",
             "split_event_count": split_events,
             "dividend_event_count": dividend_events,
+            "prehistory_dividend_event_count": prehistory_dividend_events,
             "corporate_action_policy": (
                 "volatility uses provider adjusted_close; events remain separately disclosed"
             ),

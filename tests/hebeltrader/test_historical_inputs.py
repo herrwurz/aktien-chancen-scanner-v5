@@ -124,3 +124,33 @@ def test_provider_mismatch_and_duplicate_dates_are_rejected(tmp_path):
         assert str(exc) == "duplicate historical price date"
     else:
         raise AssertionError("duplicate date accepted")
+
+
+def test_current_and_prehistory_dividends_are_reported_separately(tmp_path):
+    from scanner.hebeltrader.historical_inputs import load_historical_market_inputs
+
+    paths = _files(tmp_path)
+    prior = json.loads(paths[1].read_text())
+    current = json.loads(paths[0].read_text())
+    prior["bars"][0]["dividend_cash"] = "1.20"
+    current["bars"][1]["dividend_cash"] = "1.30"
+    paths[1].write_text(json.dumps(prior))
+    paths[0].write_text(json.dumps(current))
+    quality = load_historical_market_inputs(*paths)["quality"]
+    assert quality["dividend_event_count"] == 1
+    assert quality["prehistory_dividend_event_count"] == 1
+
+
+def test_raw_tiingo_prehistory_list_is_accepted_without_rewriting_source(tmp_path):
+    from scanner.hebeltrader.historical_inputs import load_historical_market_inputs
+
+    paths = _files(tmp_path)
+    prior = json.loads(paths[1].read_text())
+    raw = [
+        {"date": row["date"] + "T00:00:00.000Z", "adjClose": row["adjusted_close"]}
+        for row in prior["bars"]
+    ]
+    paths[1].write_text(json.dumps(raw))
+    result = load_historical_market_inputs(*paths)
+    assert result["provider"] == "Tiingo"
+    assert result["quality"]["prehistory_price_count"] == 125

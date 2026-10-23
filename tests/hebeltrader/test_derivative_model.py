@@ -343,6 +343,7 @@ def _historical_assumptions():
     del assumptions["product"]["parameter_evidence"]["fx_usd_per_eur"]
     assumptions["reference_prices"] = {
         "indicative_call_price": "0.17",
+        "date": "2025-08-05",
         "status": "recommendation_observed",
         "source": "HEBELTRADER page 1",
     }
@@ -393,6 +394,8 @@ def test_entry_comparison_and_v19_sensitivity_are_explicitly_hypothetical():
     assert comparison["indicative_call_price"] == "0.17"
     assert comparison["status"] == "hypothetical_model_vs_recommendation_indication"
     assert comparison["difference_eur"] is not None
+    assert comparison["modeled_entry_date"] == "2025-08-06"
+    assert comparison["indicative_price_date"] == "2025-08-05"
     factors = modeled["entry_price_sensitivity"]["one_at_a_time_pct"]
     assert set(factors) == {
         "implied_volatility",
