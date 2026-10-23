@@ -420,6 +420,7 @@ def test_missing_historical_window_blocks_only_affected_scenario():
         historical_inputs=inputs,
     )
     scenarios = report["modes"]["MODELED_DERIVATIVE"]["scenarios"]
+    assert report["modes"]["MODELED_DERIVATIVE"]["status"] == "partially_blocked"
     assert scenarios["conservative"]["status"] == "blocked_missing_historical_input"
     assert scenarios["conservative"]["return_pct"] is None
     assert scenarios["middle"]["status"] != "blocked_missing_historical_input"

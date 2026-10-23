@@ -510,6 +510,14 @@ def build_three_mode_report(
                     )
                     for name in names
                 }
+                blocked_count = sum(
+                    item["status"] == "blocked_missing_historical_input"
+                    for item in modeled["scenarios"].values()
+                )
+                if blocked_count:
+                    modeled["status"] = (
+                        "blocked" if blocked_count == len(names) else "partially_blocked"
+                    )
                 available = {
                     key: value
                     for key, value in modeled["scenarios"].items()
