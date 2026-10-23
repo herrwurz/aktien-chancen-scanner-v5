@@ -190,15 +190,24 @@ def _resolve_market_inputs(product, scenario, day, historical_inputs=None):
         implied = entry_realized * multiplier
         iv_status = "constant_hypothetical_entry_iv"
     elif mode == "explicit_iv_stress":
-        start = date.fromisoformat(iv_path["start_date"])
-        end = date.fromisoformat(iv_path["end_date"])
-        if end <= start:
-            raise ValueError("invalid IV stress interval")
         start_factor = _decimal(iv_path["start_factor"], positive=True)
         end_factor = _decimal(iv_path["end_factor"], positive=True)
-        progress = Decimal(min(max((day - start).days, 0), (end - start).days)) / Decimal(
-            (end - start).days
-        )
+        if "session_dates" in iv_path:
+            sessions = [date.fromisoformat(value) for value in iv_path["session_dates"]]
+            if day not in sessions:
+                raise ValueError(f"missing IV stress session {day.isoformat()}")
+            stress_sessions = int(iv_path.get("stress_sessions", 20))
+            if stress_sessions < 1:
+                raise ValueError("invalid IV stress session count")
+            progress = Decimal(min(sessions.index(day), stress_sessions)) / Decimal(stress_sessions)
+        else:  # V2.0 first-release compatibility for archived assumption files.
+            start = date.fromisoformat(iv_path["start_date"])
+            end = date.fromisoformat(iv_path["end_date"])
+            if end <= start:
+                raise ValueError("invalid IV stress interval")
+            progress = Decimal(min(max((day - start).days, 0), (end - start).days)) / Decimal(
+                (end - start).days
+            )
         stress_factor = start_factor + (end_factor - start_factor) * progress
         implied = entry_realized * multiplier * stress_factor
         iv_status = "hypothetical_explicit_iv_stress_path"

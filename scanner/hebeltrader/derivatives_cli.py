@@ -18,7 +18,7 @@ from .derivative_quotes import (
     simulate_derivative_quotes,
     verify_product_terms,
 )
-from .derivative_v20 import build_v20_report
+from .derivative_v20 import build_v20_report, render_v20_markdown
 from .eodhd import sha
 from .historical_inputs import audit_batch_readiness, load_historical_market_inputs
 
@@ -169,6 +169,10 @@ def main(argv=None):
                 result["product_source_sha256"] = terms["candidate"]["source_sha256"]
         if args.command != "prioritize":
             write_json(args.output, result)
+            if args.command == "scenario-v20":
+                markdown_output = args.output.with_suffix(".md")
+                markdown_output.parent.mkdir(parents=True, exist_ok=True)
+                markdown_output.write_text(render_v20_markdown(result), encoding="utf-8")
         print(json.dumps({"status": result.get("status", "imported")}))
         return 2 if result.get("status") == "blocked" else 0
     except Exception as exc:

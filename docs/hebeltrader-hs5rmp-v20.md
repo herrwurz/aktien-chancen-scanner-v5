@@ -5,17 +5,17 @@ SHA-gebundene Modelleingaben. Sämtliche HS5RMP-Preise, Geldkurse, Ausführungen
 Renditen bleiben hypothetische Black-Scholes-Merton-Ergebnisse. Der Bericht setzt
 `observed_hs5rmp_quotes_used=false`.
 
-## Drei isolierte IV-Verläufe
+## Sieben isolierte IV-Verläufe
 
 Jedes konservative, mittlere und optimistische Marktszenario wird mit denselben Aktienkursen,
-FX-Fixings, Zinsen, Dividendenannahmen, Spreads und Handelsregeln dreimal gerechnet:
+FX-Fixings, Zinsen, Dividendenannahmen, Spreads und Handelsregeln identisch gerechnet:
 
 - `constant_entry_iv`: Die am Einstieg aus dem jeweiligen RV-Fenster und IV-Multiplikator
   abgeleitete IV bleibt konstant.
 - `rolling_realized_volatility`: Der V1.9-Pfad verwendet täglich die bis zur Sitzung bekannte
   rollierende RV und den unveränderten hypothetischen Multiplikator.
-- `explicit_iv_stress`: Die Einstiegs-IV wird mit einem ausdrücklich hypothetischen, linear von
-  Faktor 1,0 auf 0,5 fallenden Stresspfad multipliziert.
+- fünf `explicit_iv_stress_*`-Varianten: Die Einstiegs-IV läuft linear über standardmäßig 20
+  tatsächliche Handelssitzungen auf 50 %, 75 %, 100 %, 125 % oder 150 % und bleibt danach konstant.
 
 Der Stresspfad ist weder beobachtete HS5RMP-IV noch eine Anpassung an den Empfehlungspreis. Die
 Konfiguration enthält Status, Zeitraum, Faktoren und Begründung. Dadurch lässt sich insbesondere
@@ -31,9 +31,18 @@ Die fünf Werte summieren sich dadurch wieder exakt zur gesamten modellierten Fa
 Spread und Ausführungsslippage gehören bewusst nicht zur Fair-Value-Zerlegung; sie erscheinen in
 den Ausführungspfaden. Bei einem einzelnen abgeschlossenen Exit ergänzt `execution_attribution`
 eine exakte Brücke vom Fair Value zum modellierten Ergebnis: Einstiegsspread, Ausstiegsspread und
-zusätzliche Slippage werden zu Aktien-, Zeit-, IV-, FX- und Interaktionskomponenten addiert. Die
-Summe entspricht dem hypothetischen P&L je Optionsschein. Mehrteilige oder noch offene Pfade werden
-hier nicht scheinpräzise zusammengefasst, sondern als nicht verfügbar gekennzeichnet.
+zusätzliche Slippage werden zu Aktien-, Zeit-, IV-, FX- und Interaktionskomponenten addiert. Bei
+Teilverkäufen enthält jedes Verkaufs-Leg sein Gewicht und seine eigene Zerlegung. Abgeschlossene
+Legs summieren sich exakt zur Gesamtrendite. Ein offener Restbestand wird ausgewiesen, aber weder
+mit einem späteren Schlusskurs bewertet noch als abgeschlossene Rendite ausgegeben.
+
+## Produkt-Sensitivität
+
+Die Bezugsverhältnisse 0,01, 0,05, 0,1 und 0,2 werden separat gegen die Preisindikation von
+0,17 EUR und das bisherige Modell verglichen. Dies bestätigt keine Produktbedingung und kalibriert
+keinen Parameter. Ein CRR-Binomialmodell vergleicht zusätzlich europäische und amerikanische Calls
+mit konfigurierbaren Schritten. Die kontinuierliche Dividendenrendite ist eine Approximation;
+amerikanische Ausübbarkeit von HS5RMP bleibt unbestätigt und verändert die Backtests nicht.
 
 ## Slippage und 20-Tage-Regel
 
@@ -62,8 +71,8 @@ Compose-Dienste und bindet alle privaten Archive schreibgeschützt ein.
 ```bash
 set -euo pipefail
 cd /opt/aktien-chancen-scanner-v5
-git switch main
-git pull --ff-only origin main
+git fetch origin feat/hebel-iv-attribution-v2-0
+git switch --detach origin/feat/hebel-iv-attribution-v2-0
 export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:?POSTGRES_PASSWORD muss bereits gesetzt sein}"
 docker compose build api
 
@@ -104,6 +113,7 @@ import json, sys
 r=json.load(open(sys.argv[1], encoding="utf-8"))
 assert r["observed_hs5rmp_quotes_used"] is False
 print("Bericht:", sys.argv[1])
+print("Markdown:", sys.argv[1].removesuffix(".json") + ".md")
 print("Referenz 0,17 EUR:", r["indicative_entry_reference"])
 for scenario, analysis in r["scenario_analysis"].items():
     print("\n", scenario)
@@ -117,6 +127,15 @@ for scenario, analysis in r["scenario_analysis"].items():
         print("execution_attribution=", item["execution_attribution"])
 PY
 ```
+
+Das CLI schreibt neben dem JSON automatisch eine gleichnamige Markdown-Datei. Der obige Block ist
+der direkt ausführbare Termius-Befehl; für den Test von PR #16 muss der Server vorab ausdrücklich
+auf den PR-Branch beziehungsweise den geprüften Commit gestellt werden. Er führt weder Deployment
+noch Datenbankzugriffe aus.
+
+Nicht verifiziert bleiben Bezugsverhältnis, Ausübungsart, offizielle Abrechnungsbedingungen,
+letzter Handelstag, historische HS5RMP-IV sowie historische ausführbare Geld-/Briefkurse. Die
+Preisindikation 0,17 EUR ist kein belegter ausführbarer Kaufkurs.
 
 Die echte Serverausgabe ist erforderlich, um die gemeldeten Verluste und die reale JNJ-Datenreihe
 zu reproduzieren. In der Entwicklungsumgebung werden ausschließlich synthetische Offline-Fixtures
