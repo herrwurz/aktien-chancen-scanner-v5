@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import Depends, FastAPI, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
@@ -11,6 +11,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
+from scanner.hebeltrader.detective import DetectiveService
+from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
@@ -79,6 +81,7 @@ def create_app(settings: Settings | None = None, engine=None):
             engine.dispose()
 
     app = FastAPI(title="Multi-Asset Chancen-Scanner V6", version="0.1.0", lifespan=lifespan)
+    detective = DetectiveService()
 
     @app.exception_handler(SQLAlchemyError)
     async def database_error(request, exc):
@@ -160,5 +163,16 @@ def create_app(settings: Settings | None = None, engine=None):
                 "configured_provider": settings.provider,
             },
         )
+
+    @app.get("/hebeltrader")
+    def hebeltrader_detective(request: Request):
+        return templates.TemplateResponse(request=request, name="detective.html", context={})
+
+    @app.post("/api/hebeltrader/detective/analyze")
+    def analyze_hebeltrader_teaser(payload: DetectiveRequest):
+        try:
+            return detective.analyze(payload)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     return app

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HEBELTRADER-Detektiv</title>
+  <style>
+    body{font:16px system-ui;margin:auto;max-width:900px;padding:1rem;background:#f5f7fa;color:#16202a}
+    main,article{background:white;border-radius:12px;padding:1rem;margin:1rem 0;box-shadow:0 2px 10px #0001}
+    label{display:block;font-weight:650;margin-top:1rem}textarea,input,button{box-sizing:border-box;width:100%;padding:.75rem;margin-top:.4rem}
+    textarea{min-height:10rem}button{background:#164e63;color:white;border:0;border-radius:8px;font-weight:700}
+    .warning{border-left:4px solid #d97706;padding:.75rem;background:#fffbeb}.candidate{border-top:1px solid #ddd}
+    code{overflow-wrap:anywhere}@media(max-width:600px){body{padding:.5rem}}
+  </style>
+</head>
+<body><main>
+  <h1>HEBELTRADER analysieren</h1>
+  <p class="warning">Die Rangliste ist eine Identifikationshilfe und keine Kaufempfehlung. Treffer
+  und Optionsscheindaten müssen anhand zeitgerechter Originalquellen geprüft werden.</p>
+  <form id="form">
+    <label for="text">Teasertext</label><textarea id="text" maxlength="20000"></textarea>
+    <label for="published">Veröffentlichungszeit</label><input id="published" type="datetime-local">
+    <label for="image">Screenshot (PNG, JPEG oder WebP; maximal 2 MiB)</label>
+    <input id="image" type="file" accept="image/png,image/jpeg,image/webp">
+    <button>Hinweise analysieren</button>
+  </form>
+  <section id="result" aria-live="polite"></section>
+</main><script>
+const form=document.querySelector('#form'), result=document.querySelector('#result');
+const asBase64=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;
+  r.onload=()=>resolve(r.result.split(',')[1]);r.readAsDataURL(file)});
+form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
+  const file=document.querySelector('#image').files[0];
+  const body={teaser_text:document.querySelector('#text').value,
+    publication_at:document.querySelector('#published').value||null};
+  if(file){body.screenshot_base64=await asBase64(file);body.screenshot_media_type=file.type}
+  const response=await fetch('/api/hebeltrader/detective/analyze',{method:'POST',
+    headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+  const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';return}
+  result.innerHTML='<h2>Kandidaten</h2>'+(data.candidates.map((c,i)=>
+    `<article class="candidate"><h3>${i+1}. ${c.name} (${c.ticker})</h3><p>WKN ${c.wkn}, `+
+    `Konfidenz: ${c.confidence}, Score: ${c.score}</p><p>${c.evidence.map(e=>e.value).join(', ')}</p>`+
+    `<p>Bestätigung: manuell erforderlich</p></article>`).join('')||'<p>Keine belastbaren Kandidaten.</p>');
+});
+</script></body></html>
