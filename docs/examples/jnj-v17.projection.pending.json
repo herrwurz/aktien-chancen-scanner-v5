@@ -1,0 +1,12 @@
+{
+  "status": "pending",
+  "reviewer": null,
+  "reviewed_at": null,
+  "document_sha": "0223ed07b672b4f02379cff6477d24290de3801d89179a0fa4c0e9c2a44268fc",
+  "ordinal": 1,
+  "rule_spec_sha256": null,
+  "original_rule_scope": "derivative",
+  "model_scope": "hypothetical_stock",
+  "additional_document_rules_reviewed": false,
+  "scope_decision": null
+}

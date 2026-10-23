@@ -286,3 +286,12 @@ V1.6 verbindet die historischen Freigabeprüfungen mit einem Vier-Regeln-Aktienm
 [Auditablauf, Datenlücken und Backtest-Semantik](docs/hebeltrader-backtest-v16.md).
 `historical-data audit --evaluate` bleibt schreibgeschützt und benötigt keine
 Netzwerkverbindung; `historical-data verify` prüft die erzeugten JSON-/CSV-Pakete.
+
+V1.7 ergänzt einen einzelnen Johnson-&-Johnson-Piloten ohne Datenbankänderungen:
+[Originalabgleich, EODHD-Ablauf, Freigaben und Hetzner-Befehle](docs/hebeltrader-jnj-pilot-v17.md).
+`python -m scanner.hebeltrader pilot run` erzeugt auch bei fehlenden Voraussetzungen
+prüfbare Blocker; `pilot verify` prüft JSON/CSV/Markdown samt SHA-256.
+
+Die V1.7-Ergänzung priorisiert den empfohlenen Call HS5RMP, ergänzt einen
+unveränderlichen Bid/Ask-Importer und Tiingo als zweiten Basiswertprovider:
+[HS5RMP-/Tiingo-Ablauf, Quellenprüfung und Offline-Abnahme](docs/hebeltrader-hs5rmp-tiingo-v17.md).

@@ -1,0 +1,16 @@
+{
+  "status": "pending",
+  "reviewer": null,
+  "reviewed_at": null,
+  "source_reference": null,
+  "license": null,
+  "source_file": null,
+  "source_sha256": null,
+  "source_retrieved_at": null,
+  "calendar_sha256": null,
+  "venue": "XNYS",
+  "timezone": "America/New_York",
+  "completeness_reviewed": false,
+  "coverage_start": "2025-08-04T00:00:00-04:00",
+  "coverage_end": "2026-01-16T23:59:59-05:00"
+}

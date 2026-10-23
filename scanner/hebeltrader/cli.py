@@ -69,6 +69,18 @@ def inspect_document(session, sha):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "derivative-data":
+        from scanner.hebeltrader.derivatives_cli import main as derivatives_main
+
+        return derivatives_main(argv[1:])
+    if argv and argv[0] == "tiingo":
+        from scanner.hebeltrader.tiingo_cli import main as tiingo_main
+
+        return tiingo_main(argv[1:])
+    if argv and argv[0] == "pilot":
+        from scanner.hebeltrader.pilot_cli import main as pilot_main
+
+        return pilot_main(argv[1:])
     if argv and argv[0] == "historical-data":
         from scanner.hebeltrader.historical_cli import main as historical_main
 
