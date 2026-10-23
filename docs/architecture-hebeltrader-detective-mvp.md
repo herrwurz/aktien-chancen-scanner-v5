@@ -20,9 +20,11 @@ Screenshot --> OCR-Adapter ---+                              |
 
 - `ocr.py`: begrenzte Bildvalidierung und austauschbarer Tesseract-Adapter.
 - `clues.py`: deterministische Extraktion von Kennungen, Zahlen und Textbegriffen.
-- `catalog.py`: revisionsgebundener Offline-Katalog mit Quellen und Prüfstatus.
+- `sources.py`: austauschbare Verträge für Kandidaten- und Nachrichtenevidenz.
+- `catalog.py`: sechs synthetische, datierte Offline-Fixtures mit klar begrenzter Abdeckung.
 - `service.py`: gewichtetes Ranking, Unsicherheiten und vollständige Ergebnisstruktur.
 - `schemas.py`: validierte API-Ein- und Ausgaben.
+- `scanner/research.py`: gemeinsames Asset-/Evidenzmodell für spätere unabhängige Scanner.
 
 Die API `POST /api/hebeltrader/detective/analyze` akzeptiert JSON mit `teaser_text`, optionalem
 Base64-Bild, MIME-Typ und Veröffentlichungszeit. `/hebeltrader` bietet eine mobile Eingabemaske.
@@ -32,11 +34,18 @@ verändert.
 ## Qualitäts- und Sicherheitsgrenzen
 
 - OCR ist eine Eingabequelle, kein Beleg. OCR-Fehler werden als Prüfhinweis ausgegeben.
-- Quellen im Katalog enthalten URL, Stand und Status. Offline-Mockdaten sind ausdrücklich markiert.
+- Evidenz enthält `source_id`, URL, `published_at`, `retrieved_at`, `effective_at` und SHA-256.
+  Spätere oder erst später abgerufene Quellen werden aus historischen Vergleichen ausgeschlossen.
+- Offline-Fixtures sind ausdrücklich synthetisch. Sie testen die Pipeline, keine reale Trefferquote.
+- Das Ranking trennt harte Kennungen, unterstützende strukturierte Hinweise, Gegenbelege und
+  nicht abgedeckte Hinweise. Relevanzwerte sind weder Wahrscheinlichkeiten noch kalibriert.
+- Bei fehlender Evidenz, engem Rangabstand oder Titeln außerhalb des Universums wird `unresolved`
+  ausgegeben.
 - Die Rangfolge verwendet ausschließlich Eingaben und zum angegebenen Zeitpunkt verfügbare
   Katalogeinträge. Spätere Nachrichten werden im MVP nicht ergänzt.
 - Ein Call wird nur als Kandidat ausgegeben. `confirmed=false` bleibt gesetzt, solange offizielle
-  Produktunterlagen nicht manuell bestätigt wurden.
+  Produktunterlagen nicht manuell bestätigt wurden. Ohne explizite Derivate-WKN wird kein historisch
+  verknüpftes Produkt als identifiziert ausgegeben.
 - Bilder sind auf PNG/JPEG/WebP, zwei MiB und eine begrenzte Pixelzahl beschränkt. Tesseract läuft
   lokal ohne Netzwerk und mit Zeitlimit.
 
@@ -66,3 +75,13 @@ docker compose run --rm --no-deps --network none \
 
 Der Lauf verwendet nur das kontrollierte Beispiel, startet keine dauerhaften Dienste und benötigt
 weder Datenbank noch Netzwerk. Es erfolgt kein Deployment durch diesen PR.
+
+## Datenabdeckung und externer Blocker
+
+Der Fixture-Adapter umfasst sechs Aktien aus Deutschland und den USA. Er dient ausschließlich den
+Blind-, Mehrdeutigkeits-, Lookahead- und Out-of-Universe-Regressionen. Für echten allgemeinen
+Betrieb fehlt eine budgetkompatible, lizenzrechtlich zulässige Quelle mit historischem
+Publikations- und Verfügbarkeitszeitpunkt für Unternehmensidentitäten, Nachrichten, Kennzahlen und
+Optionsschein-Stammdaten. Kostenpflichtige APIs werden nicht automatisch aktiviert. Bis eine solche
+Quelle ausdrücklich konfiguriert und geprüft ist, muss die Anwendung bei fehlender datierter
+Evidenz enthalten.
