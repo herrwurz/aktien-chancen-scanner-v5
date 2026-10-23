@@ -116,11 +116,23 @@ def test_three_modes_are_separate_and_model_parameters_stay_hypothetical():
         item["assumptions"]["assumption_status"] == "hypothetical"
         for item in modeled["scenarios"].values()
     )
+    assert all(
+        "entry_ask" in item and "exit_value" in item for item in modeled["scenarios"].values()
+    )
     underlying = report["modes"]["UNDERLYING_SIGNAL"]
     assert underlying["target1"]["reached"] is True
     assert underlying["target2"]["reached"] is True
     assert underlying["max_drawdown_pct"] is not None
     assert underlying["derivative_return_pct"] is None
+    assert underlying["entry_date"] == "2025-08-06"
+    sensitivity = modeled["entry_price_sensitivity"]
+    assert set(sensitivity["one_at_a_time_pct"]) == {
+        "volatility",
+        "ratio",
+        "fx_usd_per_eur",
+        "spread_pct",
+    }
+    assert sensitivity["status"] == "hypothetical"
 
 
 def test_missing_product_parameters_block_model_instead_of_being_invented():
@@ -178,6 +190,7 @@ def test_modeled_twenty_day_exit_is_conditional_on_loss():
     assumptions["derivative_rules"].update(target1="9", target2="10", stop1="0.0001")
     bars = [
         {"date": "2025-08-05", "open": "171", "high": "172", "low": "170", "close": "171"},
+        {"date": "2025-08-06", "open": "171", "high": "172", "low": "170", "close": "171"},
         {"date": "2025-08-26", "open": "165", "high": "166", "low": "164", "close": "165"},
     ]
     report = build_three_mode_report(
@@ -206,3 +219,96 @@ def test_split_session_blocks_modeled_derivative_until_terms_are_reconciled():
         "split_terms_reconciliation_required"
         in report["modes"]["MODELED_DERIVATIVE"]["missing_assumptions"]
     )
+
+
+def test_daily_bars_enter_only_on_first_complete_session_after_publication():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    report = build_three_mode_report(
+        _bars(),
+        assumptions=_assumptions(),
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+    )
+    quality = report["underlying_data_quality"]
+    assert quality["excluded_publication_day"] == "2025-08-05"
+    assert quality["coverage_start"] == "2025-08-06"
+    assert (
+        quality["entry_policy"]
+        == "first complete later session; daily bars have no intraday quotes"
+    )
+
+
+def test_model_stops_at_maturity_and_does_not_invent_settlement():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    assumptions = _assumptions()
+    assumptions["product"]["maturity"] = "2025-08-07"
+    assumptions["derivative_rules"].update(target1="99", target2="100", stop1="0.0001")
+    bars = _bars()
+    bars[1].update(open="200", high="202", low="198", close="201")
+    report = build_three_mode_report(
+        bars,
+        assumptions=assumptions,
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+    )
+    model = report["modes"]["MODELED_DERIVATIVE"]
+    assert report["underlying_data_quality"]["coverage_end"] == "2025-08-06"
+    assert all(len(item["path"]) == 1 for item in model["scenarios"].values())
+    assert all(
+        item["status"] == "expired_without_verified_settlement"
+        for item in model["scenarios"].values()
+    )
+    assert all(item["return_pct"] is None for item in model["scenarios"].values())
+
+
+def test_dividend_events_are_reported_but_continuous_yield_remains_an_assumption():
+    from scanner.hebeltrader.derivative_model import build_three_mode_report
+
+    bars = _bars()
+    bars[1]["dividend_cash"] = "1.30"
+    report = build_three_mode_report(
+        bars,
+        assumptions=_assumptions(),
+        publication_at=datetime(2025, 8, 5, 6, 15, tzinfo=UTC),
+    )
+    assert report["underlying_data_quality"]["dividend_sessions"] == ["2025-08-06"]
+    assert report["underlying_data_quality"]["dividend_treatment"] == (
+        "events disclosed only; BSM uses each scenario's hypothetical continuous dividend yield"
+    )
+
+
+def test_bsm_fx_ratio_and_expiry_reference_cases():
+    from scanner.hebeltrader.derivative_model import black_scholes_merton_call
+
+    base = black_scholes_merton_call(
+        spot="100",
+        strike="100",
+        years="1",
+        volatility="0.2",
+        rate="0.05",
+        dividend_yield="0",
+        ratio="1",
+        fx_usd_per_eur="1",
+    )
+    scaled = black_scholes_merton_call(
+        spot="100",
+        strike="100",
+        years="1",
+        volatility="0.2",
+        rate="0.05",
+        dividend_yield="0",
+        ratio="0.1",
+        fx_usd_per_eur="2",
+    )
+    expiry = black_scholes_merton_call(
+        spot="210",
+        strike="190",
+        years="0",
+        volatility="0.2",
+        rate="0.05",
+        dividend_yield="0.03",
+        ratio="0.1",
+        fx_usd_per_eur="1.25",
+    )
+    assert abs(scaled - base / Decimal("20")) < Decimal("0.0000001")
+    assert expiry == Decimal("1.6")

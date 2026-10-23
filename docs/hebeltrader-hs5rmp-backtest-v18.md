@@ -48,7 +48,7 @@ bleiben Pflicht; Rechte, Handelszeiten und Lückenprüfung werden manuell freige
 Manifest und Index sind SHA-256-gebunden und unveränderlich.
 
 ```bash
-python -m scanner.hebeltrader.cli derivative-data import-quotes \
+python -m scanner.hebeltrader.derivatives_cli import-quotes \
   --input /secure/hs5rmp-authorized.csv \
   --metadata /secure/hs5rmp-metadata.json \
   --archive-dir reports/hebeltrader/hs5rmp-quotes \
@@ -87,8 +87,8 @@ blockiert, statt einen Wert zu ergänzen.
 Aus einer bereits normalisierten Tiingo-Datei läuft die Analyse vollständig offline:
 
 ```bash
-python -m scanner.hebeltrader.cli derivative-data scenario \
-  --underlying reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized.json \
+python -m scanner.hebeltrader.derivatives_cli scenario \
+  --underlying reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized-v17.json \
   --assumptions docs/hebeltrader-hs5rmp-model-assumptions-v18.example.json \
   --publication-at 2025-08-05T08:15:00+02:00 \
   --output reports/hebeltrader/tiingo-pilot-jnj/hs5rmp-three-modes.json
@@ -99,38 +99,74 @@ Das Ergebnis bleibt `training_eligible=false`. Ein modellierter Gewinn darf wede
 
 ## Hetzner-Prüflauf ohne Netzwerkzugriff
 
-Die vorhandene Tiingo-Datei wird mit dem V1.7-Befehl `tiingo import` unverändert archiviert.
-Erwartete 115 Zeilen und Datumsgrenzen müssen am Server gemessen werden. Die Datei dient nur zur
-zeitlichen Plausibilisierung des JNJ-Basiswerts; sie darf kein HS5RMP-Ereignis und keinen
-Optionsscheinpreis erzeugen.
+Die vorhandene normalisierte Tiingo-Datei wird direkt und schreibgeschützt eingebunden. Erwartete
+115 Zeilen, Datumsgrenzen, zwei Dividenden, keine Splits und der gemeldete Manifest-Hash werden vor
+dem Modelllauf geprüft. Die Datei dient nur zur zeitlichen Plausibilisierung des JNJ-Basiswerts;
+sie darf keinen beobachteten HS5RMP-Preis erzeugen. Bei EOD-Daten beginnt die Auswertung mit der
+ersten vollständigen Handelssitzung **nach** dem Publikationstag. Bars am oder nach dem
+Laufzeitende werden ausgeschlossen, weil Laufzeitende weder letzte Handelbarkeit noch eine
+bestimmte Abrechnung belegt.
 
 Konkreter Serverablauf für die gemeldete Datei mit 115 Handelstagen:
 
 ```bash
+set -euo pipefail
 cd /opt/aktien-chancen-scanner-v5
+git switch main
+git pull --ff-only origin main
+export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:?POSTGRES_PASSWORD muss bereits gesetzt sein}"
+docker compose build api
 
-python -m scanner.hebeltrader.cli tiingo import \
-  --input reports/hebeltrader/tiingo-pilot-jnj/jnj-historical.json \
-  --cache-dir reports/hebeltrader/tiingo-pilot-jnj/cache \
-  --output reports/hebeltrader/tiingo-pilot-jnj/import.json \
-  --symbol JNJ --from 2025-08-05 --to 2026-01-16 \
-  --retrieved-at ORIGINALER_ABRUFZEITPUNKT_MIT_ZEITZONE
+INPUT="$PWD/reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized-v17.json"
+ASSUMPTIONS="$PWD/docs/hebeltrader-hs5rmp-model-assumptions-v18.example.json"
+REPORT_DIR="$PWD/reports/hebeltrader"
+OUTPUT_NAME="hs5rmp-three-modes-v18-$(date -u +%Y%m%dT%H%M%SZ).json"
 
-python -m scanner.hebeltrader.cli tiingo replay \
-  --cache-dir reports/hebeltrader/tiingo-pilot-jnj/cache \
-  --manifest-sha256 MANIFEST_SHA256_AUS_IMPORT_JSON \
-  --output reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized.json
+python3 - "$INPUT" <<'PY'
+import json, sys
+p = json.load(open(sys.argv[1], encoding="utf-8"))
+b = p["bars"]
+assert len(b) == 115, len(b)
+assert b[0]["date"][:10] == "2025-08-05"
+assert b[-1]["date"][:10] == "2026-01-16"
+assert sum(float(x.get("dividend_cash", 0)) != 0 for x in b) == 2
+assert all(float(x.get("split_factor", 1)) == 1 for x in b)
+assert p["manifest_sha256"] == "0b48d417a5f896740dd138d5621fbb369ba09762c04f84adc7c001195998f075"
+print("JNJ-Eingang geprüft: 115 Bars, 2 Dividenden, 0 Splits")
+PY
 
-python -m scanner.hebeltrader.cli derivative-data scenario \
-  --underlying reports/hebeltrader/tiingo-pilot-jnj/jnj-normalized.json \
-  --assumptions docs/hebeltrader-hs5rmp-model-assumptions-v18.example.json \
-  --publication-at 2025-08-05T08:15:00+02:00 \
-  --output reports/hebeltrader/tiingo-pilot-jnj/hs5rmp-three-modes.json
+docker run --rm --network none --read-only --tmpfs /tmp \
+  --user "$(id -u):$(id -g)" \
+  --mount "type=bind,src=$INPUT,dst=/input/jnj-normalized-v17.json,readonly" \
+  --mount "type=bind,src=$ASSUMPTIONS,dst=/input/assumptions.json,readonly" \
+  --mount "type=bind,src=$REPORT_DIR,dst=/reports" \
+  chancen-scanner-v6:local \
+  python -m scanner.hebeltrader.derivatives_cli scenario \
+    --underlying /input/jnj-normalized-v17.json \
+    --assumptions /input/assumptions.json \
+    --publication-at 2025-08-05T08:15:00+02:00 \
+    --output "/reports/$OUTPUT_NAME"
+
+python3 - "$REPORT_DIR/$OUTPUT_NAME" <<'PY'
+import json, sys
+r = json.load(open(sys.argv[1], encoding="utf-8"))
+print("Bericht:", sys.argv[1])
+for mode, value in r["modes"].items():
+    print(mode, value["status"])
+    for name, scenario in value.get("scenarios", {}).items():
+        print(" ", name, "entry=", scenario["entry_ask"],
+              "status=", scenario["status"], "return_pct=", scenario["return_pct"],
+              "events=", scenario["events"])
+print("Unsicherheiten:", r["modes"]["MODELED_DERIVATIVE"]["caveat"])
+PY
 ```
 
-Vor Auswertung werden `raw_sha256`, exakt 115 Bars, Zeitraum 05.08.2025 bis 16.01.2026,
-Splits, Dividenden und fehlende Handelssitzungen geprüft. Diese Messwerte werden erst nach dem
-Serverlauf berichtet; die Codex-Umgebung enthält die Datei nicht.
+Der Block benötigt weder Internet noch API-Key und startet weder PostgreSQL noch andere
+Compose-Dienste. Immich und PDFs werden nicht eingebunden. Das Ergebnis enthält für jedes
+Szenario Einstieg, Status, Ereignisse, gegebenenfalls Ausstieg/Rendite sowie eine isolierte
+±10-Prozent-Sensitivität für Volatilität, Bezugsverhältnis, FX und Spread. Dividendenereignisse
+werden offengelegt; die BSM-Bewertung verwendet weiterhin die ausdrücklich hypothetische
+kontinuierliche Dividendenrendite des jeweiligen Szenarios.
 
 Danach werden Produktunterlagen und Quoteexport privat archiviert, die Metadaten von einem
 Reviewer freigegeben und `derivative-data backtest` ausgeführt. Der JSON-Ausgang bleibt privat,
@@ -157,7 +193,7 @@ solche ausgewiesen und nicht als offizielle Produktverifikation umgedeutet.
 Ein neuer Bestand wird ohne API- oder Datenbankzugriff priorisiert:
 
 ```bash
-python -m scanner.hebeltrader.cli derivative-data prioritize \
+python -m scanner.hebeltrader.derivatives_cli prioritize \
   --input /secure/recommendation-evidence.json \
   --output-prefix reports/hebeltrader/derivative-acquisition-v18
 ```

@@ -129,7 +129,7 @@ def _fair(product, scenario, spot, day):
     )
 
 
-def _scenario(name, bars, product, scenario, rules):
+def _scenario(name, bars, product, scenario, rules, *, coverage_reaches_maturity=False):
     required = {
         "volatility",
         "rate",
@@ -148,6 +148,18 @@ def _scenario(name, bars, product, scenario, rules):
     targets = {key: _decimal(rules[key], positive=True) for key in ("target1", "target2", "stop1")}
     fair_entry = _fair(product, scenario, bars[0]["open"], bars[0]["date"])
     entry = fair_entry * (1 + spread / 2)
+    if entry <= 0:
+        return {
+            "method": "Black-Scholes-Merton scenario",
+            "status": "invalid_zero_model_entry",
+            "return_pct": None,
+            "entry_ask": _number(entry),
+            "exit_value": None,
+            "events": [],
+            "path": [],
+            "assumptions": scenario,
+            "collision_policy": "no execution",
+        }
     events = []
     first = None
     modeled_path = []
@@ -176,6 +188,7 @@ def _scenario(name, bars, product, scenario, rules):
                 "status": "ambiguous_intraday",
                 "return_pct": None,
                 "entry_ask": _number(entry),
+                "exit_value": None,
                 "events": events,
                 "path": modeled_path,
                 "assumptions": scenario,
@@ -215,13 +228,53 @@ def _scenario(name, bars, product, scenario, rules):
             return _closed_scenario(name, scenario, entry, average, events, modeled_path)
     return {
         "method": "Black-Scholes-Merton scenario",
-        "status": "open_or_censored",
+        "status": (
+            "expired_without_verified_settlement"
+            if coverage_reaches_maturity
+            else "open_or_censored"
+        ),
         "return_pct": None,
         "entry_ask": _number(entry),
+        "exit_value": None,
         "events": events,
         "path": modeled_path,
         "assumptions": scenario,
         "collision_policy": "stop first" if name == "conservative" else "target first",
+    }
+
+
+def _entry_sensitivity(bar, product, scenario):
+    """One-at-a-time entry-ask sensitivity around the middle hypothetical case."""
+    spread = _decimal(scenario["spread_pct"])
+
+    def entry(candidate_product, candidate_scenario):
+        fair = _fair(candidate_product, candidate_scenario, bar["open"], bar["date"])
+        return fair * (1 + _decimal(candidate_scenario["spread_pct"]) / 2)
+
+    base = entry(product, scenario)
+    results = {}
+    for field in ("volatility", "ratio", "fx_usd_per_eur", "spread_pct"):
+        values = {}
+        for label, multiplier in (("minus_10pct", Decimal("0.9")), ("plus_10pct", Decimal("1.1"))):
+            candidate_product = dict(product)
+            candidate_scenario = dict(scenario)
+            destination = (
+                candidate_product if field in {"ratio", "fx_usd_per_eur"} else candidate_scenario
+            )
+            destination[field] = _number(_decimal(destination[field]) * multiplier)
+            value = entry(candidate_product, candidate_scenario)
+            values[label] = {
+                "entry_ask": _number(value),
+                "change_pct": _number((value - base) / base * 100) if base else None,
+            }
+        results[field] = values
+    return {
+        "status": "hypothetical",
+        "method": "one-at-a-time +/-10% around middle scenario",
+        "base_entry_ask": _number(base),
+        "base_spread_pct": _number(spread),
+        "one_at_a_time_pct": results,
+        "caveat": "Local model sensitivity, not confidence bounds or observed HS5RMP prices.",
     }
 
 
@@ -231,6 +284,7 @@ def _closed_scenario(name, assumptions, entry, exit_value, events, path):
         "status": "hypothetical_closed",
         "return_pct": _number((exit_value - entry) / entry * 100),
         "entry_ask": _number(entry),
+        "exit_value": _number(exit_value),
         "events": events,
         "path": path,
         "assumptions": assumptions,
@@ -251,9 +305,12 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
         for row in bars
         if _decimal(row.get("dividend_cash", "0")) != Decimal(0)
     ]
-    normalized = [row for row in _normalize_bars(bars) if row["date"] >= publication_at.date()]
+    all_normalized = _normalize_bars(bars)
+    # EOD bars cannot establish an executable price after an intraday publication.
+    # Start at the first complete later session, regardless of the publication clock.
+    normalized = [row for row in all_normalized if row["date"] > publication_at.date()]
     if not normalized:
-        raise ValueError("no underlying session on or after publication")
+        raise ValueError("no complete underlying session after publication")
     product = assumptions.get("product", {})
     required = (
         "strike",
@@ -265,6 +322,19 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
         "source_note",
     )
     missing = [key for key in required if not product.get(key)]
+    maturity = None
+    if product.get("maturity"):
+        try:
+            maturity = date.fromisoformat(product["maturity"])
+        except (TypeError, ValueError):
+            missing.append("maturity:invalid")
+    coverage_reaches_maturity = False
+    if maturity is not None:
+        # Maturity is not evidence of the last tradable instant or settlement terms.
+        coverage_reaches_maturity = any(row["date"] >= maturity for row in normalized)
+        normalized = [row for row in normalized if row["date"] < maturity]
+        if not normalized:
+            raise ValueError("no complete tradable session between publication and maturity")
     if split_sessions:
         missing.append("split_terms_reconciliation_required")
     evidence = product.get("parameter_evidence", {})
@@ -308,9 +378,19 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
                 modeled.update(status="blocked", missing_assumptions=missing_scenarios)
             else:
                 modeled["scenarios"] = {
-                    name: _scenario(name, normalized, product, scenarios[name], rules)
+                    name: _scenario(
+                        name,
+                        normalized,
+                        product,
+                        scenarios[name],
+                        rules,
+                        coverage_reaches_maturity=coverage_reaches_maturity,
+                    )
                     for name in names
                 }
+                modeled["entry_price_sensitivity"] = _entry_sensitivity(
+                    normalized[0], product, scenarios["middle"]
+                )
     observed = observed_derivative or {
         "status": "unavailable",
         "return_pct": None,
@@ -318,6 +398,7 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
         "training_eligible": False,
     }
     return {
+        "status": "three_mode_report",
         "format_version": 1,
         "publication_at": publication_at.isoformat(),
         "underlying_data_quality": {
@@ -326,6 +407,15 @@ def build_three_mode_report(bars, *, assumptions, publication_at, observed_deriv
             "coverage_end": normalized[-1]["date"].isoformat(),
             "split_sessions": split_sessions,
             "dividend_sessions": dividend_sessions,
+            "dividend_treatment": (
+                "events disclosed only; BSM uses each scenario's hypothetical continuous "
+                "dividend yield"
+            ),
+            "excluded_publication_day": publication_at.date().isoformat(),
+            "entry_policy": "first complete later session; daily bars have no intraday quotes",
+            "maturity_policy": (
+                "bars on/after maturity excluded; no last-trading time or settlement invented"
+            ),
             "price_scope": "raw underlying OHLC; no derivative substitution",
         },
         "modes": {
