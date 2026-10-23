@@ -1,0 +1,96 @@
+{
+  "product": {
+    "strike": "190",
+    "maturity": "2026-01-16",
+    "ratio": "0.1",
+    "exercise_style": "european_call",
+    "currency": "EUR",
+    "parameter_status": "hypothetical",
+    "source_note": "Strike and maturity are recommendation observations. Ratio and European exercise are unverified scenario assumptions, not official HS5RMP terms.",
+    "parameter_evidence": {
+      "strike": {
+        "status": "recommendation_observed",
+        "source": "HEBELTRADER 130/2025 page 1; not an official termsheet"
+      },
+      "maturity": {
+        "status": "recommendation_observed",
+        "source": "HEBELTRADER 130/2025 page 1; not an official termsheet"
+      },
+      "ratio": {
+        "status": "hypothetical",
+        "source": "scenario assumption pending official termsheet"
+      },
+      "exercise_style": {
+        "status": "hypothetical",
+        "source": "Black-Scholes-Merton scenario assumption pending official termsheet"
+      }
+    }
+  },
+  "scenarios": {
+    "conservative": {
+      "assumption_status": "hypothetical",
+      "source_note": "120-session realized volatility times hypothetical 0.85 IV multiplier",
+      "volatility_window": "120",
+      "iv_multiplier": "0.85",
+      "rate": "0.03",
+      "dividend_yield": "0.04",
+      "spread_pct": "0.20",
+      "gap_haircut_pct": "0.15"
+    },
+    "middle": {
+      "assumption_status": "hypothetical",
+      "source_note": "60-session realized volatility times hypothetical 1.00 IV multiplier",
+      "volatility_window": "60",
+      "iv_multiplier": "1.00",
+      "rate": "0.035",
+      "dividend_yield": "0.035",
+      "spread_pct": "0.12",
+      "gap_haircut_pct": "0.08"
+    },
+    "optimistic": {
+      "assumption_status": "hypothetical",
+      "source_note": "20-session realized volatility times hypothetical 1.15 IV multiplier",
+      "volatility_window": "20",
+      "iv_multiplier": "1.15",
+      "rate": "0.04",
+      "dividend_yield": "0.03",
+      "spread_pct": "0.06",
+      "gap_haircut_pct": "0.03"
+    }
+  },
+  "reference_prices": {
+    "indicative_call_price": "0.17",
+    "date": "2025-08-05",
+    "status": "recommendation_observed",
+    "source": "HEBELTRADER 130/2025 page 1; indicative, not an executable quote"
+  },
+  "derivative_rules": {
+    "target1": "0.70",
+    "target2": "2.30",
+    "stop1": "0.05",
+    "partial_fraction": "0.5",
+    "loss_after_days": 20,
+    "loss_unit": "calendar_days",
+    "time_rule_status": "hypothetical_interpretation"
+  },
+  "underlying_levels": {
+    "target1": "190",
+    "target2": "216",
+    "stop1": "160"
+  },
+  "v20_analysis": {
+    "iv_stress_path": {
+      "start_date": "2025-08-06",
+      "end_date": "2026-01-15",
+      "start_factor": "1",
+      "end_factor": "0.5",
+      "status": "hypothetical_explicit_stress",
+      "source_note": "Linear 50% IV compression stress bound; not observed HS5RMP implied volatility and not calibrated to EUR 0.17"
+    },
+    "slippage": {
+      "zero": "0",
+      "stress": "0.25",
+      "stress_rationale": "25% additional exit-price haircut as an explicit illiquidity stress bound; not an observed HS5RMP spread or execution cost"
+    }
+  }
+}
