@@ -40,6 +40,9 @@ def test_dashboard_and_health(client):
     assert "BTCUSDT" in page.text
     assert "fixture" in page.text
     assert "Keine Handelsfreigabe" in page.text
+    detective = client.get("/hebeltrader")
+    assert detective.status_code == 200
+    assert "HEBELTRADER analysieren" in detective.text
 
 
 def test_signals_include_evidence_and_are_read_only(client):
@@ -52,6 +55,24 @@ def test_signals_include_evidence_and_are_read_only(client):
     assert signal["actionable"] is False
     assert signal["candle_close_time"] < signal["evaluated_at"]
     assert client.post("/api/signals", json={}).status_code == 405
+
+
+def test_detective_text_api_returns_explained_unconfirmed_candidates(client):
+    response = client.post(
+        "/api/hebeltrader/detective/analyze",
+        json={
+            "teaser_text": (
+                "US-Gesundheitskonzern mit Pharma und Medizintechnik. Call WKN HS5RMP."
+            ),
+            "publication_at": "2025-08-05T08:15:00+02:00",
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["identification"]["selected_wkn"] == "853260"
+    assert payload["derivative_candidate"]["candidates"][0]["confirmed"] is False
+    assert payload["automatic_confirmation"] is False
+    assert client.post("/api/hebeltrader/detective/analyze", json={}).status_code == 422
 
 
 def test_filters_and_pagination(client):

@@ -1,5 +1,14 @@
 # Multi-Asset Chancen-Scanner V6
 
+Der HEBELTRADER-Detektiv-MVP verarbeitet Teasertext oder Screenshots lokal und erstellt eine
+begründete, unbestätigte Kandidatenrangliste. Architektur, Grenzen, Offline-CLI und Hetzner-Test:
+[HEBELTRADER-Detektiv MVP](docs/architecture-hebeltrader-detective-mvp.md). Die Identifikation ist
+keine Kaufempfehlung; Produktkandidaten werden ohne offizielle Belege nicht bestätigt.
+Der mitgelieferte Kandidaten-/Nachrichtenadapter enthält nur sechs synthetische, datierte
+Offline-Fixtures und besitzt keine allgemeine Marktabdeckung. Ohne eine lizenzrechtlich zulässige,
+zeitpunktgenaue externe Unternehmens- und Nachrichtenquelle ist ein allgemeiner Detektivbetrieb
+technisch blockiert; unbekannte Titel führen deshalb zur Enthaltung statt zu einem Scheintreffer.
+
 Der aktuelle HS5RMP-Derivatepilot ist in
 [Scanner V6 V1.8](docs/hebeltrader-hs5rmp-backtest-v18.md) dokumentiert. Ohne autorisierte,
 ausreichende Bid-/Ask-Historie wird keine Optionsscheinrendite ausgegeben.

@@ -2,6 +2,15 @@
 FROM python:3.12.12-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
+RUN --mount=type=secret,id=proxy_ca \
+    if [ -f /run/secrets/proxy_ca ]; then \
+      cp /run/secrets/proxy_ca /usr/local/share/ca-certificates/session-proxy.crt; \
+      update-ca-certificates; \
+    fi \
+    && sed -i 's|http://deb.debian.org|https://deb.debian.org|g' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-deu \
+    && rm -rf /var/lib/apt/lists/*
 COPY requirements.lock ./
 # Optional CA secret supports managed build proxies without embedding certificates.
 RUN --mount=type=secret,id=proxy_ca \
