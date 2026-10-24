@@ -97,3 +97,53 @@ class ResearchService:
         return self.fundamental_provider.load_fundamentals(
             AssetIdentity.model_validate(identity), as_of=as_of
         )
+
+
+class IndexedResearchService:
+    """Shared read-only index facade; it never creates a strategy decision."""
+
+    def __init__(self, index):
+        self.index = index
+
+    def universe(self, *, as_of):
+        return {**self.index.coverage(as_of), "strategy_decision": None}
+
+    def candidates(self, query, *, as_of, limit=50):
+        result = self.index.candidates(query, as_of=as_of, limit=limit)
+        return {
+            **result.model_dump(mode="json"),
+            "strategy_consumers": [
+                "HEBELTRADER_DETECTIVE",
+                "short_term_trading",
+                "medium_term_investing",
+            ],
+            "strategy_decision": None,
+        }
+
+    def events(self, identity, *, as_of):
+        return self.index.evidence(identity, as_of=as_of, kinds={"event", "news"})
+
+    def fundamentals(self, identity, *, as_of):
+        return self.index.evidence(identity, as_of=as_of, kinds={"fact"})
+
+    def prices(self, identity, *, as_of):
+        return {"status": "unavailable", "prices": [], "as_of": as_of.isoformat()}
+
+    def coverage(self, *, as_of):
+        return self.index.coverage(as_of)
+
+    def strategy_availability(self, identity, *, as_of):
+        identity = AssetIdentity.model_validate(identity)
+        return {
+            "asset": identity.model_dump(mode="json"),
+            "as_of": as_of.isoformat(),
+            "short_term_trading": {
+                "required": ["price", "volume", "event", "liquidity"],
+                "decision_status": "unavailable",
+            },
+            "medium_term_investing": {
+                "required": ["fundamentals", "growth", "valuation", "trend", "catalysts"],
+                "decision_status": "unavailable",
+            },
+            "strategy_decision": None,
+        }

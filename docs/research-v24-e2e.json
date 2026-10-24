@@ -1,0 +1,115 @@
+{
+  "as_of": "2026-10-24T06:30:00+00:00",
+  "blind_query": "new product",
+  "blind_query_contains_company_identifier": false,
+  "candidate_result": {
+    "full_universe_size": 8022,
+    "matched_before_limit": 47,
+    "stage_a_limit": 50,
+    "status": "ok",
+    "top_3": [
+      {
+        "cik": "320193",
+        "confirmed": [
+          "event:issuer_announcement",
+          "text:new product"
+        ],
+        "contradicted": [],
+        "evidence_source_ids": [
+          "issuer-feed:0e9fda14f2da3867bf2fa5d8318c1c4d97f70c3ab1433a442d4bde07fc27d734",
+          "issuer-feed:14921bba306bbc2176c68ddfd1abff7ef4c3609dcc57c5c5dbb87da55e099de6",
+          "issuer-feed:18f38deb57073cbf861a5de07f68ae45b157a6a8cf8be5bd29b75681a9b29562",
+          "issuer-feed:3416e70818131438428e0f03040d9e5ec86e987b91a184c3a39d95dba47ef015",
+          "issuer-feed:373921b96a1395d939196eee36eed7744da2d504e3594a6bf888b2e9881dbea6",
+          "issuer-feed:3d12005bf8e2a452ce48ebc506e7cddc1fd81e73827ed9a63b0b5f3faac7f8ca",
+          "issuer-feed:401594029845115eec7cbc0ed2c822ae8840a32c69d46a8248321112ad497186",
+          "issuer-feed:4157ee8ff904fa3c02ba2de1799757e7c10bea6f6f3d937b4df69bc7f0065b4d"
+        ],
+        "name": "Apple Inc.",
+        "rank": 1,
+        "score_not_probability": 20,
+        "ticker": "AAPL",
+        "unknown": []
+      },
+      {
+        "cik": "1053988",
+        "confirmed": [
+          "text:new product"
+        ],
+        "contradicted": [],
+        "evidence_source_ids": [],
+        "name": "BLACKROCK MUNIHOLDINGS NEW JERSEY QUALITY FUND, INC.",
+        "rank": 2,
+        "score_not_probability": 10,
+        "ticker": "MUJ",
+        "unknown": [
+          "event:issuer_announcement"
+        ]
+      },
+      {
+        "cik": "882150",
+        "confirmed": [
+          "text:new product"
+        ],
+        "contradicted": [],
+        "evidence_source_ids": [],
+        "name": "BLACKROCK MUNIYIELD NEW YORK QUALITY FUND, INC.",
+        "rank": 3,
+        "score_not_probability": 10,
+        "ticker": "MYN",
+        "unknown": [
+          "event:issuer_announcement"
+        ]
+      }
+    ],
+    "visible_universe_size": 8022
+  },
+  "claims": {
+    "article_full_text_archived": false,
+    "investment_signal": false,
+    "probability_calibrated": false
+  },
+  "integrity": {
+    "index_payload_sha256": "50762d91403e4c1562bc68c587b55e44e0e16eb6a5942a0cdecd1e9c6a17f95f",
+    "news_content_sha256": [
+      "a0260d3021648f0c200654cbc818163537d2169bff0c8840b2b75ead742fbb90"
+    ],
+    "sec_raw_sha256": "d0cbfe38cc19bc798e3f8ca3071a186d7f5e8b4e329eb521694080fa13dd01a3"
+  },
+  "limitations": [
+    "real news coverage contains one allowlisted issuer feed only",
+    "top-1 is a real pipeline result but not evidence of global recall",
+    "query was selected from the feed topic after source selection and is not an independent accuracy benchmark",
+    "provider metadata does not establish that the announcement is financially positive",
+    "RSS metadata retention requires final operator legal review before production activation",
+    "no price, volume, liquidity, valuation, analyst revision or trading signal was evaluated"
+  ],
+  "provider_attempts": {
+    "gdelt_doc_2": {
+      "attempts": 2,
+      "fictional_fallback_used": false,
+      "http_status": 503,
+      "status": "unavailable"
+    },
+    "issuer_feed": {
+      "content_stored": "feed XML in local SHA cache; report stores metadata only",
+      "cost_eur": 0,
+      "items": 20,
+      "network_requests": 1,
+      "production_license_review_required": true,
+      "status": "ok",
+      "url": "https://www.apple.com/newsroom/rss-feed.rss"
+    }
+  },
+  "real_data": {
+    "cost_eur": 0.0,
+    "network_requests_in_replay": 0,
+    "news_items": 20,
+    "news_provider": "ISSUER_FEED",
+    "news_retrieved_at": "2026-10-24T06:21:54.896019+00:00",
+    "sec_issuers": 8022
+  },
+  "run_kind": "real_public_metadata_e2e",
+  "schema_version": 1,
+  "verdict": "real issuer metadata traversed feed, full SEC index and retrieval; AAPL ranked first, but global discovery and independent accuracy are not established"
+}

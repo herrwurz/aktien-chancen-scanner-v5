@@ -9,6 +9,7 @@ import httpx
 from pydantic import BaseModel, HttpUrl, model_validator
 
 from scanner.news import NewsBatch, NewsItem
+from scanner.news_providers.cache import ImmutableNewsCache
 
 
 class IssuerFeedConfig(BaseModel):
@@ -40,6 +41,7 @@ class IssuerFeedNewsSource:
         timeout=10,
     ):
         self.configs = list(configs)
+        self.cache = ImmutableNewsCache(root)
         self.allow_network = allow_network
         self.remaining = max_requests
         self.client = client
@@ -55,20 +57,39 @@ class IssuerFeedNewsSource:
                 retrieved_at=self.clock(),
                 errors=["feed_not_allowlisted"],
             )
-        if not self.allow_network or self.remaining < len(matches):
-            raise ValueError("explicit network authorization and request limit required")
-        items, retrieved = [], self.clock()
+        items, retrieved, request_count, cache_hits = [], self.clock(), 0, 0
         for config in matches:
-            self.remaining -= 1
-            client = self.client or httpx.Client(timeout=self.timeout, follow_redirects=False)
-            own = self.client is None
-            try:
-                response = client.get(str(config.url), timeout=self.timeout, follow_redirects=False)
-                response.raise_for_status()
-                raw = response.content
-            finally:
-                if own:
-                    client.close()
+            request = {"url": str(config.url), "provider": "ISSUER_FEED"}
+            cached = self.cache.read(request)
+            if cached:
+                raw, manifest = cached
+                retrieved = datetime.fromisoformat(manifest["retrieved_at"])
+                cache_hits += 1
+            else:
+                if not self.allow_network or self.remaining <= 0:
+                    raise ValueError("explicit network authorization and request limit required")
+                self.remaining -= 1
+                request_count += 1
+                client = self.client or httpx.Client(timeout=self.timeout, follow_redirects=False)
+                own = self.client is None
+                try:
+                    response = client.get(
+                        str(config.url), timeout=self.timeout, follow_redirects=False
+                    )
+                    response.raise_for_status()
+                    raw = response.content
+                finally:
+                    if own:
+                        client.close()
+                retrieved = self.clock()
+                self.cache.write(
+                    request,
+                    raw,
+                    {
+                        "retrieved_at": retrieved.isoformat(),
+                        "license_reference": config.license_reference,
+                    },
+                )
             if len(raw) > 2 * 1024 * 1024:
                 raise ValueError("issuer feed exceeds size limit")
             lowered = raw.lower()
@@ -124,6 +145,7 @@ class IssuerFeedNewsSource:
             status="ok",
             items=items[:limit],
             retrieved_at=retrieved,
-            request_count=len(matches),
+            cache_hit=cache_hits == len(matches),
+            request_count=request_count,
             coverage={"allowlisted_feeds": len(matches)},
         )
