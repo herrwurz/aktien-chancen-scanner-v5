@@ -189,3 +189,24 @@ def test_shared_research_service_exposes_index_without_strategy_signal(tmp_path)
     availability = service.strategy_availability(asset(1), as_of=NOW)
     assert availability["short_term_trading"]["decision_status"] == "unavailable"
     assert availability["medium_term_investing"]["decision_status"] == "unavailable"
+
+
+def test_configured_indexed_research_mode_uses_same_cli_service_factory(tmp_path):
+    from scanner.config import Settings
+    from scanner.hebeltrader.detective.factory import build_detective
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+    from scanner.research_index.builder import build_index
+
+    path = tmp_path / "index.db"
+    build_index(path, assets=[asset(1)], events=[], facts=[], news=[])
+    settings = Settings(
+        _env_file=None,
+        detective_research_mode="indexed_research",
+        detective_research_index=path,
+    )
+    report = build_detective(settings).analyze(
+        DetectiveRequest(teaser_text="US-Versicherer", publication_at=NOW)
+    )
+    assert report["research_mode"] == "indexed_research"
+    assert report["candidates"][0]["ticker"] == "C1"
+    assert report["candidate_source"]["coverage"]["full_universe_size"] == 1
