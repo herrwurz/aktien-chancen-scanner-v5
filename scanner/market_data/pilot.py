@@ -155,6 +155,9 @@ def run_tiingo_pilot(
                     raw_sha256=batch.raw_sha256,
                     manifest_sha256=batch.manifest_sha256,
                     retrieved_at=batch.retrieved_at.isoformat(),
+                    data_age_seconds=max(
+                        0, int((as_of - batch.bars[-1].session_end_at).total_seconds())
+                    ),
                 )
             )
         except (OSError, ValueError, KeyError, TypeError) as exc:

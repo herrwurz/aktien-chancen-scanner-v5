@@ -142,3 +142,18 @@ def test_modeled_query_is_hypothetical_and_never_uses_pre_close_data(tmp_path):
     assert after_close["availability"] == "hypothetical_modeled_session_close"
     assert after_close["historical_availability_verified"] is False
     assert after_close["training_eligible"] is False
+
+
+def test_strict_query_compares_retrieval_instants_across_timezone_offsets(tmp_path):
+    from scanner.market_data.archive import MarketDataArchive
+
+    archive = MarketDataArchive(tmp_path / "market.sqlite")
+    archive.import_batch(batch(retrieved_at="2025-01-06T12:00:00+02:00"))
+    result = archive.prices(
+        "sec:0000320193",
+        start="2025-01-02",
+        end="2025-01-02",
+        as_of=datetime(2025, 1, 6, 10, 30, tzinfo=UTC),
+        availability_mode="strict",
+    )
+    assert len(result["prices"]) == 1

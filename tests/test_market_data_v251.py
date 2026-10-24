@@ -75,6 +75,7 @@ def test_tiingo_normalization_keeps_raw_adjusted_actions_and_quotes_separate():
     ]
     assert batch.quotes == []
     assert batch.quote_availability == "not_provided"
+    assert batch.source_status == "raw_archive_integrity_verified"
     assert batch.training_eligible is False
 
 
@@ -159,3 +160,18 @@ def test_eodhd_normalization_does_not_invent_adjusted_prices_or_quotes():
     assert batch.actions == []
     assert batch.quotes == []
     assert batch.bars[0].session_end_at.isoformat() == "2025-01-02T16:00:00-05:00"
+
+
+def test_contract_preserves_other_corporate_actions_without_invented_value():
+    from scanner.market_data.models import CorporateAction
+
+    action = CorporateAction(
+        kind="other",
+        effective_date="2025-01-02",
+        value=None,
+        currency=None,
+        description="symbol change",
+        source_pointer="/actions/0",
+    )
+    assert action.kind == "other"
+    assert action.value is None

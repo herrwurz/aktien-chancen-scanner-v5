@@ -75,20 +75,25 @@ class DailyBar(StrictModel):
 
 
 class CorporateAction(StrictModel):
-    kind: Literal["dividend", "split"]
+    kind: Literal["dividend", "split", "other"]
     effective_date: date
-    value: Decimal
+    value: Decimal | None
     currency: str | None = None
+    description: str | None = None
     source_pointer: str
 
     @model_validator(mode="after")
     def valid_action(self):
-        if not self.value.is_finite() or self.value <= 0:
+        if self.kind in {"dividend", "split"} and (
+            self.value is None or not self.value.is_finite() or self.value <= 0
+        ):
             raise ValueError("invalid corporate action")
         if self.kind == "dividend" and self.currency is None:
             raise ValueError("dividend currency required")
         if self.kind == "split" and self.currency is not None:
             raise ValueError("split currency forbidden")
+        if self.kind == "other" and not self.description:
+            raise ValueError("other corporate action description required")
         return self
 
 
@@ -118,6 +123,7 @@ class MarketDataBatch(StrictModel):
     license_reference: str
     raw_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    source_status: Literal["raw_archive_integrity_verified"]
     availability_basis: Literal["modeled_session_close", "historically_verified"]
     training_eligible: bool = False
 

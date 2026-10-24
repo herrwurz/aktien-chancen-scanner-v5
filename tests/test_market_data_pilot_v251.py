@@ -155,6 +155,7 @@ def test_pilot_measures_sessions_but_does_not_infer_exchange_calendar_gaps(tmp_p
     assert report["status"] == "ok"
     assert report["successful_instruments"] == 10
     assert all(row["session_count"] == 250 for row in report["instruments"])
+    assert all(isinstance(row["data_age_seconds"], int) for row in report["instruments"])
     assert all(
         row["calendar_status"] == "unavailable_not_inferred" for row in report["instruments"]
     )

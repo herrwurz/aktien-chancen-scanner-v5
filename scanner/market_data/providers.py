@@ -43,6 +43,7 @@ def _common(record, listing, *, provider, bars, actions):
         license_reference=record["license"],
         raw_sha256=record["raw_sha256"],
         manifest_sha256=record["manifest_sha256"],
+        source_status="raw_archive_integrity_verified",
         availability_basis="modeled_session_close",
         training_eligible=False,
     )

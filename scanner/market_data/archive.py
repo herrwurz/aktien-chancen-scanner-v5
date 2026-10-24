@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from .models import MarketDataBatch
@@ -127,7 +127,7 @@ class MarketDataArchive:
                         _json(bar_value),
                         batch.manifest_sha256,
                         batch.raw_sha256,
-                        bar.retrieved_at.isoformat(),
+                        bar.retrieved_at.astimezone(UTC).isoformat(),
                     ),
                 )
                 result["inserted" if latest is None else "revised"] += 1
@@ -207,7 +207,7 @@ class MarketDataArchive:
         condition = ""
         if availability_mode == "strict":
             condition = "AND retrieved_at <= ?"
-            params.append(as_of.isoformat())
+            params.append(as_of.astimezone(UTC).isoformat())
         query = f"""
             SELECT * FROM bar_revision candidate
             WHERE asset_id=? AND session_date BETWEEN ? AND ? {condition}
@@ -221,7 +221,7 @@ class MarketDataArchive:
             ORDER BY session_date, provider
         """
         if availability_mode == "strict":
-            params.append(as_of.isoformat())
+            params.append(as_of.astimezone(UTC).isoformat())
         with self._connect() as db:
             rows = db.execute(query, params).fetchall()
         prices = []
