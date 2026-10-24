@@ -30,40 +30,40 @@
 
 **Files:** `scanner/research.py`, `scanner/research_index/{builder,models,repository}.py`, `tests/test_research_index_v24.py`
 
-- [ ] Add failing tests for fund downranking, separate evidence/identity text channels, weak-only unresolved results, and transparent coverage.
-- [ ] Add instrument classification provenance and channel-specific FTS rows.
-- [ ] Implement deterministic weighted ranking and a minimum-evidence gate.
-- [ ] Run focused tests and commit.
+- [x] Add failing tests for fund downranking, separate evidence/identity text channels, weak-only unresolved results, and transparent coverage.
+- [x] Add instrument classification provenance and channel-specific FTS rows.
+- [x] Implement deterministic weighted ranking and a minimum-evidence gate.
+- [x] Run focused tests and commit.
 
 ### Task 2: Resilient news collection
 
 **Files:** `scanner/news.py`, `scanner/news_collector.py`, `scanner/news_providers/{gdelt,issuer_feed}.py`, `tests/test_news_v24.py`
 
-- [ ] Add failing tests for bounded 503 retry, exhausted retry status, partial multi-provider results, active/configured counts, age, and cache integrity.
-- [ ] Implement bounded retry and a failure-isolating collector without fallback data.
-- [ ] Run focused tests and commit.
+- [x] Add failing tests for bounded 503 retry, exhausted retry status, partial multi-provider results, active/configured counts, age, and cache integrity.
+- [x] Implement bounded retry and a failure-isolating collector without fallback data.
+- [x] Run focused tests and commit.
 
 ### Task 3: Point-in-time revisions
 
 **Files:** `scanner/news.py`, `scanner/research.py`, `scanner/research_index/{builder,repository}.py`, `tests/test_research_index_v24.py`
 
-- [ ] Add failing tests for delayed news, news correction, fact revision, future identity, and missing timestamps.
-- [ ] Store revision links and suppress superseded records only after the revision becomes available.
-- [ ] Run focused tests and commit.
+- [x] Add failing tests for delayed news, news correction, fact revision, future identity, and missing timestamps.
+- [x] Store revision links and suppress superseded records only after the revision becomes available.
+- [x] Run focused tests and commit.
 
 ### Task 4: Independent benchmark and report
 
 **Files:** `scanner/research_benchmark.py`, `scanner/research_evaluation.py`, `tests/fixtures/research-v24/benchmark.json`, `tests/test_research_v24_e2e.py`, `docs/research-v24*.{md,json}`
 
-- [ ] Add a predeclared ten-case cross-sector corpus with solutions separate from teasers and real/synthetic labels.
-- [ ] Measure Recall@10/50, Top-1/3, abstention, false positives, market/sector coverage, latency, requests, and costs.
-- [ ] Re-run the archived public-data report and document that the Apple-only result is not an accuracy benchmark.
-- [ ] Run focused tests and commit.
+- [x] Add a predeclared ten-case cross-sector corpus with solutions separate from teasers and real/synthetic labels.
+- [x] Measure Recall@10/50, Top-1/3, abstention, false positives, market/sector coverage, latency, requests, and costs.
+- [x] Re-run the archived public-data report and document that the Apple-only result is not an accuracy benchmark.
+- [x] Run focused tests and commit.
 
 ### Task 5: V2.5 specification and release verification
 
 **Files:** `docs/superpowers/specs/2026-10-24-short-term-stock-scanner-v25-design.md`, `docs/research-v24-source-audit.md`
 
-- [ ] Specify providers within 0–20 EUR/month, catalyst/price/volume/liquidity inputs, risk/CRV, costs, and walk-forward validation.
-- [ ] Document source rights, costs, historical availability, and blockers.
+- [x] Specify providers within 0–20 EUR/month, catalyst/price/volume/liquidity inputs, risk/CRV, costs, and walk-forward validation.
+- [x] Document source rights, costs, historical availability, and blockers.
 - [ ] Run Ruff, full pytest, Docker build, force-push rebased branch, retarget PR to main, update description, and wait for CI.

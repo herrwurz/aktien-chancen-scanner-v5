@@ -38,7 +38,11 @@ def build_report(sec_request_path, news_batch_path, index_path, *, query, as_of)
         news=batch.items,
     )
     result = ResearchIndex(index_path).candidates(
-        CandidateQuery(text=query, event_types=["issuer_announcement"]),
+        CandidateQuery(
+            text=query,
+            event_types=["issuer_announcement"],
+            require_unique_top=True,
+        ),
         as_of=as_of,
         limit=50,
     )
