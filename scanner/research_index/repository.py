@@ -17,7 +17,7 @@ def _sha(value):
 
 def _fts_query(text):
     tokens = re.findall(r"[\w]+", text.casefold(), re.UNICODE)
-    return " OR ".join(f'"{token}"' for token in tokens if len(token) >= 2)
+    return " AND ".join(f'"{token}"' for token in tokens if len(token) >= 2)
 
 
 class ResearchIndex:
@@ -75,15 +75,16 @@ class ResearchIndex:
             by_asset = {}
             for row in evidence_rows:
                 by_asset.setdefault(row["asset_id"], []).append(row)
-            text_assets = None
+            identity_text_assets = None
+            evidence_text_assets = None
             if (query.text or "").strip():
                 expression = _fts_query(query.text)
                 if not expression:
-                    text_assets = set()
+                    identity_text_assets, evidence_text_assets = set(), set()
                 else:
                     matches = connection.execute(
                         """
-                        SELECT DISTINCT f.asset_id FROM search_fts f
+                        SELECT DISTINCT f.asset_id,f.channel FROM search_fts f
                         LEFT JOIN evidence e ON e.evidence_id=f.source_id
                         JOIN asset a ON a.asset_id=f.asset_id
                         WHERE search_fts MATCH ? AND a.available_at<=?
@@ -91,10 +92,17 @@ class ResearchIndex:
                         """,
                         (expression, as_of.isoformat(), as_of.isoformat()),
                     ).fetchall()
-                    text_assets = {row[0] for row in matches}
+                    identity_text_assets = {
+                        row["asset_id"] for row in matches if row["channel"] == "identity"
+                    }
+                    evidence_text_assets = {
+                        row["asset_id"] for row in matches if row["channel"] == "evidence"
+                    }
         hits = []
+        weak_match_count = 0
         for row in rows:
-            if text_assets is not None and row["asset_id"] not in text_assets:
+            text_assets = (identity_text_assets or set()) | (evidence_text_assets or set())
+            if identity_text_assets is not None and row["asset_id"] not in text_assets:
                 continue
             confirmed, contradicted, unknown = [], [], []
             for field, values, label in (
@@ -115,9 +123,28 @@ class ResearchIndex:
             for expected in [*query.event_types, *query.fact_claims]:
                 marker = f"event:{expected}"
                 (confirmed if expected in available_types else unknown).append(marker)
-            if text_assets is not None:
+            channels = []
+            score = 0
+            if row["asset_id"] in (identity_text_assets or set()):
+                channels.append("identity_text")
+                score += 3
+            if row["asset_id"] in (evidence_text_assets or set()):
+                channels.append("evidence_text")
                 confirmed.append(f"text:{query.text}")
-            score = len(confirmed) * 10 - len(contradicted) * 8
+                score += 18
+            score += sum(25 if marker.startswith("sector:") else 8 for marker in confirmed)
+            score += sum(30 for marker in confirmed if marker.startswith("event:"))
+            score -= len(contradicted) * 20
+            if row["instrument_type"] == "fund":
+                score -= 40
+            sufficient = bool(
+                identity_text_assets is None
+                or row["asset_id"] in (evidence_text_assets or set())
+                or any(marker.startswith(("sector:", "event:")) for marker in confirmed)
+            )
+            if not sufficient:
+                weak_match_count += 1
+                continue
             hits.append(
                 CandidateHit(
                     identity=AssetIdentity.model_validate_json(row["identity_json"]),
@@ -126,6 +153,7 @@ class ResearchIndex:
                     contradicted=contradicted,
                     unknown=unknown,
                     evidence_source_ids=sorted(item["source_id"] for item in evidence)[:8],
+                    retrieval_channels=channels,
                 )
             )
         hits.sort(
@@ -144,6 +172,8 @@ class ResearchIndex:
             matched_before_limit=len(hits),
             limit=limit,
             index_payload_sha256=self.manifest.payload_sha256,
+            weak_match_count=weak_match_count,
+            coverage_warnings=[] if hits else ["no_candidate_with_sufficient_evidence"],
         )
 
     def evidence(self, identity, *, as_of, kinds):

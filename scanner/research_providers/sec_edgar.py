@@ -143,6 +143,11 @@ def normalize_universe(record):
     for cik, name, ticker, exchange in payload["data"]:
         if not cik or not name or not ticker:
             continue
+        fund_name = re.search(
+            r"\b(?:fund|etf|portfolio|muniholdings|muniyield|closed[- ]end)\b",
+            name,
+            re.IGNORECASE,
+        )
         assets.append(
             AssetIdentity(
                 asset_type="stock",
@@ -151,6 +156,9 @@ def normalize_universe(record):
                 cik=str(cik),
                 exchange=exchange or None,
                 country="US",
+                instrument_type="fund" if fund_name else "unknown",
+                instrument_type_status="inferred" if fund_name else "unknown",
+                instrument_type_evidence="sec_legal_name_pattern" if fund_name else None,
                 quality_status="incomplete",
                 source_id="sec-company-tickers-exchange",
                 retrieved_at=retrieved,

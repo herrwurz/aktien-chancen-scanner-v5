@@ -244,3 +244,72 @@ def test_index_stage_b_receives_time_valid_news_evidence(tmp_path):
         "guidance_raise",
     }
     assert report["candidates"][0]["eligible_evidence"][0]["source_id"] == "news:1"
+
+
+def test_evidence_text_outranks_identity_words_and_funds_are_not_false_candidates(tmp_path):
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.models import CandidateQuery
+    from scanner.research_index.repository import ResearchIndex
+
+    apple = asset(1, name="Apple Inc.", sector="technology").model_copy(
+        update={"instrument_type": "operating_company", "instrument_type_status": "source_verified"}
+    )
+    funds = [
+        asset(2, name="BlackRock MuniHoldings New Jersey Quality Fund", sector=None).model_copy(
+            update={"instrument_type": "fund", "instrument_type_status": "inferred"}
+        ),
+        asset(3, name="BlackRock MuniYield New York Quality Fund", sector=None).model_copy(
+            update={"instrument_type": "fund", "instrument_type_status": "inferred"}
+        ),
+    ]
+    announcement = news(1, apple, title="Issuer unveils new product")
+    build_index(
+        tmp_path / "index.db", assets=[apple, *funds], events=[], facts=[], news=[announcement]
+    )
+    result = ResearchIndex(tmp_path / "index.db").candidates(
+        CandidateQuery(text="new product", event_types=["guidance_raise"]),
+        as_of=NOW,
+        limit=50,
+    )
+    assert [row.identity.name for row in result.candidates] == ["Apple Inc."]
+    assert result.candidates[0].retrieval_channels == ["evidence_text"]
+    assert result.weak_match_count == 0
+
+
+def test_weak_identity_text_alone_abstains_instead_of_forcing_identification(tmp_path):
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.models import CandidateQuery
+    from scanner.research_index.repository import ResearchIndex
+
+    fund = asset(1, name="New Product Opportunities Fund", sector=None).model_copy(
+        update={"instrument_type": "fund", "instrument_type_status": "inferred"}
+    )
+    build_index(tmp_path / "index.db", assets=[fund], events=[], facts=[], news=[])
+    result = ResearchIndex(tmp_path / "index.db").candidates(
+        CandidateQuery(text="new product"), as_of=NOW, limit=50
+    )
+    assert result.status == "unresolved"
+    assert result.candidates == []
+    assert result.weak_match_count == 1
+    assert result.coverage_warnings == ["no_candidate_with_sufficient_evidence"]
+
+
+def test_sec_universe_marks_name_based_fund_classification_as_inferred():
+    from scanner.research_providers.sec_edgar import normalize_universe
+
+    record = {
+        "payload": {
+            "fields": ["cik", "name", "ticker", "exchange"],
+            "data": [
+                [1, "Example Manufacturing Inc.", "EXM", "NYSE"],
+                [2, "Example Income Fund", "EXF", "NYSE"],
+            ],
+        },
+        "retrieved_at": NOW.isoformat(),
+    }
+    company, fund = normalize_universe(record)
+    assert company.instrument_type == "unknown"
+    assert company.instrument_type_status == "unknown"
+    assert fund.instrument_type == "fund"
+    assert fund.instrument_type_status == "inferred"
+    assert fund.instrument_type_evidence == "sec_legal_name_pattern"

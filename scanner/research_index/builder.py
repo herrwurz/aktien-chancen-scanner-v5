@@ -78,7 +78,7 @@ def build_index(path, *, assets, events, facts, news):
             CREATE TABLE asset(
               asset_id TEXT PRIMARY KEY, identity_json TEXT NOT NULL, name TEXT NOT NULL,
               ticker TEXT, cik TEXT, isin TEXT, wkn TEXT, lei TEXT, country TEXT, sector TEXT,
-              available_at TEXT
+              instrument_type TEXT NOT NULL, available_at TEXT
             );
             CREATE INDEX asset_cik ON asset(cik);
             CREATE INDEX asset_isin ON asset(isin);
@@ -91,7 +91,7 @@ def build_index(path, *, assets, events, facts, news):
             );
             CREATE INDEX evidence_asset_time ON evidence(asset_id, available_at);
             CREATE VIRTUAL TABLE search_fts USING fts5(
-              asset_id UNINDEXED, source_id UNINDEXED, content
+              asset_id UNINDEXED, source_id UNINDEXED, channel UNINDEXED, content
             );
             """
         )
@@ -100,7 +100,7 @@ def build_index(path, *, assets, events, facts, news):
             asset_id = _asset_id(identity)
             identities[asset_id] = identity
             connection.execute(
-                "INSERT INTO asset VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO asset VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
                 (
                     asset_id,
                     identity.model_dump_json(),
@@ -112,14 +112,16 @@ def build_index(path, *, assets, events, facts, news):
                     identity.lei,
                     identity.country,
                     identity.sector,
+                    identity.instrument_type,
                     _available(identity),
                 ),
             )
             connection.execute(
-                "INSERT INTO search_fts(asset_id,source_id,content) VALUES(?,?,?)",
+                "INSERT INTO search_fts(asset_id,source_id,channel,content) VALUES(?,?,?,?)",
                 (
                     asset_id,
                     f"identity:{asset_id}",
+                    "identity",
                     " ".join(filter(None, [identity.name, identity.ticker])),
                 ),
             )
@@ -149,8 +151,8 @@ def build_index(path, *, assets, events, facts, news):
                 ),
             )
             connection.execute(
-                "INSERT INTO search_fts(asset_id,source_id,content) VALUES(?,?,?)",
-                (asset_id, evidence_id, title),
+                "INSERT INTO search_fts(asset_id,source_id,channel,content) VALUES(?,?,?,?)",
+                (asset_id, evidence_id, "evidence", title),
             )
 
         for row in sorted(normalized_events, key=lambda value: value.event_id):

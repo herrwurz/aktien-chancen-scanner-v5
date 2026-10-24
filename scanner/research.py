@@ -19,6 +19,9 @@ class AssetIdentity(BaseModel):
     mic: str | None = None
     country: str | None = None
     sector: str | None = None
+    instrument_type: Literal["operating_company", "fund", "other", "unknown"] = "unknown"
+    instrument_type_status: Literal["source_verified", "inferred", "unknown"] = "unknown"
+    instrument_type_evidence: str | None = None
     valid_from: date | None = None
     valid_to: date | None = None
     quality_status: Literal["verified", "candidate", "conflicted", "incomplete"] = "candidate"

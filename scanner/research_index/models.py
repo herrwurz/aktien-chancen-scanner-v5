@@ -31,6 +31,7 @@ class CandidateHit(BaseModel):
     contradicted: list[str]
     unknown: list[str]
     evidence_source_ids: list[str]
+    retrieval_channels: list[str] = Field(default_factory=list)
 
 
 class CandidateBatch(BaseModel):
@@ -41,3 +42,5 @@ class CandidateBatch(BaseModel):
     matched_before_limit: int
     limit: int
     index_payload_sha256: str
+    weak_match_count: int = 0
+    coverage_warnings: list[str] = Field(default_factory=list)
