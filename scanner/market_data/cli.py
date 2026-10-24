@@ -13,8 +13,10 @@ from scanner.research_index.repository import ResearchIndex
 from .archive import MarketDataArchive
 from .pilot import (
     build_sec_pilot_index,
+    discover_sec_universe_request,
     load_calendar_csv,
     run_tiingo_pilot,
+    validate_sec_index_audit,
     write_pilot_report,
 )
 
@@ -23,7 +25,9 @@ def parser():
     result = argparse.ArgumentParser(prog="python -m scanner.market_data.cli")
     commands = result.add_subparsers(dest="command", required=True)
     index = commands.add_parser("build-sec-pilot-index")
-    index.add_argument("--sec-universe-request", required=True)
+    source = index.add_mutually_exclusive_group(required=True)
+    source.add_argument("--sec-universe-request")
+    source.add_argument("--sec-cache-root")
     index.add_argument("--index", required=True)
     index.add_argument("--audit-output", required=True)
     pilot = commands.add_parser("pilot")
@@ -45,13 +49,19 @@ def parser():
     pilot.add_argument("--calendar-timezone")
     pilot.add_argument("--calendar-source-reference")
     pilot.add_argument("--calendar-retrieved-at")
+    pilot.add_argument("--sec-index-audit")
     return result
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     if args.command == "build-sec-pilot-index":
-        audit = build_sec_pilot_index(args.sec_universe_request, args.index)
+        request = (
+            discover_sec_universe_request(args.sec_cache_root)
+            if args.sec_cache_root
+            else args.sec_universe_request
+        )
+        audit = build_sec_pilot_index(request, args.index)
         output = Path(args.audit_output)
         output.parent.mkdir(parents=True, exist_ok=True)
         raw = (json.dumps(audit, sort_keys=True, separators=(",", ":")) + "\n").encode()
@@ -71,6 +81,11 @@ def main(argv=None):
     as_of = datetime.fromisoformat(args.as_of)
     if as_of.utcoffset() is None:
         raise SystemExit("--as-of must include an explicit timezone offset")
+    index = ResearchIndex(args.index)
+    if args.allow_network and args.authorize_usage and not args.sec_index_audit:
+        raise SystemExit("live pilot requires --sec-index-audit")
+    if args.sec_index_audit:
+        validate_sec_index_audit(args.sec_index_audit, index, as_of)
     calendar_values = (
         args.calendar,
         args.calendar_mics,
@@ -90,7 +105,7 @@ def main(argv=None):
             retrieved_at=datetime.fromisoformat(args.calendar_retrieved_at),
         )
     report = run_tiingo_pilot(
-        index=ResearchIndex(args.index),
+        index=index,
         market_archive=MarketDataArchive(args.market_db),
         raw_cache=args.raw_cache,
         start=args.start,

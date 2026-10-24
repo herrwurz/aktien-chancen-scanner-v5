@@ -1,6 +1,7 @@
 import csv
 import hashlib
 import json
+import subprocess
 from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 from zoneinfo import ZoneInfo
@@ -375,3 +376,78 @@ def test_sec_pilot_index_excludes_ambiguous_multiple_listings_with_audit(tmp_pat
         {"cik": "0000000042", "tickers": ["DUAL.A", "DUAL.B"]}
     ]
     assert ResearchIndex(tmp_path / "pilot.db").coverage(NOW)["indexed_assets"] == 1
+
+
+def test_sec_universe_discovery_requires_exactly_one_integrity_checked_manifest(tmp_path):
+    from scanner.hebeltrader.eodhd import canonical, sha
+    from scanner.market_data.pilot import discover_sec_universe_request
+
+    cache = tmp_path / "research-v24" / "sec-cache"
+    raw = canonical(
+        {
+            "fields": ["cik", "name", "ticker", "exchange"],
+            "data": [[320193, "Apple Inc.", "AAPL", "Nasdaq"]],
+        }
+    )
+    raw_path = cache / "raw" / f"{sha(raw)}.json"
+    raw_path.parent.mkdir(parents=True)
+    raw_path.write_bytes(raw)
+    request = cache / "requests" / "opaque-request-key.json"
+    request.parent.mkdir()
+    request.write_bytes(
+        canonical(
+            {
+                "request": {
+                    "dataset": "universe",
+                    "identifier": None,
+                    "url": "https://www.sec.gov/files/company_tickers_exchange.json",
+                },
+                "raw_file": f"raw/{sha(raw)}.json",
+                "raw_sha256": sha(raw),
+                "retrieved_at": "2026-10-24T18:00:00+00:00",
+                "source_reference": "https://www.sec.gov/files/company_tickers_exchange.json",
+                "vendor": "SEC_EDGAR",
+            }
+        )
+    )
+
+    assert discover_sec_universe_request(tmp_path) == request.resolve()
+
+    duplicate = cache / "requests" / "duplicate.json"
+    duplicate.write_bytes(request.read_bytes())
+    with pytest.raises(ValueError, match="multiple SEC universe manifests"):
+        discover_sec_universe_request(tmp_path)
+
+
+def test_sec_index_audit_must_match_index_and_precede_as_of(tmp_path):
+    from scanner.market_data.pilot import validate_sec_index_audit
+
+    index = build_index(tmp_path, [asset(index) for index in range(10)])
+    audit_path = tmp_path / "sec-pilot-index.audit.json"
+    audit = {
+        "sec_retrieved_at": "2026-10-24T10:00:00+00:00",
+        "index_payload_sha256": index.manifest.payload_sha256,
+    }
+    audit_path.write_text(json.dumps(audit))
+
+    assert validate_sec_index_audit(audit_path, index, NOW) == audit
+
+    with pytest.raises(ValueError, match="as-of precedes SEC archive retrieval"):
+        validate_sec_index_audit(audit_path, index, datetime(2026, 10, 24, 9, tzinfo=UTC))
+
+    audit_path.write_text(json.dumps({**audit, "index_payload_sha256": "f" * 64}))
+    with pytest.raises(ValueError, match="index audit mismatch"):
+        validate_sec_index_audit(audit_path, index, NOW)
+
+
+def test_server_runner_exposes_safe_runtime_configuration_help():
+    result = subprocess.run(
+        ["bash", "scripts/run-tiingo-pilot.sh", "--help"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "renewed Tiingo token" in result.stdout
+    assert "SOURCE_REPORTS" in result.stdout
+    assert "OUTPUT_DIR" in result.stdout
+    assert "does not use Docker Compose or PostgreSQL" in result.stdout

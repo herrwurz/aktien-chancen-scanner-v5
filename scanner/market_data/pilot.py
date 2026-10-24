@@ -26,6 +26,51 @@ EXCHANGES = {
     "NYSE": ("XNYS", "NYSE"),
     "NYSE American": ("XASE", "NYSE American"),
 }
+SEC_UNIVERSE_URL = "https://www.sec.gov/files/company_tickers_exchange.json"
+
+
+def discover_sec_universe_request(root):
+    root = Path(root).resolve()
+    matches = []
+    for path in sorted(root.glob("**/requests/*.json")):
+        try:
+            manifest = json.loads(path.read_bytes())
+            request = manifest.get("request", {})
+            is_universe = (
+                request.get("dataset") == "universe"
+                or manifest.get("source_reference") == SEC_UNIVERSE_URL
+            )
+            if manifest.get("vendor") != "SEC_EDGAR" or not is_universe:
+                continue
+            cache_root = path.parent.parent.resolve()
+            relative = Path(manifest["raw_file"])
+            raw_path = (cache_root / relative).resolve()
+            if relative.is_absolute() or not raw_path.is_relative_to(cache_root):
+                raise ValueError("unsafe SEC raw archive path")
+            if hashlib.sha256(raw_path.read_bytes()).hexdigest() != manifest["raw_sha256"]:
+                raise ValueError("SEC universe cache integrity error")
+        except (json.JSONDecodeError, KeyError, OSError, TypeError):
+            continue
+        matches.append(path.resolve())
+    if not matches:
+        raise ValueError("no integrity-checked SEC universe manifest found")
+    if len(matches) != 1:
+        raise ValueError("multiple SEC universe manifests found")
+    return matches[0]
+
+
+def validate_sec_index_audit(path, index, as_of):
+    if as_of.utcoffset() is None:
+        raise ValueError("aware as-of required")
+    audit = json.loads(Path(path).read_bytes())
+    retrieved_at = datetime.fromisoformat(audit["sec_retrieved_at"])
+    if retrieved_at.utcoffset() is None:
+        raise ValueError("SEC audit retrieval timestamp must be aware")
+    if audit.get("index_payload_sha256") != index.manifest.payload_sha256:
+        raise ValueError("SEC index audit mismatch")
+    if as_of < retrieved_at:
+        raise ValueError("as-of precedes SEC archive retrieval")
+    return audit
 
 
 def build_sec_pilot_index(sec_request_path, output_path):

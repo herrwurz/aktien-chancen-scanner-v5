@@ -66,46 +66,96 @@ anstatt willkürlich einen Ticker zu wählen. Der Pilot wählt zehn eindeutige C
 Bekannte Fonds werden ausgeschlossen. Unbekannte Instrumenttypen bleiben sichtbar und werden im
 Coverage-Bericht ausgewiesen.
 
-Der folgende Ablauf läuft außerhalb von Compose, verwendet ein eigenes Verzeichnis und Netzwerk
-und verändert weder Immich noch PostgreSQL. Zuerst Branch und Image bauen und die archivierte
-SEC-Universe-Anfrage eindeutig bestimmen:
+### Einfacher Hetzner-Lauf
+
+Ein früher über Chat geteilter Schlüssel darf nicht verwendet werden. Er wird zuerst im
+Tiingo-Konto widerrufen und erneuert. Der neue Schlüssel wird ausschließlich an der verdeckten
+Eingabeaufforderung des Runners eingegeben oder vorab über eine geschützte Server-Umgebungsvariable
+bereitgestellt. Er gehört weder in diesen Befehlsblock noch in eine `.env`-Datei.
+
+Der Runner verwendet das bestehende Reports-Verzeichnis ausschließlich als Read-only-Quelle. Er
+findet genau ein SHA-geprüftes SEC-Universe-Manifest, baut daraus den Pilotindex und schreibt alle
+neuen Dateien nach `/opt/scanner-v251-tiingo-pilot`. Vor dem Providerabruf prüft er, dass Index und
+SEC-Audit zusammengehören und der aktuelle `as-of`-Zeitpunkt nicht vor der belegten
+SEC-Archivierung liegt. Der gesamte Ablauf lässt sich in Termius als ein Block einfügen; nur der
+erneuerte Schlüssel wird anschließend verdeckt abgefragt:
 
 ```bash
+set -e
 cd /opt/aktien-chancen-scanner-v5
 git fetch origin feat/short-term-market-data-v2-5-1
-git worktree add /opt/scanner-v251-pr21 origin/feat/short-term-market-data-v2-5-1
+if [ ! -e /opt/scanner-v251-pr21/.git ]; then
+  git worktree add --detach /opt/scanner-v251-pr21 origin/feat/short-term-market-data-v2-5-1
+else
+  test -z "$(git -C /opt/scanner-v251-pr21 status --porcelain)"
+  git -C /opt/scanner-v251-pr21 checkout --detach origin/feat/short-term-market-data-v2-5-1
+fi
 cd /opt/scanner-v251-pr21
-docker build -t scanner-v251-pr21 .
-install -d -m 700 reports/market-data-v251
-SEC_REQUEST=$(grep -rl '"dataset":"universe"' reports/research-v24/sec-cache/requests | head -n 1)
-test -n "$SEC_REQUEST"
-docker run --rm --network none --user "$(id -u):$(id -g)" \
-  -v "$PWD/reports:/work/reports:rw" scanner-v251-pr21 \
-  python -m scanner.market_data.cli build-sec-pilot-index \
-  --sec-universe-request "/work/$SEC_REQUEST" \
-  --index /work/reports/market-data-v251/sec-pilot-index.db \
-  --audit-output /work/reports/market-data-v251/sec-pilot-index.audit.json
+unset TIINGO_API_TOKEN
+SOURCE_REPORTS=/opt/aktien-chancen-scanner-v5/reports \
+OUTPUT_DIR=/opt/scanner-v251-tiingo-pilot \
+bash scripts/run-tiingo-pilot.sh
 ```
 
-Falls das bestehende Archiv anders liegt, wird ausschließlich `SEC_REQUEST` angepasst. Der
-Indexbuilder prüft den SEC-Rohdaten-SHA. Für den Netzwerklauf ist genau eine geheime Variable
-erforderlich. Sie wird verdeckt eingelesen, nur an den einmaligen Container übergeben und danach
-entfernt:
+Der Test nutzt weder Docker Compose noch PostgreSQL und referenziert daher keine Container,
+Volumes oder Netzwerke von Immich. Er erlaubt höchstens zehn ausgewählte US-Aktien, 30 Versuche
+einschließlich begrenzter Retries und deklarierte Kosten von 0 EUR. Der kostenlose Tiingo-Starter-
+Rahmen aus dem Provider-Audit reicht dafür aus; der Ablauf nimmt keine Buchung vor.
+
+Das Abschluss-JSON auf dem Terminal und `/opt/scanner-v251-tiingo-pilot/coverage.json` zeigen:
+
+- `partial` mit erfolgreichen Instrumenten: echter Datenintegrationsnachweis; der unabhängige
+  Handelskalender fehlt weiterhin;
+- `accepted`: nur mit separat belegtem, SHA-gebundenem Handelskalender erreichbar;
+- `blocked`: kein Titel konnte belegt importiert werden, der konkrete Grund steht in
+  `blocker_code` und den Instrumentzeilen.
+
+Zusätzlich entstehen `coverage.csv`, `coverage.sha256`, das isolierte SQLite-Archiv und die
+unveränderlichen Tiingo-Rohsnapshots. `sha256sum -c coverage.sha256` wird vom Runner ausgeführt.
+Der Schlüssel wird weder als Befehlsargument noch in Reports, Raw-Snapshots oder Images
+gespeichert und beim Verlassen des Skripts aus dessen Umgebung entfernt.
+
+### Einzelbefehle zur Diagnose
+
+Der folgende ausgeschriebene Ablauf entspricht dem Runner und dient nur zur Diagnose. Er nutzt
+das vorhandene Archiv read-only und ein eigenes Ausgabeverzeichnis:
+
+```bash
+cd /opt/scanner-v251-pr21
+SOURCE_REPORTS=/opt/aktien-chancen-scanner-v5/reports
+OUTPUT_DIR=/opt/scanner-v251-tiingo-pilot
+docker build -t scanner-v251-pr21 .
+install -d -m 700 "$OUTPUT_DIR"
+docker run --rm --network none --user "$(id -u):$(id -g)" \
+  --mount "type=bind,src=$SOURCE_REPORTS,dst=/source-reports,readonly" \
+  --mount "type=bind,src=$OUTPUT_DIR,dst=/output" \
+  scanner-v251-pr21 \
+  python -m scanner.market_data.cli build-sec-pilot-index \
+  --sec-cache-root /source-reports \
+  --index /output/sec-pilot-index.db \
+  --audit-output /output/sec-pilot-index.audit.json
+```
+
+Falls das bestehende Archiv anders liegt, wird ausschließlich `SOURCE_REPORTS` angepasst. Die
+automatische Suche verlangt genau ein gültiges Universe-Manifest und prüft dessen Rohdaten-SHA.
+Für den Netzwerklauf ist genau eine geheime Variable erforderlich:
 
 ```bash
 read -rsp 'TIINGO_API_TOKEN: ' TIINGO_API_TOKEN; echo
 export TIINGO_API_TOKEN
+AS_OF=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
 docker run --rm --network bridge --user "$(id -u):$(id -g)" \
   -e TIINGO_API_TOKEN \
-  -v "$PWD/reports:/work/reports:rw" scanner-v251-pr21 \
+  --mount "type=bind,src=$OUTPUT_DIR,dst=/output" scanner-v251-pr21 \
   python -m scanner.market_data.cli pilot \
-  --index /work/reports/market-data-v251/sec-pilot-index.db \
-  --market-db /work/reports/market-data-v251/market-data.sqlite \
-  --raw-cache /work/reports/market-data-v251/tiingo-raw \
-  --output /work/reports/market-data-v251/coverage \
+  --index /output/sec-pilot-index.db \
+  --sec-index-audit /output/sec-pilot-index.audit.json \
+  --market-db /output/market-data.sqlite \
+  --raw-cache /output/tiingo-raw \
+  --output /output/coverage \
   --start 2025-01-01 \
   --end 2025-12-31 \
-  --as-of 2026-10-24T12:00:00+00:00 \
+  --as-of "$AS_OF" \
   --count 10 \
   --max-requests 30 \
   --max-duration-seconds 120 \
@@ -113,7 +163,7 @@ docker run --rm --network bridge --user "$(id -u):$(id -g)" \
   --allow-network \
   --authorize-provider-usage
 unset TIINGO_API_TOKEN
-cd reports/market-data-v251
+cd "$OUTPUT_DIR"
 sha256sum -c coverage.sha256
 ```
 
@@ -126,7 +176,7 @@ Die CSV enthält ausschließlich `session_date,close_at`; `close_at` ist ein ISO
 Offset und bildet auch Early Closes ab. Der Netzwerklauf erhält dann zusätzlich:
 
 ```text
---calendar /work/reports/market-data-v251/us-equities-calendar.csv
+--calendar /output/us-equities-calendar.csv
 --calendar-mics XNAS,XNYS,XASE
 --calendar-timezone America/New_York
 --calendar-source-reference <offizielle-archivierte-quellen-url>
