@@ -7,7 +7,7 @@ import sqlite3
 from pathlib import Path
 
 from scanner.research import AssetIdentity
-from scanner.research_index.builder import IndexManifest
+from scanner.research_index.builder import SCHEMA_VERSION, IndexManifest
 from scanner.research_index.models import CandidateBatch, CandidateHit, CandidateQuery
 
 
@@ -25,6 +25,8 @@ class ResearchIndex:
         self.path = Path(path)
         manifest_path = self.path.with_suffix(self.path.suffix + ".manifest.json")
         self.manifest = IndexManifest.model_validate_json(manifest_path.read_bytes())
+        if self.manifest.schema_version != SCHEMA_VERSION:
+            raise ValueError("unsupported research index schema version")
         if _sha(self.path.read_bytes()) != self.manifest.database_sha256:
             raise ValueError("research index integrity error")
 

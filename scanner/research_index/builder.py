@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from scanner.news import NewsItem
 from scanner.research import AssetIdentity, CompanyEvent, CompanyFact, EvidenceRecord
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 class IndexManifest(BaseModel):

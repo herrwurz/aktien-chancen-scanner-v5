@@ -51,6 +51,7 @@ def test_index_build_is_reproducible_and_sha_guarded(tmp_path):
         tmp_path / "b.db", assets=list(reversed(assets)), events=[], facts=[], news=[]
     )
     assert first.payload_sha256 == second.payload_sha256
+    assert first.schema_version == 2
     assert first.counts == {"assets": 2, "events": 0, "facts": 0, "news": 0}
     assert ResearchIndex(tmp_path / "a.db").coverage(NOW)["indexed_assets"] == 2
     with (tmp_path / "a.db").open("ab") as handle:
@@ -61,6 +62,22 @@ def test_index_build_is_reproducible_and_sha_guarded(tmp_path):
         assert "integrity" in str(exc)
     else:
         raise AssertionError("tampered index accepted")
+
+
+def test_legacy_index_schema_is_rejected_before_query(tmp_path):
+    import json
+
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    path = tmp_path / "index.db"
+    build_index(path, assets=[asset(1)], events=[], facts=[], news=[])
+    manifest_path = path.with_suffix(".db.manifest.json")
+    manifest = json.loads(manifest_path.read_text())
+    manifest["schema_version"] = 1
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="schema version"):
+        ResearchIndex(path)
 
 
 def test_candidate_search_uses_entire_index_and_caps_at_fifty(tmp_path):
