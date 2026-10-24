@@ -23,6 +23,7 @@ class NewsItem(BaseModel):
     license_status: Literal["permitted_metadata", "metadata_only", "unknown"]
     content_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     origin_id: str
+    revision_of_source_id: str | None = None
 
     @model_validator(mode="after")
     def community_is_not_a_verified_fact(self):

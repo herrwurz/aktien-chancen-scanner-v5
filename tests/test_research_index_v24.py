@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
 
+import pytest
+
 from scanner.news import NewsItem
 from scanner.research import AssetIdentity
 
@@ -313,3 +315,91 @@ def test_sec_universe_marks_name_based_fund_classification_as_inferred():
     assert fund.instrument_type == "fund"
     assert fund.instrument_type_status == "inferred"
     assert fund.instrument_type_evidence == "sec_legal_name_pattern"
+
+
+def test_news_revision_replaces_original_only_after_revision_is_available(tmp_path):
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.models import CandidateQuery
+    from scanner.research_index.repository import ResearchIndex
+
+    company = asset(1, available=datetime(2025, 1, 1, tzinfo=UTC))
+    original = news(
+        1,
+        company,
+        title="Issuer raises guidance",
+        available=datetime(2025, 2, 1, tzinfo=UTC),
+    )
+    correction = news(
+        2,
+        company,
+        title="Correction: Issuer withdraws guidance",
+        available=datetime(2025, 2, 3, tzinfo=UTC),
+    ).model_copy(update={"revision_of_source_id": original.source_id})
+    build_index(
+        tmp_path / "index.db", assets=[company], events=[], facts=[], news=[original, correction]
+    )
+    index = ResearchIndex(tmp_path / "index.db")
+    before = index.candidates(
+        CandidateQuery(text="raises guidance"),
+        as_of=datetime(2025, 2, 2, tzinfo=UTC),
+    )
+    after = index.candidates(
+        CandidateQuery(text="raises guidance"),
+        as_of=datetime(2025, 2, 4, tzinfo=UTC),
+    )
+    corrected = index.candidates(
+        CandidateQuery(text="withdraws guidance"),
+        as_of=datetime(2025, 2, 4, tzinfo=UTC),
+    )
+    assert [row.identity.cik for row in before.candidates] == ["1"]
+    assert after.status == "unresolved"
+    assert [row.identity.cik for row in corrected.candidates] == ["1"]
+
+
+def test_fact_revision_is_point_in_time_and_does_not_rewrite_history(tmp_path):
+    from scanner.research import CompanyFact
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    company = asset(1, available=datetime(2025, 1, 1, tzinfo=UTC))
+
+    def fact(fact_id, value, available, supersedes=None):
+        return CompanyFact(
+            fact_id=fact_id,
+            asset=company,
+            metric="Revenue",
+            claim="reported_value",
+            value=value,
+            unit="USD",
+            period_start="2024-01-01",
+            period_end="2024-12-31",
+            source_url=f"https://sec.example/{fact_id}",
+            source_location="XBRL",
+            published_at=available,
+            source_available_at=available,
+            retrieved_at=available,
+            extraction_method="sec_xbrl",
+            verification_status="source_verified",
+            content_sha256=f"{value:064d}",
+            supersedes_fact_id=supersedes,
+        )
+
+    original = fact("fact:original", 100, datetime(2025, 2, 1, tzinfo=UTC))
+    revised = fact("fact:revised", 90, datetime(2025, 3, 1, tzinfo=UTC), supersedes="fact:original")
+    build_index(
+        tmp_path / "index.db", assets=[company], events=[], facts=[original, revised], news=[]
+    )
+    index = ResearchIndex(tmp_path / "index.db")
+    before = index.evidence(company, as_of=datetime(2025, 2, 15, tzinfo=UTC), kinds={"fact"})
+    after = index.evidence(company, as_of=datetime(2025, 3, 2, tzinfo=UTC), kinds={"fact"})
+    assert [row["source_id"] for row in before["records"]] == ["fact:original"]
+    assert [row["source_id"] for row in after["records"]] == ["fact:revised"]
+
+
+def test_news_without_required_availability_timestamp_is_rejected():
+    from scanner.news import NewsItem
+
+    values = news(1, asset(1)).model_dump()
+    values["source_available_at"] = None
+    with pytest.raises(ValueError):
+        NewsItem(**values)

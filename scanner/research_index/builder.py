@@ -87,7 +87,7 @@ def build_index(path, *, assets, events, facts, news):
               evidence_id TEXT PRIMARY KEY, source_id TEXT NOT NULL,
               asset_id TEXT NOT NULL REFERENCES asset(asset_id), kind TEXT NOT NULL,
               event_type TEXT, available_at TEXT NOT NULL, title TEXT NOT NULL,
-              record_json TEXT NOT NULL
+              record_json TEXT NOT NULL, supersedes_source_id TEXT
             );
             CREATE INDEX evidence_asset_time ON evidence(asset_id, available_at);
             CREATE VIRTUAL TABLE search_fts USING fts5(
@@ -132,13 +132,22 @@ def build_index(path, *, assets, events, facts, news):
                 if value:
                     lookup[(kind, value)] = asset_id
 
-        def add_evidence(source_id, identity, kind, event_type, available_at, title, record):
+        def add_evidence(
+            source_id,
+            identity,
+            kind,
+            event_type,
+            available_at,
+            title,
+            record,
+            supersedes_source_id=None,
+        ):
             asset_id = _asset_id(identity)
             if asset_id not in identities or available_at is None:
                 return
             evidence_id = f"{source_id}|{asset_id}"
             connection.execute(
-                "INSERT OR IGNORE INTO evidence VALUES(?,?,?,?,?,?,?,?)",
+                "INSERT OR IGNORE INTO evidence VALUES(?,?,?,?,?,?,?,?,?)",
                 (
                     evidence_id,
                     source_id,
@@ -148,6 +157,7 @@ def build_index(path, *, assets, events, facts, news):
                     available_at.isoformat(),
                     title,
                     record.model_dump_json(),
+                    supersedes_source_id,
                 ),
             )
             connection.execute(
@@ -187,6 +197,7 @@ def build_index(path, *, assets, events, facts, news):
                     facts={"fact_claims": [row.claim]},
                     content_sha256=row.content_sha256,
                 ),
+                row.supersedes_fact_id,
             )
         for row in sorted(normalized_news, key=lambda value: value.source_id):
             matched = {
@@ -215,6 +226,7 @@ def build_index(path, *, assets, events, facts, news):
                         facts={"events": [row.event_type]},
                         content_sha256=row.content_hash,
                     ),
+                    row.revision_of_source_id,
                 )
         connection.execute(
             "INSERT INTO metadata VALUES('schema_version',?)", (str(SCHEMA_VERSION),)

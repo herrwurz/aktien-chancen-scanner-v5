@@ -102,6 +102,7 @@ class CompanyFact(BaseModel):
     extraction_method: str
     verification_status: Literal["source_verified", "unknown"]
     content_sha256: str
+    supersedes_fact_id: str | None = None
 
 
 class ProviderStatus(BaseModel):

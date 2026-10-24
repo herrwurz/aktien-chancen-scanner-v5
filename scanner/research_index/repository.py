@@ -70,7 +70,15 @@ class ResearchIndex:
                 (as_of.isoformat(),),
             ).fetchall()
             evidence_rows = connection.execute(
-                "SELECT * FROM evidence WHERE available_at<=?", (as_of.isoformat(),)
+                """SELECT e.* FROM evidence e
+                WHERE e.available_at<=?
+                  AND NOT EXISTS (
+                    SELECT 1 FROM evidence revision
+                    WHERE revision.asset_id=e.asset_id
+                      AND revision.supersedes_source_id=e.source_id
+                      AND revision.available_at<=?
+                  )""",
+                (as_of.isoformat(), as_of.isoformat()),
             ).fetchall()
             by_asset = {}
             for row in evidence_rows:
@@ -89,8 +97,19 @@ class ResearchIndex:
                         JOIN asset a ON a.asset_id=f.asset_id
                         WHERE search_fts MATCH ? AND a.available_at<=?
                           AND (e.source_id IS NULL OR e.available_at<=?)
+                          AND (e.source_id IS NULL OR NOT EXISTS (
+                            SELECT 1 FROM evidence revision
+                            WHERE revision.asset_id=e.asset_id
+                              AND revision.supersedes_source_id=e.source_id
+                              AND revision.available_at<=?
+                          ))
                         """,
-                        (expression, as_of.isoformat(), as_of.isoformat()),
+                        (
+                            expression,
+                            as_of.isoformat(),
+                            as_of.isoformat(),
+                            as_of.isoformat(),
+                        ),
                     ).fetchall()
                     identity_text_assets = {
                         row["asset_id"] for row in matches if row["channel"] == "identity"
@@ -191,10 +210,16 @@ class ResearchIndex:
         with self._connect() as connection:
             placeholders = ",".join("?" for _ in kinds)
             rows = connection.execute(
-                f"""SELECT * FROM evidence
-                WHERE asset_id=? AND available_at<=? AND kind IN ({placeholders})
-                ORDER BY available_at,source_id""",
-                (asset_id, as_of.isoformat(), *sorted(kinds)),
+                f"""SELECT e.* FROM evidence e
+                WHERE e.asset_id=? AND e.available_at<=? AND e.kind IN ({placeholders})
+                  AND NOT EXISTS (
+                    SELECT 1 FROM evidence revision
+                    WHERE revision.asset_id=e.asset_id
+                      AND revision.supersedes_source_id=e.source_id
+                      AND revision.available_at<=?
+                  )
+                ORDER BY e.available_at,e.source_id""",
+                (asset_id, as_of.isoformat(), *sorted(kinds), as_of.isoformat()),
             ).fetchall()
         return {
             "status": "ok" if rows else "unavailable",
@@ -216,9 +241,15 @@ class ResearchIndex:
             return []
         with self._connect() as connection:
             rows = connection.execute(
-                """SELECT record_json FROM evidence
-                WHERE asset_id=? AND available_at<=?
-                ORDER BY available_at,source_id""",
-                (asset_id, as_of.isoformat()),
+                """SELECT e.record_json FROM evidence e
+                WHERE e.asset_id=? AND e.available_at<=?
+                  AND NOT EXISTS (
+                    SELECT 1 FROM evidence revision
+                    WHERE revision.asset_id=e.asset_id
+                      AND revision.supersedes_source_id=e.source_id
+                      AND revision.available_at<=?
+                  )
+                ORDER BY e.available_at,e.source_id""",
+                (asset_id, as_of.isoformat(), as_of.isoformat()),
             ).fetchall()
         return [json.loads(row["record_json"]) for row in rows]
