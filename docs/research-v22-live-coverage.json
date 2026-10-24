@@ -1,0 +1,35 @@
+{
+  "blind_teaser_live_status": "blocked_insufficient_sector_and_global_news_coverage",
+  "caveat": "Real SEC coverage probe only; no stock identification or purchase recommendation.",
+  "event_probe": {
+    "categories": [
+      "capital_action",
+      "management_change",
+      "quarterly_results",
+      "regulatory_filing"
+    ],
+    "cik": "1045810",
+    "event_count": 1000,
+    "raw_sha256": "682c49d59116ae49b317eb4adddf3ef9142dfd97f59c5d8e5a5acad7f9058ab4",
+    "retrieved_at": "2026-10-23T14:17:59.247969+00:00",
+    "ticker": "NVDA"
+  },
+  "generated_at": "2026-10-23T14:17:59.247969+00:00",
+  "provider": "SEC_EDGAR",
+  "status": "partial_real_public_coverage",
+  "strategy_decision": null,
+  "synthetic_fixture_used_for_result": false,
+  "universe": {
+    "fields": [
+      "CIK",
+      "name",
+      "ticker",
+      "exchange"
+    ],
+    "raw_sha256": "d0cbfe38cc19bc798e3f8ca3071a186d7f5e8b4e329eb521694080fa13dd01a3",
+    "record_count": 10425,
+    "retrieved_at": "2026-10-23T14:17:45.086959+00:00",
+    "sector_coverage": false,
+    "wkn_isin_coverage": false
+  }
+}

@@ -308,3 +308,9 @@ prüfbare Blocker; `pilot verify` prüft JSON/CSV/Markdown samt SHA-256.
 Die V1.7-Ergänzung priorisiert den empfohlenen Call HS5RMP, ergänzt einen
 unveränderlichen Bid/Ask-Importer und Tiingo als zweiten Basiswertprovider:
 [HS5RMP-/Tiingo-Ablauf, Quellenprüfung und Offline-Abnahme](docs/hebeltrader-hs5rmp-tiingo-v17.md).
+
+V2.2 ergänzt einen gemeinsamen, providerneutralen Aktien- und Ereignis-Recherchedienst.
+Die [Anbieterentscheidung](docs/research-provider-decision.md) und der
+[Betriebs- und Auditablauf](docs/research-v22.md) dokumentieren Kosten, Quellenrechte,
+Zeitbezug, unveränderliche Caches und den aktuellen Live-Coverage-Blocker. Der Dienst
+erzeugt Evidenz und Identitätsprüfungen, aber keine Kauf- oder Strategieentscheidung.
