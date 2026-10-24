@@ -26,6 +26,7 @@ def parser():
     pilot.add_argument("--count", type=int, default=10)
     pilot.add_argument("--max-requests", type=int, default=0)
     pilot.add_argument("--monthly-cost-eur", default="0")
+    pilot.add_argument("--max-duration-seconds", type=int, default=120)
     pilot.add_argument("--allow-network", action="store_true")
     pilot.add_argument("--authorize-provider-usage", dest="authorize_usage", action="store_true")
     return result
@@ -48,6 +49,7 @@ def main(argv=None):
         max_requests=args.max_requests,
         monthly_cost_eur=args.monthly_cost_eur,
         count=args.count,
+        max_duration_seconds=args.max_duration_seconds,
     )
     paths = write_pilot_report(report, args.output)
     print(

@@ -8,6 +8,7 @@ import json
 import os
 import time
 from datetime import date, timedelta
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from scanner.hebeltrader.tiingo import TiingoClient
@@ -82,8 +83,17 @@ def run_tiingo_pilot(
     client=None,
     count=10,
     coverage_kind="real_provider_archive",
+    max_duration_seconds=120,
     monotonic=time.monotonic,
 ):
+    try:
+        cost = Decimal(str(monthly_cost_eur))
+    except (InvalidOperation, TypeError, ValueError):
+        raise ValueError("EUR20 project budget invalid") from None
+    if not cost.is_finite() or not 0 <= cost <= 20:
+        raise ValueError("EUR20 project budget exceeded")
+    if not 1 <= max_duration_seconds <= 300:
+        raise ValueError("invalid pilot duration ceiling")
     if coverage_kind not in {"real_provider_archive", "synthetic_fixture"}:
         raise ValueError("invalid coverage kind")
     selected = select_us_pilot(index, as_of=as_of, count=count)
@@ -115,6 +125,12 @@ def run_tiingo_pilot(
     started = monotonic()
     rows = []
     for identity in selected:
+        if monotonic() - started >= max_duration_seconds:
+            rows.extend(
+                _blocked_row(remaining, "runtime_limit_reached")
+                for remaining in selected[len(rows) :]
+            )
+            break
         try:
             listing = _listing(identity)
             incremental_start = start

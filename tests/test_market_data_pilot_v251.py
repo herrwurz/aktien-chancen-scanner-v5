@@ -2,6 +2,9 @@ import csv
 import hashlib
 import json
 from datetime import UTC, date, datetime, timedelta
+from decimal import Decimal
+
+import pytest
 
 from scanner.research import AssetIdentity
 
@@ -204,3 +207,23 @@ def test_cli_requires_both_explicit_network_and_usage_flags():
     assert defaults.allow_network is False
     assert defaults.authorize_usage is False
     assert defaults.max_requests == 0
+
+
+def test_pilot_enforces_project_budget_and_runtime_ceiling(tmp_path):
+    from scanner.market_data.archive import MarketDataArchive
+    from scanner.market_data.pilot import run_tiingo_pilot
+
+    index = build_index(tmp_path, [asset(index) for index in range(10)])
+    arguments = {
+        "index": index,
+        "market_archive": MarketDataArchive(tmp_path / "market.db"),
+        "raw_cache": tmp_path / "raw",
+        "start": "2025-01-01",
+        "end": "2025-12-31",
+        "as_of": NOW,
+        "max_requests": 10,
+    }
+    with pytest.raises(ValueError, match="EUR20"):
+        run_tiingo_pilot(**arguments, monthly_cost_eur=Decimal("20.01"))
+    with pytest.raises(ValueError, match="duration"):
+        run_tiingo_pilot(**arguments, monthly_cost_eur="0", max_duration_seconds=0)
