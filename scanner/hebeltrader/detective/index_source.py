@@ -10,6 +10,7 @@ class IndexCandidateSource:
         self.index = index
         self.stage_a_limit = stage_a_limit
         self._hits = []
+        self._point_in_time = None
         self.coverage = {
             "status": "not_searched",
             "kind": "real_archived_index",
@@ -28,6 +29,7 @@ class IndexCandidateSource:
             fact_claims=clues["structured"]["fact_claims"],
         )
         result = self.index.candidates(query, as_of=point_in_time, limit=self.stage_a_limit)
+        self._point_in_time = point_in_time
         self._hits = result.candidates
         self.coverage.update(
             status=result.status,
@@ -48,4 +50,6 @@ class IndexCandidateSource:
         ]
 
     def evidence_for(self, identity):
-        return []
+        if self._point_in_time is None:
+            return []
+        return self.index.detective_evidence(identity, as_of=self._point_in_time)

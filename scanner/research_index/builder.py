@@ -10,7 +10,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from scanner.news import NewsItem
-from scanner.research import AssetIdentity, CompanyEvent, CompanyFact
+from scanner.research import AssetIdentity, CompanyEvent, CompanyFact, EvidenceRecord
 
 SCHEMA_VERSION = 1
 
@@ -84,8 +84,10 @@ def build_index(path, *, assets, events, facts, news):
             CREATE INDEX asset_isin ON asset(isin);
             CREATE INDEX asset_wkn ON asset(wkn);
             CREATE TABLE evidence(
-              source_id TEXT PRIMARY KEY, asset_id TEXT NOT NULL REFERENCES asset(asset_id),
-              kind TEXT NOT NULL, event_type TEXT, available_at TEXT NOT NULL, title TEXT NOT NULL
+              evidence_id TEXT PRIMARY KEY, source_id TEXT NOT NULL,
+              asset_id TEXT NOT NULL REFERENCES asset(asset_id), kind TEXT NOT NULL,
+              event_type TEXT, available_at TEXT NOT NULL, title TEXT NOT NULL,
+              record_json TEXT NOT NULL
             );
             CREATE INDEX evidence_asset_time ON evidence(asset_id, available_at);
             CREATE VIRTUAL TABLE search_fts USING fts5(
@@ -128,17 +130,27 @@ def build_index(path, *, assets, events, facts, news):
                 if value:
                     lookup[(kind, value)] = asset_id
 
-        def add_evidence(source_id, identity, kind, event_type, available_at, title):
+        def add_evidence(source_id, identity, kind, event_type, available_at, title, record):
             asset_id = _asset_id(identity)
             if asset_id not in identities or available_at is None:
                 return
+            evidence_id = f"{source_id}|{asset_id}"
             connection.execute(
-                "INSERT OR IGNORE INTO evidence VALUES(?,?,?,?,?,?)",
-                (source_id, asset_id, kind, event_type, available_at.isoformat(), title),
+                "INSERT OR IGNORE INTO evidence VALUES(?,?,?,?,?,?,?,?)",
+                (
+                    evidence_id,
+                    source_id,
+                    asset_id,
+                    kind,
+                    event_type,
+                    available_at.isoformat(),
+                    title,
+                    record.model_dump_json(),
+                ),
             )
             connection.execute(
                 "INSERT INTO search_fts(asset_id,source_id,content) VALUES(?,?,?)",
-                (asset_id, source_id, title),
+                (asset_id, evidence_id, title),
             )
 
         for row in sorted(normalized_events, key=lambda value: value.event_id):
@@ -149,6 +161,9 @@ def build_index(path, *, assets, events, facts, news):
                 row.category,
                 row.evidence.source_available_at or row.retrieved_at,
                 row.headline,
+                row.evidence.model_copy(
+                    update={"facts": dict(row.evidence.facts, events=[row.category])}
+                ),
             )
         for row in sorted(normalized_facts, key=lambda value: value.fact_id):
             add_evidence(
@@ -158,6 +173,18 @@ def build_index(path, *, assets, events, facts, news):
                 row.claim,
                 row.source_available_at or row.retrieved_at,
                 f"{row.metric} {row.claim}",
+                EvidenceRecord(
+                    source_id=row.fact_id,
+                    url=row.source_url,
+                    title=f"{row.metric}: {row.claim}",
+                    published_at=row.published_at,
+                    retrieved_at=row.retrieved_at,
+                    effective_at=row.published_at,
+                    source_available_at=row.source_available_at,
+                    source_kind="regulatory",
+                    facts={"fact_claims": [row.claim]},
+                    content_sha256=row.content_sha256,
+                ),
             )
         for row in sorted(normalized_news, key=lambda value: value.source_id):
             matched = {
@@ -174,6 +201,18 @@ def build_index(path, *, assets, events, facts, news):
                     row.event_type,
                     row.source_available_at,
                     row.title,
+                    EvidenceRecord(
+                        source_id=row.source_id,
+                        url=row.url,
+                        title=row.title,
+                        published_at=row.published_at,
+                        retrieved_at=row.retrieved_at,
+                        effective_at=row.actual_event_at or row.published_at,
+                        source_available_at=row.source_available_at,
+                        source_kind="issuer" if row.source_type == "PRIMARY" else "news",
+                        facts={"events": [row.event_type]},
+                        content_sha256=row.content_hash,
+                    ),
                 )
         connection.execute(
             "INSERT INTO metadata VALUES('schema_version',?)", (str(SCHEMA_VERSION),)

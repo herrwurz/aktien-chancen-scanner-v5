@@ -1,6 +1,7 @@
 """Point-in-time, read-only access to a versioned research index."""
 
 import hashlib
+import json
 import re
 import sqlite3
 from pathlib import Path
@@ -83,7 +84,7 @@ class ResearchIndex:
                     matches = connection.execute(
                         """
                         SELECT DISTINCT f.asset_id FROM search_fts f
-                        LEFT JOIN evidence e ON e.source_id=f.source_id
+                        LEFT JOIN evidence e ON e.evidence_id=f.source_id
                         JOIN asset a ON a.asset_id=f.asset_id
                         WHERE search_fts MATCH ? AND a.available_at<=?
                           AND (e.source_id IS NULL OR e.available_at<=?)
@@ -170,3 +171,24 @@ class ResearchIndex:
             "records": [dict(row) for row in rows],
             "as_of": as_of.isoformat(),
         }
+
+    def detective_evidence(self, identity, *, as_of):
+        identity = AssetIdentity.model_validate(identity)
+        asset_id = next(
+            (
+                f"{kind}:{getattr(identity, kind)}"
+                for kind in ("cik", "isin", "wkn", "lei")
+                if getattr(identity, kind)
+            ),
+            None,
+        )
+        if asset_id is None:
+            return []
+        with self._connect() as connection:
+            rows = connection.execute(
+                """SELECT record_json FROM evidence
+                WHERE asset_id=? AND available_at<=?
+                ORDER BY available_at,source_id""",
+                (asset_id, as_of.isoformat()),
+            ).fetchall()
+        return [json.loads(row["record_json"]) for row in rows]

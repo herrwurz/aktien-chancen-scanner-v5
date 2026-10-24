@@ -210,3 +210,37 @@ def test_configured_indexed_research_mode_uses_same_cli_service_factory(tmp_path
     assert report["research_mode"] == "indexed_research"
     assert report["candidates"][0]["ticker"] == "C1"
     assert report["candidate_source"]["coverage"]["full_universe_size"] == 1
+
+
+def test_index_stage_b_receives_time_valid_news_evidence(tmp_path):
+    from scanner.hebeltrader.detective.index_source import IndexCandidateSource
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+    from scanner.hebeltrader.detective.service import DetectiveService
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    target = asset(1, name="Evidence Corp", sector=None)
+    other = asset(2, name="Other Corp", sector=None)
+    announcement = news(1, target, title="Evidence Corp raises guidance")
+    build_index(
+        tmp_path / "index.db",
+        assets=[target, other],
+        events=[],
+        facts=[],
+        news=[announcement],
+    )
+    source = IndexCandidateSource(ResearchIndex(tmp_path / "index.db"))
+    report = DetectiveService(
+        candidate_source=source,
+        news_source=source,
+        products=[],
+        research_mode="indexed_research",
+    ).analyze(
+        DetectiveRequest(teaser_text="US Unternehmen, Prognose angehoben", publication_at=NOW)
+    )
+    assert report["candidates"][0]["ticker"] == "C1"
+    assert {row["value"] for row in report["candidates"][0]["supporting_clues"]} >= {
+        "US",
+        "guidance_raise",
+    }
+    assert report["candidates"][0]["eligible_evidence"][0]["source_id"] == "news:1"

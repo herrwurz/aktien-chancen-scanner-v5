@@ -109,6 +109,7 @@ def test_gdelt_normalizes_metadata_without_claiming_article_rights(tmp_path):
         end=NOW,
         limit=10,
         company_identifiers={"cik": ["42"]},
+        identity_evidence_status="caller_verified",
     )
     assert len(calls) == 1
     assert batch.status == "ok"
@@ -119,6 +120,37 @@ def test_gdelt_normalizes_metadata_without_claiming_article_rights(tmp_path):
     assert record.source_available_at == NOW
     assert record.published_at == datetime(2026, 10, 24, 10, 15, tzinfo=UTC)
     assert "content" not in record.model_dump()
+
+
+def test_gdelt_does_not_attach_caller_identifier_without_explicit_identity_proof(tmp_path):
+    from scanner.news_providers.gdelt import GdeltNewsSource
+
+    payload = {
+        "articles": [
+            {
+                "url": "https://publisher.example/story",
+                "title": "Similar Name reports",
+                "seendate": "20261024T101500Z",
+            }
+        ]
+    }
+    source = GdeltNewsSource(
+        tmp_path,
+        allow_network=True,
+        max_requests=1,
+        client=httpx.Client(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, json=payload))
+        ),
+        clock=lambda: NOW,
+    )
+    batch = source.fetch(
+        "Similar Name",
+        start=NOW.replace(hour=0),
+        end=NOW,
+        limit=10,
+        company_identifiers={"wkn": ["ABC123"]},
+    )
+    assert batch.items[0].company_identifiers == {}
 
 
 def test_gdelt_cache_is_offline_and_sha_verified(tmp_path):

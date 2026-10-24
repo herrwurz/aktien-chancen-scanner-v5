@@ -30,7 +30,16 @@ class GdeltNewsSource:
         self.clock = clock or (lambda: datetime.now(UTC))
         self.timeout = timeout
 
-    def fetch(self, query, *, start, end, limit, company_identifiers=None):
+    def fetch(
+        self,
+        query,
+        *,
+        start,
+        end,
+        limit,
+        company_identifiers=None,
+        identity_evidence_status=None,
+    ):
         if not 1 <= limit <= 250:
             raise ValueError("GDELT limit must be between 1 and 250")
         request = {
@@ -92,7 +101,11 @@ class GdeltNewsSource:
                     first_seen_at=retrieved,
                     retrieved_at=retrieved,
                     source_available_at=retrieved,
-                    company_identifiers=company_identifiers or {},
+                    company_identifiers=(
+                        company_identifiers or {}
+                        if identity_evidence_status == "caller_verified"
+                        else {}
+                    ),
                     event_type="news_mention",
                     event_confidence="unknown",
                     evidence_status="discovery_only",
@@ -112,5 +125,8 @@ class GdeltNewsSource:
                 "article_text_stored": False,
                 "query": str(query),
                 "license_scope": "metadata_only",
+                "identifier_attachment": (
+                    "caller_verified" if identity_evidence_status == "caller_verified" else "none"
+                ),
             },
         )
