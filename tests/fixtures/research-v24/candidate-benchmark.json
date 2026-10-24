@@ -1,0 +1,418 @@
+{
+  "as_of": "2026-02-01T00:00:00Z",
+  "cases": [
+    {
+      "case_id": "cloud-contract",
+      "kind": "synthetic",
+      "market": "US",
+      "query": {
+        "countries": [
+          "US"
+        ],
+        "event_types": [
+          "major_contract"
+        ],
+        "sectors": [
+          "technology"
+        ],
+        "text": "sovereign cloud infrastructure contract"
+      },
+      "sector": "technology",
+      "teaser": "A US technology provider wins a sovereign cloud infrastructure contract."
+    },
+    {
+      "case_id": "oncology-approval",
+      "kind": "synthetic",
+      "market": "US",
+      "query": {
+        "countries": [
+          "US"
+        ],
+        "event_types": [
+          "regulatory_decision"
+        ],
+        "sectors": [
+          "biotechnology"
+        ],
+        "text": "oncology therapy approval"
+      },
+      "sector": "biotechnology",
+      "teaser": "A US biotechnology group receives regulatory approval for an oncology therapy."
+    },
+    {
+      "case_id": "insurance-guidance",
+      "kind": "synthetic",
+      "market": "US",
+      "query": {
+        "countries": [
+          "US"
+        ],
+        "event_types": [
+          "guidance_raise"
+        ],
+        "sectors": [
+          "insurance"
+        ],
+        "text": "catastrophe insurance earnings guidance"
+      },
+      "sector": "insurance",
+      "teaser": "A US insurer raises its catastrophe insurance earnings guidance."
+    },
+    {
+      "case_id": "solar-tender",
+      "kind": "synthetic",
+      "market": "DE",
+      "query": {
+        "countries": [
+          "DE"
+        ],
+        "event_types": [
+          "major_contract"
+        ],
+        "sectors": [
+          "renewable_energy"
+        ],
+        "text": "municipal solar grid tender"
+      },
+      "sector": "renewable_energy",
+      "teaser": "A German renewable-energy business wins a municipal solar grid tender."
+    },
+    {
+      "case_id": "chip-line",
+      "kind": "synthetic",
+      "market": "US",
+      "query": {
+        "countries": [
+          "US"
+        ],
+        "event_types": [
+          "capital_action"
+        ],
+        "sectors": [
+          "semiconductors"
+        ],
+        "text": "advanced chip fabrication line"
+      },
+      "sector": "semiconductors",
+      "teaser": "A US semiconductor manufacturer opens an advanced chip fabrication line."
+    },
+    {
+      "case_id": "automation-order",
+      "kind": "synthetic",
+      "market": "DE",
+      "query": {
+        "countries": [
+          "DE"
+        ],
+        "event_types": [
+          "major_contract"
+        ],
+        "sectors": [
+          "industrial_machinery"
+        ],
+        "text": "warehouse automation order"
+      },
+      "sector": "industrial_machinery",
+      "teaser": "A German machinery supplier receives a warehouse automation order."
+    },
+    {
+      "case_id": "bank-outlook",
+      "kind": "synthetic",
+      "market": "AT",
+      "query": {
+        "countries": [
+          "AT"
+        ],
+        "event_types": [
+          "guidance_raise"
+        ],
+        "sectors": [
+          "banking"
+        ],
+        "text": "net interest income outlook"
+      },
+      "sector": "banking",
+      "teaser": "An Austrian bank raises its net interest income outlook."
+    },
+    {
+      "case_id": "device-clearance",
+      "kind": "synthetic",
+      "market": "CH",
+      "query": {
+        "countries": [
+          "CH"
+        ],
+        "event_types": [
+          "regulatory_decision"
+        ],
+        "sectors": [
+          "medical_technology"
+        ],
+        "text": "robotic surgery device"
+      },
+      "sector": "medical_technology",
+      "teaser": "A Swiss medical-technology group obtains clearance for a robotic surgery device."
+    },
+    {
+      "case_id": "ambiguous-logistics",
+      "kind": "synthetic",
+      "market": "DE",
+      "query": {
+        "countries": [
+          "DE"
+        ],
+        "event_types": [
+          "issuer_announcement"
+        ],
+        "sectors": [
+          "logistics"
+        ],
+        "text": "industrial supply disruption"
+      },
+      "sector": "logistics",
+      "teaser": "A German logistics business reports an industrial supply disruption."
+    },
+    {
+      "case_id": "outside-coverage",
+      "kind": "synthetic",
+      "market": "CA",
+      "query": {
+        "countries": [
+          "CA"
+        ],
+        "event_types": [
+          "regulatory_decision"
+        ],
+        "sectors": [
+          "mining"
+        ],
+        "text": "lunar mining polar exploration permit"
+      },
+      "sector": "mining",
+      "teaser": "A Canadian lunar-mining venture receives a polar exploration permit."
+    }
+  ],
+  "evidence": [
+    {
+      "asset_key": "cloud",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "major_contract",
+      "source_id": "cloud-1",
+      "title": "wins sovereign cloud infrastructure contract"
+    },
+    {
+      "asset_key": "biotech",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "regulatory_decision",
+      "source_id": "bio-1",
+      "title": "regulator grants oncology therapy approval"
+    },
+    {
+      "asset_key": "insurance",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "guidance_raise",
+      "source_id": "ins-1",
+      "title": "raises catastrophe insurance earnings guidance"
+    },
+    {
+      "asset_key": "renewable",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "major_contract",
+      "source_id": "solar-1",
+      "title": "wins municipal solar grid tender"
+    },
+    {
+      "asset_key": "chips",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "capital_action",
+      "source_id": "chips-1",
+      "title": "opens advanced chip fabrication line"
+    },
+    {
+      "asset_key": "machinery",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "major_contract",
+      "source_id": "machine-1",
+      "title": "receives warehouse automation order"
+    },
+    {
+      "asset_key": "bank",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "guidance_raise",
+      "source_id": "bank-1",
+      "title": "raises net interest income outlook"
+    },
+    {
+      "asset_key": "medtech",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "regulatory_decision",
+      "source_id": "med-1",
+      "title": "regulator clears robotic surgery device"
+    },
+    {
+      "asset_key": "logistics_a",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "issuer_announcement",
+      "source_id": "log-a",
+      "title": "reports industrial supply disruption"
+    },
+    {
+      "asset_key": "logistics_b",
+      "available_at": "2026-01-15T08:00:00Z",
+      "event_type": "issuer_announcement",
+      "source_id": "log-b",
+      "title": "reports industrial supply disruption"
+    }
+  ],
+  "labels": {
+    "ambiguous-logistics": null,
+    "automation-order": "machinery",
+    "bank-outlook": "bank",
+    "chip-line": "chips",
+    "cloud-contract": "cloud",
+    "device-clearance": "medtech",
+    "insurance-guidance": "insurance",
+    "oncology-approval": "biotech",
+    "outside-coverage": null,
+    "solar-tender": "renewable"
+  },
+  "schema_version": 1,
+  "selection_independent_of_teasers": true,
+  "universe": [
+    {
+      "asset_key": "cloud",
+      "cik": "101",
+      "country": "US",
+      "instrument_type": "operating_company",
+      "name": "Nimbus Systems",
+      "sector": "technology",
+      "ticker": "NMB"
+    },
+    {
+      "asset_key": "biotech",
+      "cik": "102",
+      "country": "US",
+      "instrument_type": "operating_company",
+      "name": "Helix Therapeutics",
+      "sector": "biotechnology",
+      "ticker": "HLX"
+    },
+    {
+      "asset_key": "insurance",
+      "cik": "103",
+      "country": "US",
+      "instrument_type": "operating_company",
+      "name": "Harbor Assurance",
+      "sector": "insurance",
+      "ticker": "HBA"
+    },
+    {
+      "asset_key": "renewable",
+      "cik": "104",
+      "country": "DE",
+      "instrument_type": "operating_company",
+      "name": "Rhein Solar",
+      "sector": "renewable_energy",
+      "ticker": "RHS"
+    },
+    {
+      "asset_key": "chips",
+      "cik": "105",
+      "country": "US",
+      "instrument_type": "operating_company",
+      "name": "Vector Silicon",
+      "sector": "semiconductors",
+      "ticker": "VSI"
+    },
+    {
+      "asset_key": "machinery",
+      "cik": "106",
+      "country": "DE",
+      "instrument_type": "operating_company",
+      "name": "Werk Automation",
+      "sector": "industrial_machinery",
+      "ticker": "WKA"
+    },
+    {
+      "asset_key": "bank",
+      "cik": "107",
+      "country": "AT",
+      "instrument_type": "operating_company",
+      "name": "Alpen Bank",
+      "sector": "banking",
+      "ticker": "ALB"
+    },
+    {
+      "asset_key": "medtech",
+      "cik": "108",
+      "country": "CH",
+      "instrument_type": "operating_company",
+      "name": "Alpine Devices",
+      "sector": "medical_technology",
+      "ticker": "APD"
+    },
+    {
+      "asset_key": "logistics_a",
+      "cik": "109",
+      "country": "DE",
+      "instrument_type": "operating_company",
+      "name": "Transit Works",
+      "sector": "logistics",
+      "ticker": "TRW"
+    },
+    {
+      "asset_key": "logistics_b",
+      "cik": "110",
+      "country": "DE",
+      "instrument_type": "operating_company",
+      "name": "Cargo Motion",
+      "sector": "logistics",
+      "ticker": "CGM"
+    },
+    {
+      "asset_key": "retail",
+      "cik": "111",
+      "country": "US",
+      "instrument_type": "operating_company",
+      "name": "Market House",
+      "sector": "retail",
+      "ticker": "MKH"
+    },
+    {
+      "asset_key": "mining",
+      "cik": "112",
+      "country": "US",
+      "instrument_type": "operating_company",
+      "name": "Copper Ridge",
+      "sector": "mining",
+      "ticker": "CPR"
+    },
+    {
+      "asset_key": "fund",
+      "cik": "113",
+      "country": "US",
+      "instrument_type": "fund",
+      "name": "Global New Product Fund",
+      "sector": null,
+      "ticker": "GNP"
+    },
+    {
+      "asset_key": "utility",
+      "cik": "114",
+      "country": "AT",
+      "instrument_type": "operating_company",
+      "name": "Danube Utility",
+      "sector": "utilities",
+      "ticker": "DNU"
+    },
+    {
+      "asset_key": "software",
+      "cik": "115",
+      "country": "CH",
+      "instrument_type": "operating_company",
+      "name": "Lake Software",
+      "sector": "software",
+      "ticker": "LKS"
+    }
+  ]
+}

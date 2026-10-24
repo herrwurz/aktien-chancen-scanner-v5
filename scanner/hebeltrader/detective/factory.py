@@ -5,9 +5,11 @@ from datetime import UTC, datetime
 from threading import Lock
 
 from scanner.hebeltrader.detective.catalog import default_candidate_source, load_products
+from scanner.hebeltrader.detective.index_source import IndexCandidateSource
 from scanner.hebeltrader.detective.research_source import ResearchCandidateSource
 from scanner.hebeltrader.detective.service import DetectiveService
 from scanner.hebeltrader.detective.sources import UnavailableResearchSource
+from scanner.research_index.repository import ResearchIndex
 from scanner.research_live import collect_sec_snapshot
 from scanner.research_providers.sec_edgar import SecEdgarClient
 from scanner.research_snapshot import load_snapshot
@@ -116,6 +118,11 @@ def build_detective(settings, *, clock=None, sec_client=None):
         source = default_candidate_source()
     elif mode == "cached_research":
         source = _cached_source(settings.detective_research_snapshot)
+    elif mode == "indexed_research":
+        try:
+            source = IndexCandidateSource(ResearchIndex(settings.detective_research_index))
+        except (OSError, ValueError, KeyError, TypeError):
+            source = UnavailableResearchSource("research_index_unavailable_or_invalid")
     elif not (
         settings.detective_live_allow_network
         and settings.detective_live_max_requests > 0

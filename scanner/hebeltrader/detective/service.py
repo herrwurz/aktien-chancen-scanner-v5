@@ -99,6 +99,8 @@ class DetectiveService:
 
     def _rank(self, text, clues, point_in_time):
         ranked = []
+        if hasattr(self.candidate_source, "search_candidates"):
+            self.candidate_source.search_candidates(text, clues, point_in_time)
         for raw in self.candidate_source.load_candidates():
             identity = AssetIdentity.model_validate(raw["identity"])
             records = [

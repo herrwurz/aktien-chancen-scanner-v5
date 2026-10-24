@@ -1,63 +1,93 @@
-# V2.4 Implementierungsplan – Aktien-Suchindex und Candidate Retrieval
+# V2.4 Research Index and News Collector Implementation Plan
 
-Eigenständiger Folge-PR: **Scanner V6 V2.4 – Intelligenter Aktien-Suchindex und Candidate Retrieval**.
-Ausgangsbasis ist `main` nach einem separaten Merge von PR #19; PR #19 selbst enthält nur Design
-und P0-Korrekturen.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-1. **Verträge und Abnahmekorpus einfrieren.**
-   - Dateien: `scanner/research_index/protocols.py`, `scanner/research_index/models.py`,
-     `tests/fixtures/research_v24/evaluation-manifest.json`, `tests/test_research_v24_contracts.py`.
-   - Die sechs `research.*`-Schnittstellen, PIT-Felder, Pagination und Coverage definieren.
-   - Echte Fälle, synthetische Fälle und erwartetes `unresolved` vor Implementierung registrieren.
+**Goal:** Build a real, provenance-bound news intake and a point-in-time SQLite/FTS5 candidate index shared by the detective and future opportunity strategies.
 
-2. **SQLite-FTS5-Schema und reproduzierbaren Builder implementieren.**
-   - Dateien: `scanner/research_index/schema.sql`, `builder.py`, `manifest.py`,
-     `tests/test_research_index_builder.py`.
-   - V2.3-Snapshots und SEC-Roharchive offline importieren, Zeilen deterministisch sortieren,
-     Fremdschlüssel prüfen, Datenbank optimieren, SHA-256-Manifest schreiben.
-   - Build in temporärer Datei; erst nach Integritätsprüfung atomar veröffentlichen.
+**Architecture:** Existing SEC/GLEIF normalized records feed a versioned SQLite artifact. New `NewsSource` providers add bounded GDELT metadata and explicitly allowlisted RSS/Atom issuer feeds. Stage A retrieves up to 50 candidates across the complete indexed universe; the existing detective performs Stage B evidence ranking and returns at most three.
 
-3. **Point-in-time-Repository bauen.**
-   - Dateien: `scanner/research_index/repository.py`, `pit.py`,
-     `tests/test_research_index_point_in_time.py`.
-   - Acceptance, spätere Korrekturen, Nachmeldungen, Identitätswechsel und fehlende Zeitstempel
-     regressieren. Ohne `as_of` keine historische Suche.
+**Tech Stack:** Python 3.12 standard library, Pydantic, HTTPX, SQLite FTS5, pytest.
 
-4. **Stage-A-Candidate-Retrieval implementieren.**
-   - Dateien: `scanner/research_index/retrieval.py`, `query.py`,
-     `tests/test_candidate_retrieval.py`.
-   - Strukturfilter, FTS5/BM25, kanalweise Reserve und deterministische Fusion auf maximal 50.
-   - `insufficiently_constrained` und Out-of-index-Fälle explizit ausgeben.
+**Spec:** `docs/superpowers/specs/2026-10-24-stock-search-index-v24-design.md`
 
-5. **Stage-B-Evidenzprüfung anbinden.**
-   - Dateien: `scanner/hebeltrader/detective/index_source.py`,
-     `scanner/hebeltrader/detective/service.py`, `tests/test_detective_v24_e2e.py`.
-   - Bestehenden Clue- und Rankingcode wiederverwenden; alle 50 zeitgültig prüfen, danach Top-3.
-   - Bestätigt, widerlegt und unbekannt getrennt halten; Evidenzantworten begrenzen.
+## Global Constraints
 
-6. **Gemeinsame Read-only-API/CLI bereitstellen.**
-   - Dateien: `scanner/research_service.py`, `scanner/main.py`,
-     `scanner/research_index/cli.py`, `tests/test_research_v24_api.py`.
-   - `research.universe/candidates/events/fundamentals/prices/coverage` mit Cursorlimits anbieten.
-   - Kein Netzwerk beim Start; Live-Aktualisierung nur als separater, autorisierter Build-Befehl.
+- Additional provider/AI cost stays within 0–20 EUR/month; no purchase without approval.
+- No production database migration, deployment, trading, JNJ work, or changes to other Docker projects.
+- Network is disabled by default; raw records are immutable and SHA-256 verified.
+- Provider terms and article copyright are respected; no paywall, CAPTCHA or access-control bypass.
+- Primary, secondary and community evidence remain separate; probabilities are not claimed.
 
-7. **Chancen-Scanner-Adapter ohne Kaufentscheidung ergänzen.**
-   - Dateien: `scanner/opportunity_research.py`, `tests/test_opportunity_research_v24.py`.
-   - Kurzfristige und mittelfristige Verfügbarkeitsfelder aus denselben Records liefern.
-   - Bei fehlenden Kursen, Liquidität, Bewertung oder Trend ausschließlich `unavailable` ausgeben.
+## Review Focus
 
-8. **Coverage, Evaluation und Benchmark ausführen.**
-   - Dateien: `scanner/research_index/evaluation.py`, `benchmarks/research_v24.py`,
-     `docs/research-v24-coverage.json`, `docs/research-v24.md`.
-   - Recall@10/50, Top-1/3, PIT, Enthaltung, Coverage, p50/p95, Antwortgröße, Requests und Kosten
-     reproduzierbar ausgeben; echte und synthetische Resultate deutlich trennen.
+- Similar company names must not cause an identifier assignment without a matching proven identifier.
+- Syndicated copies must retain all URLs but count as one underlying evidence cluster.
+- Corrected or late records must remain invisible before `source_available_at`.
+- Empty, stale, malformed or unavailable provider responses must yield explicit coverage errors.
+- Broad teaser queries must abstain when Stage A cannot narrow the universe meaningfully.
 
-9. **Europäische Quellenentscheidung dokumentieren.**
-   - Datei: `docs/research-v24-source-decision.md`.
-   - Für jede Quelle Rechte, historische Zeitsemantik, technische Zugänglichkeit, Rate-Limits und
-     Kosten belegen. Adapter nur nach positivem Ergebnis und innerhalb 20 EUR/Monat hinzufügen.
+---
 
-10. **Abschlussprüfung.**
-    - `ruff check .`, `ruff format --check .`, vollständiges `pytest`, Docker-Build und Actions.
-    - Index zweimal bauen und Datenbank-/Manifest-SHA vergleichen; Rückwärtskompatibilität von
-      V2.3 Fixture/Cached-Modus prüfen. Kein Merge, Deployment oder produktive Migration.
+### Task 1: Normalized news contract and clustering
+
+**Files:** Create `scanner/news.py`, `scanner/news_cluster.py`; test `tests/test_news_v24.py`.
+
+**Interfaces:** Produce `NewsItem`, `NewsBatch`, `NewsSource.fetch(query, *, start, end, limit)`, and `cluster_news(items)`.
+
+- [ ] Write failing tests for required fields, evidence classes, community non-confirmation, and independent-origin clustering.
+- [ ] Run focused tests and observe missing-module failures.
+- [ ] Implement the minimal models/protocol and deterministic clusterer.
+- [ ] Run focused tests and commit the green task.
+
+### Task 2: Immutable provider cache and real GDELT adapter
+
+**Files:** Create `scanner/news_providers/cache.py`, `scanner/news_providers/gdelt.py`; test `tests/test_news_v24.py`.
+
+**Interfaces:** Produce `GdeltNewsSource.fetch(...) -> NewsBatch`; consume immutable cache helpers and explicit `allow_network`, request, size and timeout limits.
+
+- [ ] Write failing tests for normalization, PIT exclusion, cache SHA validation, request limits, timeouts and provider failure.
+- [ ] Verify expected failures, then implement metadata-only DOC 2.0 ingestion.
+- [ ] Run tests with mocked HTTP, then execute one bounded real request and archive only a compact audit report.
+- [ ] Commit the green task.
+
+### Task 3: Allowlisted issuer RSS/Atom adapter
+
+**Files:** Create `scanner/news_providers/issuer_feed.py`; test `tests/test_news_v24.py`.
+
+**Interfaces:** Produce `IssuerFeedConfig` and `IssuerFeedNewsSource.fetch(...) -> NewsBatch` using standard-library XML parsing.
+
+- [ ] Write failing tests for RSS and Atom, explicit issuer identifiers, `PRIMARY` classification, missing license refusal, XXE/oversize rejection and similar-name safety.
+- [ ] Verify failures and implement only allowlisted configured feeds.
+- [ ] Run focused tests and commit the green task.
+
+### Task 4: Reproducible SQLite/FTS5 research index
+
+**Files:** Create `scanner/research_index/{models.py,builder.py,repository.py,retrieval.py}`; test `tests/test_research_index_v24.py`.
+
+**Interfaces:** Produce `build_index(path, assets, events, facts, news, manifest)`, `ResearchIndex`, `candidate_search(query, as_of, limit<=50)` and coverage methods.
+
+- [ ] Write failing tests for deterministic builds, integrity manifests, full-universe counts, PIT revisions, FTS/structured retrieval and out-of-index abstention.
+- [ ] Verify failures and implement a temporary-file build followed by integrity check and atomic replace.
+- [ ] Implement Stage-A channel fusion with per-channel reserve and `insufficiently_constrained`.
+- [ ] Run focused tests and commit the green task.
+
+### Task 5: Detective and shared strategy integration
+
+**Files:** Create `scanner/hebeltrader/detective/index_source.py`; modify `scanner/research_service.py`, detective factory/CLI; test `tests/test_research_index_v24.py` and `tests/test_research_v24_e2e.py`.
+
+**Interfaces:** Implement `research.universe`, `research.candidates`, `research.events`, `research.fundamentals`, `research.prices`, `research.coverage`; adapt Stage-A rows to existing Stage-B ranking.
+
+- [ ] Write failing tests proving all retrieved candidates are verified before Top-3, unknown clues remain neutral, and both future opportunity strategy views have availability rather than signals.
+- [ ] Verify failures and connect existing models/services without duplicating ranking logic.
+- [ ] Run backward-compatibility tests and commit the green task.
+
+### Task 6: Evaluation, real audit and documentation
+
+**Files:** Create `scanner/research_evaluation.py`, `docs/research-v24.md`, `docs/research-v24-e2e.json`; modify source audit; test `tests/test_research_v24_e2e.py`.
+
+**Interfaces:** Produce Recall@10/50, Top-1/3, abstention, PIT violations, coverage, latency, response size, request and cost metrics with real/synthetic labels.
+
+- [ ] Write failing tests for metric denominators, missing target, stale source and lookahead detection.
+- [ ] Implement deterministic reports and run the registered independent cases.
+- [ ] Run a bounded real GDELT-to-index-to-candidate attempt; report unresolved honestly if identity evidence is insufficient.
+- [ ] Run Ruff, complete pytest, reproducibility build, Docker and GitHub Actions; create a separate stacked PR without merge/deploy.

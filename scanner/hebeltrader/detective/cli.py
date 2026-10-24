@@ -18,11 +18,12 @@ def main(argv=None):
     parser.add_argument("--publication-at")
     parser.add_argument(
         "--research-mode",
-        choices=("fixture", "cached_research", "live_research"),
+        choices=("fixture", "cached_research", "indexed_research", "live_research"),
         default="fixture",
     )
     parser.add_argument("--research-snapshot", type=Path)
     parser.add_argument("--research-cache-dir", type=Path)
+    parser.add_argument("--research-index", type=Path)
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--max-requests", type=int, default=0)
     parser.add_argument("--max-candidates", type=int, default=10)
@@ -52,6 +53,8 @@ def main(argv=None):
         values["detective_research_snapshot"] = args.research_snapshot
     if args.research_cache_dir:
         values["detective_research_cache_dir"] = args.research_cache_dir
+    if args.research_index:
+        values["detective_research_index"] = args.research_index
     report = build_detective(Settings(_env_file=None, **values)).analyze(payload)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
