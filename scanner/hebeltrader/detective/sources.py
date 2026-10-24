@@ -24,6 +24,8 @@ class OfflineFixtureSource:
         self._candidates = candidates
         self.coverage = {
             "status": "fixture_limited",
+            "kind": "synthetic_fixture",
+            "real_market_data": False,
             "candidate_count": len(candidates),
             "markets": ["DE", "US"],
             "general_market_coverage": False,
@@ -40,4 +42,23 @@ class OfflineFixtureSource:
         for candidate in self._candidates:
             if candidate["identity"].get("wkn") == identity.wkn:
                 return deepcopy(candidate.get("evidence", []))
+        return []
+
+
+class UnavailableResearchSource:
+    source_id = "research-unavailable"
+
+    def __init__(self, error_code):
+        self.coverage = {
+            "status": "unavailable",
+            "kind": "real_research",
+            "real_market_data": False,
+            "error_code": error_code,
+            "candidate_count": 0,
+        }
+
+    def load_candidates(self):
+        return []
+
+    def evidence_for(self, identity):
         return []

@@ -241,7 +241,8 @@ def test_sec_submission_event_categories_and_point_in_time_fields():
         {"payload": payload, "retrieved_at": CLOCK.isoformat(), "raw_sha256": "b" * 64},
         identity,
     )
-    assert [row.category for row in events] == ["quarterly_results", "management_change"]
+    assert [row.category for row in events] == ["regulatory_filing", "management_change"]
+    assert events[0].facts["document_type"] == "8-K"
     assert events[0].published_at < events[0].retrieved_at
     assert events[0].evidence.available_at(datetime(2025, 5, 1, 17, tzinfo=UTC))
     assert not events[1].evidence.available_at(datetime(2025, 5, 1, 17, tzinfo=UTC))

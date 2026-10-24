@@ -37,8 +37,14 @@ class SecEdgarClient:
         now=None,
         sleeper=time.sleep,
         min_interval=0.11,
+        request_timeout_seconds=10,
     ):
-        if type(max_requests) is not int or max_requests < 0 or min_interval < 0.1:
+        if (
+            type(max_requests) is not int
+            or max_requests < 0
+            or min_interval < 0.1
+            or not 1 <= request_timeout_seconds <= 30
+        ):
             raise ValueError("invalid SEC request controls")
         self.root = Path(root).resolve()
         self.user_agent = user_agent or os.getenv("SEC_USER_AGENT")
@@ -49,6 +55,7 @@ class SecEdgarClient:
         self.now = now or (lambda: datetime.now(UTC))
         self.sleep = sleeper
         self.min_interval = min_interval
+        self.request_timeout_seconds = request_timeout_seconds
         self.last_request_at = None
 
     def fetch(self, dataset, identifier=None):
@@ -56,6 +63,8 @@ class SecEdgarClient:
             url = TICKERS_URL
         elif dataset == "submissions" and re.fullmatch(r"\d{1,10}", str(identifier or "")):
             url = f"{BASE}/submissions/CIK{int(identifier):010d}.json"
+        elif dataset == "companyfacts" and re.fullmatch(r"\d{1,10}", str(identifier or "")):
+            url = f"{BASE}/api/xbrl/companyfacts/CIK{int(identifier):010d}.json"
         else:
             raise ValueError("unsupported SEC dataset or identifier")
         request = {"dataset": dataset, "identifier": identifier, "url": url}
@@ -74,7 +83,9 @@ class SecEdgarClient:
         if not self.user_agent or "@" not in self.user_agent:
             raise ValueError("SEC_USER_AGENT with contact email required")
         own_client = self.client is None
-        client = self.client or httpx.Client(timeout=20, follow_redirects=False)
+        client = self.client or httpx.Client(
+            timeout=self.request_timeout_seconds, follow_redirects=False
+        )
         try:
             response = None
             for attempt in range(3):
@@ -87,7 +98,7 @@ class SecEdgarClient:
                     response = client.get(
                         url,
                         headers={"User-Agent": self.user_agent, "Accept-Encoding": "gzip, deflate"},
-                        timeout=20,
+                        timeout=self.request_timeout_seconds,
                         follow_redirects=False,
                     )
                 except httpx.TransportError:
@@ -151,9 +162,9 @@ def normalize_universe(record):
 def _category(form, items):
     item_set = {value.strip() for value in str(items or "").split(",")}
     if form in {"10-Q", "10-K", "20-F", "6-K"}:
-        return "quarterly_results" if form == "10-Q" else "regulatory_filing"
+        return "regulatory_filing"
     if form == "8-K" and "2.02" in item_set:
-        return "quarterly_results"
+        return "regulatory_filing"
     if form == "8-K" and "5.02" in item_set:
         return "management_change"
     if form in {"SC 13D", "SC 13D/A"}:
@@ -183,7 +194,12 @@ def normalize_submission_events(record, identity):
         items = recent.get("items", [""] * next(iter(lengths)))[index]
         archive = f"{int(identity.cik)}/{accession.replace('-', '')}/{accession}-index.html"
         url = f"https://www.sec.gov/Archives/edgar/data/{archive}"
-        facts = {"form": form, "items": items, "accession_number": accession}
+        facts = {
+            "form": form,
+            "document_type": form,
+            "items": items,
+            "accession_number": accession,
+        }
         evidence = EvidenceRecord(
             source_id=f"sec:{accession}",
             url=url,
