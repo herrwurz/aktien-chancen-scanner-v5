@@ -99,3 +99,28 @@ quellenbezogenes Entscheidungsprotokoll gepflegt. Unternehmensregister, Börsen-
 oder weitere Adapter werden erst implementiert, wenn Massenabruf, historische Zeitstempel,
 Nutzungsrechte und Kosten schriftlich belegt sind. Bis dahin weist Coverage diese Märkte als nicht
 abgedeckt aus.
+
+## News-Collector-Erweiterung
+
+V2.4 ergänzt die vorhandenen SEC-/GLEIF-Adapter um ein gemeinsames `NewsSource.fetch(...)`-
+Protokoll. Der erste neue reale Discovery-Provider ist GDELT DOC 2.0. Er archiviert ausschließlich
+die vom API-Endpunkt gelieferten Metadaten und Quell-URLs; fremde Artikeltexte werden weder
+kopiert noch weiterverteilt. Als zweiter Provider wird ein RSS/Atom-Adapter implementiert, der nur
+explizit konfigurierte Feeds mit dokumentiertem Nutzungsstatus akzeptiert. Dadurch können offizielle
+Investor-Relations-Feeds verwendet werden, ohne beliebige Portale zu scrapen.
+
+Normalisierte Meldungen enthalten `source_id`, `source_type`, URL, Titel, Ereignis-, Erstfund-,
+Abruf- und Verfügbarkeitszeit, Unternehmenskennungen, Ereignistyp/-konfidenz,
+Evidenz-/Lizenzstatus und Inhalts-Hash. `PRIMARY`, `SECONDARY` und `COMMUNITY` bleiben getrennt.
+Die Klassifikation beschreibt die Quelle, nicht die Wahrheit einer Aussage.
+
+Ein deterministischer Clusterer gruppiert Meldungen anhand belegter Unternehmenskennung,
+normalisiertem Titel-Fingerabdruck, Ereignistyp, Zeitfenster und kanonischer Ursprungs-URL. Alle
+Publikationslinks bleiben erhalten. Die Evidenzstärke wird pro unabhängiger Ursprungsinformation
+gezählt, nicht pro Syndikationskopie. Ein Community-Eintrag kann niemals allein den Status eines
+bestätigten Unternehmensfakts erzeugen.
+
+Der Collector verwendet unveränderliche Rohcaches, SHA-256-Manifeste, harte Request-/Antwortgrößen-
+und Laufzeitgrenzen sowie einen expliziten Netzwerk-Schalter. Offline-Tests lesen nur archivierte
+oder klar als synthetisch markierte Antworten. Der kompakte reale Abnahmebericht enthält Quelle,
+Abfragezeit, Hash, Coverage, Kandidatenresultat und bekannte Lücken; große Roharchive bleiben aus Git.
