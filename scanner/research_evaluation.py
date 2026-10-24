@@ -28,6 +28,10 @@ def _metrics(cases):
     latencies = [float(row["latency_ms"]) for row in cases if row.get("latency_ms") is not None]
     costs = [float(row["cost_eur"]) for row in cases if row.get("cost_eur") is not None]
     requests = [int(row["request_count"]) for row in cases if row.get("request_count") is not None]
+    predictions = [prediction for row in cases for prediction in row.get("ranked", [])[:3]]
+    false_predictions = sum(
+        prediction != row.get("target") for row in cases for prediction in row.get("ranked", [])[:3]
+    )
     return {
         "case_count": len(cases),
         "labelled_case_count": len(labelled),
@@ -50,6 +54,11 @@ def _metrics(cases):
         "max_latency_ms": max(latencies, default=None),
         "total_cost_eur": sum(costs) if costs else None,
         "total_request_count": sum(requests) if requests else None,
+        "false_positive_predictions_at_3": false_predictions,
+        "prediction_count_at_3": len(predictions),
+        "false_positive_rate_at_3": (false_predictions / len(predictions) if predictions else 0.0),
+        "market_coverage": sorted({row["market"] for row in cases if row.get("market")}),
+        "sector_coverage": sorted({row["sector"] for row in cases if row.get("sector")}),
     }
 
 

@@ -183,8 +183,11 @@ class ResearchIndex:
                 item.identity.cik or "",
             )
         )
+        tied_top = bool(
+            query.require_unique_top and len(hits) > 1 and hits[0].score == hits[1].score
+        )
         return CandidateBatch(
-            status="ok" if hits else "unresolved",
+            status="ok" if hits and not tied_top else "unresolved",
             candidates=hits[:limit],
             full_universe_size=coverage["indexed_assets"],
             visible_universe_size=coverage["visible_assets"],
@@ -192,7 +195,13 @@ class ResearchIndex:
             limit=limit,
             index_payload_sha256=self.manifest.payload_sha256,
             weak_match_count=weak_match_count,
-            coverage_warnings=[] if hits else ["no_candidate_with_sufficient_evidence"],
+            coverage_warnings=(
+                ["ambiguous_top_score"]
+                if tied_top
+                else []
+                if hits
+                else ["no_candidate_with_sufficient_evidence"]
+            ),
         )
 
     def evidence(self, identity, *, as_of, kinds):

@@ -13,6 +13,7 @@ class CandidateQuery(BaseModel):
     countries: list[str] = Field(default_factory=list)
     event_types: list[str] = Field(default_factory=list)
     fact_claims: list[str] = Field(default_factory=list)
+    require_unique_top: bool = False
 
     def constrained(self):
         return bool(

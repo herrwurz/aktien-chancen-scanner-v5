@@ -1,76 +1,12 @@
 {
   "as_of": "2026-10-24T06:30:00+00:00",
-  "blind_query": "new product",
-  "blind_query_contains_company_identifier": false,
-  "candidate_result": {
-    "full_universe_size": 8022,
-    "matched_before_limit": 47,
-    "stage_a_limit": 50,
-    "status": "ok",
-    "top_3": [
-      {
-        "cik": "320193",
-        "confirmed": [
-          "event:issuer_announcement",
-          "text:new product"
-        ],
-        "contradicted": [],
-        "evidence_source_ids": [
-          "issuer-feed:0e9fda14f2da3867bf2fa5d8318c1c4d97f70c3ab1433a442d4bde07fc27d734",
-          "issuer-feed:14921bba306bbc2176c68ddfd1abff7ef4c3609dcc57c5c5dbb87da55e099de6",
-          "issuer-feed:18f38deb57073cbf861a5de07f68ae45b157a6a8cf8be5bd29b75681a9b29562",
-          "issuer-feed:3416e70818131438428e0f03040d9e5ec86e987b91a184c3a39d95dba47ef015",
-          "issuer-feed:373921b96a1395d939196eee36eed7744da2d504e3594a6bf888b2e9881dbea6",
-          "issuer-feed:3d12005bf8e2a452ce48ebc506e7cddc1fd81e73827ed9a63b0b5f3faac7f8ca",
-          "issuer-feed:401594029845115eec7cbc0ed2c822ae8840a32c69d46a8248321112ad497186",
-          "issuer-feed:4157ee8ff904fa3c02ba2de1799757e7c10bea6f6f3d937b4df69bc7f0065b4d"
-        ],
-        "name": "Apple Inc.",
-        "rank": 1,
-        "score_not_probability": 20,
-        "ticker": "AAPL",
-        "unknown": []
-      },
-      {
-        "cik": "1053988",
-        "confirmed": [
-          "text:new product"
-        ],
-        "contradicted": [],
-        "evidence_source_ids": [],
-        "name": "BLACKROCK MUNIHOLDINGS NEW JERSEY QUALITY FUND, INC.",
-        "rank": 2,
-        "score_not_probability": 10,
-        "ticker": "MUJ",
-        "unknown": [
-          "event:issuer_announcement"
-        ]
-      },
-      {
-        "cik": "882150",
-        "confirmed": [
-          "text:new product"
-        ],
-        "contradicted": [],
-        "evidence_source_ids": [],
-        "name": "BLACKROCK MUNIYIELD NEW YORK QUALITY FUND, INC.",
-        "rank": 3,
-        "score_not_probability": 10,
-        "ticker": "MYN",
-        "unknown": [
-          "event:issuer_announcement"
-        ]
-      }
-    ],
-    "visible_universe_size": 8022
-  },
   "claims": {
     "article_full_text_archived": false,
     "investment_signal": false,
     "probability_calibrated": false
   },
   "integrity": {
-    "index_payload_sha256": "50762d91403e4c1562bc68c587b55e44e0e16eb6a5942a0cdecd1e9c6a17f95f",
+    "index_payload_sha256": "1cc865f9b12b042704447c93a6c5fed627d17d16a25a633b8ec3b8cb976e6e9c",
     "news_content_sha256": [
       "a0260d3021648f0c200654cbc818163537d2169bff0c8840b2b75ead742fbb90"
     ],
@@ -78,9 +14,9 @@
   },
   "limitations": [
     "real news coverage contains one allowlisted issuer feed only",
-    "top-1 is a real pipeline result but not evidence of global recall",
-    "query was selected from the feed topic after source selection and is not an independent accuracy benchmark",
-    "provider metadata does not establish that the announcement is financially positive",
+    "the specific evidence query is a real pipeline result but not an independent global recall benchmark",
+    "the ten-case accuracy benchmark is synthetic and cannot establish real-market accuracy",
+    "provider metadata does not establish that an announcement is financially positive",
     "RSS metadata retention requires final operator legal review before production activation",
     "no price, volume, liquidity, valuation, analyst revision or trading signal was evaluated"
   ],
@@ -109,7 +45,130 @@
     "news_retrieved_at": "2026-10-24T06:21:54.896019+00:00",
     "sec_issuers": 8022
   },
+  "retrieval_regressions": {
+    "specific_evidence_query": {
+      "contains_company_identifier": false,
+      "expected_behavior": "one_evidence_backed_candidate",
+      "query": "smart home accessories",
+      "result": {
+        "candidates": [
+          {
+            "confirmed": [
+              "event:issuer_announcement",
+              "text:smart home accessories"
+            ],
+            "contradicted": [],
+            "evidence_source_ids": [
+              "issuer-feed:0e9fda14f2da3867bf2fa5d8318c1c4d97f70c3ab1433a442d4bde07fc27d734",
+              "issuer-feed:14921bba306bbc2176c68ddfd1abff7ef4c3609dcc57c5c5dbb87da55e099de6",
+              "issuer-feed:18f38deb57073cbf861a5de07f68ae45b157a6a8cf8be5bd29b75681a9b29562",
+              "issuer-feed:3416e70818131438428e0f03040d9e5ec86e987b91a184c3a39d95dba47ef015",
+              "issuer-feed:373921b96a1395d939196eee36eed7744da2d504e3594a6bf888b2e9881dbea6",
+              "issuer-feed:3d12005bf8e2a452ce48ebc506e7cddc1fd81e73827ed9a63b0b5f3faac7f8ca",
+              "issuer-feed:401594029845115eec7cbc0ed2c822ae8840a32c69d46a8248321112ad497186",
+              "issuer-feed:4157ee8ff904fa3c02ba2de1799757e7c10bea6f6f3d937b4df69bc7f0065b4d"
+            ],
+            "identity": {
+              "asset_type": "stock",
+              "cik": "320193",
+              "country": "US",
+              "exchange": "Nasdaq",
+              "instrument_type": "unknown",
+              "instrument_type_evidence": null,
+              "instrument_type_status": "unknown",
+              "isin": null,
+              "lei": null,
+              "mic": null,
+              "name": "Apple Inc.",
+              "quality_status": "incomplete",
+              "retrieved_at": "2026-10-24T05:34:29.197186Z",
+              "sector": null,
+              "source_available_at": "2026-10-24T05:34:29.197186Z",
+              "source_id": "sec-company-tickers-exchange",
+              "ticker": "AAPL",
+              "valid_from": null,
+              "valid_to": null,
+              "wkn": null
+            },
+            "retrieval_channels": [
+              "evidence_text"
+            ],
+            "score": 64,
+            "unknown": []
+          }
+        ],
+        "coverage_warnings": [],
+        "full_universe_size": 8022,
+        "index_payload_sha256": "1cc865f9b12b042704447c93a6c5fed627d17d16a25a633b8ec3b8cb976e6e9c",
+        "limit": 50,
+        "matched_before_limit": 1,
+        "status": "ok",
+        "visible_universe_size": 8022,
+        "weak_match_count": 0
+      }
+    },
+    "weak_generic_query": {
+      "contains_company_identifier": false,
+      "expected_behavior": "unresolved_without_false_fund_candidates",
+      "query": "new product",
+      "result": {
+        "candidates": [],
+        "coverage_warnings": [
+          "no_candidate_with_sufficient_evidence"
+        ],
+        "full_universe_size": 8022,
+        "index_payload_sha256": "1cc865f9b12b042704447c93a6c5fed627d17d16a25a633b8ec3b8cb976e6e9c",
+        "limit": 50,
+        "matched_before_limit": 0,
+        "status": "unresolved",
+        "visible_universe_size": 8022,
+        "weak_match_count": 0
+      }
+    }
+  },
   "run_kind": "real_public_metadata_e2e",
-  "schema_version": 1,
-  "verdict": "real issuer metadata traversed feed, full SEC index and retrieval; AAPL ranked first, but global discovery and independent accuracy are not established"
+  "schema_version": 2,
+  "synthetic_benchmark": {
+    "case_count": 10,
+    "claim": "functional ranking regression corpus; not real-market accuracy evidence",
+    "metrics": {
+      "abstention_accuracy": 1.0,
+      "abstention_case_count": 2,
+      "case_count": 10,
+      "false_positive_predictions_at_3": 0,
+      "false_positive_rate_at_3": 0.0,
+      "labelled_case_count": 8,
+      "lookahead_violations": [],
+      "market_coverage": [
+        "AT",
+        "CA",
+        "CH",
+        "DE",
+        "US"
+      ],
+      "max_latency_ms": 0.9234239987563342,
+      "measured_latency_case_count": 10,
+      "prediction_count_at_3": 8,
+      "recall_at_10": 1.0,
+      "recall_at_50": 1.0,
+      "sector_coverage": [
+        "banking",
+        "biotechnology",
+        "industrial_machinery",
+        "insurance",
+        "logistics",
+        "medical_technology",
+        "mining",
+        "renewable_energy",
+        "semiconductors",
+        "technology"
+      ],
+      "top_1": 1.0,
+      "top_3": 1.0,
+      "total_cost_eur": 0.0,
+      "total_request_count": 0
+    },
+    "ranking_payload_sha256": "8544099c98c8af4b0d74344e87f0eeb39ea6471f0f99b37de4e8e76e54a22625"
+  },
+  "verdict": "real primary metadata produces one evidence-backed candidate for a specific blind phrase; the prior generic query now abstains instead of returning BlackRock fund false positives; global identification quality remains unproven"
 }

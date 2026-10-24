@@ -35,3 +35,13 @@ Volltexte. Monatliches Zusatzbudget dieser Auswahl: 0 EUR.
 3. **Kein dritter neuer Provider in diesem PR**: EQS und GlobeNewswire wären fachlich besser als
    weitere Portale, aber ein kostenloser systematischer Zugriff samt Speicher-/Weitergaberechten
    ist nicht ausreichend belegt. Ein scheinbarer Scraper würde das Abnahmekriterium verletzen.
+
+## Laufzeitstatus und Fehlergrenzen
+
+Konfiguration und tatsächlicher Erfolg werden getrennt gezählt. Der Collector meldet
+`configured_sources`, `successful_sources`, `unavailable_sources`, `fresh_sources` und
+`stale_sources`. Ein einzelner Ausfall verwirft erfolgreiche Batches anderer Provider nicht.
+
+GDELT wiederholt ausschließlich Transportfehler sowie HTTP 429, 500, 502, 503 und 504. Es gibt
+höchstens einen Retry mit begrenztem Backoff; jeder Versuch belastet das explizite Requestbudget.
+Nach Erschöpfung folgt `unavailable` mit `gdelt_retries_exhausted` und `fallback_used=false`.

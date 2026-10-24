@@ -1,0 +1,266 @@
+{
+  "cases": [
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "cloud-contract",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.9234239987563342,
+      "market": "US",
+      "ranked": [
+        "cik:101"
+      ],
+      "request_count": 0,
+      "sector": "technology",
+      "status": "ok",
+      "target": "cik:101"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "oncology-approval",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.751465999201173,
+      "market": "US",
+      "ranked": [
+        "cik:102"
+      ],
+      "request_count": 0,
+      "sector": "biotechnology",
+      "status": "ok",
+      "target": "cik:102"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "insurance-guidance",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.7083199998305645,
+      "market": "US",
+      "ranked": [
+        "cik:103"
+      ],
+      "request_count": 0,
+      "sector": "insurance",
+      "status": "ok",
+      "target": "cik:103"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "solar-tender",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.6057120008335914,
+      "market": "DE",
+      "ranked": [
+        "cik:104"
+      ],
+      "request_count": 0,
+      "sector": "renewable_energy",
+      "status": "ok",
+      "target": "cik:104"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "chip-line",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.6219189999683294,
+      "market": "US",
+      "ranked": [
+        "cik:105"
+      ],
+      "request_count": 0,
+      "sector": "semiconductors",
+      "status": "ok",
+      "target": "cik:105"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "automation-order",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.5516059973160736,
+      "market": "DE",
+      "ranked": [
+        "cik:106"
+      ],
+      "request_count": 0,
+      "sector": "industrial_machinery",
+      "status": "ok",
+      "target": "cik:106"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "bank-outlook",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.5673230007232632,
+      "market": "AT",
+      "ranked": [
+        "cik:107"
+      ],
+      "request_count": 0,
+      "sector": "banking",
+      "status": "ok",
+      "target": "cik:107"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "device-clearance",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.7485959977202583,
+      "market": "CH",
+      "ranked": [
+        "cik:108"
+      ],
+      "request_count": 0,
+      "sector": "medical_technology",
+      "status": "ok",
+      "target": "cik:108"
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "ambiguous-logistics",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.6236409972188994,
+      "market": "DE",
+      "ranked": [],
+      "request_count": 0,
+      "sector": "logistics",
+      "status": "unresolved",
+      "target": null
+    },
+    {
+      "as_of": "2026-02-01T00:00:00Z",
+      "case_id": "outside-coverage",
+      "cost_eur": 0.0,
+      "evidence_available_at": [],
+      "kind": "synthetic",
+      "latency_ms": 0.5633770015265327,
+      "market": "CA",
+      "ranked": [],
+      "request_count": 0,
+      "sector": "mining",
+      "status": "unresolved",
+      "target": null
+    }
+  ],
+  "corpus": {
+    "case_count": 10,
+    "kind_counts": {
+      "synthetic": 10
+    },
+    "ranking_payload_sha256": "8544099c98c8af4b0d74344e87f0eeb39ea6471f0f99b37de4e8e76e54a22625",
+    "selection_independent_of_teasers": true,
+    "solution_identifiers_in_teasers": []
+  },
+  "metrics": {
+    "all": {
+      "abstention_accuracy": 1.0,
+      "abstention_case_count": 2,
+      "case_count": 10,
+      "false_positive_predictions_at_3": 0,
+      "false_positive_rate_at_3": 0.0,
+      "labelled_case_count": 8,
+      "lookahead_violations": [],
+      "market_coverage": [
+        "AT",
+        "CA",
+        "CH",
+        "DE",
+        "US"
+      ],
+      "max_latency_ms": 0.9234239987563342,
+      "measured_latency_case_count": 10,
+      "prediction_count_at_3": 8,
+      "recall_at_10": 1.0,
+      "recall_at_50": 1.0,
+      "sector_coverage": [
+        "banking",
+        "biotechnology",
+        "industrial_machinery",
+        "insurance",
+        "logistics",
+        "medical_technology",
+        "mining",
+        "renewable_energy",
+        "semiconductors",
+        "technology"
+      ],
+      "top_1": 1.0,
+      "top_3": 1.0,
+      "total_cost_eur": 0.0,
+      "total_request_count": 0
+    },
+    "real_archived": {
+      "abstention_accuracy": null,
+      "abstention_case_count": 0,
+      "case_count": 0,
+      "false_positive_predictions_at_3": 0,
+      "false_positive_rate_at_3": 0.0,
+      "labelled_case_count": 0,
+      "lookahead_violations": [],
+      "market_coverage": [],
+      "max_latency_ms": null,
+      "measured_latency_case_count": 0,
+      "prediction_count_at_3": 0,
+      "recall_at_10": null,
+      "recall_at_50": null,
+      "sector_coverage": [],
+      "top_1": null,
+      "top_3": null,
+      "total_cost_eur": null,
+      "total_request_count": null
+    },
+    "synthetic": {
+      "abstention_accuracy": 1.0,
+      "abstention_case_count": 2,
+      "case_count": 10,
+      "false_positive_predictions_at_3": 0,
+      "false_positive_rate_at_3": 0.0,
+      "labelled_case_count": 8,
+      "lookahead_violations": [],
+      "market_coverage": [
+        "AT",
+        "CA",
+        "CH",
+        "DE",
+        "US"
+      ],
+      "max_latency_ms": 0.9234239987563342,
+      "measured_latency_case_count": 10,
+      "prediction_count_at_3": 8,
+      "recall_at_10": 1.0,
+      "recall_at_50": 1.0,
+      "sector_coverage": [
+        "banking",
+        "biotechnology",
+        "industrial_machinery",
+        "insurance",
+        "logistics",
+        "medical_technology",
+        "mining",
+        "renewable_energy",
+        "semiconductors",
+        "technology"
+      ],
+      "top_1": 1.0,
+      "top_3": 1.0,
+      "total_cost_eur": 0.0,
+      "total_request_count": 0
+    }
+  },
+  "schema_version": 1
+}

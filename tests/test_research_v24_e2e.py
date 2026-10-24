@@ -104,6 +104,59 @@ def test_evaluation_reports_latency_cost_and_request_budget_without_inventing_va
     assert report["total_request_count"] == 1
 
 
+def test_evaluation_reports_false_positives_and_market_sector_coverage():
+    from scanner.research_evaluation import evaluate_cases
+
+    cases = [
+        {
+            "case_id": "right",
+            "kind": "synthetic",
+            "target": "cik:1",
+            "ranked": ["cik:1", "cik:2"],
+            "status": "ok",
+            "market": "US",
+            "sector": "technology",
+        },
+        {
+            "case_id": "abstain",
+            "kind": "synthetic",
+            "target": None,
+            "ranked": [],
+            "status": "unresolved",
+            "market": "DE",
+            "sector": "industrial",
+        },
+    ]
+    report = evaluate_cases(cases)["all"]
+    assert report["false_positive_predictions_at_3"] == 1
+    assert report["prediction_count_at_3"] == 2
+    assert report["false_positive_rate_at_3"] == 0.5
+    assert report["market_coverage"] == ["DE", "US"]
+    assert report["sector_coverage"] == ["industrial", "technology"]
+
+
+def test_predeclared_ten_case_benchmark_has_no_solution_identifiers_in_teasers(tmp_path):
+    from pathlib import Path
+
+    from scanner.research_benchmark import run_benchmark
+
+    fixture = Path("tests/fixtures/research-v24/candidate-benchmark.json")
+    report = run_benchmark(fixture, tmp_path / "benchmark.db")
+    metrics = report["metrics"]["all"]
+    assert report["corpus"]["case_count"] == 10
+    assert report["corpus"]["kind_counts"] == {"synthetic": 10}
+    assert report["corpus"]["solution_identifiers_in_teasers"] == []
+    assert len(report["corpus"]["ranking_payload_sha256"]) == 64
+    assert metrics["recall_at_10"] == 1.0
+    assert metrics["recall_at_50"] == 1.0
+    assert metrics["top_1"] == 1.0
+    assert metrics["top_3"] == 1.0
+    assert metrics["abstention_accuracy"] == 1.0
+    assert metrics["false_positive_rate_at_3"] == 0.0
+    assert metrics["market_coverage"] == ["AT", "CA", "CH", "DE", "US"]
+    assert len(metrics["sector_coverage"]) >= 8
+
+
 def test_archived_sec_and_news_build_a_reproducible_real_report(tmp_path):
     from scanner.news import NewsBatch
     from scanner.research_v24_report import build_report
