@@ -75,6 +75,35 @@ def test_evaluation_flags_lookahead_and_missing_target_without_inventing_denomin
     assert report["all"]["abstention_accuracy"] == 0.0
 
 
+def test_evaluation_reports_latency_cost_and_request_budget_without_inventing_values():
+    from scanner.research_evaluation import evaluate_cases
+
+    cases = [
+        {
+            "case_id": "measured",
+            "kind": "real_archived",
+            "target": "cik:1",
+            "ranked": ["cik:1"],
+            "status": "ok",
+            "latency_ms": 125.5,
+            "cost_eur": 0.0,
+            "request_count": 1,
+        },
+        {
+            "case_id": "unmeasured",
+            "kind": "synthetic",
+            "target": "cik:2",
+            "ranked": [],
+            "status": "unresolved",
+        },
+    ]
+    report = evaluate_cases(cases)["all"]
+    assert report["measured_latency_case_count"] == 1
+    assert report["max_latency_ms"] == 125.5
+    assert report["total_cost_eur"] == 0.0
+    assert report["total_request_count"] == 1
+
+
 def test_archived_sec_and_news_build_a_reproducible_real_report(tmp_path):
     from scanner.news import NewsBatch
     from scanner.research_v24_report import build_report

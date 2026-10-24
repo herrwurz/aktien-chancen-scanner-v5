@@ -73,11 +73,21 @@ class IssuerFeedNewsSource:
                 client = self.client or httpx.Client(timeout=self.timeout, follow_redirects=False)
                 own = self.client is None
                 try:
-                    response = client.get(
-                        str(config.url), timeout=self.timeout, follow_redirects=False
-                    )
-                    response.raise_for_status()
-                    raw = response.content
+                    try:
+                        response = client.get(
+                            str(config.url), timeout=self.timeout, follow_redirects=False
+                        )
+                        response.raise_for_status()
+                        raw = response.content
+                    except httpx.HTTPError:
+                        return NewsBatch(
+                            provider="ISSUER_FEED",
+                            status="unavailable",
+                            retrieved_at=self.clock(),
+                            request_count=request_count,
+                            errors=["issuer_feed_request_failed"],
+                            coverage={"allowlisted_feeds": len(matches)},
+                        )
                 finally:
                     if own:
                         client.close()

@@ -25,6 +25,9 @@ def _metrics(cases):
         as_of = _timestamp(row["as_of"])
         if any(_timestamp(value) > as_of for value in row.get("evidence_available_at", [])):
             violations.append(row["case_id"])
+    latencies = [float(row["latency_ms"]) for row in cases if row.get("latency_ms") is not None]
+    costs = [float(row["cost_eur"]) for row in cases if row.get("cost_eur") is not None]
+    requests = [int(row["request_count"]) for row in cases if row.get("request_count") is not None]
     return {
         "case_count": len(cases),
         "labelled_case_count": len(labelled),
@@ -43,6 +46,10 @@ def _metrics(cases):
             else None
         ),
         "lookahead_violations": violations,
+        "measured_latency_case_count": len(latencies),
+        "max_latency_ms": max(latencies, default=None),
+        "total_cost_eur": sum(costs) if costs else None,
+        "total_request_count": sum(requests) if requests else None,
     }
 
 

@@ -53,6 +53,12 @@ keine Zuordnung.
 Meldungen erst ab ihrer belegten Verfügbarkeit. Spätere XBRL-Korrekturen bleiben durch die
 V2.3-Regeln ausgeschlossen, bis ihre eigene Verfügbarkeit erreicht ist.
 
+Jeder Nachrichtenbatch kann sein Alter gegen eine explizite `as_of`-Grenze und ein maximales
+Alter als `fresh`, `stale` oder `unavailable` ausweisen. Ein nicht erreichbarer IR-Feed liefert
+einen strukturierten `unavailable`-Status samt verbrauchtem Request statt scheinbarer Leerdaten.
+Die Evaluationsausgabe aggregiert nur tatsächlich gemessene Laufzeiten, Requests und Kosten;
+fehlende Messwerte werden nicht als null ausgegeben.
+
 ## Gemeinsame Schnittstellen
 
 `IndexedResearchService` stellt `universe`, `candidates`, `events`, `fundamentals`, `prices` und

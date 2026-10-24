@@ -281,6 +281,59 @@ def test_issuer_feed_replays_sha_verified_cache_without_network(tmp_path):
     assert replay.request_count == 0
 
 
+def test_issuer_feed_network_failure_returns_documented_unavailable_status(tmp_path):
+    from scanner.news_providers.issuer_feed import IssuerFeedConfig, IssuerFeedNewsSource
+
+    config = IssuerFeedConfig(
+        url="https://issuer.example/feed.xml",
+        issuer_name="Example",
+        company_identifiers={"cik": ["42"]},
+        license_status="permitted_metadata",
+        license_reference="https://issuer.example/terms",
+    )
+    source = IssuerFeedNewsSource(
+        [config],
+        tmp_path,
+        allow_network=True,
+        max_requests=1,
+        client=httpx.Client(
+            transport=httpx.MockTransport(
+                lambda request: (_ for _ in ()).throw(httpx.ConnectError("offline"))
+            )
+        ),
+        clock=lambda: NOW,
+    )
+    batch = source.fetch("Example", start=NOW.replace(hour=0), end=NOW, limit=10)
+    assert batch.status == "unavailable"
+    assert batch.request_count == 1
+    assert batch.items == []
+    assert batch.errors == ["issuer_feed_request_failed"]
+
+
+def test_news_batch_reports_staleness_from_historically_available_data():
+    from scanner.news import NewsBatch
+
+    batch = NewsBatch(
+        provider="ARCHIVE",
+        status="ok",
+        items=[
+            item(
+                published_at=NOW.replace(day=1),
+                first_seen_at=NOW.replace(day=1),
+                source_available_at=NOW.replace(day=1),
+            )
+        ],
+        retrieved_at=NOW,
+    )
+    freshness = batch.freshness(as_of=NOW, max_age_days=7)
+    assert freshness == {
+        "status": "stale",
+        "newest_available_at": "2026-10-01T12:00:00Z",
+        "age_seconds": 23 * 86400,
+        "max_age_seconds": 7 * 86400,
+    }
+
+
 def test_news_identity_linker_requires_unique_bounded_name_or_ticker():
     from scanner.news_identity import link_news_to_assets
     from scanner.research import AssetIdentity
