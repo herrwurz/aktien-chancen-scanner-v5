@@ -189,6 +189,15 @@ class MarketDataArchive:
             ]
         return _digest({"listings": listings, "bars": bars, "actions": actions})
 
+    def latest_session(self, asset_id: str, provider: str) -> str | None:
+        with self._connect() as db:
+            row = db.execute(
+                """SELECT MAX(session_date) AS latest FROM bar_revision
+                   WHERE asset_id=? AND provider=?""",
+                (asset_id, provider),
+            ).fetchone()
+        return row["latest"]
+
     def prices(self, asset_id, *, start, end, as_of, availability_mode="strict"):
         if availability_mode not in {"strict", "modeled"}:
             raise ValueError("invalid availability mode")

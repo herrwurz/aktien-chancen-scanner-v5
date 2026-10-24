@@ -97,6 +97,17 @@ class ResearchIndex:
             "identity": indexed.model_dump(mode="json"),
         }
 
+    def market_universe(self, *, as_of):
+        """Return point-in-time-visible identities for deterministic provider pilots."""
+        with self._connect() as connection:
+            rows = connection.execute(
+                """SELECT identity_json FROM asset
+                   WHERE available_at IS NOT NULL AND available_at<=?
+                   ORDER BY asset_id""",
+                (as_of.isoformat(),),
+            ).fetchall()
+        return [AssetIdentity.model_validate_json(row["identity_json"]) for row in rows]
+
     def candidates(self, query, *, as_of, limit=50):
         query = CandidateQuery.model_validate(query)
         if not 1 <= limit <= 50:
