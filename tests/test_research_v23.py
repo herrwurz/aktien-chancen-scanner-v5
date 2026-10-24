@@ -588,6 +588,8 @@ def test_live_source_is_lazy_and_collects_only_when_analysis_starts(tmp_path):
     assert len(calls) == 3
     assert report["candidate_source"]["coverage"]["kind"] == "real_archived"
     assert report["candidate_source"]["coverage"]["candidate_count"] == 1
+    detective.analyze(DetectiveRequest(teaser_text="US-Versicherer", publication_at=NOW))
+    assert len(calls) == 3
 
 
 def test_gleif_adapter_is_real_cached_cc0_identity_evidence_without_historical_claim(tmp_path):
@@ -841,3 +843,353 @@ def test_current_identity_identifier_is_not_treated_as_historical_proof():
     )
     assert report["identification"]["status"] == "unresolved"
     assert report["candidates"] == []
+
+
+def test_sample_coverage_never_claims_full_candidate_search(tmp_path):
+    from scanner.research_live import collect_sec_snapshot
+    from scanner.research_providers.sec_edgar import SecEdgarClient
+
+    def handler(request):
+        if request.url.path.endswith("company_tickers_exchange.json"):
+            return httpx.Response(
+                200,
+                json={
+                    "fields": ["cik", "name", "ticker", "exchange"],
+                    "data": [
+                        [1, "Covered", "COV", "NYSE"],
+                        [2, "Outside", "OUT", "Nasdaq"],
+                    ],
+                },
+            )
+        if "/submissions/" in request.url.path:
+            return httpx.Response(
+                200,
+                json={
+                    "sicDescription": "Unknown",
+                    "filings": {
+                        "recent": {
+                            "accessionNumber": [],
+                            "filingDate": [],
+                            "acceptanceDateTime": [],
+                            "form": [],
+                            "items": [],
+                        }
+                    },
+                },
+            )
+        return httpx.Response(200, json=companyfacts([]))
+
+    client = SecEdgarClient(
+        tmp_path / "cache",
+        user_agent="Scanner research@example.org",
+        allow_network=True,
+        max_requests=3,
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+        now=lambda: NOW,
+        sleeper=lambda _: None,
+    )
+    path = tmp_path / "snapshot.json"
+    collect_sec_snapshot(client, path, max_candidates=1)
+    coverage = load_snapshot(path)["coverage"]
+    assert coverage["sampling_strategy"] == "stable_sha256_cik_v1"
+    assert coverage["full_universe_size"] == 2
+    assert coverage["investigated_count"] == 1
+    assert coverage["coverage_ratio"] == 0.5
+    assert coverage["missing_sector_rate"] == 1.0
+    assert coverage["recall_unmeasurable"] is True
+    assert coverage["search_scope"] == "independent_sample_not_global_candidate_search"
+    assert coverage["not_covered_markets"] == ["non_SEC_US", "DE", "AT", "CH", "EU"]
+
+
+def test_later_xbrl_correction_is_not_used_by_earlier_historical_fact():
+    identity = AssetIdentity(asset_type="stock", name="Example", ticker="EX", cik="42")
+    payload = companyfacts(
+        [
+            fact_row(
+                value=10,
+                start="2024-01-01",
+                end="2024-03-31",
+                filed="2024-05-01",
+                accn="prior-original",
+                fy=2024,
+            ),
+            fact_row(
+                value=20,
+                start="2024-01-01",
+                end="2024-03-31",
+                filed="2025-06-01",
+                accn="prior-correction",
+                fy=2024,
+            ),
+            fact_row(
+                value=15,
+                start="2025-01-01",
+                end="2025-03-31",
+                filed="2025-05-01",
+                accn="current",
+                fy=2025,
+            ),
+        ]
+    )
+    availability = {
+        "prior-original": datetime(2024, 5, 1, 20, tzinfo=UTC),
+        "current": datetime(2025, 5, 1, 20, tzinfo=UTC),
+        "prior-correction": datetime(2025, 6, 1, 20, tzinfo=UTC),
+    }
+    facts = extract_sec_company_facts(
+        sec_record(payload), identity, availability_by_accession=availability
+    )
+    current = next(row for row in facts if row.value == 15)
+    assert current.comparison_value == 10
+    assert current.claim == "year_over_year_increase"
+    assert current.source_available_at == availability["current"]
+
+
+def test_unknown_sector_is_unverifiable_while_known_different_sector_is_contradiction():
+    from scanner.hebeltrader.detective.research_source import ResearchCandidateSource
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+    from scanner.hebeltrader.detective.service import DetectiveService
+
+    unknown = AssetIdentity(
+        asset_type="stock",
+        name="Unknown Sector",
+        ticker="UNK",
+        cik="1",
+        country="US",
+        sector=None,
+        source_available_at="2024-01-01T00:00:00Z",
+    )
+    bank = unknown.model_copy(
+        update={"name": "Known Bank", "ticker": "BNK", "cik": "2", "sector": "banking"}
+    )
+    source = ResearchCandidateSource(
+        [unknown, bank], [], coverage={"kind": "real_archived", "candidate_count": 2}
+    )
+    report = DetectiveService(
+        candidate_source=source,
+        news_source=source,
+        products=[],
+        research_mode="cached_research",
+    ).analyze(DetectiveRequest(teaser_text="US-Versicherer", publication_at="2025-01-01T00:00:00Z"))
+    unknown_row = next(row for row in report["candidates"] if row["ticker"] == "UNK")
+    bank_row = next(row for row in report["candidates"] if row["ticker"] == "BNK")
+    assert "insurance" in unknown_row["unverified_clues"]["sectors"]
+    assert not any(row["type"] == "sectors_mismatch" for row in unknown_row["contradictions"])
+    assert any(row["type"] == "sectors_mismatch" for row in bank_row["contradictions"])
+    assert (
+        unknown_row["relevance_score_not_probability"] > bank_row["relevance_score_not_probability"]
+    )
+
+
+def test_top_three_is_selected_after_ranking_all_candidates():
+    from scanner.hebeltrader.detective.research_source import ResearchCandidateSource
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+    from scanner.hebeltrader.detective.service import DetectiveService
+
+    assets = [
+        AssetIdentity(
+            asset_type="stock",
+            name=f"Candidate {index}",
+            ticker=f"C{index}",
+            cik=str(index),
+            country="US",
+            sector="banking" if index < 5 else "insurance",
+            source_available_at="2024-01-01T00:00:00Z",
+        )
+        for index in range(6)
+    ]
+    source = ResearchCandidateSource(
+        assets, [], coverage={"kind": "real_archived", "candidate_count": 6}
+    )
+    report = DetectiveService(
+        candidate_source=source,
+        news_source=source,
+        products=[],
+        research_mode="cached_research",
+    ).analyze(DetectiveRequest(teaser_text="US-Versicherer", publication_at="2025-01-01T00:00:00Z"))
+    assert report["candidates"][0]["ticker"] == "C5"
+    assert len(report["candidates"]) == 3
+
+
+def test_candidate_response_caps_evidence_and_reports_archive_counts():
+    from scanner.hebeltrader.detective.research_source import ResearchCandidateSource
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+    from scanner.hebeltrader.detective.service import DetectiveService
+
+    identity = AssetIdentity(
+        asset_type="stock",
+        name="Evidence Heavy",
+        ticker="EVH",
+        cik="42",
+        country="US",
+        sector="insurance",
+        source_available_at="2024-01-01T00:00:00Z",
+    )
+
+    def make_event(index):
+        evidence = EvidenceRecord(
+            source_id=f"event-{index}",
+            url=f"https://www.sec.gov/event-{index}",
+            title="Filing",
+            published_at=datetime(2025, 1, 1, tzinfo=UTC),
+            retrieved_at=datetime(2025, 1, 1, tzinfo=UTC),
+            effective_at=datetime(2025, 1, 1, tzinfo=UTC),
+            source_available_at=datetime(2025, 1, 1, tzinfo=UTC),
+            source_kind="regulatory",
+            facts={},
+            content_sha256="a" * 64,
+        )
+        return CompanyEvent(
+            event_id=evidence.source_id,
+            asset=identity,
+            category="regulatory_filing",
+            headline="Filing",
+            published_at=evidence.published_at,
+            retrieved_at=evidence.retrieved_at,
+            effective_at=evidence.effective_at,
+            evidence=evidence,
+        )
+
+    events = [make_event(index) for index in range(100)]
+    source = ResearchCandidateSource(
+        [identity], events, coverage={"kind": "real_archived", "candidate_count": 1}
+    )
+    report = DetectiveService(
+        candidate_source=source,
+        news_source=source,
+        products=[],
+        research_mode="cached_research",
+    ).analyze(DetectiveRequest(teaser_text="US-Versicherer", publication_at="2025-06-01T00:00:00Z"))
+    candidate = report["candidates"][0]
+    assert len(candidate["eligible_evidence"]) <= 8
+    assert candidate["evidence_summary"] == {
+        "eligible_total": 100,
+        "returned": 8,
+        "omitted": 92,
+        "response_limit": 8,
+    }
+    assert len(json.dumps(report)) < 30_000
+
+
+def test_capped_response_keeps_evidence_that_supports_ranked_clue():
+    from scanner.hebeltrader.detective.research_source import ResearchCandidateSource
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+    from scanner.hebeltrader.detective.service import DetectiveService
+
+    identity = AssetIdentity(
+        asset_type="stock",
+        name="Example",
+        ticker="EX",
+        cik="42",
+        country="US",
+        source_available_at="2024-01-01T00:00:00Z",
+    )
+
+    def event(index, facts):
+        evidence = EvidenceRecord(
+            source_id=f"event-{index}",
+            url=f"https://www.sec.gov/event-{index}",
+            title="Filing",
+            published_at=datetime(2025, 1, 1, tzinfo=UTC),
+            retrieved_at=datetime(2025, 1, 1, tzinfo=UTC),
+            effective_at=datetime(2025, 1, 1, tzinfo=UTC),
+            source_available_at=datetime(2025, 1, 1, tzinfo=UTC),
+            source_kind="regulatory",
+            facts=facts,
+            content_sha256="a" * 64,
+        )
+        return CompanyEvent(
+            event_id=evidence.source_id,
+            asset=identity,
+            category="regulatory_filing",
+            headline="Filing",
+            published_at=evidence.published_at,
+            retrieved_at=evidence.retrieved_at,
+            effective_at=evidence.effective_at,
+            evidence=evidence,
+        )
+
+    events = [event(index, {}) for index in range(20)]
+    events.append(event(99, {"fact_claims": ["net_income_increase"]}))
+    source = ResearchCandidateSource(
+        [identity], events, coverage={"kind": "real_archived", "candidate_count": 1}
+    )
+    report = DetectiveService(
+        candidate_source=source,
+        news_source=source,
+        products=[],
+        research_mode="cached_research",
+    ).analyze(
+        DetectiveRequest(
+            teaser_text="US-Unternehmen meldet Gewinnanstieg",
+            publication_at="2025-06-01T00:00:00Z",
+        )
+    )
+    returned_ids = {row["source_id"] for row in report["candidates"][0]["eligible_evidence"]}
+    assert "event-99" in returned_ids
+
+
+def test_live_mode_requires_complete_bounded_request_budget(tmp_path):
+    from scanner.config import Settings
+    from scanner.hebeltrader.detective.factory import build_detective
+    from scanner.hebeltrader.detective.schemas import DetectiveRequest
+
+    service = build_detective(
+        Settings(
+            _env_file=None,
+            detective_research_mode="live_research",
+            detective_live_allow_network=True,
+            detective_live_max_requests=20,
+            detective_live_max_candidates=10,
+            detective_research_snapshot=tmp_path / "snapshot.json",
+            detective_research_cache_dir=tmp_path / "cache",
+            sec_user_agent="Scanner research@example.org",
+            detective_live_api_token="secret",
+        )
+    )
+    report = service.analyze(DetectiveRequest(teaser_text="US-Versicherer"))
+    assert report["candidate_source"]["coverage"]["error_code"] == (
+        "live_request_budget_insufficient"
+    )
+
+
+def test_live_api_token_status_does_not_authorize_missing_or_wrong_token():
+    from scanner.config import Settings
+    from scanner.hebeltrader.detective.factory import live_api_access_status
+
+    settings = Settings(
+        _env_file=None,
+        detective_research_mode="live_research",
+        detective_live_api_token="correct horse",
+    )
+    assert live_api_access_status(settings, None) == "unauthorized"
+    assert live_api_access_status(settings, "wrong") == "unauthorized"
+    assert live_api_access_status(settings, "correct horse") == "authorized"
+    assert live_api_access_status(Settings(_env_file=None), None) == "not_required"
+
+
+def test_sec_collector_stops_when_wall_clock_budget_is_exhausted(tmp_path):
+    from scanner.research_live import collect_sec_snapshot
+
+    class ExpiredClient:
+        remaining = 3
+
+        def fetch(self, dataset, identifier=None):
+            if dataset == "universe":
+                return sec_record(
+                    {
+                        "fields": ["cik", "name", "ticker", "exchange"],
+                        "data": [[1, "Example", "EX", "NYSE"]],
+                    }
+                )
+            raise AssertionError("deadline must be checked before issuer requests")
+
+    ticks = iter([0.0, 2.0])
+    with pytest.raises(ValueError, match="duration limit"):
+        collect_sec_snapshot(
+            ExpiredClient(),
+            tmp_path / "snapshot.json",
+            max_candidates=1,
+            max_duration_seconds=1,
+            monotonic=lambda: next(ticks),
+        )

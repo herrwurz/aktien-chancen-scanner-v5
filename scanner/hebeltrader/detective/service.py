@@ -10,6 +10,8 @@ from .catalog import CATALOG_REVISION, default_candidate_source, load_products
 from .clues import extract_clues
 from .ocr import TesseractOcr
 
+MAX_RESPONSE_EVIDENCE = 8
+
 
 def _phrase_present(text, phrase):
     return re.search(rf"(?<!\w){re.escape(phrase)}(?!\w)", text, re.I) is not None
@@ -179,6 +181,16 @@ class DetectiveService:
                 strength = "limited_evidence"
             if not (hard_facts or supporting or contradictions):
                 continue
+
+            def response_relevance(record, candidate_facts=facts):
+                matches = sum(
+                    len(set(record.facts.get(group, [])) & set(clues["structured"][group]))
+                    for group in candidate_facts
+                )
+                return (-matches, record.source_id)
+
+            returned_evidence = sorted(eligible, key=response_relevance)[:MAX_RESPONSE_EVIDENCE]
+            returned_future = future[:MAX_RESPONSE_EVIDENCE]
             ranked.append(
                 {
                     **identity.model_dump(mode="json"),
@@ -188,8 +200,22 @@ class DetectiveService:
                     "supporting_clues": supporting,
                     "contradictions": contradictions,
                     "unverified_clues": unverified,
-                    "eligible_evidence": [record.model_dump(mode="json") for record in eligible],
-                    "excluded_future_or_unavailable_source_ids": future,
+                    "eligible_evidence": [
+                        record.model_dump(mode="json") for record in returned_evidence
+                    ],
+                    "evidence_summary": {
+                        "eligible_total": len(eligible),
+                        "returned": len(returned_evidence),
+                        "omitted": len(eligible) - len(returned_evidence),
+                        "response_limit": MAX_RESPONSE_EVIDENCE,
+                    },
+                    "excluded_future_or_unavailable_source_ids": returned_future,
+                    "excluded_evidence_summary": {
+                        "total": len(future),
+                        "returned": len(returned_future),
+                        "omitted": len(future) - len(returned_future),
+                        "response_limit": MAX_RESPONSE_EVIDENCE,
+                    },
                     "confirmed": False,
                     "missing_for_confirmation": [
                         "independent time-valid public evidence",

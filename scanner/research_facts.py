@@ -22,6 +22,13 @@ def extract_sec_company_facts(record, identity: AssetIdentity, *, availability_b
     payload = record["payload"]
     retrieved = _at(record["retrieved_at"])
     source_url = record["source_reference"]
+    availability_by_accession = availability_by_accession or {}
+
+    def available_at(row):
+        return availability_by_accession.get(row["accn"]) or _at(
+            row["filed"] + "T23:59:59.999999+00:00"
+        )
+
     result = []
     for namespace, concepts in payload.get("facts", {}).items():
         if namespace != "us-gaap" or not isinstance(concepts, dict):
@@ -42,6 +49,7 @@ def extract_sec_company_facts(record, identity: AssetIdentity, *, availability_b
                 ]
                 eligible.sort(key=lambda row: (row["end"], row["filed"], row["accn"]))
                 for index, row in enumerate(eligible):
+                    current_available_at = available_at(row)
                     prior = None
                     for candidate in reversed(eligible[:index]):
                         if (
@@ -49,6 +57,7 @@ def extract_sec_company_facts(record, identity: AssetIdentity, *, availability_b
                             and int(candidate["fy"]) == int(row["fy"]) - 1
                             and candidate["start"][5:] == row["start"][5:]
                             and candidate["end"][5:] == row["end"][5:]
+                            and available_at(candidate) <= current_available_at
                         ):
                             prior = candidate
                             break
@@ -67,10 +76,7 @@ def extract_sec_company_facts(record, identity: AssetIdentity, *, availability_b
                         verification = "source_verified"
                     else:
                         comparison = None
-                    availability_by_accession = availability_by_accession or {}
-                    filed = availability_by_accession.get(row["accn"]) or _at(
-                        row["filed"] + "T23:59:59.999999+00:00"
-                    )
+                    filed = current_available_at
                     token = f"{identity.cik}:{concept}:{unit}:{row['accn']}"
                     result.append(
                         CompanyFact(

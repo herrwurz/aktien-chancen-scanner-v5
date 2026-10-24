@@ -11,7 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
-from scanner.hebeltrader.detective.factory import build_detective
+from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
@@ -169,7 +169,12 @@ def create_app(settings: Settings | None = None, engine=None):
         return templates.TemplateResponse(request=request, name="detective.html", context={})
 
     @app.post("/api/hebeltrader/detective/analyze")
-    def analyze_hebeltrader_teaser(payload: DetectiveRequest):
+    def analyze_hebeltrader_teaser(payload: DetectiveRequest, request: Request):
+        access = live_api_access_status(settings, request.headers.get("X-Research-Authorization"))
+        if access == "token_missing":
+            raise HTTPException(status_code=503, detail="Live research API token is not configured")
+        if access == "unauthorized":
+            raise HTTPException(status_code=403, detail="Live research authorization required")
         try:
             return detective.analyze(payload)
         except ValueError as exc:

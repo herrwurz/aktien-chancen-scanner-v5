@@ -13,6 +13,29 @@ class ResearchCandidateSource:
         self.events = [CompanyEvent.model_validate(value) for value in events]
         self.facts = [CompanyFact.model_validate(value) for value in facts]
         self.coverage = deepcopy(coverage)
+        self._events_by_key = self._index(self.events)
+        self._facts_by_key = self._index(self.facts)
+
+    @staticmethod
+    def _index(records):
+        result = {}
+        for record in records:
+            for key in (record.asset.cik, record.asset.isin):
+                if key:
+                    result.setdefault(key, []).append(record)
+        return result
+
+    @staticmethod
+    def _records_for(index, identity):
+        records = []
+        seen = set()
+        for key in (identity.cik, identity.isin):
+            for record in index.get(key, []):
+                marker = id(record)
+                if marker not in seen:
+                    records.append(record)
+                    seen.add(marker)
+        return records
 
     def load_candidates(self):
         return [
@@ -25,12 +48,7 @@ class ResearchCandidateSource:
 
     def evidence_for(self, identity):
         records = []
-        for event in self.events:
-            same_asset = (identity.cik and event.asset.cik == identity.cik) or (
-                identity.isin and event.asset.isin == identity.isin
-            )
-            if not same_asset:
-                continue
+        for event in self._records_for(self._events_by_key, identity):
             record = event.evidence.model_copy(deep=True)
             record.facts = dict(
                 record.facts,
@@ -39,12 +57,7 @@ class ResearchCandidateSource:
                 events=[event.category],
             )
             records.append(record.model_dump(mode="json"))
-        for fact in self.facts:
-            same_asset = (identity.cik and fact.asset.cik == identity.cik) or (
-                identity.isin and fact.asset.isin == identity.isin
-            )
-            if not same_asset:
-                continue
+        for fact in self._records_for(self._facts_by_key, identity):
             record = EvidenceRecord(
                 source_id=fact.fact_id,
                 url=fact.source_url,

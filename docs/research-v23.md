@@ -22,9 +22,21 @@ keine Kaufentscheidung.
 
 Der API-Start baut lediglich eine lazy Quelle. Er ruft keine externe URL auf. Live-Modus benötigt
 gleichzeitig `DETECTIVE_LIVE_ALLOW_NETWORK=true`, einen positiven Request-Grenzwert und einen
-`SEC_USER_AGENT` mit Kontaktadresse. Für `N` Kandidaten sind exakt `1 + 2N` Requests reserviert:
+`SEC_USER_AGENT` mit Kontaktadresse. Der HTTP-Endpunkt verlangt im Live-Modus zusätzlich
+`X-Research-Authorization`, das konstantzeitlich gegen `DETECTIVE_LIVE_API_TOKEN` geprüft wird.
+Fehlt dieses Server-Secret, antwortet der Endpunkt mit 503; falsche oder fehlende Request-Tokens
+werden vor jeder Recherche mit 403 abgewiesen. Die CLI ist ein lokaler Administrationspfad und
+verwendet diesen HTTP-Schutz nicht.
+
+Für `N` Kandidaten sind exakt `1 + 2N` Requests reserviert:
 Universum, Submissions und Company-Facts. Kandidaten werden vor dem Teaser durch
 `sha256("sec-cik:" + CIK)` ausgewählt; mehrere Listings derselben CIK zählen als ein Emittent.
+Ein unzureichendes Gesamtlimit beendet den Lauf vor dem ersten Abruf. Pro HTTP-Request gelten
+standardmäßig 10 Sekunden und für den Gesamtlauf 120 Sekunden; beide Grenzen sind konfigurierbar
+und hart auf 30 beziehungsweise 300 Sekunden begrenzt. Ein Lock verhindert mehrfachen parallelen
+Erstaufbau im selben Prozess. Antworten liefern pro Kandidat höchstens acht Evidenzobjekte und
+weisen Gesamt-, Rückgabe- und Auslassungszahl aus. Das vollständige SHA-geprüfte Archiv bleibt
+lokal abrufbar.
 
 CLI und API rufen dieselbe `build_detective`-Factory auf. Beide liefern `research_mode`,
 `candidate_source.coverage`, `identification`, Top-3-Kandidaten und dieselben Evidenzstrukturen.
@@ -77,6 +89,10 @@ Der echte Lauf verwendete 50 per CIK-Hash ausgewählte Emittenten aus 10.425 SEC
 Fakten, fünf sichtbar protokollierte Company-Facts-Lücken und `unresolved/ambiguous_candidates`.
 Die drei Top-Kandidaten belegten lediglich USA und Nettoergebnisanstieg; „Versicherer“ blieb bei
 allen ungeprüft. Das ist ein nachvollziehbarer realer Identifikationsversuch, kein Erfolgsnachweis.
+Die untersuchte Stichprobe entspricht 0,6233 % des SEC-Emittentenuniversums. Branchen waren nur
+für 11 von 50 (22 %) und unterstützte Unternehmenskennzahlen für 34 von 50 (68 %) verfügbar.
+Recall@10/50 ist für diesen Stichprobenlauf nicht messbar. Nicht abgedeckt sind Nicht-SEC-US-Titel
+sowie Deutschland, Österreich, Schweiz und das übrige Europa.
 
 Abnahmematrix:
 

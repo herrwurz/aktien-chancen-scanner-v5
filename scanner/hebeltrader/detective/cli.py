@@ -26,6 +26,8 @@ def main(argv=None):
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--max-requests", type=int, default=0)
     parser.add_argument("--max-candidates", type=int, default=10)
+    parser.add_argument("--request-timeout-seconds", type=float, default=10)
+    parser.add_argument("--max-duration-seconds", type=float, default=120)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     if args.image and not args.image_media_type:
@@ -43,6 +45,8 @@ def main(argv=None):
         "detective_live_allow_network": args.allow_network,
         "detective_live_max_requests": args.max_requests,
         "detective_live_max_candidates": args.max_candidates,
+        "detective_live_request_timeout_seconds": args.request_timeout_seconds,
+        "detective_live_max_duration_seconds": args.max_duration_seconds,
     }
     if args.research_snapshot:
         values["detective_research_snapshot"] = args.research_snapshot

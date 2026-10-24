@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     detective_live_allow_network: bool = False
     detective_live_max_requests: int = Field(default=0, ge=0, le=101)
     detective_live_max_candidates: int = Field(default=10, ge=1, le=50)
+    detective_live_request_timeout_seconds: float = Field(default=10, ge=1, le=30)
+    detective_live_max_duration_seconds: float = Field(default=120, ge=1, le=300)
+    detective_live_api_token: SecretStr | None = None
     sec_user_agent: str | None = None
 
     @field_validator("symbols")
