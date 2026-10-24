@@ -51,6 +51,52 @@ class ResearchIndex:
             "counts": self.manifest.counts,
         }
 
+    def resolve_identity(self, identity, *, as_of):
+        """Resolve only exact identifiers and reject conflicting supplied metadata."""
+        identity = AssetIdentity.model_validate(identity)
+        identifiers = [
+            (kind, getattr(identity, kind))
+            for kind in ("cik", "isin", "wkn", "lei")
+            if getattr(identity, kind)
+        ]
+        if not identifiers:
+            return {"status": "unavailable", "reason": "stable_identifier_required"}
+        with self._connect() as connection:
+            matches = []
+            for kind, value in identifiers:
+                row = connection.execute(
+                    f"SELECT * FROM asset WHERE {kind}=? AND available_at<=?",  # noqa: S608
+                    (value, as_of.isoformat()),
+                ).fetchone()
+                if row is not None:
+                    matches.append(row)
+        if not matches:
+            return {"status": "unavailable", "reason": "identity_not_visible_at_as_of"}
+        asset_ids = {row["asset_id"] for row in matches}
+        if len(asset_ids) != 1:
+            return {"status": "identity_conflict", "reason": "identifiers_resolve_differently"}
+        row = matches[0]
+        indexed = AssetIdentity.model_validate_json(row["identity_json"])
+        comparable = ("ticker", "exchange", "mic", "isin", "wkn", "lei", "cik")
+        conflicts = [
+            field
+            for field in comparable
+            if getattr(identity, field) is not None
+            and getattr(indexed, field) is not None
+            and getattr(identity, field) != getattr(indexed, field)
+        ]
+        if conflicts:
+            return {
+                "status": "identity_conflict",
+                "reason": "supplied_identity_conflicts_with_index",
+                "conflicting_fields": conflicts,
+            }
+        return {
+            "status": "ok",
+            "asset_id": row["asset_id"],
+            "identity": indexed.model_dump(mode="json"),
+        }
+
     def candidates(self, query, *, as_of, limit=50):
         query = CandidateQuery.model_validate(query)
         if not 1 <= limit <= 50:
