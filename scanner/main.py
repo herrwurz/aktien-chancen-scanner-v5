@@ -11,7 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
-from scanner.hebeltrader.detective import DetectiveService
+from scanner.hebeltrader.detective.factory import build_detective
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
@@ -81,7 +81,7 @@ def create_app(settings: Settings | None = None, engine=None):
             engine.dispose()
 
     app = FastAPI(title="Multi-Asset Chancen-Scanner V6", version="0.1.0", lifespan=lifespan)
-    detective = DetectiveService()
+    detective = build_detective(settings)
 
     @app.exception_handler(SQLAlchemyError)
     async def database_error(request, exc):

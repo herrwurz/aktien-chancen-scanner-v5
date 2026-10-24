@@ -36,6 +36,7 @@ LEXICONS = {
         "guidance_raise": (
             "prognose angehoben",
             "prognoseanhebung",
+            "angehobene prognose",
             "angehobene jahresprognose",
             "angehobenen jahresprognose",
             "guidance raise",
@@ -49,10 +50,21 @@ LEXICONS = {
         "capital_action": ("kapitalmaßnahme", "kapitalerhöhung"),
     },
     "countries": {
-        "US": ("us-konzern", "us unternehmen", "amerikanisch", "usa"),
+        "US": ("us-konzern", "us unternehmen", "us-versicherer", "amerikanisch", "usa"),
         "DE": ("deutscher konzern", "deutsches unternehmen", "dax"),
         "CA": ("kanadisch", "kanada"),
         "EU": ("europäisch", "europäischer", "europäische", "europa"),
+    },
+    "fact_claims": {
+        "net_income_increase": (
+            "gewinnanstieg",
+            "gewinnsteigerung",
+            "steigender gewinn",
+            "steigende gewinne",
+        ),
+        "net_income_decrease": ("gewinnrückgang", "sinkender gewinn"),
+        "revenue_increase": ("umsatzanstieg", "umsatzwachstum", "steigender umsatz"),
+        "revenue_decrease": ("umsatzrückgang", "sinkender umsatz"),
     },
 }
 

@@ -1,0 +1,204 @@
+{
+  "counts": {
+    "assets": 50,
+    "events": 22975,
+    "facts": 8988,
+    "raw_sources": 96
+  },
+  "coverage": {
+    "candidate_count": 50,
+    "candidate_selection": "stable_sha256_cik_v1",
+    "cost_eur": 0,
+    "data_age_seconds": 0,
+    "errors": [
+      {
+        "cik": "1286405",
+        "dataset": "companyfacts"
+      },
+      {
+        "cik": "2150915",
+        "dataset": "companyfacts"
+      },
+      {
+        "cik": "2073913",
+        "dataset": "companyfacts"
+      },
+      {
+        "cik": "2116276",
+        "dataset": "companyfacts"
+      },
+      {
+        "cik": "1747570",
+        "dataset": "companyfacts"
+      }
+    ],
+    "generated_at": "2026-10-24T05:35:00.533757+00:00",
+    "kind": "real_archived",
+    "limitations": [
+      "bounded deterministic subset of SEC universe",
+      "SEC filings are not general company news",
+      "current SEC identity lookup is not historical identity proof"
+    ],
+    "markets": [
+      "US"
+    ],
+    "network_request_limit": 101,
+    "provider": "SEC_EDGAR",
+    "real_market_data": true,
+    "selection_independent_of_teaser": true,
+    "status": "partial",
+    "unique_issuer_total": 8022,
+    "universe_total": 10425
+  },
+  "gleif_probe": {
+    "country": "FI",
+    "lei": "529900T8BM49AURSDO55",
+    "license": "CC0-1.0",
+    "name": "Ubisecure Oy",
+    "raw_sha256": "810f6d506e0f777e8ce3516391a578425ff9314f0385d77dbc7005ac1a41536a",
+    "real_public_data": true,
+    "retrieved_at": "2026-10-24T05:35:36.203191+00:00"
+  },
+  "global_identification_proven": false,
+  "identification": {
+    "confidence": "not_calibrated",
+    "reason": "ambiguous_candidates",
+    "selected_wkn": null,
+    "status": "unresolved"
+  },
+  "provider": "SEC_EDGAR",
+  "provider_cost_eur": 0,
+  "publication_at": "2026-10-24T00:00:00+00:00",
+  "result_sha256": "8a42f416f30168ac95d60df9a0be177ea0abdc287b7a8fc6b8f683aa2da4d169",
+  "run_kind": "real_public_data_e2e",
+  "schema_version": 1,
+  "selection_before_teaser_research": true,
+  "selection_method": "stable_sha256_cik_v1",
+  "snapshot_payload_sha256": "67e10dbd96cb225505b7d31a86b6412e616b0896ca7e2fe71bf02eed9e634145",
+  "synthetic_fixture_used": false,
+  "teaser": "Ein US-Versicherer meldet einen Gewinnanstieg. Eine konkrete Gesellschaft oder Kennung wird nicht genannt.",
+  "teaser_contains_identifier": false,
+  "top_candidates": [
+    {
+      "cik": "775057",
+      "contradictions": [],
+      "eligible_evidence_count": 527,
+      "eligible_evidence_source_ids": [
+        "sec:0001096906-26-001153",
+        "sec:0001096906-26-000672",
+        "sec:0001096906-26-000177",
+        "sec:0001096906-25-001949",
+        "sec:0001096906-25-001261",
+        "sec:0001096906-25-000670",
+        "sec:0001096906-25-000113",
+        "sec:0001096906-24-002215",
+        "sec:0001096906-24-001599",
+        "sec:0001096906-24-001021"
+      ],
+      "evidence_strength": "supported_uncalibrated",
+      "name": "ALTEX INDUSTRIES INC",
+      "relevance_score_not_probability": 24,
+      "sector": null,
+      "supporting_clues": [
+        {
+          "type": "countries",
+          "value": "US"
+        },
+        {
+          "type": "fact_claims",
+          "value": "net_income_increase"
+        }
+      ],
+      "ticker": "ALTX",
+      "unverified_clues": {
+        "countries": [],
+        "events": [],
+        "fact_claims": [],
+        "sectors": [
+          "insurance"
+        ]
+      }
+    },
+    {
+      "cik": "1016281",
+      "contradictions": [],
+      "eligible_evidence_count": 1257,
+      "eligible_evidence_source_ids": [
+        "sec:0001682317-26-000011",
+        "sec:0001016281-26-000062",
+        "sec:0001628280-26-064570",
+        "sec:0001193242-26-000003",
+        "sec:0001988250-26-000003",
+        "sec:0001983709-26-000002",
+        "sec:0001926973-26-000003",
+        "sec:0001104659-26-112380",
+        "sec:0001016281-26-000060",
+        "sec:0001682317-26-000009"
+      ],
+      "evidence_strength": "supported_uncalibrated",
+      "name": "CARRIAGE SERVICES INC",
+      "relevance_score_not_probability": 24,
+      "sector": null,
+      "supporting_clues": [
+        {
+          "type": "countries",
+          "value": "US"
+        },
+        {
+          "type": "fact_claims",
+          "value": "net_income_increase"
+        }
+      ],
+      "ticker": "CSV",
+      "unverified_clues": {
+        "countries": [],
+        "events": [],
+        "fact_claims": [],
+        "sectors": [
+          "insurance"
+        ]
+      }
+    },
+    {
+      "cik": "1527166",
+      "contradictions": [],
+      "eligible_evidence_count": 1510,
+      "eligible_evidence_source_ids": [
+        "sec:0001193125-26-428658",
+        "sec:0001968582-26-000956",
+        "sec:0001543895-26-000004",
+        "sec:0001962643-26-000014",
+        "sec:0002143781-26-000007",
+        "sec:0001822283-26-000012",
+        "sec:0001792041-26-000019",
+        "sec:0001620605-26-000012",
+        "sec:0001566418-26-000010",
+        "sec:0002027436-26-000012"
+      ],
+      "evidence_strength": "supported_uncalibrated",
+      "name": "Carlyle Group Inc.",
+      "relevance_score_not_probability": 24,
+      "sector": null,
+      "supporting_clues": [
+        {
+          "type": "countries",
+          "value": "US"
+        },
+        {
+          "type": "fact_claims",
+          "value": "net_income_increase"
+        }
+      ],
+      "ticker": "CG",
+      "unverified_clues": {
+        "countries": [],
+        "events": [],
+        "fact_claims": [],
+        "sectors": [
+          "insurance"
+        ]
+      }
+    }
+  ],
+  "verdict": "unresolved; real SEC subset lacks evidence for the insurance clue and multiple candidates only match US plus net-income increase"
+}

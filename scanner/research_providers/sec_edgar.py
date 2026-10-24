@@ -56,6 +56,8 @@ class SecEdgarClient:
             url = TICKERS_URL
         elif dataset == "submissions" and re.fullmatch(r"\d{1,10}", str(identifier or "")):
             url = f"{BASE}/submissions/CIK{int(identifier):010d}.json"
+        elif dataset == "companyfacts" and re.fullmatch(r"\d{1,10}", str(identifier or "")):
+            url = f"{BASE}/api/xbrl/companyfacts/CIK{int(identifier):010d}.json"
         else:
             raise ValueError("unsupported SEC dataset or identifier")
         request = {"dataset": dataset, "identifier": identifier, "url": url}
@@ -151,9 +153,9 @@ def normalize_universe(record):
 def _category(form, items):
     item_set = {value.strip() for value in str(items or "").split(",")}
     if form in {"10-Q", "10-K", "20-F", "6-K"}:
-        return "quarterly_results" if form == "10-Q" else "regulatory_filing"
+        return "regulatory_filing"
     if form == "8-K" and "2.02" in item_set:
-        return "quarterly_results"
+        return "regulatory_filing"
     if form == "8-K" and "5.02" in item_set:
         return "management_change"
     if form in {"SC 13D", "SC 13D/A"}:
@@ -183,7 +185,12 @@ def normalize_submission_events(record, identity):
         items = recent.get("items", [""] * next(iter(lengths)))[index]
         archive = f"{int(identity.cik)}/{accession.replace('-', '')}/{accession}-index.html"
         url = f"https://www.sec.gov/Archives/edgar/data/{archive}"
-        facts = {"form": form, "items": items, "accession_number": accession}
+        facts = {
+            "form": form,
+            "document_type": form,
+            "items": items,
+            "accession_number": accession,
+        }
         evidence = EvidenceRecord(
             source_id=f"sec:{accession}",
             url=url,

@@ -1,5 +1,6 @@
 import re
 from decimal import Decimal
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, SecretStr, field_validator
@@ -23,6 +24,13 @@ class Settings(BaseSettings):
     volume_lookback: int = Field(default=20, ge=1, le=998)
     volume_threshold: Decimal = Field(default=Decimal("3"), gt=1, allow_inf_nan=False)
     min_quote_volume: Decimal = Field(default=Decimal("100000"), ge=0, allow_inf_nan=False)
+    detective_research_mode: Literal["fixture", "cached_research", "live_research"] = "fixture"
+    detective_research_snapshot: Path = Path("reports/research-v23/snapshot.json")
+    detective_research_cache_dir: Path = Path("reports/research-v23/sec-cache")
+    detective_live_allow_network: bool = False
+    detective_live_max_requests: int = Field(default=0, ge=0, le=101)
+    detective_live_max_candidates: int = Field(default=10, ge=1, le=50)
+    sec_user_agent: str | None = None
 
     @field_validator("symbols")
     @classmethod

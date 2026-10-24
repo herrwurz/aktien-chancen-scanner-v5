@@ -314,3 +314,9 @@ Die [Anbieterentscheidung](docs/research-provider-decision.md) und der
 [Betriebs- und Auditablauf](docs/research-v22.md) dokumentieren Kosten, Quellenrechte,
 Zeitbezug, unveränderliche Caches und den aktuellen Live-Coverage-Blocker. Der Dienst
 erzeugt Evidenz und Identitätsprüfungen, aber keine Kauf- oder Strategieentscheidung.
+
+V2.3 verbindet den Detektiv explizit mit Fixture-, archivierter oder begrenzter Live-Recherche.
+Der [Betriebs-, Quellen- und Abnahmebericht](docs/research-v23.md) beschreibt SEC-XBRL-Fakten,
+GLEIF-Identitäten, Point-in-time-Grenzen und den realen Blindteaser-Versuch. Die Anwendung ist
+wegen begrenzter Branchen- und internationaler Nachrichtenevidenz noch nicht allgemein für
+unbekannte Teaser einsetzbar und liefert bei Mehrdeutigkeit `unresolved`.

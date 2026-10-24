@@ -17,13 +17,21 @@ def _phrase_present(text, phrase):
 
 class DetectiveService:
     def __init__(
-        self, *, ocr=None, candidate_source=None, news_source=None, products=None, clock=None
+        self,
+        *,
+        ocr=None,
+        candidate_source=None,
+        news_source=None,
+        products=None,
+        clock=None,
+        research_mode="fixture",
     ):
         self.ocr = ocr or TesseractOcr()
         self.candidate_source = candidate_source or default_candidate_source()
         self.news_source = news_source or self.candidate_source
         self.products = products if products is not None else load_products()
         self.clock = clock or (lambda: datetime.now(UTC))
+        self.research_mode = research_mode
 
     def analyze(self, request):
         text_parts = [request.teaser_text.strip(), *request.known_hints]
@@ -64,6 +72,7 @@ class DetectiveService:
         return {
             "status": "candidate_identification_only",
             "strategy": "HEBELTRADER_DETECTIVE",
+            "research_mode": self.research_mode,
             "analyzed_at": self.clock().isoformat(),
             "publication_at": (
                 request.publication_at.isoformat() if request.publication_at else None
@@ -101,14 +110,38 @@ class DetectiveService:
             )
             future = [record.source_id for record in records if record not in eligible]
             hard_facts, supporting, contradictions = [], [], []
-            if identity.wkn in clues["stock_wkn"]:
+            identity_proven = bool(
+                self.research_mode == "fixture"
+                or (
+                    point_in_time
+                    and (
+                        identity.historically_available_at(point_in_time)
+                        or any(record.source_kind == "fixture" for record in eligible)
+                    )
+                )
+            )
+            if identity_proven and identity.wkn in clues["stock_wkn"]:
                 hard_facts.append({"type": "exact_stock_wkn", "value": identity.wkn})
-            if identity.isin in clues["isins"] and identity.isin not in clues["invalid_isins"]:
+            if (
+                identity_proven
+                and identity.isin in clues["isins"]
+                and identity.isin not in clues["invalid_isins"]
+            ):
                 hard_facts.append({"type": "valid_exact_stock_isin", "value": identity.isin})
             for alias in raw.get("aliases", []):
-                if _phrase_present(text, alias):
+                if identity_proven and _phrase_present(text, alias):
                     hard_facts.append({"type": "bounded_name_or_alias", "value": alias})
-            facts = {"sectors": set(), "countries": set(), "events": set()}
+            facts = {
+                "sectors": set(),
+                "countries": set(),
+                "events": set(),
+                "fact_claims": set(),
+            }
+            if point_in_time and identity.historically_available_at(point_in_time):
+                if identity.sector:
+                    facts["sectors"].add(identity.sector)
+                if identity.country:
+                    facts["countries"].add(identity.country)
             for record in eligible:
                 for group in facts:
                     facts[group].update(record.facts.get(group, []))
@@ -116,10 +149,10 @@ class DetectiveService:
                 for value in clues["structured"][group]:
                     if value in facts[group]:
                         supporting.append({"type": group, "value": value})
-                    elif group == "countries" and facts[group]:
+                    elif group in {"countries", "sectors", "fact_claims"} and facts[group]:
                         contradictions.append(
                             {
-                                "type": "country_mismatch",
+                                "type": f"{group}_mismatch",
                                 "value": value,
                                 "candidate": sorted(facts[group]),
                             }
@@ -127,11 +160,15 @@ class DetectiveService:
                 for value in clues["negative"][group]:
                     if value in facts[group]:
                         contradictions.append({"type": f"negated_{group}", "value": value})
-            if clues["stock_wkn"] and identity.wkn not in clues["stock_wkn"]:
+            if identity_proven and clues["stock_wkn"] and identity.wkn not in clues["stock_wkn"]:
                 contradictions.append(
                     {"type": "different_explicit_stock_wkn", "value": clues["stock_wkn"]}
                 )
             score = len(hard_facts) * 100 + len(supporting) * 12 - len(contradictions) * 30
+            unverified = {
+                group: [value for value in clues["structured"][group] if value not in facts[group]]
+                for group in facts
+            }
             if contradictions:
                 strength = "contradicted"
             elif not eligible:
@@ -144,12 +181,13 @@ class DetectiveService:
                 continue
             ranked.append(
                 {
-                    **identity.model_dump(),
+                    **identity.model_dump(mode="json"),
                     "relevance_score_not_probability": score,
                     "evidence_strength": strength,
                     "hard_facts": hard_facts,
                     "supporting_clues": supporting,
                     "contradictions": contradictions,
+                    "unverified_clues": unverified,
                     "eligible_evidence": [record.model_dump(mode="json") for record in eligible],
                     "excluded_future_or_unavailable_source_ids": future,
                     "confirmed": False,
@@ -192,8 +230,11 @@ class DetectiveService:
                 }
         return {
             "status": "resolved_candidate",
-            "reason": "strongest_supported_fixture_match_requires_manual_review",
+            "reason": "strongest_supported_candidate_requires_manual_review",
             "selected_wkn": supported[0]["wkn"],
+            "selected_identity": {
+                key: supported[0].get(key) for key in ("name", "ticker", "wkn", "isin", "cik")
+            },
             "confidence": "uncalibrated_evidence_strength",
         }
 
@@ -216,7 +257,7 @@ class DetectiveService:
             underlying_matches = decision.get("selected_wkn") == raw["underlying_wkn"]
             candidates.append(
                 {
-                    **identity.model_dump(),
+                    **identity.model_dump(mode="json"),
                     "issuer": raw["issuer"],
                     "maturity": raw["maturity"],
                     "strike": raw["strike"],

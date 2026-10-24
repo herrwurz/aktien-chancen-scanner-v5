@@ -1,6 +1,7 @@
 """Shared provenance models for research strategies; never trading decisions."""
 
 from datetime import date, datetime
+from decimal import Decimal
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -12,6 +13,7 @@ class AssetIdentity(BaseModel):
     ticker: str | None = None
     wkn: str | None = None
     isin: str | None = None
+    lei: str | None = None
     cik: str | None = None
     exchange: str | None = None
     mic: str | None = None
@@ -22,6 +24,10 @@ class AssetIdentity(BaseModel):
     quality_status: Literal["verified", "candidate", "conflicted", "incomplete"] = "candidate"
     source_id: str | None = None
     retrieved_at: datetime | None = None
+    source_available_at: datetime | None = None
+
+    def historically_available_at(self, point_in_time):
+        return self.source_available_at is not None and self.source_available_at <= point_in_time
 
 
 class EvidenceRecord(BaseModel):
@@ -66,6 +72,33 @@ class CompanyEvent(BaseModel):
     effective_at: datetime
     evidence: EvidenceRecord
     facts: dict[str, Any] = Field(default_factory=dict)
+
+
+class CompanyFact(BaseModel):
+    fact_id: str
+    asset: AssetIdentity
+    metric: str
+    claim: Literal[
+        "reported_value",
+        "year_over_year_increase",
+        "year_over_year_decrease",
+        "unchanged",
+    ]
+    value: Decimal
+    unit: str
+    period_start: date
+    period_end: date
+    comparison_value: Decimal | None = None
+    comparison_period_start: date | None = None
+    comparison_period_end: date | None = None
+    source_url: str = Field(min_length=1)
+    source_location: str = Field(min_length=1)
+    published_at: datetime
+    source_available_at: datetime | None = None
+    retrieved_at: datetime
+    extraction_method: str
+    verification_status: Literal["source_verified", "unknown"]
+    content_sha256: str
 
 
 class ProviderStatus(BaseModel):
