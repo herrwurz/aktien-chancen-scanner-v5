@@ -186,6 +186,83 @@ def test_gdelt_requires_explicit_network_and_bounded_limit(tmp_path):
         source.fetch("uncached", start=NOW, end=NOW, limit=251)
 
 
+def test_gdelt_retries_503_once_within_request_budget(tmp_path):
+    from scanner.news_providers.gdelt import GdeltNewsSource
+
+    responses = iter([httpx.Response(503), httpx.Response(200, json={"articles": []})])
+    sleeps = []
+    source = GdeltNewsSource(
+        tmp_path,
+        allow_network=True,
+        max_requests=2,
+        max_retries=1,
+        sleeper=sleeps.append,
+        client=httpx.Client(transport=httpx.MockTransport(lambda request: next(responses))),
+        clock=lambda: NOW,
+    )
+    batch = source.fetch("bounded", start=NOW, end=NOW, limit=10)
+    assert batch.status == "ok"
+    assert batch.request_count == 2
+    assert sleeps == [1]
+
+
+def test_gdelt_exhausted_503_is_structured_unavailable_without_fallback(tmp_path):
+    from scanner.news_providers.gdelt import GdeltNewsSource
+
+    source = GdeltNewsSource(
+        tmp_path,
+        allow_network=True,
+        max_requests=2,
+        max_retries=1,
+        sleeper=lambda seconds: None,
+        client=httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(503))),
+        clock=lambda: NOW,
+    )
+    batch = source.fetch("unavailable", start=NOW, end=NOW, limit=10)
+    assert batch.status == "unavailable"
+    assert batch.request_count == 2
+    assert batch.items == []
+    assert batch.errors == ["gdelt_retries_exhausted"]
+    assert batch.coverage["fallback_used"] is False
+
+
+def test_collector_keeps_success_when_another_provider_fails():
+    from scanner.news import NewsBatch
+    from scanner.news_collector import NewsCollector
+
+    class Source:
+        def __init__(self, provider, status, items=None):
+            self.provider = provider
+            self.status = status
+            self.items = items or []
+
+        def fetch(self, query, **kwargs):
+            if self.status == "raises":
+                raise ValueError("provider failed")
+            return NewsBatch(
+                provider=self.provider,
+                status=self.status,
+                items=self.items,
+                retrieved_at=NOW,
+                request_count=1,
+            )
+
+    result = NewsCollector(
+        [Source("PRIMARY", "ok", [item()]), Source("SECONDARY", "raises")]
+    ).collect("query", start=NOW, end=NOW, limit=10, as_of=NOW, max_age_days=7)
+    assert result.status == "partial"
+    assert len(result.items) == 1
+    assert result.coverage == {
+        "configured_sources": 2,
+        "successful_sources": 1,
+        "unavailable_sources": 1,
+        "fresh_sources": 1,
+        "stale_sources": 0,
+        "event_clusters": 1,
+    }
+    assert result.errors == ["provider_2_failed"]
+
+
 def test_allowlisted_rss_maps_only_configured_identifier(tmp_path):
     from scanner.news_providers.issuer_feed import IssuerFeedConfig, IssuerFeedNewsSource
 
