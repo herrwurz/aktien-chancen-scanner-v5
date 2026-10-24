@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
 
+import pytest
+
 from scanner.market_data.models import InstrumentListing
 from scanner.market_data.providers import normalize_tiingo
 from scanner.research import AssetIdentity
@@ -78,7 +80,11 @@ def service(tmp_path, *, with_prices):
 
     index_path = tmp_path / "research.db"
     build_index(index_path, assets=[identity()], events=[], facts=[], news=[])
-    archive = MarketDataArchive(tmp_path / "prices.db") if with_prices else None
+    archive = (
+        MarketDataArchive(tmp_path / "prices.db", now=lambda: datetime(2025, 1, 6, 13, tzinfo=UTC))
+        if with_prices
+        else None
+    )
     if archive:
         import_price(archive)
     return IndexedResearchService(ResearchIndex(index_path), price_archive=archive)
@@ -120,3 +126,29 @@ def test_research_prices_reports_unavailable_without_price_archive(tmp_path):
         "reason": "market_data_archive_not_configured",
         "strategy_decision": None,
     }
+
+
+def test_cik_padding_uses_one_canonical_asset_id_end_to_end(tmp_path):
+    unpadded = identity().model_copy(update={"cik": "320193"})
+    result = service(tmp_path, with_prices=True).prices(
+        unpadded,
+        start="2025-01-02",
+        end="2025-01-02",
+        as_of=NOW,
+        availability_mode="strict",
+    )
+    assert result["asset_id"] == "cik:0000320193"
+    assert result["prices"][0]["raw"]["close"] == "105"
+
+
+def test_index_fails_closed_for_unresolved_multiple_listings(tmp_path):
+    from scanner.research_index.builder import build_index
+
+    with pytest.raises(ValueError, match="multiple listings"):
+        build_index(
+            tmp_path / "research.db",
+            assets=[identity(), identity(ticker="AAPL.B")],
+            events=[],
+            facts=[],
+            news=[],
+        )

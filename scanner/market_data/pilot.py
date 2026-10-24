@@ -7,14 +7,17 @@ import hashlib
 import json
 import os
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from scanner.hebeltrader.tiingo import TiingoClient
 from scanner.research import AssetIdentity
+from scanner.research_index.builder import build_index
+from scanner.research_index.identity import canonical_cik, stable_asset_id
+from scanner.research_providers.sec_edgar import normalize_universe
 
-from .models import InstrumentListing
+from .models import ExchangeCalendar, InstrumentListing, MarketDataBatch
 from .providers import normalize_tiingo
 
 EXCHANGES = {
@@ -23,6 +26,81 @@ EXCHANGES = {
     "NYSE": ("XNYS", "NYSE"),
     "NYSE American": ("XASE", "NYSE American"),
 }
+
+
+def build_sec_pilot_index(sec_request_path, output_path):
+    request_path = Path(sec_request_path).resolve()
+    cache_root = request_path.parent.parent
+    manifest = json.loads(request_path.read_bytes())
+    relative = Path(manifest["raw_file"])
+    raw_path = (cache_root / relative).resolve()
+    if relative.is_absolute() or not raw_path.is_relative_to(cache_root):
+        raise ValueError("unsafe SEC raw archive path")
+    raw = raw_path.read_bytes()
+    digest = hashlib.sha256(raw).hexdigest()
+    if digest != manifest.get("raw_sha256"):
+        raise ValueError("SEC universe cache integrity error")
+    record = {**manifest, "payload": json.loads(raw)}
+    groups = {}
+    for identity in normalize_universe(record):
+        groups.setdefault(canonical_cik(identity.cik), []).append(identity)
+    included, ambiguous, unsupported = [], [], []
+    for cik, listings in sorted(groups.items()):
+        distinct = {(row.ticker, row.exchange) for row in listings}
+        if len(distinct) != 1:
+            ambiguous.append({"cik": cik, "tickers": sorted({row.ticker for row in listings})})
+            continue
+        identity = listings[0].model_copy(update={"cik": cik})
+        venue = EXCHANGES.get(identity.exchange)
+        if venue is None:
+            unsupported.append(
+                {"cik": cik, "ticker": identity.ticker, "exchange": identity.exchange}
+            )
+            continue
+        included.append(identity.model_copy(update={"mic": venue[0]}))
+    index_manifest = build_index(output_path, assets=included, events=[], facts=[], news=[])
+    return {
+        "schema_version": "1.0",
+        "sec_raw_sha256": digest,
+        "sec_retrieved_at": manifest["retrieved_at"],
+        "source_reference": manifest["source_reference"],
+        "total_listings": sum(len(rows) for rows in groups.values()),
+        "unique_issuers": len(groups),
+        "included_issuers": len(included),
+        "excluded_ambiguous_issuers": ambiguous,
+        "excluded_unsupported_exchanges": unsupported,
+        "index_payload_sha256": index_manifest.payload_sha256,
+        "selection_performed": False,
+    }
+
+
+def load_calendar_csv(
+    path,
+    *,
+    supported_mics,
+    timezone,
+    source_reference,
+    retrieved_at,
+):
+    path = Path(path)
+    raw = path.read_bytes()
+    reader = csv.DictReader(raw.decode("utf-8-sig").splitlines())
+    if reader.fieldnames != ["session_date", "close_at"]:
+        raise ValueError("calendar CSV requires session_date,close_at")
+    sessions = {}
+    for row in reader:
+        day = date.fromisoformat(row["session_date"])
+        if day in sessions:
+            raise ValueError("duplicate calendar session")
+        sessions[day] = datetime.fromisoformat(row["close_at"])
+    return ExchangeCalendar(
+        supported_mics={value.strip() for value in supported_mics.split(",") if value.strip()},
+        timezone=timezone,
+        source_reference=source_reference,
+        raw_sha256=hashlib.sha256(raw).hexdigest(),
+        retrieved_at=retrieved_at,
+        sessions=sessions,
+    )
 
 
 def _rank(identity):
@@ -40,6 +118,8 @@ def select_us_pilot(index, *, as_of, count=10):
         and row.cik
         and row.ticker
         and row.instrument_type != "fund"
+        and (row.valid_from is None or row.valid_from <= as_of.date())
+        and (row.valid_to is None or row.valid_to >= as_of.date())
     ]
     by_cik = {}
     for row in eligible:
@@ -53,8 +133,8 @@ def _listing(identity: AssetIdentity):
         raise ValueError("unsupported or missing SEC exchange")
     mic, exchange = venue
     return InstrumentListing(
-        asset_id=f"cik:{identity.cik}",
-        cik=str(identity.cik).zfill(10),
+        asset_id=stable_asset_id(identity),
+        cik=canonical_cik(identity.cik),
         ticker=identity.ticker,
         exchange=exchange,
         mic=mic,
@@ -84,6 +164,7 @@ def run_tiingo_pilot(
     count=10,
     coverage_kind="real_provider_archive",
     max_duration_seconds=120,
+    calendar: ExchangeCalendar | None = None,
     monotonic=time.monotonic,
 ):
     try:
@@ -99,7 +180,15 @@ def run_tiingo_pilot(
     selected = select_us_pilot(index, as_of=as_of, count=count)
     if len(selected) < count:
         base = _base_report(selected, monthly_cost_eur, coverage_kind)
-        return {**base, "status": "insufficient_sec_universe"}
+        return {
+            **base,
+            "status": "blocked",
+            "blocker_code": "insufficient_sec_universe",
+            "instruments": [],
+            "successful_instruments": 0,
+            "successful_sources": [],
+            "requests_attempted": 0,
+        }
     if max_requests < count:
         raise ValueError("request ceiling must cover selected pilot instruments")
     if client is None and allow_network and authorize_usage and not os.getenv("TIINGO_API_TOKEN"):
@@ -107,7 +196,8 @@ def run_tiingo_pilot(
         base = _base_report(selected, monthly_cost_eur, coverage_kind)
         return {
             **base,
-            "status": "blocked_missing_credentials",
+            "status": "blocked",
+            "blocker_code": "blocked_missing_credentials",
             "instruments": rows,
             "successful_instruments": 0,
             "successful_sources": [],
@@ -131,6 +221,7 @@ def run_tiingo_pilot(
                 for remaining in selected[len(rows) :]
             )
             break
+        before_requests = getattr(provider, "attempted_requests", 0)
         try:
             listing = _listing(identity)
             incremental_start = start
@@ -143,31 +234,55 @@ def run_tiingo_pilot(
                 )
                 continue
             record = provider.fetch(identity.ticker, start=incremental_start, end=end)
-            batch = normalize_tiingo(record, listing)
+            requests_used = getattr(provider, "attempted_requests", 0) - before_requests
+            batch = normalize_tiingo(record, listing, calendar=calendar)
             imported = market_archive.import_batch(batch)
+            audit = audit_batch(batch, calendar=calendar, start=start, end=end, as_of=as_of)
             rows.append(
                 _instrument_row(
                     identity,
-                    status="imported",
-                    session_count=len(batch.bars),
-                    actions=len(batch.actions),
+                    status=(
+                        "imported"
+                        if audit["calendar_status"] != "verified_missing_sessions"
+                        else "incomplete"
+                    ),
                     imported=imported,
                     raw_sha256=batch.raw_sha256,
                     manifest_sha256=batch.manifest_sha256,
                     retrieved_at=batch.retrieved_at.isoformat(),
-                    data_age_seconds=max(
-                        0, int((as_of - batch.bars[-1].session_end_at).total_seconds())
-                    ),
+                    api_requests=requests_used,
+                    **audit,
                 )
             )
         except (OSError, ValueError, KeyError, TypeError) as exc:
-            rows.append(_blocked_row(identity, _error_code(exc)))
+            rows.append(
+                _blocked_row(
+                    identity,
+                    _error_code(exc),
+                    api_requests=getattr(provider, "attempted_requests", 0) - before_requests,
+                )
+            )
     successful = sum(row["status"] in {"imported", "up_to_date"} for row in rows)
     real_measured = coverage_kind == "real_provider_archive" and successful > 0
     base = _base_report(selected, monthly_cost_eur, coverage_kind)
+    accepted = bool(
+        coverage_kind == "real_provider_archive"
+        and successful == len(selected)
+        and all(row.get("minimum_250_sessions_met") for row in rows)
+        and all(row.get("calendar_status") == "verified_complete" for row in rows)
+    )
+    status = "accepted" if accepted else "partial"
+    blocker_code = None
+    if coverage_kind == "synthetic_fixture":
+        status = "blocked"
+        blocker_code = "synthetic_fixture_not_real_acceptance"
+    elif successful == 0:
+        status = "blocked"
+        blocker_code = "all_provider_requests_failed"
     return {
         **base,
-        "status": "ok" if successful == len(selected) else "partial",
+        "status": status,
+        "blocker_code": blocker_code,
         "instruments": rows,
         "successful_instruments": successful,
         "successful_sources": ["Tiingo"] if successful else [],
@@ -194,9 +309,9 @@ def _base_report(selected, cost, coverage_kind):
     }
 
 
-def _instrument_row(identity, *, status, session_count, actions, **extra):
+def _instrument_row(identity, *, status, session_count=0, actions=0, **extra):
     return {
-        "asset_id": f"cik:{identity.cik}",
+        "asset_id": stable_asset_id(identity),
         "ticker": identity.ticker,
         "exchange": identity.exchange,
         "status": status,
@@ -210,8 +325,37 @@ def _instrument_row(identity, *, status, session_count, actions, **extra):
     }
 
 
-def _blocked_row(identity, code):
-    return _instrument_row(identity, status=code, session_count=0, actions=0)
+def _blocked_row(identity, code, **extra):
+    extra.setdefault("api_requests", 0)
+    return _instrument_row(identity, status=code, session_count=0, actions=0, **extra)
+
+
+def audit_batch(batch: MarketDataBatch, *, calendar, start, end, as_of):
+    dates = {bar.session_date for bar in batch.bars}
+    missing = None
+    calendar_status = "unavailable_not_inferred"
+    if calendar is not None:
+        expected = {
+            day
+            for day in calendar.sessions
+            if date.fromisoformat(start) <= day <= date.fromisoformat(end)
+        }
+        missing = sorted((expected - dates), key=lambda day: day.isoformat())
+        missing = [day.isoformat() for day in missing]
+        calendar_status = "verified_missing_sessions" if missing else "verified_complete"
+    latest = max((bar.session_end_at for bar in batch.bars), default=None)
+    return {
+        "session_count": len(batch.bars),
+        "minimum_250_sessions_met": len(batch.bars) >= 250,
+        "corporate_action_count": len(batch.actions),
+        "split_count": sum(action.kind == "split" for action in batch.actions),
+        "dividend_count": sum(action.kind == "dividend" for action in batch.actions),
+        "other_action_count": sum(action.kind == "other" for action in batch.actions),
+        "calendar_status": calendar_status,
+        "calendar_sha256": calendar.raw_sha256 if calendar else None,
+        "missing_sessions": missing,
+        "data_age_seconds": max(0, int((as_of - latest).total_seconds())) if latest else None,
+    }
 
 
 def _error_code(error):
@@ -232,6 +376,7 @@ def write_pilot_report(report, output_prefix):
     prefix.parent.mkdir(parents=True, exist_ok=True)
     json_path = prefix.with_suffix(".json")
     csv_path = prefix.with_suffix(".csv")
+    sha_path = prefix.with_suffix(".sha256")
     raw = (json.dumps(report, sort_keys=True, separators=(",", ":")) + "\n").encode()
     json_path.write_bytes(raw)
     rows = report.get("instruments", [])
@@ -248,4 +393,11 @@ def write_pilot_report(report, output_prefix):
                     for key, value in row.items()
                 }
             )
-    return {"json": json_path, "csv": csv_path, "sha256": hashlib.sha256(raw).hexdigest()}
+    digest = hashlib.sha256(raw).hexdigest()
+    sha_path.write_text(f"{digest}  {json_path.name}\n")
+    return {
+        "json": json_path,
+        "csv": csv_path,
+        "sha256_file": sha_path,
+        "sha256": digest,
+    }

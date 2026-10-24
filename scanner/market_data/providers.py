@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 from .models import (
     CorporateAction,
     DailyBar,
+    ExchangeCalendar,
     InstrumentListing,
     MarketDataBatch,
     PriceVector,
@@ -25,10 +26,21 @@ def _decimal(value, *, optional=False):
     return result
 
 
-def _close(day: date, listing: InstrumentListing) -> datetime:
+def _close(day: date, listing: InstrumentListing, calendar: ExchangeCalendar | None):
+    if calendar is not None:
+        if listing.mic not in calendar.supported_mics or listing.timezone != calendar.timezone:
+            raise ValueError("verified calendar listing mismatch")
+        close = calendar.sessions.get(day)
+        if close is None:
+            raise ValueError("provider session absent from verified calendar")
+        return close, "verified_exchange_calendar", calendar.raw_sha256
     # US pilot listings currently use regular-session EOD. Early-close evidence belongs
     # in an independently sourced calendar and is never inferred here.
-    return datetime.combine(day, time(16), ZoneInfo(listing.timezone))
+    return (
+        datetime.combine(day, time(16), ZoneInfo(listing.timezone)),
+        "modeled_regular_close_unverified",
+        None,
+    )
 
 
 def _common(record, listing, *, provider, bars, actions):
@@ -49,22 +61,32 @@ def _common(record, listing, *, provider, bars, actions):
     )
 
 
-def normalize_tiingo(record: dict, listing: InstrumentListing) -> MarketDataBatch:
+def normalize_tiingo(
+    record: dict,
+    listing: InstrumentListing,
+    *,
+    calendar: ExchangeCalendar | None = None,
+) -> MarketDataBatch:
     if (
         record.get("vendor") != "Tiingo"
         or record.get("request", {}).get("symbol") != listing.provider_symbol
     ):
         raise ValueError("provider symbol mismatch")
     retrieved_at = datetime.fromisoformat(str(record["retrieved_at"]))
+    request = record["request"]
     bars, actions = [], []
     for index, row in enumerate(record.get("payload", [])):
         day = date.fromisoformat(str(row["date"])[:10])
-        close = _close(day, listing)
+        if not date.fromisoformat(request["start"]) <= day <= date.fromisoformat(request["end"]):
+            raise ValueError("price outside provider request window")
+        close, close_status, calendar_sha = _close(day, listing, calendar)
         bars.append(
             DailyBar(
                 session_date=day,
                 session_end_at=close,
                 modeled_available_at=close,
+                session_end_status=close_status,
+                calendar_sha256=calendar_sha,
                 raw=PriceVector(
                     **{
                         key: _decimal(row[key])
@@ -103,10 +125,17 @@ def normalize_tiingo(record: dict, listing: InstrumentListing) -> MarketDataBatc
                     source_pointer=f"/{index}/splitFactor",
                 )
             )
+    if not bars:
+        raise ValueError("empty price series")
     return _common(record, listing, provider="Tiingo", bars=bars, actions=actions)
 
 
-def normalize_eodhd(record: dict, listing: InstrumentListing) -> MarketDataBatch:
+def normalize_eodhd(
+    record: dict,
+    listing: InstrumentListing,
+    *,
+    calendar: ExchangeCalendar | None = None,
+) -> MarketDataBatch:
     request = record.get("request", {})
     if (
         record.get("vendor") != "EODHD"
@@ -118,12 +147,17 @@ def normalize_eodhd(record: dict, listing: InstrumentListing) -> MarketDataBatch
     bars = []
     for index, row in enumerate(record.get("payload", [])):
         day = date.fromisoformat(str(row["date"]))
-        close = _close(day, listing)
+        start, end = request.get("start"), request.get("end")
+        if start and day < date.fromisoformat(start) or end and day > date.fromisoformat(end):
+            raise ValueError("price outside provider request window")
+        close, close_status, calendar_sha = _close(day, listing, calendar)
         bars.append(
             DailyBar(
                 session_date=day,
                 session_end_at=close,
                 modeled_available_at=close,
+                session_end_status=close_status,
+                calendar_sha256=calendar_sha,
                 raw=PriceVector(
                     **{
                         key: _decimal(row[key])
@@ -141,4 +175,6 @@ def normalize_eodhd(record: dict, listing: InstrumentListing) -> MarketDataBatch
                 source_pointer=f"/{index}",
             )
         )
+    if not bars:
+        raise ValueError("empty price series")
     return _common(record, listing, provider="EODHD", bars=bars, actions=[])

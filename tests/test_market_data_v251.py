@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 import pytest
@@ -9,13 +9,14 @@ def listing(**changes):
     from scanner.market_data.models import InstrumentListing
 
     values = {
-        "asset_id": "sec:0000320193",
+        "asset_id": "cik:0000320193",
         "ticker": "AAPL",
         "exchange": "NASDAQ",
         "mic": "XNAS",
         "currency": "USD",
         "timezone": "America/New_York",
         "provider_symbol": "AAPL",
+        "cik": "0000320193",
     }
     values.update(changes)
     return InstrumentListing(**values)
@@ -93,6 +94,11 @@ def test_listing_rejects_ambiguous_or_invalid_venue_metadata(change, message):
         listing(**change)
 
 
+def test_listing_rejects_noncanonical_sec_prefix():
+    with pytest.raises((ValidationError, ValueError), match="asset_id"):
+        listing(asset_id="sec:0000320193")
+
+
 def test_normalizer_rejects_duplicate_sessions():
     from scanner.market_data.providers import normalize_tiingo
 
@@ -107,6 +113,7 @@ def test_normalizer_rejects_duplicate_sessions():
         {"high": 104},
         {"volume": -1},
         {"adjLow": 53},
+        {"open": 0, "high": 0, "low": 0, "close": 0},
     ],
 )
 def test_normalizer_rejects_invalid_ohlcv(change):
@@ -121,6 +128,20 @@ def test_normalizer_rejects_provider_identity_mismatch():
 
     with pytest.raises(ValueError, match="provider symbol"):
         normalize_tiingo(tiingo_record([row()]), listing(provider_symbol="MSFT"))
+
+
+def test_normalizer_rejects_rows_outside_provider_request_window():
+    from scanner.market_data.providers import normalize_tiingo
+
+    with pytest.raises(ValueError, match="request window"):
+        normalize_tiingo(tiingo_record([row(day="2024-12-31")]), listing())
+
+
+def test_normalizer_rejects_empty_price_series():
+    from scanner.market_data.providers import normalize_tiingo
+
+    with pytest.raises(ValueError, match="empty price series"):
+        normalize_tiingo(tiingo_record([]), listing())
 
 
 def test_eodhd_normalization_does_not_invent_adjusted_prices_or_quotes():
@@ -175,3 +196,54 @@ def test_contract_preserves_other_corporate_actions_without_invented_value():
     )
     assert action.kind == "other"
     assert action.value is None
+
+
+def test_verified_calendar_preserves_early_close_without_claiming_price_availability():
+    from scanner.market_data.models import ExchangeCalendar
+    from scanner.market_data.providers import normalize_tiingo
+
+    calendar = ExchangeCalendar(
+        supported_mics={"XNAS", "XNYS"},
+        timezone="America/New_York",
+        source_reference="https://www.nasdaq.com/market-activity/stock-market-holiday-schedule",
+        raw_sha256="f" * 64,
+        retrieved_at="2025-01-01T00:00:00+00:00",
+        sessions={"2025-01-02": "2025-01-02T13:00:00-05:00"},
+    )
+    batch = normalize_tiingo(tiingo_record([row()]), listing(), calendar=calendar)
+
+    bar = batch.bars[0]
+    assert bar.session_end_at.isoformat() == "2025-01-02T13:00:00-05:00"
+    assert bar.session_end_status == "verified_exchange_calendar"
+    assert bar.calendar_sha256 == "f" * 64
+    assert bar.historical_availability_verified is False
+
+
+def test_provider_row_absent_from_verified_calendar_is_rejected():
+    from scanner.market_data.models import ExchangeCalendar
+    from scanner.market_data.providers import normalize_tiingo
+
+    calendar = ExchangeCalendar(
+        supported_mics={"XNAS"},
+        timezone="America/New_York",
+        source_reference="https://exchange.example/calendar",
+        raw_sha256="f" * 64,
+        retrieved_at="2025-01-01T00:00:00+00:00",
+        sessions={"2025-01-03": "2025-01-03T16:00:00-05:00"},
+    )
+    with pytest.raises(ValueError, match="verified calendar"):
+        normalize_tiingo(tiingo_record([row()]), listing(), calendar=calendar)
+
+
+def test_calendar_rejects_wrong_timezone_offset_for_session_date():
+    from scanner.market_data.models import ExchangeCalendar
+
+    with pytest.raises(ValueError, match="calendar session timezone offset"):
+        ExchangeCalendar(
+            supported_mics={"XNAS"},
+            timezone="America/New_York",
+            source_reference="https://exchange.example/official-calendar",
+            raw_sha256="f" * 64,
+            retrieved_at=datetime(2025, 1, 1, tzinfo=UTC),
+            sessions={date(2025, 7, 3): "2025-07-03T13:00:00-05:00"},
+        )

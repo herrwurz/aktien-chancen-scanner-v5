@@ -11,6 +11,7 @@ from scanner.news import NewsItem
 from scanner.research import AssetIdentity
 from scanner.research_evaluation import evaluate_cases
 from scanner.research_index.builder import build_index
+from scanner.research_index.identity import canonicalize_identity, stable_asset_id
 from scanner.research_index.models import CandidateQuery
 from scanner.research_index.repository import ResearchIndex
 
@@ -21,18 +22,20 @@ def run_benchmark(definition_path, index_path):
     assets = []
     by_key = {}
     for row in definition["universe"]:
-        identity = AssetIdentity(
-            asset_type="stock",
-            name=row["name"],
-            ticker=row["ticker"],
-            cik=row["cik"],
-            country=row["country"],
-            sector=row.get("sector"),
-            instrument_type=row.get("instrument_type", "operating_company"),
-            instrument_type_status="source_verified",
-            source_id="synthetic-benchmark-universe",
-            retrieved_at=as_of,
-            source_available_at=as_of,
+        identity = canonicalize_identity(
+            AssetIdentity(
+                asset_type="stock",
+                name=row["name"],
+                ticker=row["ticker"],
+                cik=row["cik"],
+                country=row["country"],
+                sector=row.get("sector"),
+                instrument_type=row.get("instrument_type", "operating_company"),
+                instrument_type_status="source_verified",
+                source_id="synthetic-benchmark-universe",
+                retrieved_at=as_of,
+                source_available_at=as_of,
+            )
         )
         assets.append(identity)
         by_key[row["asset_key"]] = identity
@@ -79,7 +82,7 @@ def run_benchmark(definition_path, index_path):
         )
         latency_ms = (perf_counter() - started) * 1000
         ranked = (
-            [f"cik:{hit.identity.cik}" for hit in result.candidates]
+            [stable_asset_id(hit.identity) for hit in result.candidates]
             if result.status == "ok"
             else []
         )
@@ -87,7 +90,7 @@ def run_benchmark(definition_path, index_path):
             {
                 "case_id": case["case_id"],
                 "kind": case["kind"],
-                "target": f"cik:{target.cik}" if target else None,
+                "target": stable_asset_id(target) if target else None,
                 "ranked": ranked,
                 "status": result.status,
                 "market": case["market"],

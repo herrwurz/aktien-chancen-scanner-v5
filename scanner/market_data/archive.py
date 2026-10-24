@@ -22,8 +22,9 @@ def _digest(value) -> str:
 class MarketDataArchive:
     """An isolated artifact store; it never connects to application PostgreSQL."""
 
-    def __init__(self, path):
+    def __init__(self, path, *, now=None):
         self.path = Path(path)
+        self.now = now or (lambda: datetime.now(UTC))
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._initialize()
 
@@ -35,6 +36,14 @@ class MarketDataArchive:
 
     def _initialize(self):
         with self._connect() as db:
+            legacy_columns = {
+                row["name"] for row in db.execute("PRAGMA table_info(bar_revision)").fetchall()
+            }
+            if legacy_columns and "first_stored_at" not in legacy_columns:
+                raise ValueError(
+                    "legacy market archive cannot prove first local storage time; "
+                    "rebuild from immutable raw snapshots"
+                )
             db.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS listing (
@@ -52,6 +61,7 @@ class MarketDataArchive:
                     manifest_sha256 TEXT NOT NULL,
                     raw_sha256 TEXT NOT NULL,
                     retrieved_at TEXT NOT NULL,
+                    first_stored_at TEXT NOT NULL,
                     PRIMARY KEY (asset_id, provider, session_date, revision),
                     UNIQUE (asset_id, provider, session_date, value_sha256)
                 );
@@ -71,6 +81,12 @@ class MarketDataArchive:
 
     def import_batch(self, value: MarketDataBatch | dict) -> dict[str, int]:
         batch = MarketDataBatch.model_validate(value)
+        stored_at = self.now()
+        if stored_at.utcoffset() is None:
+            raise ValueError("aware storage clock required")
+        stored_at = stored_at.astimezone(UTC)
+        if batch.retrieved_at.astimezone(UTC) > stored_at:
+            raise ValueError("provider retrieval follows local storage")
         identity = batch.instrument.model_dump(mode="json")
         identity_json, identity_sha = _json(identity), _digest(identity)
         result = {"inserted": 0, "unchanged": 0, "revised": 0}
@@ -116,8 +132,8 @@ class MarketDataArchive:
                 db.execute(
                     """INSERT INTO bar_revision
                        (asset_id, provider, session_date, revision, value_sha256, bar_json,
-                        manifest_sha256, raw_sha256, retrieved_at)
-                       VALUES(?,?,?,?,?,?,?,?,?)""",
+                        manifest_sha256, raw_sha256, retrieved_at, first_stored_at)
+                       VALUES(?,?,?,?,?,?,?,?,?,?)""",
                     (
                         batch.instrument.asset_id,
                         batch.provider,
@@ -128,6 +144,7 @@ class MarketDataArchive:
                         batch.manifest_sha256,
                         batch.raw_sha256,
                         bar.retrieved_at.astimezone(UTC).isoformat(),
+                        stored_at.isoformat(),
                     ),
                 )
                 result["inserted" if latest is None else "revised"] += 1
@@ -176,7 +193,7 @@ class MarketDataArchive:
                 dict(row)
                 for row in db.execute(
                     """SELECT asset_id, provider, session_date, revision, value_sha256,
-                              bar_json, manifest_sha256, raw_sha256, retrieved_at
+                              bar_json, manifest_sha256, raw_sha256, retrieved_at, first_stored_at
                        FROM bar_revision ORDER BY asset_id, provider, session_date, revision"""
                 )
             ]
@@ -206,7 +223,7 @@ class MarketDataArchive:
         params = [asset_id, start, end]
         condition = ""
         if availability_mode == "strict":
-            condition = "AND retrieved_at <= ?"
+            condition = "AND first_stored_at <= ?"
             params.append(as_of.astimezone(UTC).isoformat())
         query = f"""
             SELECT * FROM bar_revision candidate
@@ -216,7 +233,7 @@ class MarketDataArchive:
                 WHERE visible.asset_id=candidate.asset_id
                   AND visible.provider=candidate.provider
                   AND visible.session_date=candidate.session_date
-                  {condition.replace("retrieved_at", "visible.retrieved_at")}
+                  {condition.replace("first_stored_at", "visible.first_stored_at")}
               )
             ORDER BY session_date, provider
         """
@@ -240,6 +257,7 @@ class MarketDataArchive:
                         "revision": row["revision"],
                         "manifest_sha256": row["manifest_sha256"],
                         "raw_sha256": row["raw_sha256"],
+                        "first_stored_at": row["first_stored_at"],
                     }
                 )
         availability = (

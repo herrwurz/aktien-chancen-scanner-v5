@@ -13,7 +13,7 @@ def asset(index, *, name=None, sector="insurance", available=NOW):
         asset_type="stock",
         name=name or f"Company {index}",
         ticker=f"C{index}",
-        cik=str(index),
+        cik="9999999999" if index == 0 else str(index),
         country="US",
         sector=sector,
         retrieved_at=available,
@@ -51,7 +51,7 @@ def test_index_build_is_reproducible_and_sha_guarded(tmp_path):
         tmp_path / "b.db", assets=list(reversed(assets)), events=[], facts=[], news=[]
     )
     assert first.payload_sha256 == second.payload_sha256
-    assert first.schema_version == 2
+    assert first.schema_version == 3
     assert first.counts == {"assets": 2, "events": 0, "facts": 0, "news": 0}
     assert ResearchIndex(tmp_path / "a.db").coverage(NOW)["indexed_assets"] == 2
     with (tmp_path / "a.db").open("ab") as handle:
@@ -165,7 +165,7 @@ def test_same_company_name_does_not_assign_an_unproven_identifier(tmp_path):
     )
     assert [
         row.identity.cik for row in result.candidates if "event:guidance_raise" in row.confirmed
-    ] == ["1"]
+    ] == ["0000000001"]
 
 
 def test_detective_uses_full_index_retrieval_before_top_three(tmp_path):
@@ -368,9 +368,9 @@ def test_news_revision_replaces_original_only_after_revision_is_available(tmp_pa
         CandidateQuery(text="withdraws guidance"),
         as_of=datetime(2025, 2, 4, tzinfo=UTC),
     )
-    assert [row.identity.cik for row in before.candidates] == ["1"]
+    assert [row.identity.cik for row in before.candidates] == ["0000000001"]
     assert after.status == "unresolved"
-    assert [row.identity.cik for row in corrected.candidates] == ["1"]
+    assert [row.identity.cik for row in corrected.candidates] == ["0000000001"]
 
 
 def test_fact_revision_is_point_in_time_and_does_not_rewrite_history(tmp_path):

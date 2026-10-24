@@ -8,6 +8,7 @@ from pathlib import Path
 
 from scanner.research import AssetIdentity
 from scanner.research_index.builder import SCHEMA_VERSION, IndexManifest
+from scanner.research_index.identity import canonicalize_identity, stable_asset_id
 from scanner.research_index.models import CandidateBatch, CandidateHit, CandidateQuery
 
 
@@ -53,7 +54,7 @@ class ResearchIndex:
 
     def resolve_identity(self, identity, *, as_of):
         """Resolve only exact identifiers and reject conflicting supplied metadata."""
-        identity = AssetIdentity.model_validate(identity)
+        identity = canonicalize_identity(identity)
         identifiers = [
             (kind, getattr(identity, kind))
             for kind in ("cik", "isin", "wkn", "lei")
@@ -264,16 +265,10 @@ class ResearchIndex:
         )
 
     def evidence(self, identity, *, as_of, kinds):
-        identity = AssetIdentity.model_validate(identity)
-        asset_id = next(
-            (
-                f"{kind}:{getattr(identity, kind)}"
-                for kind in ("cik", "isin", "wkn", "lei")
-                if getattr(identity, kind)
-            ),
-            None,
-        )
-        if asset_id is None:
+        identity = canonicalize_identity(identity)
+        try:
+            asset_id = stable_asset_id(identity)
+        except ValueError:
             return {"status": "unavailable", "records": []}
         with self._connect() as connection:
             placeholders = ",".join("?" for _ in kinds)
@@ -296,16 +291,10 @@ class ResearchIndex:
         }
 
     def detective_evidence(self, identity, *, as_of):
-        identity = AssetIdentity.model_validate(identity)
-        asset_id = next(
-            (
-                f"{kind}:{getattr(identity, kind)}"
-                for kind in ("cik", "isin", "wkn", "lei")
-                if getattr(identity, kind)
-            ),
-            None,
-        )
-        if asset_id is None:
+        identity = canonicalize_identity(identity)
+        try:
+            asset_id = stable_asset_id(identity)
+        except ValueError:
             return []
         with self._connect() as connection:
             rows = connection.execute(

@@ -1,5 +1,6 @@
 """Strict contracts for historical stock data and its provenance."""
 
+import re
 from datetime import date, datetime
 from decimal import Decimal
 from typing import Literal
@@ -32,6 +33,38 @@ class InstrumentListing(StrictModel):
             raise ValueError("invalid timezone") from None
         return value
 
+    @model_validator(mode="after")
+    def canonical_asset_identifier(self):
+        if self.cik is not None and self.asset_id != f"cik:{self.cik}":
+            raise ValueError("asset_id must use canonical cik prefix and zero padding")
+        return self
+
+
+class ExchangeCalendar(StrictModel):
+    supported_mics: set[str] = Field(min_length=1)
+    timezone: str
+    source_reference: str = Field(min_length=1)
+    raw_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    retrieved_at: datetime
+    sessions: dict[date, datetime]
+
+    @model_validator(mode="after")
+    def valid_calendar(self):
+        try:
+            zone = ZoneInfo(self.timezone)
+        except ZoneInfoNotFoundError:
+            raise ValueError("invalid calendar timezone") from None
+        if self.retrieved_at.utcoffset() is None or not self.sessions:
+            raise ValueError("calendar requires aware retrieval and sessions")
+        if any(not re.fullmatch(r"[A-Z0-9]{4}", mic) for mic in self.supported_mics):
+            raise ValueError("invalid calendar MIC")
+        for day, close in self.sessions.items():
+            if close.utcoffset() is None or close.astimezone(zone).date() != day:
+                raise ValueError("invalid calendar session")
+            if close.utcoffset() != close.astimezone(zone).utcoffset():
+                raise ValueError("calendar session timezone offset mismatch")
+        return self
+
 
 class PriceVector(StrictModel):
     open: Decimal | None
@@ -43,7 +76,7 @@ class PriceVector(StrictModel):
     @model_validator(mode="after")
     def valid_ohlcv(self):
         values = (self.open, self.high, self.low, self.close)
-        if any(value is not None and (not value.is_finite() or value < 0) for value in values):
+        if any(value is not None and (not value.is_finite() or value <= 0) for value in values):
             raise ValueError("invalid OHLC")
         if self.volume is not None and (not self.volume.is_finite() or self.volume < 0):
             raise ValueError("invalid volume")
@@ -58,6 +91,8 @@ class DailyBar(StrictModel):
     session_date: date
     session_end_at: datetime
     modeled_available_at: datetime
+    session_end_status: Literal["modeled_regular_close_unverified", "verified_exchange_calendar"]
+    calendar_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     raw: PriceVector
     adjusted: PriceVector
     retrieved_at: datetime
@@ -71,6 +106,8 @@ class DailyBar(StrictModel):
                 raise ValueError("aware timestamps required")
         if self.modeled_available_at < self.session_end_at:
             raise ValueError("availability precedes session close")
+        if (self.session_end_status == "verified_exchange_calendar") != bool(self.calendar_sha256):
+            raise ValueError("calendar provenance mismatch")
         return self
 
 
