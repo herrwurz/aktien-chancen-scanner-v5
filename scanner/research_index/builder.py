@@ -11,8 +11,9 @@ from pydantic import BaseModel
 
 from scanner.news import NewsItem
 from scanner.research import AssetIdentity, CompanyEvent, CompanyFact, EvidenceRecord
+from scanner.research_index.identity import canonical_cik, canonicalize_identity, stable_asset_id
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 class IndexManifest(BaseModel):
@@ -31,11 +32,10 @@ def _sha(value):
 
 
 def _asset_id(identity):
-    for kind in ("cik", "isin", "wkn", "lei"):
-        value = getattr(identity, kind)
-        if value:
-            return f"{kind}:{value}"
-    return f"name:{_sha(identity.name.encode())}"
+    try:
+        return stable_asset_id(identity)
+    except ValueError:
+        return f"name:{_sha(identity.name.encode())}"
 
 
 def _available(identity):
@@ -49,7 +49,15 @@ def _records(values, model):
 
 def build_index(path, *, assets, events, facts, news):
     path = Path(path)
-    normalized_assets = _records(assets, AssetIdentity)
+    candidates = [canonicalize_identity(row) for row in _records(assets, AssetIdentity)]
+    unique_assets = {}
+    for identity in candidates:
+        asset_id = _asset_id(identity)
+        existing = unique_assets.get(asset_id)
+        if existing is not None and existing != identity:
+            raise ValueError("multiple listings require verified listing identity")
+        unique_assets[asset_id] = identity
+    normalized_assets = list(unique_assets.values())
     normalized_events = _records(events, CompanyEvent)
     normalized_facts = _records(facts, CompanyFact)
     normalized_news = _records(news, NewsItem)
@@ -200,11 +208,20 @@ def build_index(path, *, assets, events, facts, news):
                 row.supersedes_fact_id,
             )
         for row in sorted(normalized_news, key=lambda value: value.source_id):
+
+            def lookup_identifier(kind, identifier):
+                if kind == "cik":
+                    try:
+                        identifier = canonical_cik(identifier)
+                    except ValueError:
+                        return None
+                return lookup.get((kind, identifier))
+
             matched = {
-                lookup[(kind, identifier)]
+                asset_id
                 for kind, values in row.company_identifiers.items()
                 for identifier in values
-                if (kind, identifier) in lookup
+                if (asset_id := lookup_identifier(kind, identifier)) is not None
             }
             for asset_id in sorted(matched):
                 add_evidence(

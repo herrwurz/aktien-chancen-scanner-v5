@@ -102,8 +102,9 @@ class ResearchService:
 class IndexedResearchService:
     """Shared read-only index facade; it never creates a strategy decision."""
 
-    def __init__(self, index):
+    def __init__(self, index, *, price_archive=None):
         self.index = index
+        self.price_archive = price_archive
 
     def universe(self, *, as_of):
         return {**self.index.coverage(as_of), "strategy_decision": None}
@@ -126,8 +127,44 @@ class IndexedResearchService:
     def fundamentals(self, identity, *, as_of):
         return self.index.evidence(identity, as_of=as_of, kinds={"fact"})
 
-    def prices(self, identity, *, as_of):
-        return {"status": "unavailable", "prices": [], "as_of": as_of.isoformat()}
+    def prices(
+        self,
+        identity,
+        *,
+        as_of,
+        start=None,
+        end=None,
+        availability_mode="strict",
+    ):
+        if self.price_archive is None:
+            return {
+                "status": "unavailable",
+                "prices": [],
+                "as_of": as_of.isoformat(),
+                "reason": "market_data_archive_not_configured",
+                "strategy_decision": None,
+            }
+        resolved = self.index.resolve_identity(identity, as_of=as_of)
+        if resolved["status"] != "ok":
+            return {
+                **resolved,
+                "prices": [],
+                "as_of": as_of.isoformat(),
+                "strategy_decision": None,
+            }
+        day = as_of.date().isoformat()
+        result = self.price_archive.prices(
+            resolved["asset_id"],
+            start=start or "0001-01-01",
+            end=end or day,
+            as_of=as_of,
+            availability_mode=availability_mode,
+        )
+        return {
+            **result,
+            "asset_id": resolved["asset_id"],
+            "strategy_decision": None,
+        }
 
     def coverage(self, *, as_of):
         return self.index.coverage(as_of)

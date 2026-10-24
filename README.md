@@ -19,6 +19,11 @@ Compose-Service im Profil `analysis`; der normale Krypto-Scanner bleibt getrennt
 
 Docker-based Python scanner for crypto, stocks and future leveraged-instrument analysis.
 
+Die V2.5.1-Pipeline für historische US-Aktienkurse, ihr providerneutraler Datenvertrag und der
+kontrollierte Tiingo-Pilot sind in [Historische Kursdatenpipeline](docs/market-data-v251.md)
+dokumentiert. Ohne echten Provider- und SEC-Index-Export meldet sie einen Blocker; synthetische
+Tests werden nicht als reale Marktabdeckung ausgegeben.
+
 ## MVP
 - Python 3.12, FastAPI, PostgreSQL, SQLAlchemy/Alembic, pytest.
 - Isolated Docker Compose stack alongside existing Immich; no changes to Immich resources.
