@@ -66,6 +66,8 @@ def run_dry_run(
     """Evaluate every archived listing without network, writes or execution claims."""
     if as_of.tzinfo is None:
         raise ValueError("as_of must be timezone-aware")
+    if not minimum_liquidity.is_finite() or minimum_liquidity <= 0:
+        raise ValueError("minimum_liquidity must be finite and positive")
     as_of = as_of.astimezone(UTC)
     evaluation_at = datetime.combine(signal_date, time.max, tzinfo=UTC)
     instruments = archive.list_instruments()
@@ -149,7 +151,7 @@ def run_dry_run(
         "archive_instruments": len(instruments),
         "research_index_visible_assets": visible_assets,
         "archive_coverage_of_visible_assets": (
-            str(Decimal(len(instruments)) / Decimal(visible_assets)) if visible_assets else None
+            str(Decimal(matched) / Decimal(visible_assets)) if visible_assets else None
         ),
         "identity_matched": matched,
         "identity_conflicts": conflicts,

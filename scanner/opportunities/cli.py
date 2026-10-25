@@ -10,6 +10,16 @@ from scanner.opportunities.report import run_dry_run, write_report
 from scanner.research_index.repository import ResearchIndex
 
 
+def _positive_decimal(value: str) -> Decimal:
+    try:
+        parsed = Decimal(value)
+    except Exception as exc:
+        raise argparse.ArgumentTypeError("must be a decimal number") from exc
+    if not parsed.is_finite() or parsed <= 0:
+        raise argparse.ArgumentTypeError("must be finite and positive")
+    return parsed
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--research-index", required=True)
@@ -18,7 +28,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--signal-date", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--benchmark-asset-id")
-    parser.add_argument("--minimum-liquidity", default="1000000")
+    parser.add_argument("--minimum-liquidity", type=_positive_decimal, default=Decimal("1000000"))
     return parser
 
 
@@ -33,7 +43,7 @@ def main(argv=None) -> int:
         as_of=as_of,
         signal_date=date.fromisoformat(args.signal_date),
         benchmark_asset_id=args.benchmark_asset_id,
-        minimum_liquidity=Decimal(args.minimum_liquidity),
+        minimum_liquidity=args.minimum_liquidity,
     )
     artifacts = write_report(report, args.output)
     print(

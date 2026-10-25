@@ -635,3 +635,26 @@ def test_opportunity_cli_has_no_network_path_and_writes_audited_outputs(
     assert exit_code == 0
     assert calls["signal_date"] == date(2025, 9, 8)
     assert '"mode": "modeled_research"' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "NaN", "Infinity", "not-a-number"])
+def test_opportunity_cli_rejects_disabled_or_invalid_liquidity_gate(value):
+    from scanner.opportunities import cli
+
+    with pytest.raises(SystemExit):
+        cli.main(
+            [
+                "--research-index",
+                "unused.db",
+                "--market-archive",
+                "unused.sqlite",
+                "--as-of",
+                "2026-10-25T12:00:00+00:00",
+                "--signal-date",
+                "2025-09-08",
+                "--output",
+                "unused",
+                "--minimum-liquidity",
+                value,
+            ]
+        )
