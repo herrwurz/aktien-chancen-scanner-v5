@@ -20,8 +20,8 @@
   <form id="form">
     <label for="text">Teasertext</label><textarea id="text" maxlength="20000"></textarea>
     <label for="published">Veröffentlichungszeit</label><input id="published" type="datetime-local">
-    <label for="image">Screenshot (PNG, JPEG oder WebP; maximal 2 MiB)</label>
-    <input id="image" type="file" accept="image/png,image/jpeg,image/webp">
+    <label for="image">Screenshot oder PDF (Bilder maximal 2 MiB; PDF maximal 20 MiB/40 Seiten)</label>
+    <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
     <button>Hinweise analysieren</button>
   </form>
   <section id="result" aria-live="polite"></section>
@@ -33,7 +33,9 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const file=document.querySelector('#image').files[0];
   const body={teaser_text:document.querySelector('#text').value,
     publication_at:document.querySelector('#published').value||null};
-  if(file){body.screenshot_base64=await asBase64(file);body.screenshot_media_type=file.type}
+  if(file&&file.type==='application/pdf'){body.pdf_base64=await asBase64(file);
+    body.pdf_media_type=file.type}else if(file){body.screenshot_base64=await asBase64(file);
+    body.screenshot_media_type=file.type}
   const response=await fetch('/api/hebeltrader/detective/analyze',{method:'POST',
     headers:{'content-type':'application/json'},body:JSON.stringify(body)});
   const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';return}
@@ -41,12 +43,13 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   result.append(heading);if(!data.candidates.length){const empty=document.createElement('p');
     empty.textContent='Keine belastbaren Kandidaten.';result.append(empty);return}
   data.candidates.forEach((c,i)=>{const article=document.createElement('article');
-    article.className='candidate';const title=document.createElement('h3');
-    title.textContent=`${i+1}. ${c.name} (${c.ticker||'ohne Ticker'})`;article.append(title);
-    const summary=document.createElement('p');summary.textContent=`WKN ${c.wkn||'unbekannt'}, `+
-      `Evidenz: ${c.evidence_strength}, Relevanzwert: ${c.relevance_score_not_probability}`;
+    article.className='candidate';const identity=c.identity||c;const title=document.createElement('h3');
+    title.textContent=`${i+1}. ${identity.name} (${identity.ticker||'ohne Ticker'})`;article.append(title);
+    const summary=document.createElement('p');summary.textContent=`WKN ${identity.wkn||'unbekannt'}, `+
+      `Evidenzwert: ${c.evidence_score??c.relevance_score_not_probability}`;
     article.append(summary);const evidence=document.createElement('p');
-    evidence.textContent=[...c.hard_facts,...c.supporting_clues].map(e=>e.value).join(', ');
+    evidence.textContent=c.evidence_matrix?c.evidence_matrix.map(e=>`${e.clue_id}: ${e.status}`).join(', '):
+      [...c.hard_facts,...c.supporting_clues].map(e=>e.value).join(', ');
     article.append(evidence);const status=document.createElement('p');
     status.textContent='Bestätigung: manuell erforderlich';article.append(status);result.append(article)});
 });

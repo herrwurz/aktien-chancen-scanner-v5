@@ -7,8 +7,11 @@ from datetime import UTC, datetime
 from scanner.research import AssetIdentity, EvidenceRecord
 
 from .catalog import CATALOG_REVISION, default_candidate_source, load_products
-from .clues import extract_clues
+from .clues import extract_atomic_clues, extract_clues
+from .documents import extract_document
 from .ocr import TesseractOcr
+from .schemas import SourceSpan
+from .verification import decide, verify_candidates
 
 MAX_RESPONSE_EVIDENCE = 8
 
@@ -36,11 +39,14 @@ class DetectiveService:
         self.research_mode = research_mode
 
     def analyze(self, request):
-        text_parts = [request.teaser_text.strip(), *request.known_hints]
+        text_parts = []
         input_sources = []
         review_hints = []
         if request.teaser_text.strip():
+            text_parts.append(("teaser_text", None, request.teaser_text.strip()))
             input_sources.append({"type": "teaser_text", "characters": len(request.teaser_text)})
+        for index, hint in enumerate(request.known_hints):
+            text_parts.append((f"known_hint:{index}", None, hint))
         image_sha = None
         if request.screenshot_base64:
             try:
@@ -49,7 +55,7 @@ class DetectiveService:
                 raise ValueError("invalid screenshot base64") from None
             image_sha = hashlib.sha256(image).hexdigest()
             ocr_text = self.ocr.extract(image, request.screenshot_media_type)
-            text_parts.append(ocr_text)
+            text_parts.append(("screenshot_ocr", None, ocr_text))
             input_sources.append(
                 {
                     "type": "screenshot_ocr",
@@ -60,8 +66,51 @@ class DetectiveService:
                 }
             )
             review_hints.append("OCR text requires visual review against the original screenshot")
-        combined = "\n".join(value for value in text_parts if value)
+        if request.pdf_base64:
+            try:
+                pdf = base64.b64decode(request.pdf_base64, validate=True)
+            except (binascii.Error, ValueError):
+                raise ValueError("invalid PDF base64") from None
+            document = extract_document(pdf, request.pdf_media_type, ocr=self.ocr)
+            offset_pages = []
+            for page in document.pages:
+                if page.text:
+                    text_parts.append((f"pdf:{document.sha256}", page.number, page.text))
+                offset_pages.append(page.model_dump(mode="json"))
+            input_sources.append(
+                {
+                    "type": "pdf",
+                    "sha256": document.sha256,
+                    "media_type": document.media_type,
+                    "page_count": document.page_count,
+                    "complete": document.complete,
+                    "pages": offset_pages,
+                }
+            )
+            if not document.complete or any(page.requires_manual_review for page in document.pages):
+                review_hints.append("PDF extraction requires review against the original pages")
+        combined_parts, spans, cursor = [], [], 0
+        for source_id, page, value in text_parts:
+            if not value:
+                continue
+            if combined_parts:
+                cursor += 1
+            start = cursor
+            combined_parts.append(value)
+            cursor += len(value)
+            spans.append(SourceSpan(source_id=source_id, page=page, start=start, end=cursor))
+        combined = "\n".join(combined_parts)
         clues = extract_clues(combined)
+        atomic_clues = extract_atomic_clues(combined, spans)
+        if hasattr(self.candidate_source, "retrieve_candidates"):
+            return self._analyze_v3(
+                request,
+                input_sources,
+                review_hints,
+                clues,
+                atomic_clues,
+                image_sha,
+            )
         ranked = self._rank(combined, clues, request.publication_at)
         decision = self._decision(ranked)
         derivative = self._find_derivative(clues, decision, request.publication_at)
@@ -72,6 +121,7 @@ class DetectiveService:
         if decision["status"] != "resolved_candidate":
             review_hints.append(decision["reason"])
         return {
+            "schema_version": 3,
             "status": "candidate_identification_only",
             "strategy": "HEBELTRADER_DETECTIVE",
             "research_mode": self.research_mode,
@@ -90,6 +140,67 @@ class DetectiveService:
             },
             "identification": decision,
             "candidates": ranked[:3],
+            "derivative_candidate": derivative,
+            "review_hints": review_hints,
+            "identification_is_investment_recommendation": False,
+            "automatic_confirmation": False,
+            "observed_image_sha256": image_sha,
+        }
+
+    def _analyze_v3(
+        self,
+        request,
+        input_sources,
+        review_hints,
+        legacy_clues,
+        atomic_clues,
+        image_sha,
+    ):
+        if request.publication_at is None:
+            retrieval_status = "missing_publication_time"
+            verified = []
+            review_hints.append(
+                "Publication timestamp missing; historical evidence and products cannot be verified"
+            )
+        else:
+            retrieval = self.candidate_source.retrieve_candidates(
+                atomic_clues, request.publication_at
+            )
+            retrieval_status = retrieval.status
+            verified = verify_candidates(
+                retrieval,
+                atomic_clues,
+                self.news_source.evidence_for,
+                request.publication_at,
+            )
+        decision = decide(verified, retrieval_status)
+        selected = next(
+            (row for row in verified if row.asset_id == decision.selected_asset_id), None
+        )
+        derivative_decision = {"selected_wkn": selected.identity.get("wkn") if selected else None}
+        derivative = self._find_derivative(
+            legacy_clues, derivative_decision, request.publication_at
+        )
+        if decision.status != "likely_candidate":
+            review_hints.append(decision.reason)
+        return {
+            "schema_version": 3,
+            "status": "candidate_identification_only",
+            "strategy": "HEBELTRADER_DETECTIVE",
+            "research_mode": self.research_mode,
+            "analyzed_at": self.clock().isoformat(),
+            "publication_at": (
+                request.publication_at.isoformat() if request.publication_at else None
+            ),
+            "candidate_source": {
+                "source_id": self.candidate_source.source_id,
+                "coverage": self.candidate_source.coverage,
+                "catalog_revision": CATALOG_REVISION,
+            },
+            "input_sources": input_sources,
+            "extracted_clues": [clue.model_dump(mode="json") for clue in atomic_clues],
+            "identification": decision.model_dump(mode="json"),
+            "candidates": [row.model_dump(mode="json") for row in verified[:3]],
             "derivative_candidate": derivative,
             "review_hints": review_hints,
             "identification_is_investment_recommendation": False,
