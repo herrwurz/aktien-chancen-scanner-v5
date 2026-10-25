@@ -5,13 +5,21 @@ from decimal import Decimal
 import pytest
 
 
-def market_batch(*, asset_id="cik:0000320193", cik="0000320193", ticker="AAPL"):
+def market_batch(
+    *,
+    asset_id="cik:0000320193",
+    cik="0000320193",
+    ticker="AAPL",
+    sessions=2,
+    final_volume=None,
+):
     from scanner.market_data.models import InstrumentListing
     from scanner.market_data.providers import normalize_tiingo
 
     rows = []
-    for offset in range(2):
+    for offset in range(sessions):
         day = date(2025, 1, 2) + timedelta(days=offset)
+        volume = final_volume if offset == sessions - 1 and final_volume else 1000 + offset
         rows.append(
             {
                 "date": f"{day.isoformat()}T00:00:00Z",
@@ -19,12 +27,12 @@ def market_batch(*, asset_id="cik:0000320193", cik="0000320193", ticker="AAPL"):
                 "high": 102 + offset,
                 "low": 99 + offset,
                 "close": 101 + offset,
-                "volume": 1000 + offset,
+                "volume": volume,
                 "adjOpen": 100 + offset,
                 "adjHigh": 102 + offset,
                 "adjLow": 99 + offset,
                 "adjClose": 101 + offset,
-                "adjVolume": 1000 + offset,
+                "adjVolume": volume,
                 "divCash": 0,
                 "splitFactor": 1,
             }
@@ -35,7 +43,7 @@ def market_batch(*, asset_id="cik:0000320193", cik="0000320193", ticker="AAPL"):
             "dataset": "daily_prices",
             "symbol": ticker,
             "start": "2025-01-02",
-            "end": "2025-01-03",
+            "end": (date(2025, 1, 2) + timedelta(days=sessions - 1)).isoformat(),
         },
         "payload": rows,
         "retrieved_at": "2026-10-25T08:00:00+00:00",
@@ -355,3 +363,171 @@ def test_missing_or_late_news_never_creates_a_confirmed_catalyst():
         )
         == []
     )
+
+
+def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
+    from scanner.market_data.archive import MarketDataArchive
+    from scanner.news import NewsItem
+    from scanner.opportunities.report import run_dry_run, write_report
+    from scanner.research import AssetIdentity
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    available = datetime(2025, 1, 1, tzinfo=UTC)
+    assets = [
+        AssetIdentity(
+            asset_type="stock",
+            name="Alpha Corporation",
+            ticker="AAA",
+            cik="0000000001",
+            exchange="NASDAQ",
+            mic="XNAS",
+            country="US",
+            instrument_type="operating_company",
+            source_available_at=available,
+            retrieved_at=available,
+        ),
+        AssetIdentity(
+            asset_type="stock",
+            name="Beta Corporation",
+            ticker="BBB",
+            cik="0000000002",
+            exchange="NASDAQ",
+            mic="XNAS",
+            country="US",
+            instrument_type="operating_company",
+            source_available_at=available,
+            retrieved_at=available,
+        ),
+        AssetIdentity(
+            asset_type="stock",
+            name="Index Fund",
+            ticker="FND",
+            cik="0000000003",
+            exchange="NASDAQ",
+            mic="XNAS",
+            country="US",
+            instrument_type="fund",
+            instrument_type_status="source_verified",
+            source_available_at=available,
+            retrieved_at=available,
+        ),
+    ]
+    news = [
+        NewsItem(
+            source_id="issuer:alpha",
+            source_type="PRIMARY",
+            url="https://alpha.example/release",
+            title="Alpha raises guidance",
+            published_at=datetime(2025, 9, 7, 12, tzinfo=UTC),
+            first_seen_at=datetime(2025, 9, 7, 12, 1, tzinfo=UTC),
+            retrieved_at=datetime(2025, 9, 7, 12, 1, tzinfo=UTC),
+            source_available_at=datetime(2025, 9, 7, 12, 1, tzinfo=UTC),
+            company_identifiers={"cik": ["0000000001"]},
+            event_type="guidance_raise",
+            event_confidence="source_claim",
+            evidence_status="issuer_publication",
+            license_status="permitted_metadata",
+            content_hash="1" * 64,
+            origin_id="issuer:alpha",
+        )
+    ]
+    index_path = tmp_path / "research.db"
+    build_index(index_path, assets=assets, events=[], facts=[], news=news)
+    archive_path = tmp_path / "market.sqlite"
+    writer = MarketDataArchive(
+        archive_path,
+        now=lambda: datetime(2026, 10, 25, 9, tzinfo=UTC),
+    )
+    for number, ticker in enumerate(("AAA", "BBB", "FND"), start=1):
+        writer.import_batch(
+            market_batch(
+                asset_id=f"cik:{number:010d}",
+                cik=f"{number:010d}",
+                ticker=ticker,
+                sessions=250,
+                final_volume=50000,
+            )
+        )
+
+    report = run_dry_run(
+        ResearchIndex(index_path),
+        MarketDataArchive(archive_path, read_only=True),
+        as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+        signal_date=date(2025, 9, 8),
+        minimum_liquidity=Decimal("1000"),
+    )
+
+    assert report["mode"] == "modeled_research"
+    assert report["coverage"] == {
+        "archive_instruments": 3,
+        "identity_matched": 3,
+        "identity_conflicts": 0,
+        "candidate_research": 2,
+        "watch_only": 0,
+        "unavailable": 1,
+    }
+    assert report["network_requests"] == 0
+    assert report["cost_eur"] == "0"
+    assert report["historical_availability_verified"] is False
+    assert report["training_eligible"] is False
+    assert [row["ticker"] for row in report["results"]] == ["AAA", "BBB", "FND"]
+    assert report["results"][0]["catalysts"][0]["source_type"] == "PRIMARY"
+    assert report["results"][2]["failed_gates"] == ["fund"]
+
+    repeated = run_dry_run(
+        ResearchIndex(index_path),
+        MarketDataArchive(archive_path, read_only=True),
+        as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+        signal_date=date(2025, 9, 8),
+        minimum_liquidity=Decimal("1000"),
+    )
+    assert repeated == report
+    first = write_report(report, tmp_path / "first")
+    second = write_report(repeated, tmp_path / "second")
+    assert (tmp_path / "first" / "opportunities.json").read_bytes() == (
+        tmp_path / "second" / "opportunities.json"
+    ).read_bytes()
+    assert (tmp_path / "first" / "opportunities.csv").read_bytes() == (
+        tmp_path / "second" / "opportunities.csv"
+    ).read_bytes()
+    assert first["sha256"] == second["sha256"]
+
+
+def test_opportunity_cli_has_no_network_path_and_writes_audited_outputs(
+    tmp_path, monkeypatch, capsys
+):
+    from scanner.opportunities import cli
+
+    calls = {}
+
+    def fake_run(index, archive, **kwargs):
+        calls.update(kwargs)
+        return {
+            "schema_version": "2.5.2",
+            "mode": "modeled_research",
+            "coverage": {"archive_instruments": 0},
+            "results": [],
+        }
+
+    monkeypatch.setattr(cli, "run_dry_run", fake_run)
+    monkeypatch.setattr(cli, "ResearchIndex", lambda path: ("index", path))
+    monkeypatch.setattr(cli, "MarketDataArchive", lambda path, read_only: (path, read_only))
+    exit_code = cli.main(
+        [
+            "--research-index",
+            str(tmp_path / "research.db"),
+            "--market-archive",
+            str(tmp_path / "market.sqlite"),
+            "--as-of",
+            "2026-10-25T12:00:00+00:00",
+            "--signal-date",
+            "2025-09-08",
+            "--output",
+            str(tmp_path / "output"),
+        ]
+    )
+
+    assert exit_code == 0
+    assert calls["signal_date"] == date(2025, 9, 8)
+    assert '"mode": "modeled_research"' in capsys.readouterr().out

@@ -240,7 +240,11 @@ def build_index(path, *, assets, events, facts, news):
                         effective_at=row.actual_event_at or row.published_at,
                         source_available_at=row.source_available_at,
                         source_kind="issuer" if row.source_type == "PRIMARY" else "news",
-                        facts={"events": [row.event_type]},
+                        facts={
+                            "events": [row.event_type],
+                            "source_type": row.source_type,
+                            "evidence_status": row.evidence_status,
+                        },
                         content_sha256=row.content_hash,
                     ),
                     row.revision_of_source_id,

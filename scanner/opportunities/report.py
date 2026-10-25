@@ -1,0 +1,199 @@
+"""Read-only whole-archive orchestration and reproducible opportunity reports."""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+from datetime import UTC, date, datetime, time, timedelta
+from decimal import Decimal
+from pathlib import Path
+
+from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+from scanner.research import AssetIdentity
+
+
+def _canonical_bytes(value) -> bytes:
+    return (
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode()
+
+
+def _archive_identity(listing: dict) -> AssetIdentity:
+    return AssetIdentity(
+        asset_type="stock",
+        name=listing["ticker"],
+        ticker=listing["ticker"],
+        cik=listing.get("cik"),
+        isin=listing.get("isin"),
+        exchange=listing.get("exchange"),
+        mic=listing.get("mic"),
+    )
+
+
+def _identity_failure(listing: dict, reason: str) -> dict:
+    return {
+        "asset_id": listing["asset_id"],
+        "ticker": listing.get("ticker"),
+        "name": listing.get("ticker") or listing["asset_id"],
+        "status": "unavailable",
+        "score": 0,
+        "score_reasons": [],
+        "selection_reasons": [],
+        "failed_gates": [reason],
+        "uncertainties": [],
+        "features": None,
+        "catalysts": [],
+        "risk": None,
+        "historical_availability_verified": False,
+        "training_eligible": False,
+        "probability_claimed": False,
+    }
+
+
+def run_dry_run(
+    index,
+    archive,
+    *,
+    as_of: datetime,
+    signal_date: date,
+    benchmark_asset_id: str | None = None,
+    minimum_liquidity: Decimal = Decimal("1000000"),
+) -> dict:
+    """Evaluate every archived listing without network, writes or execution claims."""
+    if as_of.tzinfo is None:
+        raise ValueError("as_of must be timezone-aware")
+    as_of = as_of.astimezone(UTC)
+    signal_at = datetime.combine(signal_date, time.max, tzinfo=UTC)
+    instruments = archive.list_instruments()
+    benchmark_bars = None
+    if benchmark_asset_id:
+        benchmark_bars = archive.prices(
+            benchmark_asset_id,
+            start=(signal_date - timedelta(days=500)).isoformat(),
+            end=signal_date.isoformat(),
+            as_of=as_of,
+            availability_mode="modeled",
+        )["prices"]
+
+    results = []
+    matched = 0
+    conflicts = 0
+    for listing in instruments:
+        supplied = _archive_identity(listing)
+        resolution = index.resolve_identity(supplied, as_of=as_of)
+        if resolution["status"] != "ok" or resolution["asset_id"] != listing["asset_id"]:
+            conflicts += 1
+            results.append(_identity_failure(listing, "identity_conflict"))
+            continue
+        matched += 1
+        identity = AssetIdentity.model_validate(resolution["identity"])
+        price_result = archive.prices(
+            listing["asset_id"],
+            start=(signal_date - timedelta(days=500)).isoformat(),
+            end=signal_date.isoformat(),
+            as_of=as_of,
+            availability_mode="modeled",
+        )
+        evidence = index.opportunity_evidence(identity, as_of=signal_at)
+        candidate = evaluate_candidate(
+            identity,
+            price_result["prices"],
+            as_of=signal_at,
+            catalysts=evidence,
+            benchmark_bars=benchmark_bars,
+            policy=OpportunityPolicy(min_median_dollar_volume=minimum_liquidity),
+        )
+        results.append(candidate.model_dump(mode="json"))
+
+    status_order = {"candidate_research": 0, "watch_only": 1, "unavailable": 2}
+    results.sort(
+        key=lambda row: (
+            status_order[row["status"]],
+            -row["score"],
+            row.get("ticker") or "",
+            row["asset_id"],
+        )
+    )
+    coverage = {
+        "archive_instruments": len(instruments),
+        "identity_matched": matched,
+        "identity_conflicts": conflicts,
+        "candidate_research": sum(row["status"] == "candidate_research" for row in results),
+        "watch_only": sum(row["status"] == "watch_only" for row in results),
+        "unavailable": sum(row["status"] == "unavailable" for row in results),
+    }
+    return {
+        "schema_version": "2.5.2",
+        "mode": "modeled_research",
+        "as_of": as_of.isoformat(),
+        "signal_date": signal_date.isoformat(),
+        "availability": "hypothetical_modeled_session_close",
+        "historical_availability_verified": False,
+        "training_eligible": False,
+        "network_requests": 0,
+        "cost_eur": "0",
+        "archive_sha256": archive.logical_sha256(),
+        "index_payload_sha256": index.manifest.payload_sha256,
+        "benchmark_asset_id": benchmark_asset_id,
+        "coverage": coverage,
+        "results": results,
+    }
+
+
+def write_report(report: dict, output_dir) -> dict[str, str]:
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    json_path = output / "opportunities.json"
+    csv_path = output / "opportunities.csv"
+    sha_path = output / "opportunities.sha256"
+    json_payload = _canonical_bytes(report)
+    json_path.write_bytes(json_payload)
+    fields = (
+        "rank",
+        "asset_id",
+        "ticker",
+        "name",
+        "status",
+        "score",
+        "selection_reasons",
+        "failed_gates",
+        "uncertainties",
+        "signal_date",
+        "reference_price",
+        "gross_crv",
+        "net_crv",
+        "training_eligible",
+    )
+    with csv_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        for rank, row in enumerate(report["results"], start=1):
+            features = row.get("features") or {}
+            risk = row.get("risk") or {}
+            writer.writerow(
+                {
+                    "rank": rank,
+                    "asset_id": row["asset_id"],
+                    "ticker": row.get("ticker") or "",
+                    "name": row["name"],
+                    "status": row["status"],
+                    "score": row["score"],
+                    "selection_reasons": "|".join(row["selection_reasons"]),
+                    "failed_gates": "|".join(row["failed_gates"]),
+                    "uncertainties": "|".join(row["uncertainties"]),
+                    "signal_date": features.get("signal_date", ""),
+                    "reference_price": risk.get("reference_price", ""),
+                    "gross_crv": risk.get("gross_crv", ""),
+                    "net_crv": risk.get("net_crv", ""),
+                    "training_eligible": str(row["training_eligible"]).lower(),
+                }
+            )
+    digest = hashlib.sha256(json_payload).hexdigest()
+    sha_path.write_text(f"{digest}  {json_path.name}\n", encoding="ascii")
+    return {
+        "json": str(json_path),
+        "csv": str(csv_path),
+        "sha256_file": str(sha_path),
+        "sha256": digest,
+    }

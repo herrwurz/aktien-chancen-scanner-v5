@@ -310,3 +310,47 @@ class ResearchIndex:
                 (asset_id, as_of.isoformat(), as_of.isoformat()),
             ).fetchall()
         return [json.loads(row["record_json"]) for row in rows]
+
+    def opportunity_evidence(self, identity, *, as_of):
+        """Return normalized news metadata without weakening point-in-time bounds."""
+        identity = canonicalize_identity(identity)
+        try:
+            asset_id = stable_asset_id(identity)
+        except ValueError:
+            return []
+        with self._connect() as connection:
+            rows = connection.execute(
+                """SELECT e.record_json FROM evidence e
+                WHERE e.asset_id=? AND e.kind='news' AND e.available_at<=?
+                  AND NOT EXISTS (
+                    SELECT 1 FROM evidence revision
+                    WHERE revision.asset_id=e.asset_id
+                      AND revision.supersedes_source_id=e.source_id
+                      AND revision.available_at<=?
+                  )
+                ORDER BY e.available_at,e.source_id""",
+                (asset_id, as_of.isoformat(), as_of.isoformat()),
+            ).fetchall()
+        records = []
+        for row in rows:
+            value = json.loads(row["record_json"])
+            facts = value.get("facts") or {}
+            source_type = facts.get("source_type")
+            if source_type is None:
+                # Version-3 indexes built before V2.5.2 only retain issuer/news.
+                # Issuer is safely PRIMARY; generic news cannot prove community
+                # separation and therefore remains SECONDARY.
+                source_type = "PRIMARY" if value.get("source_kind") == "issuer" else "SECONDARY"
+            events = facts.get("events") or []
+            records.append(
+                {
+                    "source_id": value.get("source_id"),
+                    "source_type": source_type,
+                    "url": value.get("url"),
+                    "title": value.get("title"),
+                    "event_type": events[0] if events else "unknown",
+                    "published_at": value.get("published_at"),
+                    "source_available_at": value.get("source_available_at"),
+                }
+            )
+        return records

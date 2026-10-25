@@ -67,9 +67,9 @@
 
 **Interfaces:** Produces `run_dry_run(index, archive, *, as_of, signal_date, benchmark_asset_id=None) -> dict` and canonical JSON/CSV/SHA files.
 
-- [ ] Write failing end-to-end tests for whole-archive discovery, unavailable rows, stable tie ordering, coverage metrics, zero requests/cost and byte-identical artifacts.
-- [ ] Implement read-only orchestration and CLI; never accept network or trading flags.
-- [ ] Run focused tests and commit.
+- [x] Write failing end-to-end tests for whole-archive discovery, unavailable rows, stable tie ordering, coverage metrics, zero requests/cost and byte-identical artifacts.
+- [x] Implement read-only orchestration and CLI; never accept network or trading flags.
+- [x] Run focused tests and commit.
 
 ### Task 5: Real pilot procedure, coverage and V2.5.3 handoff
 
