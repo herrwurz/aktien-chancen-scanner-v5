@@ -91,9 +91,7 @@ def compute_features(bars, *, signal_date, benchmark_bars=None) -> TechnicalFeat
         momentum_20=momentum_20,
         average_volume_prior_20=average_volume,
         volume_ratio=current_values["volume"] / average_volume,
-        median_dollar_volume_20=median(
-            row[1]["close"] * row[1]["volume"] for row in rows[-20:]
-        ),
+        median_dollar_volume_20=median(row[1]["close"] * row[1]["volume"] for row in rows[-20:]),
         atr_14=atr,
         atr_percent=atr / close,
         gap_percent=current_values["open"] / rows[-2][1]["close"] - 1,

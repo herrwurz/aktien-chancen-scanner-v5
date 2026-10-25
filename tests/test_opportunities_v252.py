@@ -96,16 +96,17 @@ def test_read_only_archive_lists_canonical_instruments_without_mutation(tmp_path
     assert hashlib.sha256(path.read_bytes()).hexdigest() == digest_before
 
 
-def feature_bars(*, final_close="110", final_volume="200"):
+def feature_bars(*, final_close="110", final_volume="200", sessions=25):
     bars = []
     start = date(2025, 1, 1)
-    for offset in range(25):
+    for offset in range(sessions):
         current = start + timedelta(days=offset)
-        close = Decimal("100") if offset < 24 else Decimal(final_close)
-        open_ = Decimal("100") if offset < 24 else Decimal("105")
-        high = Decimal("101") if offset < 24 else close + 1
-        low = Decimal("99") if offset < 24 else Decimal("104")
-        volume = Decimal("100") if offset < 24 else Decimal(final_volume)
+        final = offset == sessions - 1
+        close = Decimal(final_close) if final else Decimal("100")
+        open_ = Decimal("105") if final else Decimal("100")
+        high = close + 1 if final else Decimal("101")
+        low = Decimal("104") if final else Decimal("99")
+        volume = Decimal(final_volume) if final else Decimal("100")
         bars.append(
             {
                 "session_date": current.isoformat(),
@@ -208,3 +209,149 @@ def test_relative_strength_uses_same_bounded_twenty_session_window():
 
     assert features.relative_strength_20 == Decimal("0.05")
     assert features.benchmark_status == "available"
+
+
+def stock_identity(*, instrument_type="operating_company"):
+    from scanner.research import AssetIdentity
+
+    return AssetIdentity(
+        asset_type="stock",
+        name="Example Operating Company",
+        ticker="EXM",
+        cik="0000000042",
+        exchange="NYSE",
+        mic="XNYS",
+        country="US",
+        instrument_type=instrument_type,
+        instrument_type_status="source_verified",
+        source_available_at=datetime(2025, 1, 1, tzinfo=UTC),
+        retrieved_at=datetime(2026, 10, 25, tzinfo=UTC),
+    )
+
+
+def test_catalysts_require_point_in_time_evidence_and_preserve_evidence_class():
+    from scanner.opportunities.catalysts import select_catalysts
+
+    signal_at = datetime(2025, 9, 7, 23, 59, tzinfo=UTC)
+    evidence = [
+        {
+            "source_id": "issuer:1",
+            "source_type": "PRIMARY",
+            "url": "https://issuer.example/release",
+            "title": "Company raises guidance",
+            "event_type": "guidance_raise",
+            "published_at": "2025-09-07T12:00:00+00:00",
+            "source_available_at": "2025-09-07T12:01:00+00:00",
+        },
+        {
+            "source_id": "news:late",
+            "source_type": "SECONDARY",
+            "url": "https://news.example/late",
+            "title": "Late analyst upgrade",
+            "event_type": "analyst_revision",
+            "published_at": "2025-09-08T08:00:00+00:00",
+            "source_available_at": "2025-09-08T08:01:00+00:00",
+        },
+        {
+            "source_id": "community:1",
+            "source_type": "COMMUNITY",
+            "url": "https://forum.example/post",
+            "title": "Rumored partnership",
+            "event_type": "partnership",
+            "published_at": "2025-09-07T10:00:00+00:00",
+            "source_available_at": "2025-09-07T10:01:00+00:00",
+        },
+    ]
+
+    catalysts = select_catalysts(evidence, signal_at=signal_at)
+
+    assert [row.source_id for row in catalysts] == ["community:1", "issuer:1"]
+    assert catalysts[0].verification_status == "context_only"
+    assert catalysts[1].verification_status == "confirmed"
+
+
+def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    bars = feature_bars(sessions=250, final_volume="20000")
+    as_of = datetime.combine(
+        date.fromisoformat(bars[-1]["session_date"]),
+        datetime.max.time(),
+        tzinfo=UTC,
+    )
+    candidate = evaluate_candidate(
+        stock_identity(),
+        bars,
+        as_of=as_of,
+        catalysts=[],
+        policy=OpportunityPolicy(min_median_dollar_volume=Decimal("5000")),
+    )
+
+    assert candidate.status == "candidate_research"
+    assert candidate.score > 0
+    assert "volume_spike" in candidate.selection_reasons
+    assert candidate.risk.spread_status == "unavailable"
+    assert candidate.risk.net_crv is None
+    assert candidate.risk.executable is False
+    assert candidate.historical_availability_verified is False
+    assert candidate.training_eligible is False
+    assert "benchmark_unavailable" in candidate.uncertainties
+
+
+@pytest.mark.parametrize(
+    ("identity", "bars", "as_of_delta", "minimum_liquidity", "expected_gate"),
+    [
+        (stock_identity(instrument_type="fund"), feature_bars(sessions=250), 0, "1", "fund"),
+        (stock_identity(), feature_bars(sessions=249), 0, "1", "insufficient_sessions"),
+        (stock_identity(), feature_bars(sessions=250), 10, "1", "stale_price"),
+        (
+            stock_identity(),
+            feature_bars(sessions=250),
+            0,
+            "999999999",
+            "insufficient_liquidity",
+        ),
+    ],
+)
+def test_candidate_hard_gates_fail_closed(
+    identity, bars, as_of_delta, minimum_liquidity, expected_gate
+):
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    last = date.fromisoformat(bars[-1]["session_date"])
+    candidate = evaluate_candidate(
+        identity,
+        bars,
+        as_of=datetime.combine(last + timedelta(days=as_of_delta), datetime.min.time(), UTC),
+        catalysts=[],
+        policy=OpportunityPolicy(
+            min_median_dollar_volume=Decimal(minimum_liquidity),
+            max_stale_days=5,
+        ),
+    )
+
+    assert candidate.status == "unavailable"
+    assert expected_gate in candidate.failed_gates
+
+
+def test_missing_or_late_news_never_creates_a_confirmed_catalyst():
+    from scanner.opportunities.catalysts import select_catalysts
+
+    assert select_catalysts([], signal_at=datetime(2025, 1, 1, tzinfo=UTC)) == []
+    assert (
+        select_catalysts(
+            [
+                {
+                    "source_id": "missing-time",
+                    "source_type": "PRIMARY",
+                    "url": "https://issuer.example/unknown",
+                    "title": "Unproven event",
+                    "event_type": "major_contract",
+                    "published_at": None,
+                    "source_available_at": None,
+                }
+            ],
+            signal_at=datetime(2025, 1, 1, tzinfo=UTC),
+        )
+        == []
+    )

@@ -56,10 +56,10 @@
 
 **Interfaces:** Produces `evaluate_candidate(identity, bars, *, as_of, catalysts, benchmark_bars=None, policy=None) -> OpportunityCandidate`.
 
-- [ ] Write failing tests for late/unproved news, evidence classes, fund and identity gates, 250-session pilot gate, liquidity, staleness, status and score components.
-- [ ] Write failing tests proving spread is unavailable and net CRV is null without observed quotes.
-- [ ] Implement deterministic catalysts, gates, score reasons, technical trigger and ATR risk scenario.
-- [ ] Run focused tests and commit.
+- [x] Write failing tests for late/unproved news, evidence classes, fund and identity gates, 250-session pilot gate, liquidity, staleness, status and score components.
+- [x] Write failing tests proving spread is unavailable and net CRV is null without observed quotes.
+- [x] Implement deterministic catalysts, gates, score reasons, technical trigger and ATR risk scenario.
+- [x] Run focused tests and commit.
 
 ### Task 4: Whole-archive dry-run and reports
 
