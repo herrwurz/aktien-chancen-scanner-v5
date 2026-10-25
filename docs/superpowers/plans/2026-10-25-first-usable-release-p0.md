@@ -16,8 +16,8 @@
 - [x] Bind the scanner run to the SHA-verified V2.5.1 coverage and surface PXED/VOGX/incomplete rows.
 - [x] Harden the isolated Docker runner against overlapping paths and verify input SHA before analysis.
 - [x] Extend coverage/ranking audit fields without inventing market-wide coverage.
-- [ ] Run focused and full regression checks, update PR #22 and wait for GitHub Actions.
-- [ ] Run the real Hetzner offline scan when server access is available; record only aggregate results and SHAs.
+- [x] Run focused and full regression checks, update PR #22 and wait for GitHub Actions.
+- [x] Run the real Hetzner offline scan when server access is available; record only aggregate results and SHAs.
 
 The larger 100+ universe, current incremental collection, official calendar, benchmark and continuous
 news ingestion belong in the follow-up PR only after PR #22 review/merge approval.
