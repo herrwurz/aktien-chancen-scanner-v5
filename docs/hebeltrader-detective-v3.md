@@ -5,6 +5,9 @@ Publikationszeitpunkt sichtbaren lokalen Research-Index bzw. ein kuratiertes EU/
 prüft bis zu 50 Kandidaten gegen archivierte Evidenz und gibt höchstens drei Kandidaten aus. Der
 Evidenzwert ist keine Trefferwahrscheinlichkeit und keine Kaufempfehlung.
 
+Fehldiagnosen und nächste Schritte bei realen Teasern:
+[Detektiv-Teaser-Diagnose](hebeltrader-detective-diagnosis.md).
+
 Standardmodus ist `analysis_mode=hypothesis`: brauchbare Top-3-Hypothesen mit Gründen
 (`hypothesis_top3`), manuell zu prüfen. `analysis_mode=strict` behält die hohe
 `likely_candidate`-Schwelle. Clue-Enrichment erzeugt Suchqueries (heuristisch, optional per
