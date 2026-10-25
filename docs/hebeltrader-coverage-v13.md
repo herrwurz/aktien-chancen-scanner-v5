@@ -1,6 +1,6 @@
 # Coverage-Audit und historische Marktdaten V1.3
 
-Issue #7. V1.3 ergänzt Backtesting V1.2 um eine **reine Offline-Inventur** und
+Issue #7. **Status: erledigt** (PR #8; Identitäts-/Provider-Folgearbeit in V1.4–V1.6). GitHub-Issue kann geschlossen werden. V1.3 ergänzt Backtesting V1.2 um eine **reine Offline-Inventur** und
 versionierte lokale Marktdaten. Keine neue Migration, kein Worker oder
 Netzwerk-Download, kein Schreibzugriff auf Betriebsdaten, kein Trading.
 `training_eligible` bleibt immer false; `success_rate` bleibt null.
