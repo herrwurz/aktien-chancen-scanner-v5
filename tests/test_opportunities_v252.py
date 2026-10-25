@@ -1,5 +1,6 @@
 import hashlib
 from datetime import UTC, date, datetime, timedelta
+from decimal import Decimal
 
 import pytest
 
@@ -93,3 +94,117 @@ def test_read_only_archive_lists_canonical_instruments_without_mutation(tmp_path
         }
     ]
     assert hashlib.sha256(path.read_bytes()).hexdigest() == digest_before
+
+
+def feature_bars(*, final_close="110", final_volume="200"):
+    bars = []
+    start = date(2025, 1, 1)
+    for offset in range(25):
+        current = start + timedelta(days=offset)
+        close = Decimal("100") if offset < 24 else Decimal(final_close)
+        open_ = Decimal("100") if offset < 24 else Decimal("105")
+        high = Decimal("101") if offset < 24 else close + 1
+        low = Decimal("99") if offset < 24 else Decimal("104")
+        volume = Decimal("100") if offset < 24 else Decimal(final_volume)
+        bars.append(
+            {
+                "session_date": current.isoformat(),
+                "raw": {
+                    "open": str(open_),
+                    "high": str(high),
+                    "low": str(low),
+                    "close": str(close),
+                    "volume": str(volume),
+                },
+                "adjusted": {
+                    "open": str(open_),
+                    "high": str(high),
+                    "low": str(low),
+                    "close": str(close),
+                    "volume": str(volume),
+                },
+            }
+        )
+    return bars
+
+
+def test_features_use_exact_prior_windows_and_adjusted_values():
+    from scanner.opportunities.features import compute_features
+
+    features = compute_features(feature_bars(), signal_date=date(2025, 1, 25))
+
+    assert features.momentum_5 == Decimal("0.1")
+    assert features.momentum_10 == Decimal("0.1")
+    assert features.momentum_20 == Decimal("0.1")
+    assert features.average_volume_prior_20 == Decimal("100")
+    assert features.volume_ratio == Decimal("2")
+    assert features.median_dollar_volume_20 == Decimal("10000")
+    assert features.atr_14 == Decimal(37) / Decimal(14)
+    assert features.atr_percent == features.atr_14 / Decimal("110")
+    assert features.gap_percent == Decimal("0.05")
+    assert features.trend == "up"
+    assert features.prior_20_high == Decimal("101")
+    assert features.distance_to_prior_20_high == Decimal("110") / Decimal("101") - 1
+    assert features.breakout_20 is True
+    assert features.relative_strength_20 is None
+    assert features.benchmark_status == "unavailable"
+
+
+def test_future_bar_cannot_change_features_at_signal_date():
+    from scanner.opportunities.features import compute_features
+
+    bars = feature_bars()
+    expected = compute_features(bars, signal_date=date(2025, 1, 25))
+    future = feature_bars(final_close="999", final_volume="9999")[-1]
+    future["session_date"] = "2025-01-26"
+
+    actual = compute_features([*bars, future], signal_date=date(2025, 1, 25))
+
+    assert actual == expected
+
+
+def test_features_fail_closed_for_short_or_incomplete_adjusted_history():
+    from scanner.opportunities.features import compute_features
+
+    with pytest.raises(ValueError, match="21 complete sessions"):
+        compute_features(feature_bars()[-20:], signal_date=date(2025, 1, 25))
+
+    incomplete = feature_bars()
+    incomplete[-1]["adjusted"]["volume"] = None
+    with pytest.raises(ValueError, match="adjusted OHLCV"):
+        compute_features(incomplete, signal_date=date(2025, 1, 25))
+
+
+def test_adjusted_history_prevents_false_split_or_dividend_event():
+    from scanner.opportunities.features import compute_features
+
+    bars = feature_bars(final_close="50", final_volume="100")
+    for row in bars:
+        row["adjusted"] = {
+            "open": "50",
+            "high": "51",
+            "low": "49",
+            "close": "50",
+            "volume": "200",
+        }
+    features = compute_features(bars, signal_date=date(2025, 1, 25))
+
+    assert features.raw_reference_close == Decimal("50")
+    assert features.adjusted_reference_close == Decimal("50")
+    assert features.momentum_20 == 0
+    assert features.gap_percent == 0
+    assert features.volume_ratio == 1
+    assert features.breakout_20 is False
+
+
+def test_relative_strength_uses_same_bounded_twenty_session_window():
+    from scanner.opportunities.features import compute_features
+
+    features = compute_features(
+        feature_bars(),
+        signal_date=date(2025, 1, 25),
+        benchmark_bars=feature_bars(final_close="105", final_volume="100"),
+    )
+
+    assert features.relative_strength_20 == Decimal("0.05")
+    assert features.benchmark_status == "available"

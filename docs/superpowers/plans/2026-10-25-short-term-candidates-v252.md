@@ -44,11 +44,11 @@
 
 **Interfaces:** Produces `compute_features(bars, *, signal_date, benchmark_bars=None) -> TechnicalFeatures` from V2.5.1 price dictionaries.
 
-- [ ] Write failing tests for 5/10/20 momentum, prior-20 volume ratio, median dollar volume, ATR(14), gap, SMA trend, prior-20 high/breakout and relative strength.
-- [ ] Prove a future bar does not change the result and incomplete lookbacks/adjusted values fail closed.
-- [ ] Prove adjusted split data avoids a false raw-price event while raw/reference values remain preserved.
-- [ ] Implement pure Decimal calculations and strict output model.
-- [ ] Run focused tests and commit.
+- [x] Write failing tests for 5/10/20 momentum, prior-20 volume ratio, median dollar volume, ATR(14), gap, SMA trend, prior-20 high/breakout and relative strength.
+- [x] Prove a future bar does not change the result and incomplete lookbacks/adjusted values fail closed.
+- [x] Prove adjusted split data avoids a false raw-price event while raw/reference values remain preserved.
+- [x] Implement pure Decimal calculations and strict output model.
+- [x] Run focused tests and commit.
 
 ### Task 3: Catalysts, gates, score and research risk
 
