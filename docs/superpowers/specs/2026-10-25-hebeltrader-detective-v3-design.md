@@ -205,9 +205,12 @@ Primärbeleg vorhanden ist. V3 berechnet keine historische Marktkapitalisierung 
 Aktienzahlen oder später geladenen Kursen.
 
 Das Ranking verwendet dokumentierte ganzzahlige Gewichte und nennt es
-`evidence_score_not_probability`. Zusätzlich werden Evidenzbreite, Widerspruchszahl und
-Quellenabdeckung ausgewiesen. Eine Prozentwahrscheinlichkeit ist erst nach unabhängiger
-Kalibrierung zulässig und gehört nicht zu V3.
+`evidence_score_not_probability`. Der Score zählt bestätigte Hinweise, Kategorienbreite und
+unabhängige Evidenzcluster; harte Widersprüche werden stark bestraft und sortieren den Kandidaten
+hinter alle widerspruchsfreien Treffer. Stage-A-Retrieval-/RRF-Punkte fließen nicht in den
+Evidenzscore ein und dienen nur als Gleichstandskriterium. Zusätzlich werden Evidenzbreite,
+Widerspruchszahl und Quellenabdeckung ausgewiesen. Eine Prozentwahrscheinlichkeit ist erst nach
+unabhängiger Kalibrierung zulässig und gehört nicht zu V3.
 
 Für historische Analysen ist die Teaser-Publikationszeit verpflichtend. Fehlt sie, endet der Lauf
 mit `unresolved` und `missing_publication_time`; Abruf- oder Dateizeit dürfen sie nicht ersetzen.

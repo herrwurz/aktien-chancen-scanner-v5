@@ -14,6 +14,10 @@ from .schemas import AtomicClue
 PRIMARY_KINDS = {"issuer", "regulatory", "product_document"}
 SUPPORTED_FACT_GROUPS = {"sectors", "countries", "events", "fact_claims"}
 HARD_CONTRADICTION_GROUPS = {"countries", "sectors", "financial_metric", "identifier"}
+CONFIRMED_CLUE_WEIGHT = 12
+CATEGORY_BREADTH_WEIGHT = 8
+INDEPENDENT_CLUSTER_WEIGHT = 12
+HARD_CONTRADICTION_PENALTY = 100
 
 
 class EvidenceCell(BaseModel):
@@ -156,20 +160,36 @@ def _cell(clue, records, source_to_cluster, identity, as_of):
             reason="historically_available_identity",
         )
     if clue.category == "financial_metric":
-        supporting = []
+        supporting, mismatches = [], []
+        clue_unit = str(clue.unit or "").casefold()
         for record in records:
             for metric in record.facts.get("financial_metrics", []):
-                if (
-                    metric.get("metric", "").casefold() == clue.normalized.casefold()
-                    and str(metric.get("value")) == clue.value
-                    and str(metric.get("unit", "")).casefold() == str(clue.unit).casefold()
-                ):
-                    supporting.append(source_to_cluster[record.source_id])
+                if metric.get("metric", "").casefold() != clue.normalized.casefold():
+                    continue
+                if str(metric.get("unit", "")).casefold() != clue_unit:
+                    continue
+                cluster_id = source_to_cluster[record.source_id]
+                if str(metric.get("value")) == clue.value:
+                    supporting.append(cluster_id)
+                else:
+                    mismatches.append(cluster_id)
+        if supporting:
+            return EvidenceCell(
+                clue_id=clue.clue_id,
+                status="confirmed",
+                evidence_cluster_ids=sorted(set(supporting)),
+            )
+        if mismatches:
+            return EvidenceCell(
+                clue_id=clue.clue_id,
+                status="contradicted",
+                evidence_cluster_ids=sorted(set(mismatches)),
+                reason="archived_metric_mismatch",
+            )
         return EvidenceCell(
             clue_id=clue.clue_id,
-            status="confirmed" if supporting else "unknown",
-            evidence_cluster_ids=sorted(set(supporting)),
-            reason=None if supporting else "exact_historical_metric_unavailable",
+            status="unknown",
+            reason="exact_historical_metric_unavailable",
         )
     if clue.category not in SUPPORTED_FACT_GROUPS:
         return EvidenceCell(
@@ -249,7 +269,20 @@ def verify_candidates(
             for clue_id in contradicted
             if by_id[clue_id].category in HARD_CONTRADICTION_GROUPS
         ]
-        evidence_score = candidate.total_score + len(confirmed) * 12 - len(hard) * 30
+        confirmed_categories = sorted({by_id[item].category for item in confirmed})
+        independent_clusters = {
+            cluster_id
+            for cell in matrix
+            if cell.status == "confirmed"
+            for cluster_id in cell.evidence_cluster_ids
+        }
+        # Evidence quality only: Stage-A retrieval must not outrank hard facts.
+        evidence_score = (
+            len(confirmed) * CONFIRMED_CLUE_WEIGHT
+            + len(confirmed_categories) * CATEGORY_BREADTH_WEIGHT
+            + len(independent_clusters) * INDEPENDENT_CLUSTER_WEIGHT
+            - len(hard) * HARD_CONTRADICTION_PENALTY
+        )
         verified.append(
             VerifiedCandidate(
                 asset_id=candidate.asset_id,
@@ -261,27 +294,42 @@ def verify_candidates(
                 confirmed_clue_ids=confirmed,
                 contradicted_clue_ids=contradicted,
                 unknown_clue_ids=unknown,
-                confirmed_categories=sorted({by_id[item].category for item in confirmed}),
+                confirmed_categories=confirmed_categories,
                 hard_contradictions=hard,
                 excluded_source_ids=excluded,
                 eligible_evidence=[record.model_dump(mode="json") for record in records[:8]],
                 uncertainties=candidate.uncertainties,
             )
         )
-    return sorted(verified, key=lambda row: (-row.evidence_score, row.asset_id))
+    return sorted(
+        verified,
+        key=lambda row: (
+            bool(row.hard_contradictions),
+            -row.evidence_score,
+            -row.retrieval_score,
+            row.asset_id,
+        ),
+    )
+
+
+def _viable_candidates(candidates: list[VerifiedCandidate]) -> list[VerifiedCandidate]:
+    return [row for row in candidates if not row.hard_contradictions]
 
 
 def decide(candidates: list[VerifiedCandidate], retrieval_status: str) -> DetectiveDecision:
     if retrieval_status in {"missing_publication_time", "insufficiently_constrained"}:
         return DetectiveDecision(status="unresolved", reason=retrieval_status)
-    if not candidates or not candidates[0].confirmed_clue_ids:
+    if not candidates:
         return DetectiveDecision(status="unresolved", reason="insufficient_evidence")
     if all(candidate.hard_contradictions for candidate in candidates):
         return DetectiveDecision(status="unresolved", reason="all_candidates_contradicted")
-    leader = candidates[0]
+    viable = _viable_candidates(candidates)
+    if not viable or not viable[0].confirmed_clue_ids:
+        return DetectiveDecision(status="unresolved", reason="insufficient_evidence")
+    leader = viable[0]
     margin = (
-        leader.evidence_score - candidates[1].evidence_score
-        if len(candidates) > 1
+        leader.evidence_score - viable[1].evidence_score
+        if len(viable) > 1
         else leader.evidence_score
     )
     independent_clusters = {

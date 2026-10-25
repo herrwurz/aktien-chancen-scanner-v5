@@ -13,25 +13,27 @@ PERCENT = re.compile(r"\b(\d{1,3}(?:[.,]\d+)?)\s*%")
 NUMBER_UNIT = re.compile(
     r"\b(\d+(?:[.,]\d+)?)\s*(mrd\.?|mio\.?|millionen?|milliarden?|eur|usd)\b", re.I
 )
+PERCENT_TOKEN = r"(?:%|prozent)"
+PROMO_CUE = r"(?:gewinnchance|rendite|call|optionsschein|potenzial|chance)"
 FINANCIAL_METRIC = re.compile(
-    r"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b[^\d%]{0,30}"
-    r"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>%|mrd\.?|mio\.?)",
+    rf"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b[^\d%]{{0,30}}"
+    rf"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>{PERCENT_TOKEN}|mrd\.?|mio\.?)",
     re.I,
 )
 FINANCIAL_PERCENT_SENTENCE = re.compile(
-    r"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b(?P<context>[^.!?]{0,100}?)"
-    r"(?P<value>\d+(?:[.,]\d+)?)\s*%",
+    rf"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b(?P<context>[^.!?]{{0,100}}?)"
+    rf"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>{PERCENT_TOKEN})",
     re.I,
 )
 DATE_HINT = re.compile(r"\b(?:Q[1-4]\s+20\d{2}|20\d{2}|\d{1,2}\.\d{1,2}\.20\d{2})\b", re.I)
 PROMOTIONAL_RETURN = re.compile(
-    r"(?P<value>\d{1,3}(?:\.\d{3})+|\d+(?:[,.]\d+)?)\s*%"
-    r"(?=[^.!?]{0,45}(?:gewinnchance|rendite|call|optionsschein))",
+    rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}"
+    rf"(?=[^.!?]{{0,45}}\b{PROMO_CUE}\b)",
     re.I,
 )
 PROMOTIONAL_RETURN_PREFIXED = re.compile(
-    r"(?:gewinnchance|rendite|call|optionsschein)[^.!?]{0,45}"
-    r"(?P<value>\d{1,3}(?:\.\d{3})+|\d+(?:[,.]\d+)?)\s*%",
+    rf"\b{PROMO_CUE}\b[^.!?]{{0,45}}"
+    rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}",
     re.I,
 )
 
@@ -165,6 +167,18 @@ def _span_for(position, spans):
     return spans[0] if spans else None
 
 
+def _normalize_percent_value(value: str) -> str:
+    """Keep thousand-separated promo figures (1.717) distinct from decimals (18,5)."""
+    if re.fullmatch(r"\d{1,3}(?:\.\d{3})+", value):
+        return value.replace(".", "")
+    return value.replace(",", ".")
+
+
+def _normalize_unit(unit: str | None) -> str:
+    normalized = (unit or "%").casefold()
+    return "%" if normalized == "prozent" else normalized
+
+
 def _atomic(category, normalized, match, spans, **values):
     span = _span_for(match.start(), spans)
     source_id = span.source_id if span else "input"
@@ -196,7 +210,7 @@ def extract_atomic_clues(text, spans):
     for match in promotional_matches:
         if any(start <= match.start() and match.end() <= end for start, end in promotional_ranges):
             continue
-        value = match.group("value").replace(".", "").replace(",", ".")
+        value = _normalize_percent_value(match.group("value"))
         promotional_ranges.append((match.start(), match.end()))
         clues.append(
             _atomic(
@@ -228,8 +242,8 @@ def extract_atomic_clues(text, spans):
                 match,
                 spans,
                 instrument_scope="stock",
-                value=match.group("value").replace(",", "."),
-                unit=(match.groupdict().get("unit") or "%").casefold(),
+                value=_normalize_percent_value(match.group("value")),
+                unit=_normalize_unit(match.groupdict().get("unit")),
                 period=period_match.group(0) if period_match else None,
                 confidence_class="high",
             )

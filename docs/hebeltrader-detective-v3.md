@@ -10,14 +10,19 @@ Trefferwahrscheinlichkeit und keine Kaufempfehlung.
 1. Die Eingabe wird mit SHA-256 und Seitenbezug archiviert. PDF-Dateien sind auf 20 MiB und 40
    Seiten begrenzt; Textschichten werden vor OCR verwendet.
 2. Der Parser trennt Aktienfakten, Derivatekennungen und Werbesprache. Angaben wie „1.091 % mit
-   diesem Call“ werden nicht als Umsatz- oder Gewinnwachstum verwendet.
+   diesem Call“, „1.717 Prozent Rendite“ oder „1.717 % Potenzial“ werden nicht als Umsatz- oder
+   Gewinnwachstum verwendet.
 3. Stage A durchsucht alle historisch sichtbaren Indexwerte über getrennte Struktur- und
    Textkanäle. Die Ergebnislisten werden mit eingefrorener Reciprocal Rank Fusion verbunden.
 4. Stage B kennzeichnet jeden Hinweis als `confirmed`, `contradicted` oder `unknown`. Unbekannte
-   Angaben zählen neutral. Übernommene Veröffentlichungen desselben Ursprungs zählen einmal.
+   Angaben zählen neutral. Übernommene Veröffentlichungen desselben Ursprungs zählen einmal. Der
+   Evidenzscore bewertet nur bestätigte Hinweise, Kategorienbreite und unabhängige Cluster; harte
+   Widersprüche sortieren einen Kandidaten hinter alle widerspruchsfreien Treffer. Stage-A-RRF dient
+   nur als Gleichstandskriterium, nicht als Ersatz für Fakten.
 5. `likely_candidate` erfordert mindestens drei bestätigte Hinweise aus zwei Kategorien, zwei
    unabhängige Evidenzcluster einschließlich einer Primärquelle, keinen harten Widerspruch und 20
-   Punkte Abstand. Ansonsten lautet das Ergebnis `unclear` oder `unresolved`.
+   Punkte Abstand zum besten widerspruchsfreien Zweitplatzierten. Ansonsten lautet das Ergebnis
+   `unclear` oder `unresolved`.
 
 Eine historische Analyse ohne belegte Publikationszeit endet mit `missing_publication_time`.
 Quellen ohne nachweisbares `available_at` und später veröffentlichte Korrekturen werden nicht

@@ -216,3 +216,119 @@ def test_negated_country_is_contradicted_when_candidate_has_that_country():
     )[0]
     assert verified.evidence_matrix[0].status == "contradicted"
     assert verified.hard_contradictions == ["countries:US"]
+
+
+def test_high_retrieval_with_hard_contradiction_loses_to_weaker_correct_candidate():
+    wrong = identity("WrongCo", "0000000001", country="US")
+    right = identity("RightCo", "0000000002", country="DE")
+    clues = [
+        clue("sectors", "pharma"),
+        clue("countries", "DE"),
+        clue("events", "guidance_raise"),
+    ]
+
+    def loader(asset):
+        if asset.cik == wrong.cik:
+            return [
+                evidence(
+                    "wrong-a",
+                    kind="issuer",
+                    facts={"sectors": ["pharma"], "countries": ["US"]},
+                ),
+                evidence(
+                    "wrong-b",
+                    facts={"events": ["guidance_raise"], "sectors": ["pharma"]},
+                ),
+            ]
+        return [
+            evidence(
+                "right-a",
+                kind="issuer",
+                facts={"sectors": ["pharma"], "countries": ["DE"]},
+            ),
+            evidence("right-b", facts={"events": ["guidance_raise"]}),
+        ]
+
+    verified = verify_candidates(
+        report(candidate(wrong, 200), candidate(right, 40)),
+        clues,
+        loader,
+        AS_OF,
+    )
+
+    assert [row.asset_id for row in verified] == [
+        f"cik:{right.cik}",
+        f"cik:{wrong.cik}",
+    ]
+    assert verified[0].hard_contradictions == []
+    assert verified[1].hard_contradictions == ["countries:DE"]
+    assert verified[0].evidence_score > verified[1].evidence_score
+    assert verified[0].retrieval_score < verified[1].retrieval_score
+
+    decision = decide(verified, "ok")
+    assert decision.status == "likely_candidate"
+    assert decision.selected_asset_id == f"cik:{right.cik}"
+
+
+def test_decide_ignores_hard_contradicted_leader_for_selection():
+    contradicted = identity("Wrong", "0000000001", country="US")
+    supported = identity("Right", "0000000002", country="DE")
+    clues = [
+        clue("sectors", "pharma"),
+        clue("countries", "DE"),
+        clue("events", "guidance_raise"),
+    ]
+    verified = verify_candidates(
+        report(candidate(contradicted, 10), candidate(supported, 10)),
+        clues,
+        lambda asset: (
+            [
+                evidence(
+                    "wrong",
+                    kind="issuer",
+                    facts={"sectors": ["pharma"], "countries": ["US"]},
+                )
+            ]
+            if asset.cik == contradicted.cik
+            else [
+                evidence(
+                    "right-a",
+                    kind="issuer",
+                    facts={"sectors": ["pharma"], "countries": ["DE"]},
+                ),
+                evidence("right-b", facts={"events": ["guidance_raise"]}),
+            ]
+        ),
+        AS_OF,
+    )
+    assert verified[0].asset_id.endswith(supported.cik)
+    assert decide(verified, "ok").selected_asset_id == f"cik:{supported.cik}"
+
+
+def test_mismatched_archived_financial_metric_is_hard_contradiction():
+    asset = identity()
+    metric = AtomicClue(
+        clue_id="financial_metric:umsatz",
+        category="financial_metric",
+        normalized="umsatz",
+        quote="Umsatz 18 %",
+        source_id="teaser",
+        start=0,
+        end=10,
+        instrument_scope="stock",
+        value="18",
+        unit="%",
+    )
+    verified = verify_candidates(
+        report(candidate(asset, 10)),
+        [metric],
+        lambda _: [
+            evidence(
+                "fact-1",
+                facts={"financial_metrics": [{"metric": "umsatz", "value": "5", "unit": "%"}]},
+            )
+        ],
+        AS_OF,
+    )[0]
+    assert verified.evidence_matrix[0].status == "contradicted"
+    assert verified.hard_contradictions == ["financial_metric:umsatz"]

@@ -110,6 +110,32 @@ def test_promotional_cue_before_percentage_and_negated_stock_clue_stay_separate(
     )
 
 
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Einmalige Chance mit 1.717 Prozent Rendite.", "1717"),
+        ("Gewinnchance von 1.717 Prozent", "1717"),
+        ("1.717 % Potenzial!", "1717"),
+        ("2.631 Prozent mit diesem Call", "2631"),
+    ],
+)
+def test_promotional_returns_accept_prozent_and_potenzial_chance_cues(text, expected):
+    clues = extract_atomic_clues(text, [SourceSpan(source_id="input", start=0, end=len(text))])
+    promotional = [item for item in clues if item.category == "promotional_derivative_return"]
+    assert [item.value for item in promotional] == [expected]
+    assert not any(item.category == "financial_metric" for item in clues)
+
+
+def test_financial_metric_accepts_prozent_word_without_becoming_promotional():
+    text = "Der Umsatz stieg im Q2 2025 um 18 Prozent."
+    clues = extract_atomic_clues(text, [SourceSpan(source_id="input", start=0, end=len(text))])
+    metric = next(item for item in clues if item.category == "financial_metric")
+    assert metric.value == "18"
+    assert metric.unit == "%"
+    assert metric.period == "Q2 2025"
+    assert not any(item.category == "promotional_derivative_return" for item in clues)
+
+
 def test_request_accepts_bounded_pdf_and_declares_schema_v3():
     payload = base64.b64encode(pdf_bytes("Teaser")).decode()
     request = DetectiveRequest(pdf_base64=payload, pdf_media_type="application/pdf")
