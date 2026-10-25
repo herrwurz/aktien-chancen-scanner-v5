@@ -61,6 +61,8 @@ class OpportunityCandidate(StrictModel):
     asset_id: str
     ticker: str | None
     name: str
+    exchange: str | None
+    mic: str | None
     status: Literal["candidate_research", "watch_only", "unavailable"]
     score: int
     score_reasons: list[str]

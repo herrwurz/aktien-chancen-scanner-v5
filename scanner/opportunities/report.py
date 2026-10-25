@@ -36,6 +36,9 @@ def _identity_failure(listing: dict, reason: str) -> dict:
         "asset_id": listing["asset_id"],
         "ticker": listing.get("ticker"),
         "name": listing.get("ticker") or listing["asset_id"],
+        "exchange": listing.get("exchange"),
+        "mic": listing.get("mic"),
+        "currency": listing.get("currency"),
         "status": "unavailable",
         "score": 0,
         "score_reasons": [],
@@ -104,19 +107,24 @@ def run_dry_run(
             benchmark_bars=benchmark_bars,
             policy=OpportunityPolicy(min_median_dollar_volume=minimum_liquidity),
         )
-        results.append(candidate.model_dump(mode="json"))
+        results.append(candidate.model_dump(mode="json") | {"currency": listing.get("currency")})
 
     status_order = {"candidate_research": 0, "watch_only": 1, "unavailable": 2}
     results.sort(
         key=lambda row: (
             status_order[row["status"]],
             -row["score"],
-            row.get("ticker") or "",
             row["asset_id"],
         )
     )
+    index_coverage = index.coverage(as_of)
+    visible_assets = index_coverage["visible_assets"]
     coverage = {
         "archive_instruments": len(instruments),
+        "research_index_visible_assets": visible_assets,
+        "archive_coverage_of_visible_assets": (
+            str(Decimal(len(instruments)) / Decimal(visible_assets)) if visible_assets else None
+        ),
         "identity_matched": matched,
         "identity_conflicts": conflicts,
         "candidate_research": sum(row["status"] == "candidate_research" for row in results),
@@ -154,6 +162,9 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
         "asset_id",
         "ticker",
         "name",
+        "exchange",
+        "mic",
+        "currency",
         "status",
         "score",
         "selection_reasons",
@@ -177,6 +188,9 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
                     "asset_id": row["asset_id"],
                     "ticker": row.get("ticker") or "",
                     "name": row["name"],
+                    "exchange": row.get("exchange") or "",
+                    "mic": row.get("mic") or "",
+                    "currency": row.get("currency") or "",
                     "status": row["status"],
                     "score": row["score"],
                     "selection_reasons": "|".join(row["selection_reasons"]),

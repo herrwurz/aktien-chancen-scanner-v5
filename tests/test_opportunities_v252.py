@@ -296,6 +296,8 @@ def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
     )
 
     assert candidate.status == "candidate_research"
+    assert candidate.exchange == "NYSE"
+    assert candidate.mic == "XNYS"
     assert candidate.score > 0
     assert "volume_spike" in candidate.selection_reasons
     assert candidate.risk.spread_status == "unavailable"
@@ -462,6 +464,8 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     assert report["mode"] == "modeled_research"
     assert report["coverage"] == {
         "archive_instruments": 3,
+        "research_index_visible_assets": 3,
+        "archive_coverage_of_visible_assets": "1",
         "identity_matched": 3,
         "identity_conflicts": 0,
         "candidate_research": 2,
@@ -473,6 +477,9 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     assert report["historical_availability_verified"] is False
     assert report["training_eligible"] is False
     assert [row["ticker"] for row in report["results"]] == ["AAA", "BBB", "FND"]
+    assert report["results"][0]["exchange"] == "NASDAQ"
+    assert report["results"][0]["mic"] == "XNAS"
+    assert report["results"][0]["currency"] == "USD"
     assert report["results"][0]["catalysts"][0]["source_type"] == "PRIMARY"
     assert report["results"][2]["failed_gates"] == ["fund"]
 
