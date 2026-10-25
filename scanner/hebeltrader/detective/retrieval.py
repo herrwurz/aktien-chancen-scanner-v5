@@ -35,8 +35,10 @@ class RetrievalReport(BaseModel):
     full_universe_size: int = 0
     visible_universe_size: int = 0
     matched_before_limit: int = 0
+    channel_limit: int = CHANNEL_LIMIT
     index_payload_sha256: str | None = None
     channel_counts: dict[str, int] = Field(default_factory=dict)
+    channel_matched_before_limit: dict[str, int] = Field(default_factory=dict)
     coverage_warnings: list[str] = Field(default_factory=list)
 
 
@@ -98,24 +100,45 @@ def _structured_score(identity, clues, present_channels, confirmed_markers):
     return score
 
 
+def _empty_retrieval_status(*, visible_universe_size: int, identifier_miss: bool) -> str:
+    if identifier_miss or visible_universe_size <= 0:
+        return "not_in_universe"
+    return "retrieval_missed"
+
+
 def retrieve_candidates(index, clues: list[AtomicClue], *, as_of, limit=50) -> RetrievalReport:
     if not 1 <= limit <= 50:
         raise ValueError("candidate limit must be between 1 and 50")
     queries = _queries(clues)
     stock_ids = _values(clues, "identifier")
     if not queries and not stock_ids:
-        return RetrievalReport(status="insufficiently_constrained", candidates=[])
+        return RetrievalReport(
+            status="insufficiently_constrained",
+            candidates=[],
+            channel_limit=CHANNEL_LIMIT,
+        )
     records = {}
     full_size = visible_size = matched = 0
     payload_sha = None
     channel_counts = {}
+    channel_matched = {}
     warnings = []
+    identifier_miss = False
     if stock_ids and hasattr(index, "market_universe"):
-        exact = []
-        for identity in index.market_universe(as_of=as_of):
-            if any(value in {identity.wkn, identity.isin, identity.ticker} for value in stock_ids):
-                exact.append(identity)
-        channel_counts["identifier"] = len(exact)
+        universe = list(index.market_universe(as_of=as_of))
+        visible_size = max(visible_size, len(universe))
+        full_size = max(full_size, len(universe))
+        exact = [
+            identity
+            for identity in universe
+            if any(value in {identity.wkn, identity.isin, identity.ticker} for value in stock_ids)
+        ]
+        channel_counts["identifier"] = min(len(exact), CHANNEL_LIMIT)
+        channel_matched["identifier"] = len(exact)
+        matched += len(exact)
+        if not exact:
+            identifier_miss = True
+            warnings.append("explicit_stock_identifier_absent_from_visible_universe")
         for rank, identity in enumerate(exact[:CHANNEL_LIMIT], 1):
             asset_id = stable_asset_id(identity)
             records[asset_id] = {
@@ -123,14 +146,29 @@ def retrieve_candidates(index, clues: list[AtomicClue], *, as_of, limit=50) -> R
                 "ranks": {"identifier": rank},
                 "confirmed": {"identifier:exact"},
             }
+        if identifier_miss and not queries:
+            return RetrievalReport(
+                status="not_in_universe",
+                candidates=[],
+                full_universe_size=full_size,
+                visible_universe_size=visible_size,
+                matched_before_limit=matched,
+                channel_limit=CHANNEL_LIMIT,
+                channel_counts=channel_counts,
+                channel_matched_before_limit=channel_matched,
+                coverage_warnings=sorted(set(warnings)),
+            )
     for channel, query in sorted(queries.items()):
         batch = index.candidates(query, as_of=as_of, limit=CHANNEL_LIMIT)
         full_size = max(full_size, batch.full_universe_size)
         visible_size = max(visible_size, batch.visible_universe_size)
         matched += batch.matched_before_limit
+        channel_matched[channel] = batch.matched_before_limit
         payload_sha = payload_sha or batch.index_payload_sha256
         warnings.extend(batch.coverage_warnings)
         channel_counts[channel] = len(batch.candidates)
+        if batch.matched_before_limit > CHANNEL_LIMIT:
+            warnings.append(f"channel_{channel}_truncated_at_{CHANNEL_LIMIT}")
         for rank, hit in enumerate(batch.candidates, 1):
             asset_id = stable_asset_id(hit.identity)
             row = records.setdefault(
@@ -167,14 +205,24 @@ def retrieve_candidates(index, clues: list[AtomicClue], *, as_of, limit=50) -> R
             )
         )
     candidates.sort(key=lambda item: (-item.total_score, item.asset_id))
+    limited = candidates[:limit]
+    if limited:
+        status = "ok"
+    else:
+        status = _empty_retrieval_status(
+            visible_universe_size=visible_size,
+            identifier_miss=identifier_miss,
+        )
     return RetrievalReport(
-        status="ok" if candidates else "unresolved",
-        candidates=candidates[:limit],
+        status=status,
+        candidates=limited,
         exclusions=sorted(exclusions, key=lambda item: item.asset_id),
         full_universe_size=full_size,
         visible_universe_size=visible_size,
         matched_before_limit=matched,
+        channel_limit=CHANNEL_LIMIT,
         index_payload_sha256=payload_sha,
         channel_counts=channel_counts,
+        channel_matched_before_limit=channel_matched,
         coverage_warnings=sorted(set(warnings)),
     )

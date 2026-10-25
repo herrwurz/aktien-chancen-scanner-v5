@@ -239,7 +239,10 @@ Gesamtstatus mit vor den Blindtests eingefrorenen Schwellen:
 - `unclear`: mindestens ein Kandidat besitzt konkrete Evidenz, erfüllt aber die Schwellen oder den
   Abstand für `likely_candidate` nicht;
 - `unresolved`: die Suche ist unzureichend eingeschränkt, kein Kandidat besitzt einen konkreten
-  Beleg oder alle führenden Kandidaten haben einen harten Widerspruch.
+  Beleg oder alle führenden Kandidaten haben einen harten Widerspruch. Der zugehörige
+  `failure_code` unterscheidet `insufficiently_constrained`, `not_in_universe`,
+  `retrieval_missed`, `evidence_missing` und `all_candidates_contradicted`, soweit die Ursache
+  aus Index, Retrieval und Evidenzmatrix belegbar ist.
 
 Als harter Widerspruch gelten eine belegbar falsche ausdrücklich geforderte Jurisdiktion, ein
 belegbar unvereinbares Instrument, eine außerhalb der angegebenen Toleranz liegende konkrete

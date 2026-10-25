@@ -10,6 +10,27 @@ def _rate(value, total):
     return value / total if total else 0.0
 
 
+def classify_miss(row, label):
+    """Explain why a labeled case missed Top-3, when the cause is observable."""
+    target = label["asset_id"]
+    ranked = row.get("ranked_asset_ids") or []
+    stage_a = row.get("stage_a_asset_ids") or []
+    failure = row.get("failure_code") or row.get("reason")
+    if target in ranked[:3]:
+        return "hit_top3"
+    if label.get("expected_in_universe") is False or failure == "not_in_universe":
+        return "not_in_universe"
+    if target not in stage_a and target not in ranked:
+        if failure == "retrieval_missed":
+            return "retrieval_missed"
+        if stage_a or (row.get("visible_universe_size") or 0) > 0:
+            return "retrieval_missed"
+        return "not_in_universe"
+    if failure == "evidence_missing" or row.get("status") in {"unresolved", "unclear"}:
+        return "evidence_missing"
+    return "unresolved"
+
+
 def evaluate_rankings(rankings_path, labels_path):
     rankings = json.loads(Path(rankings_path).read_text(encoding="utf-8"))
     labels = json.loads(Path(labels_path).read_text(encoding="utf-8"))["cases"]
@@ -24,6 +45,14 @@ def evaluate_rankings(rankings_path, labels_path):
         raise ValueError("ranking payload integrity mismatch")
     violations = []
     top_1 = top_3 = abstentions = false_assignments = missing = 0
+    miss_counts = {
+        "not_in_universe": 0,
+        "retrieval_missed": 0,
+        "evidence_missing": 0,
+        "unresolved": 0,
+        "hit_top3": 0,
+    }
+    case_outcomes = []
     valid_real_cases = 0
     for row in rows:
         label = labels[row["case_id"]]
@@ -52,6 +81,18 @@ def evaluate_rankings(rankings_path, labels_path):
         abstentions += not ranked
         false_assignments += bool(ranked and target not in ranked[:3])
         missing += label.get("expected_in_universe") is False
+        outcome = classify_miss(row, label)
+        miss_counts[outcome] = miss_counts.get(outcome, 0) + 1
+        case_outcomes.append(
+            {
+                "case_id": row["case_id"],
+                "outcome": outcome,
+                "failure_code": row.get("failure_code") or row.get("reason"),
+                "visible_universe_size": row.get("visible_universe_size"),
+                "matched_before_limit": row.get("matched_before_limit"),
+                "channel_limit": row.get("channel_limit"),
+            }
+        )
     if violations:
         raise ValueError(f"solution leakage detected: {violations}")
     total = len(rows)
@@ -64,6 +105,7 @@ def evaluate_rankings(rankings_path, labels_path):
         "abstention_count": abstentions,
         "false_assignment_count": false_assignments,
         "missing_universe_count": missing,
+        "outcome_counts": miss_counts,
     }
     payload = json.dumps(metrics, sort_keys=True, separators=(",", ":")).encode()
     real_count = valid_real_cases
@@ -71,6 +113,7 @@ def evaluate_rankings(rankings_path, labels_path):
         "schema_version": 3,
         "corpus_kind": rankings["corpus_kind"],
         "metrics": metrics,
+        "case_outcomes": case_outcomes,
         "leakage_violations": [],
         "real_benchmark_status": (
             "measured" if real_count >= 10 else "insufficient_real_benchmark_coverage"

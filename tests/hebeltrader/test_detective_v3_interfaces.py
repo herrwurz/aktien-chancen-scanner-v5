@@ -102,6 +102,9 @@ def test_indexed_service_returns_v3_top_three_evidence_contract():
     assert result["schema_version"] == 3
     assert result["identification"]["status"] == "likely_candidate"
     assert result["identification"]["score_is_probability"] is False
+    assert result["identification"]["failure_code"] is None
+    assert result["candidate_source"]["coverage"]["channel_limit"] == 50
+    assert result["candidate_source"]["coverage"]["stage_a_asset_ids"] == ["cik:0000000001"]
     assert result["candidates"][0]["identity"]["ticker"] == "ALP"
     assert {cell["status"] for cell in result["candidates"][0]["evidence_matrix"]} == {"confirmed"}
     assert result["derivative_candidate"]["status"] == "not_identified"
@@ -118,6 +121,7 @@ def test_indexed_service_without_publication_time_is_unresolved_and_does_not_res
     )
     assert result["identification"]["status"] == "unresolved"
     assert result["identification"]["reason"] == "missing_publication_time"
+    assert result["identification"]["failure_code"] == "missing_publication_time"
     assert result["candidates"] == []
 
 

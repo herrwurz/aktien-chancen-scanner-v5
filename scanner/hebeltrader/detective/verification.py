@@ -316,16 +316,26 @@ def _viable_candidates(candidates: list[VerifiedCandidate]) -> list[VerifiedCand
     return [row for row in candidates if not row.hard_contradictions]
 
 
+RETRIEVAL_FAILURE_REASONS = {
+    "missing_publication_time",
+    "insufficiently_constrained",
+    "not_in_universe",
+    "retrieval_missed",
+}
+
+
 def decide(candidates: list[VerifiedCandidate], retrieval_status: str) -> DetectiveDecision:
-    if retrieval_status in {"missing_publication_time", "insufficiently_constrained"}:
+    if retrieval_status in RETRIEVAL_FAILURE_REASONS:
         return DetectiveDecision(status="unresolved", reason=retrieval_status)
     if not candidates:
-        return DetectiveDecision(status="unresolved", reason="insufficient_evidence")
+        # Legacy/empty retrieval reports without a specific Stage-A code.
+        reason = "retrieval_missed" if retrieval_status == "unresolved" else "evidence_missing"
+        return DetectiveDecision(status="unresolved", reason=reason)
     if all(candidate.hard_contradictions for candidate in candidates):
         return DetectiveDecision(status="unresolved", reason="all_candidates_contradicted")
     viable = _viable_candidates(candidates)
     if not viable or not viable[0].confirmed_clue_ids:
-        return DetectiveDecision(status="unresolved", reason="insufficient_evidence")
+        return DetectiveDecision(status="unresolved", reason="evidence_missing")
     leader = viable[0]
     margin = (
         leader.evidence_score - viable[1].evidence_score

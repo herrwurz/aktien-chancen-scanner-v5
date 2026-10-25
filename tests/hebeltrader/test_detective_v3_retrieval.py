@@ -155,3 +155,31 @@ def test_index_source_exposes_v3_retrieval_and_selected_candidates():
     assert report.candidates[0].identity.name == "Alpha"
     assert source.load_candidates()[0]["identity"]["name"] == "Alpha"
     assert source.coverage["visible_universe_size"] == 4900
+    assert source.coverage["channel_limit"] == 50
+    assert source.coverage["stage_a_asset_ids"] == [report.candidates[0].asset_id]
+
+
+def test_empty_constrained_search_in_nonempty_universe_is_retrieval_missed():
+    index = FakeIndex({"sector": []})
+    report = retrieve_candidates(index, [clue("sectors", "pharma")], as_of=AS_OF)
+    assert report.status == "retrieval_missed"
+    assert report.candidates == []
+    assert report.visible_universe_size == 4900
+    assert report.channel_limit == 50
+    assert report.channel_matched_before_limit["sector"] == 0
+
+
+def test_missing_explicit_identifier_in_universe_is_not_in_universe():
+    class UniverseIndex(FakeIndex):
+        def market_universe(self, *, as_of):
+            return [identity("Present", "0000000099")]
+
+    report = retrieve_candidates(
+        UniverseIndex({}),
+        [clue("identifier", "stock_wkn", value="ZZZZZZ")],
+        as_of=AS_OF,
+    )
+    assert report.status == "not_in_universe"
+    assert report.candidates == []
+    assert report.visible_universe_size == 1
+    assert "explicit_stock_identifier_absent_from_visible_universe" in report.coverage_warnings

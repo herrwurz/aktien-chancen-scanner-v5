@@ -15,14 +15,28 @@ class StubService:
             "case-002": [],
         }
         case_id = "case-001" if "Pharma" in request.teaser_text else "case-002"
+        hit = bool(ranked[case_id])
         return {
             "schema_version": 3,
-            "identification": {"status": "likely_candidate" if ranked[case_id] else "unresolved"},
+            "identification": {
+                "status": "likely_candidate" if hit else "unresolved",
+                "reason": "frozen_evidence_thresholds_met" if hit else "retrieval_missed",
+                "failure_code": None if hit else "retrieval_missed",
+            },
             "candidates": [
                 {"asset_id": asset_id, "evidence_score": 100 - index}
                 for index, asset_id in enumerate(ranked[case_id])
             ],
-            "candidate_source": {"coverage": {"visible_universe_size": 100}},
+            "candidate_source": {
+                "coverage": {
+                    "visible_universe_size": 100,
+                    "matched_before_limit": 2 if hit else 0,
+                    "channel_limit": 50,
+                    "channel_counts": {"sector": 2} if hit else {},
+                    "channel_matched_before_limit": {"sector": 2} if hit else {},
+                    "stage_a_asset_ids": ranked[case_id],
+                }
+            },
         }
 
 
@@ -71,6 +85,8 @@ def test_scanner_contract_has_no_solution_input_and_emits_stable_rankings(tmp_pa
     assert first["request_count"] == 0
     assert first["cost_eur"] == 0
     assert first["cases"][0]["ranked_asset_ids"] == ["cik:0000000001", "cik:0000000002"]
+    assert first["cases"][0]["channel_limit"] == 50
+    assert first["cases"][1]["failure_code"] == "retrieval_missed"
     assert "target" not in json.dumps(first)
 
 
@@ -121,6 +137,8 @@ def test_evaluator_reports_metrics_and_detects_solution_leakage(tmp_path):
     assert report["metrics"]["top_1_rate"] == 0.5
     assert report["metrics"]["top_3_rate"] == 0.5
     assert report["metrics"]["abstention_count"] == 1
+    assert report["metrics"]["outcome_counts"]["hit_top3"] == 1
+    assert report["case_outcomes"][0]["outcome"] == "hit_top3"
     assert report["real_benchmark_status"] == "insufficient_real_benchmark_coverage"
     assert report["leakage_violations"] == []
 

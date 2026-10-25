@@ -28,6 +28,19 @@ Eine historische Analyse ohne belegte Publikationszeit endet mit `missing_public
 Quellen ohne nachweisbares `available_at` und später veröffentlichte Korrekturen werden nicht
 verwendet. Heute abgerufene Stammdaten gelten nicht automatisch als historisch verfügbar.
 
+`unresolved` trägt einen konkreten `failure_code`, soweit belegbar:
+
+- `insufficiently_constrained` – keine belastbare Stage-A-Einschränkung;
+- `not_in_universe` – ausdrückliche Aktienkennung fehlt im sichtbaren Universum oder das
+  sichtbare Universum ist leer;
+- `retrieval_missed` – Universum vorhanden, aber kein Kandidat in Stage A;
+- `evidence_missing` – Kandidaten vorhanden, aber ohne ausreichende bestätigte Evidenz;
+- `all_candidates_contradicted` – alle Kandidaten haben harte Widersprüche.
+
+Die Coverage-Antwort enthält `full_universe_size`, `visible_universe_size`,
+`matched_before_limit`, `channel_limit` (50), Treffer je Kanal vor und nach dem Cutoff sowie
+`stage_a_asset_ids`.
+
 ## Quellenabdeckung
 
 Der vorhandene Index kann SEC-Identität, Land, eine enge SIC-Branchenzuordnung, ausgewählte

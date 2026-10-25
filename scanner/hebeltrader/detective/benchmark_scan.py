@@ -29,16 +29,22 @@ def scan_manifest(manifest_path, service):
                 publication_at=case.get("publication_at"),
             )
         )
+        coverage = result["candidate_source"]["coverage"]
         rows.append(
             {
                 "case_id": case["case_id"],
                 "teaser_sha256": _sha(text),
                 "input_text": text,
                 "status": result["identification"]["status"],
+                "reason": result["identification"].get("reason"),
+                "failure_code": result["identification"].get("failure_code"),
                 "ranked_asset_ids": [row["asset_id"] for row in result["candidates"]],
-                "visible_universe_size": result["candidate_source"]["coverage"].get(
-                    "visible_universe_size"
-                ),
+                "stage_a_asset_ids": list(coverage.get("stage_a_asset_ids") or []),
+                "visible_universe_size": coverage.get("visible_universe_size"),
+                "matched_before_limit": coverage.get("matched_before_limit"),
+                "channel_limit": coverage.get("channel_limit"),
+                "channel_counts": coverage.get("channel_counts") or {},
+                "channel_matched_before_limit": coverage.get("channel_matched_before_limit") or {},
             }
         )
     stable = json.dumps(rows, sort_keys=True, separators=(",", ":"))

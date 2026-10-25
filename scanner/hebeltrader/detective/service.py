@@ -156,6 +156,7 @@ class DetectiveService:
         atomic_clues,
         image_sha,
     ):
+        stage_a_asset_ids = []
         if request.publication_at is None:
             retrieval_status = "missing_publication_time"
             verified = []
@@ -167,6 +168,7 @@ class DetectiveService:
                 atomic_clues, request.publication_at
             )
             retrieval_status = retrieval.status
+            stage_a_asset_ids = [row.asset_id for row in retrieval.candidates]
             verified = verify_candidates(
                 retrieval,
                 atomic_clues,
@@ -212,11 +214,14 @@ class DetectiveService:
                         if contradictions
                         else "supported_uncalibrated"
                         if supporting
-                        else "insufficient_evidence"
+                        else "evidence_missing"
                     ),
                     "relevance_score_not_probability": row.evidence_score,
                 }
             )
+        coverage = dict(getattr(self.candidate_source, "coverage", {}) or {})
+        coverage.setdefault("stage_a_asset_ids", stage_a_asset_ids)
+        coverage.setdefault("channel_limit", 50)
         return {
             "schema_version": 3,
             "status": "candidate_identification_only",
@@ -228,12 +233,15 @@ class DetectiveService:
             ),
             "candidate_source": {
                 "source_id": self.candidate_source.source_id,
-                "coverage": self.candidate_source.coverage,
+                "coverage": coverage,
                 "catalog_revision": CATALOG_REVISION,
             },
             "input_sources": input_sources,
             "extracted_clues": [clue.model_dump(mode="json") for clue in atomic_clues],
-            "identification": decision.model_dump(mode="json"),
+            "identification": {
+                **decision.model_dump(mode="json"),
+                "failure_code": (decision.reason if decision.status == "unresolved" else None),
+            },
             "candidates": candidate_payloads,
             "derivative_candidate": derivative,
             "review_hints": review_hints,

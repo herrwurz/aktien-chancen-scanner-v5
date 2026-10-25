@@ -195,6 +195,10 @@ def test_decision_uses_frozen_likely_unclear_and_unresolved_thresholds():
     ]
     assert decide(close_second, "ok").status == "unclear"
     assert decide([], "insufficiently_constrained").status == "unresolved"
+    assert decide([], "not_in_universe").reason == "not_in_universe"
+    assert decide([], "retrieval_missed").reason == "retrieval_missed"
+    assert decide([], "ok").reason == "evidence_missing"
+    assert decide([], "unresolved").reason == "retrieval_missed"
 
 
 def test_missing_publication_time_fails_closed_before_evidence_use():

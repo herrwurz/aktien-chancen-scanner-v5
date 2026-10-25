@@ -58,9 +58,13 @@ class IndexCandidateSource:
             visible_universe_size=report.visible_universe_size,
             investigated_count=len(report.candidates),
             matched_before_limit=report.matched_before_limit,
+            channel_limit=report.channel_limit,
             index_payload_sha256=report.index_payload_sha256,
             channel_counts=report.channel_counts,
+            channel_matched_before_limit=report.channel_matched_before_limit,
+            coverage_warnings=report.coverage_warnings,
             exclusions=[item.model_dump(mode="json") for item in report.exclusions],
+            stage_a_asset_ids=[item.asset_id for item in report.candidates],
         )
         return report
 
