@@ -157,3 +157,15 @@ Der getrennte SPY-Lauf wurde anschließend mit einem Providerrequest erfolgreich
 Auch SPY trägt `calendar_status=unavailable_not_inferred`. Er ermöglicht damit eine reale,
 modellierte Relative-Stärke-Berechnung auf demselben Providerarchiv, belegt aber noch keine
 historische Datenverfügbarkeit oder kalenderverifizierte Ausführung.
+
+Nach dem SPY-Import muss `coverage-100` offline erneut aggregiert werden, damit sein
+`archive_sha256` den nun erweiterten Archivstand bindet. Anschließend läuft der Scanner mit
+`benchmark:SPY` vollständig offline und read-only:
+
+```bash
+SIGNAL_DATE=2026-10-23 bash scripts/run-expanded-opportunity-dry-run.sh
+```
+
+Das Signaldatum muss eine tatsächlich gewünschte abgeschlossene Sitzung sein. Ohne offiziellen
+Kalender bleibt auch dieser Lauf `modeled_research`; die Ausgabe darf keine historisch verifizierte
+oder ausführbare Empfehlung behaupten.
