@@ -33,6 +33,7 @@ chmod 700 -- "$output_dir"
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 docker build -t "$image" "$repo_root"
 as_of=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
+scan_started=$SECONDS
 docker run --rm --network none --user "$(id -u):$(id -g)" \
   --mount "type=bind,src=$pilot_dir,dst=/input,readonly" \
   --mount "type=bind,src=$output_dir,dst=/output" \
@@ -45,4 +46,29 @@ docker run --rm --network none --user "$(id -u):$(id -g)" \
     --output /output
 
 (cd -- "$output_dir" && sha256sum -c opportunities.sha256)
+scan_duration=$((SECONDS - scan_started))
+docker run --rm --network none --user "$(id -u):$(id -g)" \
+  --mount "type=bind,src=$output_dir,dst=/output,readonly" \
+  "$image" python -c '
+import json
+report = json.load(open("/output/opportunities.json", encoding="utf-8"))
+summary = {
+    "mode": report["mode"],
+    "signal_date": report["signal_date"],
+    "coverage": report["coverage"],
+    "source_pilot": report["source_pilot"],
+    "top_candidates": [
+        {
+            "ticker": row["ticker"],
+            "score": row["score"],
+            "selection_reasons": row["selection_reasons"],
+            "uncertainties": row["uncertainties"],
+            "reference_date": (row.get("risk") or {}).get("reference_date"),
+            "reference_price": (row.get("risk") or {}).get("reference_price"),
+        }
+        for row in report["top_candidates"]
+    ],
+}
+print(json.dumps(summary, indent=2, sort_keys=True))'
+echo "Scanner runtime (including container start): ${scan_duration}s"
 echo "Read-only modeled research report: $output_dir/opportunities.json"
