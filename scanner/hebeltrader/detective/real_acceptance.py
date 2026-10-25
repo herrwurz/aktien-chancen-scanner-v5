@@ -6,6 +6,12 @@ import hashlib
 import json
 from pathlib import Path
 
+ALLOWED_RIGHTS = {
+    "authorized_local_analysis",
+    "rights_holder_permission",
+    "public_domain_or_license_cleared",
+}
+
 
 def _sha(data):
     return hashlib.sha256(data).hexdigest()
@@ -24,19 +30,40 @@ def write_acceptance_preflight(
         blockers.append("publication_time_missing")
     if not research_index.is_file():
         blockers.append("research_index_missing")
+    if not (research_index.parent / f"{research_index.name}.manifest.json").is_file():
+        blockers.append("research_index_manifest_missing")
     if not rights_status:
         blockers.append("rights_status_missing")
+    elif rights_status not in ALLOWED_RIGHTS:
+        blockers.append("rights_status_unrecognized")
     payload = {
         "schema_version": 3,
         "status": "pending_external_material" if blockers else "ready_for_read_only_scan",
         "blockers": blockers,
         "publication_at": publication_at,
         "rights_status": rights_status,
+        "allowed_rights_status": sorted(ALLOWED_RIGHTS),
         "teaser_sha256": _sha(teaser_path.read_bytes()) if teaser_path.is_file() else None,
         "research_index_sha256": (
             _sha(research_index.read_bytes()) if research_index.is_file() else None
         ),
         "real_end_to_end_completed": False,
+        "gold_label_must_remain_unmounted": True,
+        "next_steps": (
+            [
+                "Supply an unchanged original teaser outside the git repository",
+                "Record the proven publication timestamp with timezone",
+                "Document an allowed rights_status value",
+                "Provide research index plus adjacent .manifest.json",
+                "Keep the gold label offline until after the read-only scan",
+            ]
+            if blockers
+            else [
+                "Run the read-only scan without mounting any solution label",
+                "Only afterwards evaluate against a separately held gold label",
+                "Record Top-3, failure_code, primary sources, unknowns, and artifact SHAs",
+            ]
+        ),
     }
     stable = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     payload["payload_sha256"] = _sha(stable)

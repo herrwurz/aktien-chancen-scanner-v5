@@ -85,7 +85,13 @@ reale Erkennungsrate. Weniger als zehn echte Originalfälle ergeben
 
 Voraussetzungen sind ein unveränderter Originalteaser, seine belegte Publikationszeit, ein
 dokumentierter Nutzungsstatus und ein vorhandener Research-Index einschließlich der benachbarten
-Datei `<index>.manifest.json`. Das Skript verwendet ein
+Datei `<index>.manifest.json`. Zulässige `rights_status`-Werte:
+`authorized_local_analysis`, `rights_holder_permission`,
+`public_domain_or_license_cleared`. Die Gold-Lösung bleibt bis nach dem Scan ungemountet. Fehlt
+Material, schreibt der Preflight `pending_external_material` mit `blockers` und `next_steps`; das
+Real-Skript bricht dann ab, bevor eine Analyse als Erfolg wirkt.
+
+Das Skript verwendet ein
 eigenes Verzeichnis, deaktiviert das Netzwerk, mountet Eingabe und Index nur lesend und verändert
 weder PostgreSQL noch andere Docker-Projekte:
 
@@ -104,6 +110,8 @@ DETECTIVE_IMAGE=scanner-detective-v3 \
 Der Lauf schreibt `preflight.json`, `preflight.csv`, `preflight.sha256`, `analysis.json` und
 `analysis.sha256`. Er benötigt keinen API-Schlüssel. Die bestätigte Aktie und die unabhängige
 Lösungsquelle werden erst nach dem Scan in einem getrennten Evaluationsschritt bereitgestellt.
+Für die Nachprüfung sind mindestens Top-3, `failure_code`, Primärbelege, Unbekanntes und die
+Artifact-SHAs festzuhalten.
 
 In der Entwicklungsumgebung lag kein unveränderter realer Vorab-Teaser mit belegter separater
 Lösung vor. Der reale Abnahmestatus bleibt deshalb `pending_external_material`; es werden weder

@@ -31,6 +31,11 @@ docker run --rm --network none --read-only --user "$(id -u):$(id -g)" \
   --teaser /input/teaser --publication-at "$publication_at" --rights-status "$rights_status" \
   --research-index /research/index.db --output /output
 
+if ! grep -q '"status": "ready_for_read_only_scan"' "$output_dir/preflight.json"; then
+  echo "Blocked: pending_external_material — see $output_dir/preflight.json" >&2
+  exit 3
+fi
+
 case "$teaser_path" in
   *.pdf|*.PDF) input_args=(--pdf /input/teaser) ;;
   *) input_args=(--text-file /input/teaser) ;;
