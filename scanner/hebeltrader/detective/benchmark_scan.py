@@ -18,7 +18,8 @@ def _sha(value):
 
 def scan_manifest(manifest_path, service):
     started = perf_counter()
-    manifest = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
+    manifest_bytes = Path(manifest_path).read_bytes()
+    manifest = json.loads(manifest_bytes)
     rows = []
     for case in manifest["cases"]:
         text = case["teaser_text"]
@@ -49,6 +50,7 @@ def scan_manifest(manifest_path, service):
     return {
         "schema_version": 3,
         "corpus_kind": manifest["corpus_kind"],
+        "input_manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
         "ranking_payload_sha256": _sha(stable),
         "runtime_ms": round((perf_counter() - started) * 1000, 3),
         "request_count": int(coverage.get("requests_attempted", 0)),

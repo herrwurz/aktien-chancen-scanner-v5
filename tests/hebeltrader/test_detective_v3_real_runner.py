@@ -48,6 +48,13 @@ def test_runner_uses_read_only_isolated_mounts_without_solution_or_secrets():
     assert "sh -c" not in script
     subprocess.run(["bash", "-n", "scripts/run_detective_v3_real.sh"], check=True)
 
+    blind = Path("scripts/run_detective_v3_blind_scan.sh").read_text()
+    assert "--network none" in blind
+    assert "--read-only" in blind
+    assert "solutions" not in blind.casefold()
+    assert blind.count("--mount") == 4
+    subprocess.run(["bash", "-n", "scripts/run_detective_v3_blind_scan.sh"], check=True)
+
 
 def test_preflight_report_never_claims_real_success(tmp_path):
     teaser = tmp_path / "teaser.txt"

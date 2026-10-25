@@ -69,8 +69,7 @@ def _queries(clues):
             clue.value or clue.normalized
             for clue in clues
             if clue.instrument_scope == "stock"
-            and clue.category
-            in {"business", "products", "technologies", "market_position", "identifier"}
+            and clue.category in {"business", "products", "technologies", "market_position"}
         }
     )
     if text:
@@ -78,7 +77,7 @@ def _queries(clues):
     return channels
 
 
-def _structured_score(identity, clues, present_channels):
+def _structured_score(identity, clues, present_channels, confirmed_markers):
     score = 0
     sectors = _values(clues, "sectors")
     countries = _values(clues, "countries")
@@ -87,7 +86,9 @@ def _structured_score(identity, clues, present_channels):
         score += 20 if identity.sector in sectors else (-25 if identity.sector else 0)
     if countries:
         score += 8 if identity.country in countries else (-25 if identity.country else 0)
-    if "event" in present_channels:
+    if "event" in present_channels and any(
+        marker.startswith("event:") for marker in confirmed_markers
+    ):
         score += 25
     identity_values = {identity.wkn, identity.isin, identity.ticker}
     if stock_ids and any(value in identity_values for value in stock_ids):
@@ -101,13 +102,27 @@ def retrieve_candidates(index, clues: list[AtomicClue], *, as_of, limit=50) -> R
     if not 1 <= limit <= 50:
         raise ValueError("candidate limit must be between 1 and 50")
     queries = _queries(clues)
-    if not queries:
+    stock_ids = _values(clues, "identifier")
+    if not queries and not stock_ids:
         return RetrievalReport(status="insufficiently_constrained", candidates=[])
     records = {}
     full_size = visible_size = matched = 0
     payload_sha = None
     channel_counts = {}
     warnings = []
+    if stock_ids and hasattr(index, "market_universe"):
+        exact = []
+        for identity in index.market_universe(as_of=as_of):
+            if any(value in {identity.wkn, identity.isin, identity.ticker} for value in stock_ids):
+                exact.append(identity)
+        channel_counts["identifier"] = len(exact)
+        for rank, identity in enumerate(exact[:CHANNEL_LIMIT], 1):
+            asset_id = stable_asset_id(identity)
+            records[asset_id] = {
+                "identity": identity,
+                "ranks": {"identifier": rank},
+                "confirmed": {"identifier:exact"},
+            }
     for channel, query in sorted(queries.items()):
         batch = index.candidates(query, as_of=as_of, limit=CHANNEL_LIMIT)
         full_size = max(full_size, batch.full_universe_size)
@@ -118,12 +133,15 @@ def retrieve_candidates(index, clues: list[AtomicClue], *, as_of, limit=50) -> R
         channel_counts[channel] = len(batch.candidates)
         for rank, hit in enumerate(batch.candidates, 1):
             asset_id = stable_asset_id(hit.identity)
-            row = records.setdefault(asset_id, {"identity": hit.identity, "ranks": {}})
+            row = records.setdefault(
+                asset_id, {"identity": hit.identity, "ranks": {}, "confirmed": set()}
+            )
             row["ranks"][channel] = rank
+            row["confirmed"].update(hit.confirmed)
     candidates, exclusions = [], []
     for asset_id, row in records.items():
         identity = row["identity"]
-        if identity.instrument_type in {"fund", "other"}:
+        if identity.asset_type != "stock" or identity.instrument_type in {"fund", "other"}:
             exclusions.append(
                 RetrievalExclusion(
                     asset_id=asset_id,
@@ -133,15 +151,15 @@ def retrieve_candidates(index, clues: list[AtomicClue], *, as_of, limit=50) -> R
             )
             continue
         ranks = row["ranks"]
-        rrf_score = sum(round(1_000_000 / (RRF_K + rank)) for rank in ranks.values())
-        structured = _structured_score(identity, clues, set(ranks))
+        rrf_score = sum(round(1_000 / (RRF_K + rank)) for rank in ranks.values())
+        structured = _structured_score(identity, clues, set(ranks), row["confirmed"])
         candidates.append(
             RetrievalCandidate(
                 asset_id=asset_id,
                 identity=identity,
                 rrf_score=rrf_score,
                 structured_score=structured,
-                total_score=rrf_score + structured * 1000,
+                total_score=rrf_score + structured,
                 channel_ranks=ranks,
                 uncertainties=(
                     ["instrument_type_unverified"] if identity.instrument_type == "unknown" else []

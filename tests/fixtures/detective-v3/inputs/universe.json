@@ -1,0 +1,279 @@
+{
+  "schema_version": 3,
+  "assets": [
+    {
+      "asset_type": "stock",
+      "name": "Atlas Pharma",
+      "ticker": "ATP",
+      "cik": "0000000101",
+      "country": "US",
+      "sector": "pharma",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Rhein Grid",
+      "ticker": "RGR",
+      "cik": "0000000102",
+      "country": "DE",
+      "sector": "power_grid",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Maple Gold",
+      "ticker": "MPG",
+      "cik": "0000000103",
+      "country": "CA",
+      "sector": "gold_mining",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Liberty Insurance",
+      "ticker": "LIB",
+      "cik": "0000000104",
+      "country": "US",
+      "sector": "insurance",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Europa Sports",
+      "ticker": "EUS",
+      "cik": "0000000105",
+      "country": "EU",
+      "sector": "sportswear",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Nova Medical",
+      "ticker": "NMD",
+      "cik": "0000000106",
+      "country": "US",
+      "sector": "medical_technology",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Prairie Machines",
+      "ticker": "PRM",
+      "cik": "0000000107",
+      "country": "US",
+      "sector": "agriculture_machinery",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    },
+    {
+      "asset_type": "stock",
+      "name": "Lab Systems",
+      "ticker": "LAB",
+      "cik": "0000000108",
+      "country": "US",
+      "sector": "laboratory",
+      "instrument_type": "operating_company",
+      "instrument_type_status": "source_verified",
+      "source_id": "synthetic-open-universe",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z"
+    }
+  ],
+  "news": [
+    {
+      "source_id": "issuer:0000000101",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000101",
+      "title": "Atlas Pharma reports guidance_raise",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000101"
+        ]
+      },
+      "event_type": "guidance_raise",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "origin_id": "issuer:0000000101"
+    },
+    {
+      "source_id": "issuer:0000000102",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000102",
+      "title": "Rhein Grid reports major_contract",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000102"
+        ]
+      },
+      "event_type": "major_contract",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "origin_id": "issuer:0000000102"
+    },
+    {
+      "source_id": "issuer:0000000103",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000103",
+      "title": "Maple Gold reports revenue_increase",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000103"
+        ]
+      },
+      "event_type": "revenue_increase",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "origin_id": "issuer:0000000103"
+    },
+    {
+      "source_id": "issuer:0000000104",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000104",
+      "title": "Liberty Insurance reports dividend_growth",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000104"
+        ]
+      },
+      "event_type": "dividend_growth",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+      "origin_id": "issuer:0000000104"
+    },
+    {
+      "source_id": "issuer:0000000105",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000105",
+      "title": "Europa Sports reports guidance_raise",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000105"
+        ]
+      },
+      "event_type": "guidance_raise",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "5555555555555555555555555555555555555555555555555555555555555555",
+      "origin_id": "issuer:0000000105"
+    },
+    {
+      "source_id": "issuer:0000000106",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000106",
+      "title": "Nova Medical reports regulatory_decision",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000106"
+        ]
+      },
+      "event_type": "regulatory_decision",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "6666666666666666666666666666666666666666666666666666666666666666",
+      "origin_id": "issuer:0000000106"
+    },
+    {
+      "source_id": "issuer:0000000107",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000107",
+      "title": "Prairie Machines reports net_income_increase",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000107"
+        ]
+      },
+      "event_type": "net_income_increase",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "7777777777777777777777777777777777777777777777777777777777777777",
+      "origin_id": "issuer:0000000107"
+    },
+    {
+      "source_id": "issuer:0000000108",
+      "source_type": "PRIMARY",
+      "url": "https://synthetic.invalid/0000000108",
+      "title": "Lab Systems reports acquisition_or_stake",
+      "published_at": "2025-01-09T12:00:00Z",
+      "first_seen_at": "2025-01-09T12:00:00Z",
+      "retrieved_at": "2025-01-09T12:00:00Z",
+      "source_available_at": "2025-01-09T12:00:00Z",
+      "company_identifiers": {
+        "cik": [
+          "0000000108"
+        ]
+      },
+      "event_type": "acquisition_or_stake",
+      "event_confidence": "source_claim",
+      "evidence_status": "synthetic_functional",
+      "license_status": "permitted_metadata",
+      "content_hash": "8888888888888888888888888888888888888888888888888888888888888888",
+      "origin_id": "issuer:0000000108"
+    }
+  ]
+}

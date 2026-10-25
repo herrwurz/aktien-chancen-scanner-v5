@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class DetectiveRequest(BaseModel):
@@ -13,6 +13,15 @@ class DetectiveRequest(BaseModel):
     pdf_media_type: str | None = None
     publication_at: datetime | None = None
     known_hints: list[str] = Field(default_factory=list, max_length=20)
+
+    @field_validator("publication_at")
+    @classmethod
+    def normalize_publication_time(cls, value):
+        if value is None:
+            return None
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("publication timestamp timezone required")
+        return value.astimezone(UTC)
 
     @model_validator(mode="after")
     def require_input(self):

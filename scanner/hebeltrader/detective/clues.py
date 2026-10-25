@@ -18,6 +18,11 @@ FINANCIAL_METRIC = re.compile(
     r"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>%|mrd\.?|mio\.?)",
     re.I,
 )
+FINANCIAL_PERCENT_SENTENCE = re.compile(
+    r"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b(?P<context>[^.!?]{0,100}?)"
+    r"(?P<value>\d+(?:[.,]\d+)?)\s*%",
+    re.I,
+)
 DATE_HINT = re.compile(r"\b(?:Q[1-4]\s+20\d{2}|20\d{2}|\d{1,2}\.\d{1,2}\.20\d{2})\b", re.I)
 PROMOTIONAL_RETURN = re.compile(
     r"(?P<value>\d{1,3}(?:\.\d{3})+|\d+(?:[,.]\d+)?)\s*%"
@@ -34,6 +39,7 @@ LEXICONS = {
     "sectors": {
         "healthcare": ("gesundheit", "healthcare", "gesundheitskonzern"),
         "pharma": ("pharma", "medikamente"),
+        "semiconductors": ("halbleiter", "semiconductor"),
         "medical_technology": ("medizintechnik", "medical technology"),
         "laboratory": ("labor", "laborausrüstung", "life science"),
         "sportswear": ("sportartikel", "sportswear", "sneaker"),
@@ -64,7 +70,7 @@ LEXICONS = {
     },
     "countries": {
         "US": ("us-konzern", "us unternehmen", "us-versicherer", "amerikanisch", "usa"),
-        "DE": ("deutscher konzern", "deutsches unternehmen", "dax"),
+        "DE": ("deutscher konzern", "deutsches unternehmen", "deutsches", "dax"),
         "CA": ("kanadisch", "kanada"),
         "EU": ("europäisch", "europäischer", "europäische", "europa"),
     },
@@ -204,9 +210,17 @@ def extract_atomic_clues(text, spans):
                 confidence_class="high",
             )
         )
-    for match in FINANCIAL_METRIC.finditer(text):
+    financial_matches = list(FINANCIAL_METRIC.finditer(text))
+    financial_matches.extend(FINANCIAL_PERCENT_SENTENCE.finditer(text))
+    seen_financial = set()
+    for match in sorted(financial_matches, key=lambda item: (item.start(), item.end())):
         if any(start <= match.start() < end for start, end in promotional_ranges):
             continue
+        key = (match.start(), match.group("metric").casefold(), match.group("value"))
+        if key in seen_financial:
+            continue
+        seen_financial.add(key)
+        period_match = DATE_HINT.search(match.group(0))
         clues.append(
             _atomic(
                 "financial_metric",
@@ -215,7 +229,8 @@ def extract_atomic_clues(text, spans):
                 spans,
                 instrument_scope="stock",
                 value=match.group("value").replace(",", "."),
-                unit=match.group("unit").casefold(),
+                unit=(match.groupdict().get("unit") or "%").casefold(),
+                period=period_match.group(0) if period_match else None,
                 confidence_class="high",
             )
         )
@@ -234,6 +249,42 @@ def extract_atomic_clues(text, spans):
                 confidence_class="high",
             )
         )
+    for match in ISIN.finditer(text):
+        value = match.group(1).upper()
+        if valid_isin(value):
+            clues.append(
+                _atomic(
+                    "identifier",
+                    "stock_isin",
+                    match,
+                    spans,
+                    instrument_scope="stock",
+                    value=value,
+                    confidence_class="high",
+                )
+            )
+    business_patterns = {
+        "technologies": re.compile(r"\b(?:KI|AI|künstliche Intelligenz)\b", re.I),
+        "products": re.compile(
+            r"\b(?:KI[- ]?Chips?|Halbleiter|Medikamente?|Batterien?|Roboter)\b", re.I
+        ),
+        "business": re.compile(
+            r"\b(?:entwickelt|produziert|betreibt|liefert)\s+[^.!?]{2,60}", re.I
+        ),
+    }
+    for category, pattern in business_patterns.items():
+        for match in pattern.finditer(text):
+            clues.append(
+                _atomic(
+                    category,
+                    " ".join(match.group(0).casefold().split()),
+                    match,
+                    spans,
+                    instrument_scope="stock",
+                    value=" ".join(match.group(0).split()),
+                    confidence_class="medium",
+                )
+            )
     legacy = extract_clues(text)
     for group in legacy["structured"]:
         for polarity, values in (

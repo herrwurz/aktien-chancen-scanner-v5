@@ -12,12 +12,20 @@ rights_status=$3
 research_index=$4
 output_dir=$5
 image_name=${DETECTIVE_IMAGE:-scanner-detective-v3}
+research_manifest="${research_index}.manifest.json"
+
+if [ ! -f "$research_manifest" ]; then
+  echo "Research index manifest missing: $research_manifest" >&2
+  exit 2
+fi
 
 mkdir -p "$output_dir"
 
-docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+docker run --rm --network none --read-only --user "$(id -u):$(id -g)" \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
   --mount "type=bind,src=$teaser_path,dst=/input/teaser,readonly" \
   --mount "type=bind,src=$research_index,dst=/research/index.db,readonly" \
+  --mount "type=bind,src=$research_manifest,dst=/research/index.db.manifest.json,readonly" \
   --mount "type=bind,src=$output_dir,dst=/output" \
   "$image_name" python -m scanner.hebeltrader.detective.real_acceptance \
   --teaser /input/teaser --publication-at "$publication_at" --rights-status "$rights_status" \
@@ -28,9 +36,11 @@ case "$teaser_path" in
   *) input_args=(--text-file /input/teaser) ;;
 esac
 
-docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+docker run --rm --network none --read-only --user "$(id -u):$(id -g)" \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
   --mount "type=bind,src=$teaser_path,dst=/input/teaser,readonly" \
   --mount "type=bind,src=$research_index,dst=/research/index.db,readonly" \
+  --mount "type=bind,src=$research_manifest,dst=/research/index.db.manifest.json,readonly" \
   --mount "type=bind,src=$output_dir,dst=/output" \
   "$image_name" python -m scanner.hebeltrader.detective.cli "${input_args[@]}" \
   --publication-at "$publication_at" --research-mode indexed_research \

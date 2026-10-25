@@ -31,8 +31,9 @@ const asBase64=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.o
   r.onload=()=>resolve(r.result.split(',')[1]);r.readAsDataURL(file)});
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
   const file=document.querySelector('#image').files[0];
+  const published=document.querySelector('#published').value;
   const body={teaser_text:document.querySelector('#text').value,
-    publication_at:document.querySelector('#published').value||null};
+    publication_at:published?new Date(published).toISOString():null};
   if(file&&file.type==='application/pdf'){body.pdf_base64=await asBase64(file);
     body.pdf_media_type=file.type}else if(file){body.screenshot_base64=await asBase64(file);
     body.screenshot_media_type=file.type}

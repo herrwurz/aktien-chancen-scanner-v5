@@ -31,6 +31,16 @@ def write_json(path, value):
     return path
 
 
+def sealed_rankings(corpus_kind, cases):
+    stable = json.dumps(cases, sort_keys=True, separators=(",", ":")).encode()
+    return {
+        "schema_version": 3,
+        "corpus_kind": corpus_kind,
+        "ranking_payload_sha256": __import__("hashlib").sha256(stable).hexdigest(),
+        "cases": cases,
+    }
+
+
 def test_scanner_contract_has_no_solution_input_and_emits_stable_rankings(tmp_path):
     assert "solution" not in inspect.signature(scan_manifest).parameters
     manifest = write_json(
@@ -65,35 +75,43 @@ def test_scanner_contract_has_no_solution_input_and_emits_stable_rankings(tmp_pa
 
 
 def test_evaluator_reports_metrics_and_detects_solution_leakage(tmp_path):
-    rankings = write_json(
-        tmp_path / "rankings.json",
+    cases = [
         {
-            "schema_version": 3,
-            "corpus_kind": "real_original",
-            "cases": [
-                {
-                    "case_id": "case-001",
-                    "teaser_sha256": "a" * 64,
-                    "input_text": "Unbekannter Pharmakonzern",
-                    "ranked_asset_ids": ["cik:1", "cik:2"],
-                    "status": "likely_candidate",
-                },
-                {
-                    "case_id": "case-002",
-                    "teaser_sha256": "b" * 64,
-                    "input_text": "Zu wenig Hinweise",
-                    "ranked_asset_ids": [],
-                    "status": "unresolved",
-                },
-            ],
+            "case_id": "case-001",
+            "teaser_sha256": __import__("hashlib").sha256(b"Unbekannter Pharmakonzern").hexdigest(),
+            "input_text": "Unbekannter Pharmakonzern",
+            "ranked_asset_ids": ["cik:1", "cik:2"],
+            "status": "likely_candidate",
         },
-    )
+        {
+            "case_id": "case-002",
+            "teaser_sha256": __import__("hashlib").sha256(b"Zu wenig Hinweise").hexdigest(),
+            "input_text": "Zu wenig Hinweise",
+            "ranked_asset_ids": [],
+            "status": "unresolved",
+        },
+    ]
+    rankings = write_json(tmp_path / "rankings.json", sealed_rankings("real_original", cases))
     labels = write_json(
         tmp_path / "labels.json",
         {
             "cases": {
-                "case-001": {"asset_id": "cik:1", "forbidden_identifiers": ["ALPHA"]},
-                "case-002": {"asset_id": "cik:9", "forbidden_identifiers": ["BETA"]},
+                "case-001": {
+                    "asset_id": "cik:1",
+                    "forbidden_identifiers": ["ALPHA"],
+                    "solution_source": "https://example.test/1",
+                    "reviewer": "fixture-reviewer",
+                    "confirmed_at": "2025-01-02T00:00:00Z",
+                    "original_sha256": "1" * 64,
+                },
+                "case-002": {
+                    "asset_id": "cik:9",
+                    "forbidden_identifiers": ["BETA"],
+                    "solution_source": "https://example.test/2",
+                    "reviewer": "fixture-reviewer",
+                    "confirmed_at": "2025-01-02T00:00:00Z",
+                    "original_sha256": "2" * 64,
+                },
             }
         },
     )
@@ -108,20 +126,18 @@ def test_evaluator_reports_metrics_and_detects_solution_leakage(tmp_path):
 
 
 def test_evaluator_rejects_solution_identifier_in_input(tmp_path):
-    rankings = write_json(
-        tmp_path / "rankings.json",
+    teaser = "Gesucht ist ALPHA"
+    cases = [
         {
-            "schema_version": 3,
-            "corpus_kind": "synthetic_functional",
-            "cases": [
-                {
-                    "case_id": "random-7f4a",
-                    "input_text": "Gesucht ist ALPHA",
-                    "ranked_asset_ids": [],
-                    "status": "unresolved",
-                }
-            ],
-        },
+            "case_id": "random-7f4a",
+            "teaser_sha256": __import__("hashlib").sha256(teaser.encode()).hexdigest(),
+            "input_text": teaser,
+            "ranked_asset_ids": [],
+            "status": "unresolved",
+        }
+    ]
+    rankings = write_json(
+        tmp_path / "rankings.json", sealed_rankings("synthetic_functional", cases)
     )
     labels = write_json(
         tmp_path / "labels.json",
@@ -137,3 +153,38 @@ def test_fixture_keeps_ten_functional_inputs_separate_from_labels():
     assert len(inputs["cases"]) >= 10
     assert set(labels["cases"]) == {case["case_id"] for case in inputs["cases"]}
     assert "asset_id" not in json.dumps(inputs)
+
+
+def test_ten_case_fixture_runs_end_to_end_against_separate_index(tmp_path):
+    from scanner.hebeltrader.detective.index_source import IndexCandidateSource
+    from scanner.hebeltrader.detective.service import DetectiveService
+    from scanner.news import NewsItem
+    from scanner.research import AssetIdentity
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    root = Path("tests/fixtures/detective-v3")
+    universe = json.loads((root / "inputs/universe.json").read_text())
+    index_path = tmp_path / "index.db"
+    build_index(
+        index_path,
+        assets=[AssetIdentity.model_validate(row) for row in universe["assets"]],
+        events=[],
+        facts=[],
+        news=[NewsItem.model_validate(row) for row in universe["news"]],
+    )
+    source = IndexCandidateSource(ResearchIndex(index_path))
+    service = DetectiveService(
+        candidate_source=source,
+        news_source=source,
+        products=[],
+        research_mode="indexed_research",
+    )
+    rankings_payload = scan_manifest(root / "inputs/manifest.json", service)
+    rankings = write_json(tmp_path / "rankings.json", rankings_payload)
+    report = evaluate_rankings(rankings, root / "solutions/labels.json")
+
+    assert report["metrics"]["case_count"] == 10
+    assert report["metrics"]["top_3_count"] >= 6
+    assert report["metrics"]["abstention_count"] >= 2
+    assert report["real_benchmark_status"] == "insufficient_real_benchmark_coverage"

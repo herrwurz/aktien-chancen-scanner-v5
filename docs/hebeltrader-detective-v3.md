@@ -38,14 +38,16 @@ Dienst.
 
 ## Blindtests
 
-Scanner und Evaluator sind getrennte Programme. Der Scanner erhält nur zufällig benannte
-Eingabefälle, Index und Ausgabepfad:
+Scanner und Evaluator sind getrennte Programme. Für Blindläufe startet das Skript einen
+netzwerklosen, schreibgeschützten Container, in den nur Eingaben, Index samt Integritätsmanifest
+und Ausgabe gemountet werden. Der Lösungsordner ist im Scannerprozess nicht vorhanden:
 
 ```bash
-python -m scanner.hebeltrader.detective.benchmark_scan \
-  --inputs tests/fixtures/detective-v3/inputs/manifest.json \
-  --research-index /pfad/research-index.db \
-  --output /tmp/detective-v3/rankings.json
+scripts/run_detective_v3_blind_scan.sh \
+  tests/fixtures/detective-v3/inputs/manifest.json \
+  /pfad/research-index.db \
+  /tmp/detective-v3/rankings.json \
+  scanner-detective-v3
 ```
 
 Erst nach beendetem Scan erhält der Evaluator die getrennte Labeldatei:
@@ -64,7 +66,8 @@ reale Erkennungsrate. Weniger als zehn echte Originalfälle ergeben
 ## Reale read-only Abnahme
 
 Voraussetzungen sind ein unveränderter Originalteaser, seine belegte Publikationszeit, ein
-dokumentierter Nutzungsstatus und ein vorhandener Research-Index. Das Skript verwendet ein
+dokumentierter Nutzungsstatus und ein vorhandener Research-Index einschließlich der benachbarten
+Datei `<index>.manifest.json`. Das Skript verwendet ein
 eigenes Verzeichnis, deaktiviert das Netzwerk, mountet Eingabe und Index nur lesend und verändert
 weder PostgreSQL noch andere Docker-Projekte:
 

@@ -58,7 +58,7 @@ class FakeIndex:
             CandidateHit(
                 identity=item,
                 score=0,
-                confirmed=[],
+                confirmed=([f"event:{query.event_types[0]}"] if query.event_types else []),
                 contradicted=[],
                 unknown=[],
                 evidence_source_ids=[],

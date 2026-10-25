@@ -1,6 +1,8 @@
 """Point-in-time Stage-B evidence verification and uncalibrated decisions."""
 
 import hashlib
+import re
+from difflib import SequenceMatcher
 
 from pydantic import BaseModel, Field
 
@@ -73,6 +75,20 @@ def _eligible(records, as_of):
     return included, sorted(excluded)
 
 
+def _near_copy(left, right):
+    if abs((left.published_at - right.published_at).total_seconds()) > 48 * 60 * 60:
+        return False
+    left_events = set(left.facts.get("events", []))
+    right_events = set(right.facts.get("events", []))
+    if not left_events or not right_events or left_events.isdisjoint(right_events):
+        return False
+
+    def normalize(value):
+        return " ".join(re.findall(r"[a-z0-9]+", value.casefold()))
+
+    return SequenceMatcher(None, normalize(left.title), normalize(right.title)).ratio() >= 0.82
+
+
 def _cluster(records):
     groups = []
     for record in records:
@@ -80,7 +96,9 @@ def _cluster(records):
         matching = [
             group
             for group in groups
-            if origin in group["origins"] or record.content_sha256 in group["hashes"]
+            if origin in group["origins"]
+            or record.content_sha256 in group["hashes"]
+            or any(_near_copy(record, existing) for existing in group["rows"])
         ]
         if matching:
             group = matching[0]
@@ -118,17 +136,40 @@ def _cluster(records):
     return clusters, source_to_cluster
 
 
-def _cell(clue, records, source_to_cluster, identity):
+def _cell(clue, records, source_to_cluster, identity, as_of):
+    identity_proven = identity.historically_available_at(as_of)
     if clue.category == "identifier":
         values = {identity.wkn, identity.isin, identity.ticker}
         if clue.instrument_scope != "stock":
             return EvidenceCell(
                 clue_id=clue.clue_id, status="unknown", reason="non_stock_identifier"
             )
+        if not identity_proven:
+            return EvidenceCell(
+                clue_id=clue.clue_id,
+                status="unknown",
+                reason="identity_historical_availability_unproven",
+            )
         return EvidenceCell(
             clue_id=clue.clue_id,
             status="confirmed" if clue.value in values else "contradicted",
             reason="historically_available_identity",
+        )
+    if clue.category == "financial_metric":
+        supporting = []
+        for record in records:
+            for metric in record.facts.get("financial_metrics", []):
+                if (
+                    metric.get("metric", "").casefold() == clue.normalized.casefold()
+                    and str(metric.get("value")) == clue.value
+                    and str(metric.get("unit", "")).casefold() == str(clue.unit).casefold()
+                ):
+                    supporting.append(source_to_cluster[record.source_id])
+        return EvidenceCell(
+            clue_id=clue.clue_id,
+            status="confirmed" if supporting else "unknown",
+            evidence_cluster_ids=sorted(set(supporting)),
+            reason=None if supporting else "exact_historical_metric_unavailable",
         )
     if clue.category not in SUPPORTED_FACT_GROUPS:
         return EvidenceCell(
@@ -157,7 +198,7 @@ def _cell(clue, records, source_to_cluster, identity):
     if clue.category in {"countries", "sectors"}:
         field = "country" if clue.category == "countries" else "sector"
         identity_value = getattr(identity, field)
-        if identity_value is not None:
+        if identity_value is not None and identity_proven:
             matched = (clue.value or clue.normalized) == identity_value
             return EvidenceCell(
                 clue_id=clue.clue_id,
@@ -177,7 +218,28 @@ def verify_candidates(
     for candidate in retrieval.candidates:
         records, excluded = _eligible(evidence_loader(candidate.identity), as_of)
         clusters, source_to_cluster = _cluster(records)
-        matrix = [_cell(clue, records, source_to_cluster, candidate.identity) for clue in clues]
+        identity_cluster_id = None
+        if candidate.identity.historically_available_at(as_of):
+            identity_cluster_id = hashlib.sha256(
+                f"identity|{candidate.asset_id}|{candidate.identity.source_id}".encode()
+            ).hexdigest()
+            clusters.append(
+                EvidenceCluster(
+                    cluster_id=identity_cluster_id,
+                    origin_id=candidate.identity.source_id or f"identity:{candidate.asset_id}",
+                    source_ids=[candidate.identity.source_id or f"identity:{candidate.asset_id}"],
+                    source_kinds=["regulatory"],
+                    primary=True,
+                    available_at=candidate.identity.source_available_at.isoformat(),
+                )
+            )
+        matrix = [
+            _cell(clue, records, source_to_cluster, candidate.identity, as_of) for clue in clues
+        ]
+        if identity_cluster_id:
+            for cell in matrix:
+                if cell.reason == "historically_available_identity":
+                    cell.evidence_cluster_ids = [identity_cluster_id]
         by_id = {clue.clue_id: clue for clue in clues}
         confirmed = [cell.clue_id for cell in matrix if cell.status == "confirmed"]
         contradicted = [cell.clue_id for cell in matrix if cell.status == "contradicted"]
@@ -214,6 +276,8 @@ def decide(candidates: list[VerifiedCandidate], retrieval_status: str) -> Detect
         return DetectiveDecision(status="unresolved", reason=retrieval_status)
     if not candidates or not candidates[0].confirmed_clue_ids:
         return DetectiveDecision(status="unresolved", reason="insufficient_evidence")
+    if all(candidate.hard_contradictions for candidate in candidates):
+        return DetectiveDecision(status="unresolved", reason="all_candidates_contradicted")
     leader = candidates[0]
     margin = (
         leader.evidence_score - candidates[1].evidence_score

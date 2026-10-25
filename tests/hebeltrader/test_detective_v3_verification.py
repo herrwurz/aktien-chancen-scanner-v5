@@ -116,8 +116,11 @@ def test_reposts_share_one_cluster_and_missing_or_future_availability_is_exclude
 
     verified = verify_candidates(report(candidate(asset, 100)), clues, lambda _: records, AS_OF)[0]
 
-    assert len(verified.evidence_clusters) == 1
-    assert verified.evidence_clusters[0].source_ids == ["issuer-a", "portal-copy"]
+    source_clusters = [
+        cluster for cluster in verified.evidence_clusters if cluster.origin_id != "sec"
+    ]
+    assert len(source_clusters) == 1
+    assert source_clusters[0].source_ids == ["issuer-a", "portal-copy"]
     assert verified.excluded_source_ids == ["future", "missing-availability"]
 
 
@@ -132,8 +135,27 @@ def test_identical_content_with_different_claimed_origins_is_one_cluster():
         lambda _: [first, second],
         AS_OF,
     )[0]
-    assert len(verified.evidence_clusters) == 1
-    assert verified.evidence_clusters[0].source_ids == ["portal-a", "portal-b"]
+    source_clusters = [
+        cluster for cluster in verified.evidence_clusters if cluster.origin_id != "sec"
+    ]
+    assert len(source_clusters) == 1
+    assert source_clusters[0].source_ids == ["portal-a", "portal-b"]
+
+
+def test_near_copy_event_repost_with_different_hash_is_one_cluster():
+    asset = identity()
+    first = evidence("issuer", origin="issuer", facts={"events": ["guidance_raise"]})
+    first = first.model_copy(update={"title": "Alpha raises full year guidance"})
+    second = evidence("portal", origin="portal", facts={"events": ["guidance_raise"]})
+    second = second.model_copy(update={"title": "Alpha raises full-year guidance today"})
+    verified = verify_candidates(
+        report(candidate(asset, 100)),
+        [clue("events", "guidance_raise")],
+        lambda _: [first, second],
+        AS_OF,
+    )[0]
+    non_identity = [cluster for cluster in verified.evidence_clusters if cluster.origin_id != "sec"]
+    assert len(non_identity) == 1
 
 
 def test_decision_uses_frozen_likely_unclear_and_unresolved_thresholds():

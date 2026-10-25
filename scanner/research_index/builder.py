@@ -39,7 +39,7 @@ def _asset_id(identity):
 
 
 def _available(identity):
-    value = identity.source_available_at or identity.retrieved_at
+    value = identity.source_available_at
     return value.isoformat() if value else None
 
 
@@ -179,7 +179,7 @@ def build_index(path, *, assets, events, facts, news):
                 row.asset,
                 "event",
                 row.category,
-                row.evidence.source_available_at or row.retrieved_at,
+                row.evidence.source_available_at,
                 row.headline,
                 row.evidence.model_copy(
                     update={"facts": dict(row.evidence.facts, events=[row.category])}
@@ -191,7 +191,7 @@ def build_index(path, *, assets, events, facts, news):
                 row.asset,
                 "fact",
                 row.claim,
-                row.source_available_at or row.retrieved_at,
+                row.source_available_at,
                 f"{row.metric} {row.claim}",
                 EvidenceRecord(
                     source_id=row.fact_id,
@@ -202,7 +202,18 @@ def build_index(path, *, assets, events, facts, news):
                     effective_at=row.published_at,
                     source_available_at=row.source_available_at,
                     source_kind="regulatory",
-                    facts={"fact_claims": [row.claim]},
+                    facts={
+                        "fact_claims": [row.claim],
+                        "financial_metrics": [
+                            {
+                                "metric": row.metric,
+                                "value": str(row.value),
+                                "unit": row.unit,
+                                "period_start": row.period_start.isoformat(),
+                                "period_end": row.period_end.isoformat(),
+                            }
+                        ],
+                    },
                     content_sha256=row.content_sha256,
                 ),
                 row.supersedes_fact_id,

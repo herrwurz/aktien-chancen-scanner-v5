@@ -36,6 +36,8 @@ def extract_document(data: bytes, media_type: str, *, ocr) -> ExtractedDocument:
                     continue
                 try:
                     text = ocr.extract(_page_png(page), "image/png").strip()
+                    if not text:
+                        raise ValueError("OCR returned no text")
                     pages.append(
                         ExtractedPage(
                             number=number,
