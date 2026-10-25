@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "kind": "curated_eu_dach_hypothesis_universe",
+  "license_note": "Public listing identifiers for offline hypothesis tests; not a licensed market-data redistributable feed.",
+  "assets": [
+    {
+      "name": "DHL Group",
+      "ticker": "DHL",
+      "wkn": "555200",
+      "isin": "DE0005552004",
+      "country": "DE",
+      "sector": "logistics",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Logwin AG",
+      "ticker": "TGHN",
+      "wkn": "A1KBL6",
+      "isin": "LU0109399380",
+      "country": "LU",
+      "sector": "logistics",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Kuehne + Nagel International AG",
+      "ticker": "KNIN",
+      "wkn": "A0JL5A",
+      "isin": "CH0025238863",
+      "country": "CH",
+      "sector": "logistics",
+      "exchange": "SIX"
+    },
+    {
+      "name": "Hapag-Lloyd AG",
+      "ticker": "HLAG",
+      "wkn": "HLAG47",
+      "isin": "DE000HLAG475",
+      "country": "DE",
+      "sector": "logistics",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Rail Cargo Peer Fixture",
+      "ticker": "RCFIXT",
+      "wkn": "A0RAIL",
+      "isin": "DE000A0RAIL1",
+      "country": "DE",
+      "sector": "logistics",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Vossloh AG",
+      "ticker": "VOS",
+      "wkn": "766710",
+      "isin": "DE0007667107",
+      "country": "DE",
+      "sector": "logistics",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Siemens AG",
+      "ticker": "SIE",
+      "wkn": "723610",
+      "isin": "DE0007236101",
+      "country": "DE",
+      "sector": "industrials",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Bayer AG",
+      "ticker": "BAYN",
+      "wkn": "BAY001",
+      "isin": "DE000BAY0017",
+      "country": "DE",
+      "sector": "pharma",
+      "exchange": "XETRA"
+    },
+    {
+      "name": "Novartis AG",
+      "ticker": "NOVN",
+      "wkn": "904278",
+      "isin": "CH0012005267",
+      "country": "CH",
+      "sector": "pharma",
+      "exchange": "SIX"
+    },
+    {
+      "name": "Nestle SA",
+      "ticker": "NESN",
+      "wkn": "A0Q4DC",
+      "isin": "CH0038863350",
+      "country": "CH",
+      "sector": "consumer",
+      "exchange": "SIX"
+    }
+  ]
+}

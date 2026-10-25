@@ -1,0 +1,75 @@
+{
+  "schema_version": 3,
+  "cases": {
+    "0d7c4a91": {
+      "asset_id": "cik:0000000101",
+      "forbidden_identifiers": [
+        "SYN001"
+      ],
+      "expected_in_universe": true
+    },
+    "18af03c2": {
+      "asset_id": "cik:0000000102",
+      "forbidden_identifiers": [
+        "SYN002"
+      ],
+      "expected_in_universe": true
+    },
+    "24be91d0": {
+      "asset_id": "cik:0000000103",
+      "forbidden_identifiers": [
+        "SYN003"
+      ],
+      "expected_in_universe": true
+    },
+    "39c16f74": {
+      "asset_id": "cik:0000000104",
+      "forbidden_identifiers": [
+        "SYN004"
+      ],
+      "expected_in_universe": true
+    },
+    "45d807ab": {
+      "asset_id": "cik:0000000105",
+      "forbidden_identifiers": [
+        "SYN005"
+      ],
+      "expected_in_universe": true
+    },
+    "56ea2c90": {
+      "asset_id": "cik:0000000106",
+      "forbidden_identifiers": [
+        "SYN006"
+      ],
+      "expected_in_universe": true
+    },
+    "61bf930d": {
+      "asset_id": "cik:0000000107",
+      "forbidden_identifiers": [
+        "SYN007"
+      ],
+      "expected_in_universe": true
+    },
+    "73c209e1": {
+      "asset_id": "cik:0000000108",
+      "forbidden_identifiers": [
+        "SYN008"
+      ],
+      "expected_in_universe": true
+    },
+    "84da10f3": {
+      "asset_id": "cik:0000000909",
+      "forbidden_identifiers": [
+        "SYN009"
+      ],
+      "expected_in_universe": false
+    },
+    "95eb21a4": {
+      "asset_id": "cik:0000000910",
+      "forbidden_identifiers": [
+        "SYN010"
+      ],
+      "expected_in_universe": false
+    }
+  }
+}

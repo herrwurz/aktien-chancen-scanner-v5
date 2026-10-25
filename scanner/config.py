@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     detective_live_request_timeout_seconds: float = Field(default=10, ge=1, le=30)
     detective_live_max_duration_seconds: float = Field(default=120, ge=1, le=300)
     detective_live_api_token: SecretStr | None = None
+    detective_analysis_mode: Literal["hypothesis", "strict"] = "hypothesis"
+    detective_llm_endpoint: str | None = None
+    detective_llm_api_token: SecretStr | None = None
+    detective_hypothesis_news: bool = True
+    detective_openfigi_identities: Path | None = None
     sec_user_agent: str | None = None
 
     @field_validator("symbols")

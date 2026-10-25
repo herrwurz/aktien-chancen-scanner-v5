@@ -2,6 +2,8 @@
 
 from scanner.research_index.models import CandidateQuery
 
+from .retrieval import retrieve_candidates
+
 
 class IndexCandidateSource:
     source_id = "sqlite-fts5-research-index"
@@ -39,6 +41,32 @@ class IndexCandidateSource:
             matched_before_limit=result.matched_before_limit,
             index_payload_sha256=result.index_payload_sha256,
         )
+
+    def retrieve_candidates(self, clues, point_in_time):
+        if point_in_time is None:
+            self._hits = []
+            self.coverage.update(status="unavailable", error_code="publication_time_required")
+            return None
+        report = retrieve_candidates(
+            self.index, clues, as_of=point_in_time, limit=self.stage_a_limit
+        )
+        self._point_in_time = point_in_time
+        self._hits = report.candidates
+        self.coverage.update(
+            status=report.status,
+            full_universe_size=report.full_universe_size,
+            visible_universe_size=report.visible_universe_size,
+            investigated_count=len(report.candidates),
+            matched_before_limit=report.matched_before_limit,
+            channel_limit=report.channel_limit,
+            index_payload_sha256=report.index_payload_sha256,
+            channel_counts=report.channel_counts,
+            channel_matched_before_limit=report.channel_matched_before_limit,
+            coverage_warnings=report.coverage_warnings,
+            exclusions=[item.model_dump(mode="json") for item in report.exclusions],
+            stage_a_asset_ids=[item.asset_id for item in report.candidates],
+        )
+        return report
 
     def load_candidates(self):
         return [

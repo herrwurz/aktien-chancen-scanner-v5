@@ -1,0 +1,46 @@
+{
+  "schema_version": 3,
+  "corpus_kind": "public_historical_mini",
+  "cases": [
+    {
+      "case_id": "logistics-takeover-1610",
+      "teaser_text": "Gewinne steigen, Synergien locken – Logistik-Schwergewicht im Ausbruch! Die Schienen glühen. Ein Logistik-Gigant mit außergewöhnlich starken Zahlen ist ins Visier einer Übernahmefantasie geraten. Ein Call-Optionsschein mit sportlichem Hebel. Der Höhepunkt: bis zu plus 1.610 Prozent.",
+      "publication_at": "2025-06-05T12:00:00Z"
+    },
+    {
+      "case_id": "pharma-guidance-us",
+      "teaser_text": "Der US-Pharmakonzern hob die Prognose an. Der Umsatz stieg um 18 % im Q2 2025.",
+      "publication_at": "2025-05-07T12:00:00Z"
+    },
+    {
+      "case_id": "promo-only-empty",
+      "teaser_text": "Einmalige Chance mit 1.717 Prozent Rendite.",
+      "publication_at": "2025-01-10T12:00:00Z"
+    },
+    {
+      "case_id": "buyback-turnaround",
+      "teaser_text": "Ein internationaler Branchenriese sendet mit milliardenschweren Aktienrückkäufen ein Signal. Steigende Gewinne und eine Renditechance von bis zu 1.900 Prozent.",
+      "publication_at": "2025-04-01T12:00:00Z"
+    },
+    {
+      "case_id": "rail-logistics-synergy",
+      "teaser_text": "Schienen und Logistik: Synergien locken nach der Übernahmefantasie rund um einen europäischen Giganten.",
+      "publication_at": "2025-06-05T12:00:00Z"
+    },
+    {
+      "case_id": "swiss-logistics",
+      "teaser_text": "Schweizer Logistik-Konzern mit Übernahmefantasie und steigenden Gewinnen im Visier spekulativer Anleger.",
+      "publication_at": "2025-06-05T12:00:00Z"
+    },
+    {
+      "case_id": "german-logistics-heavyweight",
+      "teaser_text": "Deutscher Logistik-Gigant: Übernahmefantasie und steigende Gewinne – Call mit Hebel. Bis zu plus 900 Prozent.",
+      "publication_at": "2025-06-05T12:00:00Z"
+    },
+    {
+      "case_id": "container-shipping-eu",
+      "teaser_text": "Europäischer Container- und Logistikkonzern im Visier: Synergien und Übernahmefantasie nach starken Zahlen.",
+      "publication_at": "2025-06-05T12:00:00Z"
+    }
+  ]
+}

@@ -7,8 +7,13 @@ from datetime import UTC, datetime
 from scanner.research import AssetIdentity, EvidenceRecord
 
 from .catalog import CATALOG_REVISION, default_candidate_source, load_products
-from .clues import extract_clues
+from .clue_enrichment import HeuristicClueEnricher
+from .clues import extract_atomic_clues, extract_clues
+from .documents import extract_document
+from .hypothesis import decide_hypothesis, hypothesis_reasons, select_hypothesis_candidates
 from .ocr import TesseractOcr
+from .schemas import SourceSpan
+from .verification import decide, verify_candidates
 
 MAX_RESPONSE_EVIDENCE = 8
 
@@ -27,20 +32,27 @@ class DetectiveService:
         products=None,
         clock=None,
         research_mode="fixture",
+        enricher=None,
     ):
         self.ocr = ocr or TesseractOcr()
+        # Default stays on the legacy fixture source (no retrieve_candidates) so MVP
+        # ranking/API compatibility tests keep working. Factory wraps hypothesis mode.
         self.candidate_source = candidate_source or default_candidate_source()
         self.news_source = news_source or self.candidate_source
         self.products = products if products is not None else load_products()
         self.clock = clock or (lambda: datetime.now(UTC))
         self.research_mode = research_mode
+        self.enricher = enricher or HeuristicClueEnricher()
 
     def analyze(self, request):
-        text_parts = [request.teaser_text.strip(), *request.known_hints]
+        text_parts = []
         input_sources = []
         review_hints = []
         if request.teaser_text.strip():
+            text_parts.append(("teaser_text", None, request.teaser_text.strip()))
             input_sources.append({"type": "teaser_text", "characters": len(request.teaser_text)})
+        for index, hint in enumerate(request.known_hints):
+            text_parts.append((f"known_hint:{index}", None, hint))
         image_sha = None
         if request.screenshot_base64:
             try:
@@ -49,7 +61,7 @@ class DetectiveService:
                 raise ValueError("invalid screenshot base64") from None
             image_sha = hashlib.sha256(image).hexdigest()
             ocr_text = self.ocr.extract(image, request.screenshot_media_type)
-            text_parts.append(ocr_text)
+            text_parts.append(("screenshot_ocr", None, ocr_text))
             input_sources.append(
                 {
                     "type": "screenshot_ocr",
@@ -60,8 +72,58 @@ class DetectiveService:
                 }
             )
             review_hints.append("OCR text requires visual review against the original screenshot")
-        combined = "\n".join(value for value in text_parts if value)
+        if request.pdf_base64:
+            try:
+                pdf = base64.b64decode(request.pdf_base64, validate=True)
+            except (binascii.Error, ValueError):
+                raise ValueError("invalid PDF base64") from None
+            document = extract_document(pdf, request.pdf_media_type, ocr=self.ocr)
+            offset_pages = []
+            for page in document.pages:
+                if page.text:
+                    text_parts.append((f"pdf:{document.sha256}", page.number, page.text))
+                offset_pages.append(page.model_dump(mode="json"))
+            input_sources.append(
+                {
+                    "type": "pdf",
+                    "sha256": document.sha256,
+                    "media_type": document.media_type,
+                    "page_count": document.page_count,
+                    "complete": document.complete,
+                    "pages": offset_pages,
+                }
+            )
+            if not document.complete or any(page.requires_manual_review for page in document.pages):
+                review_hints.append("PDF extraction requires review against the original pages")
+        combined_parts, spans, cursor = [], [], 0
+        for source_id, page, value in text_parts:
+            if not value:
+                continue
+            if combined_parts:
+                cursor += 1
+            start = cursor
+            combined_parts.append(value)
+            cursor += len(value)
+            spans.append(SourceSpan(source_id=source_id, page=page, start=start, end=cursor))
+        combined = "\n".join(combined_parts)
         clues = extract_clues(combined)
+        atomic_clues = extract_atomic_clues(combined, spans)
+        enrichment = self.enricher.enrich(combined, atomic_clues, spans)
+        if enrichment.extra_clues:
+            atomic_clues = sorted(
+                [*atomic_clues, *enrichment.extra_clues],
+                key=lambda clue: (clue.start, clue.category, clue.clue_id),
+            )
+        if hasattr(self.candidate_source, "retrieve_candidates"):
+            return self._analyze_v3(
+                request,
+                input_sources,
+                review_hints,
+                clues,
+                atomic_clues,
+                image_sha,
+                enrichment,
+            )
         ranked = self._rank(combined, clues, request.publication_at)
         decision = self._decision(ranked)
         derivative = self._find_derivative(clues, decision, request.publication_at)
@@ -72,6 +134,7 @@ class DetectiveService:
         if decision["status"] != "resolved_candidate":
             review_hints.append(decision["reason"])
         return {
+            "schema_version": 3,
             "status": "candidate_identification_only",
             "strategy": "HEBELTRADER_DETECTIVE",
             "research_mode": self.research_mode,
@@ -90,6 +153,150 @@ class DetectiveService:
             },
             "identification": decision,
             "candidates": ranked[:3],
+            "derivative_candidate": derivative,
+            "review_hints": review_hints,
+            "identification_is_investment_recommendation": False,
+            "automatic_confirmation": False,
+            "observed_image_sha256": image_sha,
+        }
+
+    def _analyze_v3(
+        self,
+        request,
+        input_sources,
+        review_hints,
+        legacy_clues,
+        atomic_clues,
+        image_sha,
+        enrichment,
+    ):
+        stage_a_asset_ids = []
+        analysis_mode = getattr(request, "analysis_mode", "hypothesis")
+        as_of = request.publication_at
+        if as_of is None and analysis_mode == "hypothesis":
+            as_of = self.clock()
+            review_hints.append(
+                "hypothesis mode without publication_at uses analysis clock; not historical_blind"
+            )
+        if as_of is None:
+            retrieval_status = "missing_publication_time"
+            verified = []
+            review_hints.append(
+                "Publication timestamp missing; historical evidence and products cannot be verified"
+            )
+        else:
+            retrieve = self.candidate_source.retrieve_candidates
+            try:
+                retrieval = retrieve(atomic_clues, as_of, search_queries=enrichment.search_queries)
+            except TypeError:
+                retrieval = retrieve(atomic_clues, as_of)
+            retrieval_status = retrieval.status
+            stage_a_asset_ids = [row.asset_id for row in retrieval.candidates]
+            verified = verify_candidates(
+                retrieval,
+                atomic_clues,
+                self.news_source.evidence_for,
+                as_of,
+            )
+            if analysis_mode == "hypothesis":
+                verified = sorted(
+                    verified,
+                    key=lambda row: (
+                        bool(row.hard_contradictions),
+                        -row.evidence_score,
+                        -row.retrieval_score,
+                        row.asset_id,
+                    ),
+                )
+        if analysis_mode == "hypothesis":
+            decision = decide_hypothesis(verified, retrieval_status, analysis_mode=analysis_mode)
+            selected_rows = select_hypothesis_candidates(verified, decision)
+        else:
+            decision = decide(verified, retrieval_status)
+            selected_rows = verified[:3]
+        selected = next(
+            (row for row in verified if row.asset_id == decision.selected_asset_id), None
+        )
+        derivative_decision = {"selected_wkn": selected.identity.get("wkn") if selected else None}
+        derivative = self._find_derivative(
+            legacy_clues, derivative_decision, request.publication_at
+        )
+        if decision.status not in {"likely_candidate", "hypothesis_top3"}:
+            review_hints.append(decision.reason)
+        review_hints.extend(enrichment.notes)
+        clues_by_id = {clue.clue_id: clue for clue in atomic_clues}
+        candidate_payloads = []
+        for row in selected_rows:
+            supporting = [
+                {
+                    "type": clues_by_id[clue_id].category,
+                    "value": clues_by_id[clue_id].value or clues_by_id[clue_id].normalized,
+                }
+                for clue_id in row.confirmed_clue_ids
+                if clue_id in clues_by_id
+            ]
+            contradictions = [
+                {
+                    "type": clues_by_id[clue_id].category,
+                    "value": clues_by_id[clue_id].value or clues_by_id[clue_id].normalized,
+                }
+                for clue_id in row.contradicted_clue_ids
+                if clue_id in clues_by_id
+            ]
+            candidate_payloads.append(
+                {
+                    **row.identity,
+                    **row.model_dump(mode="json"),
+                    "supporting_clues": supporting,
+                    "hard_facts": [item for item in supporting if item["type"] == "identifier"],
+                    "contradictions": contradictions,
+                    "hypothesis_reasons": hypothesis_reasons(row),
+                    "evidence_strength": (
+                        "contradicted"
+                        if contradictions
+                        else "supported_uncalibrated"
+                        if supporting
+                        else "hypothesis_only"
+                    ),
+                    "relevance_score_not_probability": row.evidence_score,
+                }
+            )
+        coverage = dict(getattr(self.candidate_source, "coverage", {}) or {})
+        coverage.setdefault("stage_a_asset_ids", stage_a_asset_ids)
+        coverage.setdefault("channel_limit", 50)
+        coverage["search_queries"] = enrichment.search_queries
+        coverage["enrichment_provider"] = enrichment.provider
+        return {
+            "schema_version": 3,
+            "status": "candidate_identification_only",
+            "strategy": "HEBELTRADER_DETECTIVE",
+            "analysis_mode": analysis_mode,
+            "research_mode": self.research_mode,
+            "analyzed_at": self.clock().isoformat(),
+            "publication_at": (
+                request.publication_at.isoformat() if request.publication_at else None
+            ),
+            "candidate_source": {
+                "source_id": self.candidate_source.source_id,
+                "coverage": coverage,
+                "catalog_revision": CATALOG_REVISION,
+            },
+            "input_sources": input_sources,
+            "extracted_clues": [clue.model_dump(mode="json") for clue in atomic_clues],
+            "search_queries": enrichment.search_queries,
+            "identification": {
+                **decision.model_dump(mode="json"),
+                "selected_wkn": (
+                    (selected.identity.get("wkn") if selected else None)
+                    or (
+                        selected_rows[0].identity.get("wkn")
+                        if selected_rows and decision.status == "hypothesis_top3"
+                        else None
+                    )
+                ),
+                "failure_code": (decision.reason if decision.status == "unresolved" else None),
+            },
+            "candidates": candidate_payloads,
             "derivative_candidate": derivative,
             "review_hints": review_hints,
             "identification_is_investment_recommendation": False,
