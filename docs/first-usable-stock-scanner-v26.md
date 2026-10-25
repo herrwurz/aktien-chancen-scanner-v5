@@ -169,3 +169,35 @@ SIGNAL_DATE=2026-10-23 bash scripts/run-expanded-opportunity-dry-run.sh
 Das Signaldatum muss eine tatsächlich gewünschte abgeschlossene Sitzung sein. Ohne offiziellen
 Kalender bleibt auch dieser Lauf `modeled_research`; die Ausgabe darf keine historisch verifizierte
 oder ausführbare Empfehlung behaupten.
+
+## Realer Offline-Research-Lauf
+
+Der Lauf für den 23. Oktober 2026 wurde auf Hetzner ausschließlich aus dem archivierten Bestand
+ausgeführt. Er benötigte 114 Sekunden, keine Netzwerkanfrage und verursachte 0 EUR Kosten.
+
+- Report-SHA: `167e1e9c8585255d9bea953ede3548a2e08d8a02e823a278ce9e9125b2f7118d`;
+- CSV-SHA: `109aab0d222d2fd48f445cdcdfe4e4aeb2f477417645080a097b41720784eeca`;
+- gebundener Coverage-SHA:
+  `5995f58fde3fe4773e499f5baddec386cb0ac7bd23a8074f7418524ba39b1e40`;
+- gebundener Archiv-SHA:
+  `9da9dacb0f5deeb5e3725319ff86dea60c5d317ae2619e041d19255b2d0a0105`.
+
+Von 4.949 im Research-Index sichtbaren Identitäten waren 100 Aktien im Archiv. Alle 100 wurden
+ohne Identitätskonflikt aufgelöst; SPY blieb als ein zusätzliches Benchmarkinstrument aus dem
+Unternehmensranking ausgeschlossen und stand für die Relative-Stärke-Berechnung zur Verfügung.
+90 Aktien erreichten die technische Merkmalsberechnung. 36 Ergebnisse waren nicht verfügbar:
+26 wegen des Liquiditätsfilters, acht wegen weniger als 250 Sitzungen und zwei wegen
+unvollständiger Providerwerte. 64 Ergebnisse blieben `watch_only`; `candidate_research` blieb 0.
+
+Die führenden technisch ausgelösten Watchlist-Einträge waren:
+
+- MIDD: Score 8, 20-Tage-Ausbruch;
+- QTWO: Score 8, Volumenspitze;
+- LYB: Score 8, 20-Tage-Ausbruch;
+- TW: Score 8, 20-Tage-Ausbruch;
+- KVYO: Score 8, 20-Tage-Ausbruch.
+
+Für keinen Eintrag lag im Lauf ein belegter Katalysator vor. Sämtliche betrachteten Aktien trugen
+`instrument_type_unverified` und `calendar_unverified`. Deshalb wurde trotz technischer Trigger
+kein Research-Kandidat freigegeben. Referenzkurse, Stopps, Ziele und Brutto-CRV bleiben
+nicht ausführbare Modellszenarien ohne Bid/Ask, Spreadnachweis oder Netto-CRV.
