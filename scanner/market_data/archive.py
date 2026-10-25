@@ -22,17 +22,44 @@ def _digest(value) -> str:
 class MarketDataArchive:
     """An isolated artifact store; it never connects to application PostgreSQL."""
 
-    def __init__(self, path, *, now=None):
-        self.path = Path(path)
+    def __init__(self, path, *, now=None, read_only=False):
+        self.path = Path(path).resolve()
+        self.read_only = read_only
         self.now = now or (lambda: datetime.now(UTC))
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._initialize()
+        if read_only:
+            if not self.path.is_file():
+                raise FileNotFoundError(self.path)
+            self._validate_schema()
+        else:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._initialize()
 
     def _connect(self):
-        connection = sqlite3.connect(self.path)
+        if self.read_only:
+            connection = sqlite3.connect(f"{self.path.as_uri()}?mode=ro", uri=True)
+        else:
+            connection = sqlite3.connect(self.path)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys=ON")
+        if self.read_only:
+            connection.execute("PRAGMA query_only=ON")
         return connection
+
+    def _validate_schema(self):
+        with self._connect() as db:
+            tables = {
+                row["name"]
+                for row in db.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                ).fetchall()
+            }
+            if not {"listing", "bar_revision", "corporate_action"} <= tables:
+                raise ValueError("unsupported market archive schema")
+            columns = {
+                row["name"] for row in db.execute("PRAGMA table_info(bar_revision)").fetchall()
+            }
+            if "first_stored_at" not in columns:
+                raise ValueError("market archive lacks first local storage time")
 
     def _initialize(self):
         with self._connect() as db:
@@ -80,6 +107,8 @@ class MarketDataArchive:
             )
 
     def import_batch(self, value: MarketDataBatch | dict) -> dict[str, int]:
+        if self.read_only:
+            raise ValueError("read-only market archive")
         batch = MarketDataBatch.model_validate(value)
         stored_at = self.now()
         if stored_at.utcoffset() is None:
@@ -167,6 +196,11 @@ class MarketDataArchive:
                 )
         return result
 
+    def list_instruments(self):
+        with self._connect() as db:
+            rows = db.execute("SELECT identity_json FROM listing ORDER BY asset_id").fetchall()
+        return [json.loads(row["identity_json"]) for row in rows]
+
     def revision_history(self, asset_id: str, provider: str, session_date: str):
         with self._connect() as db:
             rows = db.execute(
@@ -214,6 +248,17 @@ class MarketDataArchive:
                 (asset_id, provider),
             ).fetchone()
         return row["latest"]
+
+    def latest_storage_time(self) -> datetime:
+        """Return the deterministic upper visibility bound of the immutable archive."""
+        with self._connect() as db:
+            row = db.execute("SELECT MAX(first_stored_at) AS latest FROM bar_revision").fetchone()
+        if row["latest"] is None:
+            raise ValueError("market archive has no stored bars")
+        value = datetime.fromisoformat(row["latest"])
+        if value.utcoffset() is None:
+            raise ValueError("market archive storage time is not timezone-aware")
+        return value.astimezone(UTC)
 
     def prices(self, asset_id, *, start, end, as_of, availability_mode="strict"):
         if availability_mode not in {"strict", "modeled"}:

@@ -8,7 +8,11 @@ from pathlib import Path
 
 from scanner.research import AssetIdentity
 from scanner.research_index.builder import SCHEMA_VERSION, IndexManifest
-from scanner.research_index.identity import canonicalize_identity, stable_asset_id
+from scanner.research_index.identity import (
+    canonical_exchange,
+    canonicalize_identity,
+    stable_asset_id,
+)
 from scanner.research_index.models import CandidateBatch, CandidateHit, CandidateQuery
 
 
@@ -64,6 +68,7 @@ class ResearchIndex:
             return {"status": "unavailable", "reason": "stable_identifier_required"}
         with self._connect() as connection:
             matches = []
+            unmatched = []
             for kind, value in identifiers:
                 row = connection.execute(
                     f"SELECT * FROM asset WHERE {kind}=? AND available_at<=?",  # noqa: S608
@@ -71,21 +76,34 @@ class ResearchIndex:
                 ).fetchone()
                 if row is not None:
                     matches.append(row)
+                else:
+                    unmatched.append(kind)
         if not matches:
             return {"status": "unavailable", "reason": "identity_not_visible_at_as_of"}
+        if unmatched:
+            return {
+                "status": "identity_conflict",
+                "reason": "supplied_identifier_not_indexed",
+                "conflicting_fields": sorted(unmatched),
+            }
         asset_ids = {row["asset_id"] for row in matches}
         if len(asset_ids) != 1:
             return {"status": "identity_conflict", "reason": "identifiers_resolve_differently"}
         row = matches[0]
         indexed = AssetIdentity.model_validate_json(row["identity_json"])
         comparable = ("ticker", "exchange", "mic", "isin", "wkn", "lei", "cik")
-        conflicts = [
-            field
-            for field in comparable
-            if getattr(identity, field) is not None
-            and getattr(indexed, field) is not None
-            and getattr(identity, field) != getattr(indexed, field)
-        ]
+        conflicts = []
+        for field in comparable:
+            supplied = getattr(identity, field)
+            stored = getattr(indexed, field)
+            if supplied is None or stored is None:
+                continue
+            if field == "exchange":
+                same = canonical_exchange(supplied) == canonical_exchange(stored)
+            else:
+                same = supplied == stored
+            if not same:
+                conflicts.append(field)
         if conflicts:
             return {
                 "status": "identity_conflict",
@@ -310,3 +328,48 @@ class ResearchIndex:
                 (asset_id, as_of.isoformat(), as_of.isoformat()),
             ).fetchall()
         return [json.loads(row["record_json"]) for row in rows]
+
+    def opportunity_evidence(self, identity, *, as_of):
+        """Return normalized news metadata without weakening point-in-time bounds."""
+        identity = canonicalize_identity(identity)
+        try:
+            asset_id = stable_asset_id(identity)
+        except ValueError:
+            return []
+        with self._connect() as connection:
+            rows = connection.execute(
+                """SELECT e.record_json FROM evidence e
+                WHERE e.asset_id=? AND e.kind='news' AND e.available_at<=?
+                  AND NOT EXISTS (
+                    SELECT 1 FROM evidence revision
+                    WHERE revision.asset_id=e.asset_id
+                      AND revision.supersedes_source_id=e.source_id
+                      AND revision.available_at<=?
+                  )
+                ORDER BY e.available_at,e.source_id""",
+                (asset_id, as_of.isoformat(), as_of.isoformat()),
+            ).fetchall()
+        records = []
+        for row in rows:
+            value = json.loads(row["record_json"])
+            facts = value.get("facts") or {}
+            source_type = facts.get("source_type")
+            if source_type is None:
+                # Version-3 indexes built before V2.5.2 only retain issuer/news.
+                # Issuer is safely PRIMARY; generic news cannot prove community
+                # separation and therefore remains SECONDARY.
+                source_type = "PRIMARY" if value.get("source_kind") == "issuer" else "SECONDARY"
+            events = facts.get("events") or []
+            records.append(
+                {
+                    "source_id": value.get("source_id"),
+                    "source_type": source_type,
+                    "url": value.get("url"),
+                    "title": value.get("title"),
+                    "event_type": events[0] if events else "unknown",
+                    "published_at": value.get("published_at"),
+                    "source_available_at": value.get("source_available_at"),
+                    "evidence_status": facts.get("evidence_status", "unknown"),
+                }
+            )
+        return records

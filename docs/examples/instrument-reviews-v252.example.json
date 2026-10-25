@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "records": [
+    {
+      "asset_id": "cik:0000000042",
+      "cik": "0000000042",
+      "ticker": "SYNTH",
+      "instrument_type": "operating_company",
+      "source_url": "https://www.sec.gov/Archives/example-source.json",
+      "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_retrieved_at": "2026-10-25T09:00:00+00:00",
+      "reviewer": "replace-with-reviewer",
+      "reviewed_at": "2026-10-25T10:00:00+00:00"
+    }
+  ]
+}
