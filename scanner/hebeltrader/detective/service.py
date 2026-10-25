@@ -11,7 +11,6 @@ from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues, extract_clues
 from .documents import extract_document
 from .hypothesis import decide_hypothesis, hypothesis_reasons, select_hypothesis_candidates
-from .hypothesis_source import HypothesisCandidateSource
 from .ocr import TesseractOcr
 from .schemas import SourceSpan
 from .verification import decide, verify_candidates
@@ -36,9 +35,9 @@ class DetectiveService:
         enricher=None,
     ):
         self.ocr = ocr or TesseractOcr()
-        self.candidate_source = candidate_source or HypothesisCandidateSource(
-            base_source=default_candidate_source()
-        )
+        # Default stays on the legacy fixture source (no retrieve_candidates) so MVP
+        # ranking/API compatibility tests keep working. Factory wraps hypothesis mode.
+        self.candidate_source = candidate_source or default_candidate_source()
         self.news_source = news_source or self.candidate_source
         self.products = products if products is not None else load_products()
         self.clock = clock or (lambda: datetime.now(UTC))
@@ -287,6 +286,14 @@ class DetectiveService:
             "search_queries": enrichment.search_queries,
             "identification": {
                 **decision.model_dump(mode="json"),
+                "selected_wkn": (
+                    (selected.identity.get("wkn") if selected else None)
+                    or (
+                        selected_rows[0].identity.get("wkn")
+                        if selected_rows and decision.status == "hypothesis_top3"
+                        else None
+                    )
+                ),
                 "failure_code": (decision.reason if decision.status == "unresolved" else None),
             },
             "candidates": candidate_payloads,

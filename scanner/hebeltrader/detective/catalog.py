@@ -17,6 +17,7 @@ def _evidence(source_id, published_at, facts):
         "published_at": published_at,
         "retrieved_at": published_at,
         "effective_at": published_at,
+        "source_available_at": published_at,
         "source_kind": "fixture",
         "facts": facts,
         "content_sha256": hashlib.sha256(payload).hexdigest(),

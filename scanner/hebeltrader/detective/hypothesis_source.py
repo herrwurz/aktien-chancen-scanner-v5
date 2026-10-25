@@ -16,6 +16,34 @@ from .retrieval import (
     retrieve_candidates,
 )
 
+_BASE_COVERAGE_KEYS = (
+    "kind",
+    "status",
+    "real_market_data",
+    "universe_total",
+    "data_age_seconds",
+    "generated_at",
+    "candidate_count",
+    "markets",
+    "general_market_coverage",
+    "blocker",
+    "error_code",
+    "sampling_strategy",
+    "search_scope",
+    "full_universe_size",
+    "listing_count",
+    "investigated_count",
+    "coverage_ratio",
+    "sector_available_count",
+    "missing_sector_rate",
+    "company_metrics_available_count",
+    "company_metrics_coverage_ratio",
+    "recall_unmeasurable",
+    "not_covered_markets",
+    "requests_attempted",
+    "cost_eur",
+)
+
 
 class HypothesisCandidateSource:
     """Stage-A source for usable top-3 hypotheses across EU curated + optional index/news."""
@@ -48,6 +76,74 @@ class HypothesisCandidateSource:
             "channel_limit": CHANNEL_LIMIT,
             "not_covered_note": "Curated DACH/EU seed universe; not complete market coverage",
         }
+        self._overlay_base_coverage()
+
+    def _overlay_base_coverage(self):
+        if self.base_source is None:
+            return
+        base_cov = getattr(self.base_source, "coverage", None) or {}
+        for key in _BASE_COVERAGE_KEYS:
+            if key in base_cov:
+                self.coverage[key] = base_cov[key]
+
+    def _ingest_base_catalog(self, add, clues):
+        """Warm live/cached/fixture bases and fold their identities into Stage A."""
+        if self.base_source is None:
+            return 0
+        if hasattr(self.base_source, "retrieve_candidates") and self.index is None:
+            report = self.base_source.retrieve_candidates(clues, self._point_in_time)
+            for rank, hit in enumerate(report.candidates, 1):
+                add(
+                    hit.identity,
+                    rrf=hit.rrf_score,
+                    structured=hit.structured_score,
+                    ranks={**hit.channel_ranks, "base": rank},
+                    uncertainties=hit.uncertainties,
+                    reasons=[f"base_rank:{rank}"],
+                )
+            self._overlay_base_coverage()
+            return len(report.candidates)
+        if not hasattr(self.base_source, "load_candidates"):
+            return 0
+        rows = self.base_source.load_candidates()
+        self._overlay_base_coverage()
+        count = 0
+        for rank, raw in enumerate(rows, 1):
+            identity = AssetIdentity.model_validate(raw["identity"])
+            facts = {}
+            for evidence in raw.get("evidence") or []:
+                for key, value in (evidence.get("facts") or {}).items():
+                    if isinstance(value, list):
+                        facts.setdefault(key, [])
+                        facts[key].extend(value)
+            score = 5
+            reasons = ["base_catalog"]
+            clue_sectors = {
+                clue.value or clue.normalized
+                for clue in clues
+                if clue.category == "sectors" and clue.instrument_scope == "stock"
+            }
+            clue_countries = {
+                clue.value or clue.normalized
+                for clue in clues
+                if clue.category == "countries" and clue.instrument_scope == "stock"
+            }
+            overlap = clue_sectors & set(facts.get("sectors") or [])
+            if overlap:
+                score += 40
+                reasons.append(f"sector:{sorted(overlap)[0]}")
+            country_overlap = clue_countries & set(facts.get("countries") or [])
+            if country_overlap:
+                score += 20
+                reasons.append(f"country:{sorted(country_overlap)[0]}")
+            add(
+                identity,
+                structured=score,
+                ranks={"base_catalog": rank},
+                reasons=reasons,
+            )
+            count += 1
+        return count
 
     def retrieve_candidates(self, clues, point_in_time, *, search_queries=None):
         search_queries = search_queries or []
@@ -73,8 +169,11 @@ class HypothesisCandidateSource:
             row["reasons"].extend(reasons or [])
             row["uncertainties"].extend(uncertainties or [])
 
+        base_count = self._ingest_base_catalog(add, clues)
+
         # Curated EU/DACH structural matches.
-        for identity, score, reasons in filter_assets_by_clues(self.eu_assets, clues):
+        eu_matches = filter_assets_by_clues(self.eu_assets, clues)
+        for identity, score, reasons in eu_matches:
             add(
                 identity,
                 structured=score,
@@ -159,33 +258,55 @@ class HypothesisCandidateSource:
             status = "insufficiently_constrained"
         else:
             status = "retrieval_missed"
+
+        if index_report is not None:
+            full_universe = index_report.full_universe_size
+            visible_universe = index_report.visible_universe_size
+        elif self.base_source is not None and "universe_total" in (
+            getattr(self.base_source, "coverage", {}) or {}
+        ):
+            full_universe = self.base_source.coverage["universe_total"]
+            visible_universe = self.base_source.coverage.get("investigated_count", full_universe)
+        elif self.base_source is not None and "candidate_count" in (
+            getattr(self.base_source, "coverage", {}) or {}
+        ):
+            full_universe = self.base_source.coverage["candidate_count"]
+            visible_universe = full_universe
+        else:
+            full_universe = len(self.eu_assets)
+            visible_universe = len(self.eu_assets)
+
         self.coverage.update(
-            status=status,
-            visible_universe_size=len(self.eu_assets)
-            + (index_report.visible_universe_size if index_report else 0),
-            full_universe_size=len(self.eu_assets)
-            + (index_report.full_universe_size if index_report else 0),
+            visible_universe_size=visible_universe,
+            full_universe_size=full_universe,
+            eu_universe_size=len(self.eu_assets),
             investigated_count=len(limited),
             matched_before_limit=len(candidates),
             channel_limit=CHANNEL_LIMIT,
             channel_counts={
-                "eu_curated": len(filter_assets_by_clues(self.eu_assets, clues)),
+                "eu_curated": len(eu_matches),
                 "news": len(news_hits),
                 "index": len(index_report.candidates) if index_report else 0,
+                "base_catalog": base_count,
             },
             channel_matched_before_limit={
-                "eu_curated": len(filter_assets_by_clues(self.eu_assets, clues)),
+                "eu_curated": len(eu_matches),
                 "news": len(news_hits),
+                "base_catalog": base_count,
             },
             stage_a_asset_ids=[item.asset_id for item in limited],
             search_queries=search_queries,
             coverage_warnings=(index_report.coverage_warnings if index_report else []),
         )
+        # Preserve authoritative base labels (fixture_limited / real_archived / …).
+        self._overlay_base_coverage()
+        if "status" not in (getattr(self.base_source, "coverage", {}) or {}):
+            self.coverage["status"] = status
         return RetrievalReport(
             status=status,
             candidates=limited,
-            full_universe_size=self.coverage["full_universe_size"],
-            visible_universe_size=self.coverage["visible_universe_size"],
+            full_universe_size=full_universe,
+            visible_universe_size=visible_universe,
             matched_before_limit=len(candidates),
             channel_limit=CHANNEL_LIMIT,
             channel_counts=self.coverage["channel_counts"],
