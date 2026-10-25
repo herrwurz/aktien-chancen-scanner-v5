@@ -14,6 +14,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--text-file", type=Path)
     parser.add_argument("--image", type=Path)
+    parser.add_argument("--pdf", type=Path)
     parser.add_argument("--image-media-type", choices=("image/png", "image/jpeg", "image/webp"))
     parser.add_argument("--publication-at")
     parser.add_argument(
@@ -39,6 +40,8 @@ def main(argv=None):
             base64.b64encode(args.image.read_bytes()).decode() if args.image else None
         ),
         screenshot_media_type=args.image_media_type,
+        pdf_base64=(base64.b64encode(args.pdf.read_bytes()).decode() if args.pdf else None),
+        pdf_media_type="application/pdf" if args.pdf else None,
         publication_at=args.publication_at,
     )
     values = {

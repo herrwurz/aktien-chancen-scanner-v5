@@ -1,4 +1,7 @@
+import hashlib
 import re
+
+from .schemas import AtomicClue
 
 ISIN = re.compile(r"(?<![A-Z0-9])([A-Z]{2}[A-Z0-9]{9}[0-9])(?![A-Z0-9])", re.I)
 EXPLICIT_WKN = re.compile(
@@ -16,6 +19,11 @@ FINANCIAL_METRIC = re.compile(
     re.I,
 )
 DATE_HINT = re.compile(r"\b(?:Q[1-4]\s+20\d{2}|20\d{2}|\d{1,2}\.\d{1,2}\.20\d{2})\b", re.I)
+PROMOTIONAL_RETURN = re.compile(
+    r"(?P<value>\d{1,3}(?:\.\d{3})+|\d+(?:[,.]\d+)?)\s*%"
+    r"(?=[^.!?]{0,45}(?:gewinnchance|rendite|call|optionsschein))",
+    re.I,
+)
 
 LEXICONS = {
     "sectors": {
@@ -137,3 +145,100 @@ def extract_clues(text):
         "matched_phrases": sorted(matched_phrases),
         "normalized_text": normalized,
     }
+
+
+def _span_for(position, spans):
+    for span in spans:
+        if span.start <= position < span.end:
+            return span
+    return spans[0] if spans else None
+
+
+def _atomic(category, normalized, match, spans, **values):
+    span = _span_for(match.start(), spans)
+    source_id = span.source_id if span else "input"
+    page = span.page if span else None
+    payload = "|".join(
+        (source_id, str(page), str(match.start()), str(match.end()), category, normalized)
+    )
+    return AtomicClue(
+        clue_id=hashlib.sha256(payload.encode()).hexdigest(),
+        category=category,
+        normalized=normalized,
+        quote=match.group(0),
+        source_id=source_id,
+        page=page,
+        start=match.start(),
+        end=match.end(),
+        **values,
+    )
+
+
+def extract_atomic_clues(text, spans):
+    """Extract auditable clues while keeping promotional returns out of fundamentals."""
+    clues = []
+    promotional_ranges = []
+    for match in PROMOTIONAL_RETURN.finditer(text):
+        value = match.group("value").replace(".", "").replace(",", ".")
+        promotional_ranges.append((match.start(), match.end()))
+        clues.append(
+            _atomic(
+                "promotional_derivative_return",
+                "promotional_derivative_return",
+                match,
+                spans,
+                instrument_scope="promotional",
+                value=value,
+                unit="percent",
+                confidence_class="high",
+            )
+        )
+    for match in FINANCIAL_METRIC.finditer(text):
+        if any(start <= match.start() < end for start, end in promotional_ranges):
+            continue
+        clues.append(
+            _atomic(
+                "financial_metric",
+                match.group("metric").casefold(),
+                match,
+                spans,
+                instrument_scope="stock",
+                value=match.group("value").replace(",", "."),
+                unit=match.group("unit").casefold(),
+                confidence_class="high",
+            )
+        )
+    for match in EXPLICIT_WKN.finditer(text):
+        label = match.group("label").casefold()
+        scope = "derivative" if label in {"call", "optionsschein", "turbo"} else "stock"
+        value = match.group("value").upper()
+        clues.append(
+            _atomic(
+                "identifier",
+                f"{scope}_wkn",
+                match,
+                spans,
+                instrument_scope=scope,
+                value=value,
+                confidence_class="high",
+            )
+        )
+    legacy = extract_clues(text)
+    for group, values in legacy["structured"].items():
+        for value in values:
+            phrase_match = None
+            for phrase in LEXICONS[group][value]:
+                phrase_match = re.search(re.escape(phrase), text, re.I)
+                if phrase_match:
+                    break
+            if phrase_match:
+                clues.append(
+                    _atomic(
+                        group,
+                        value,
+                        phrase_match,
+                        spans,
+                        instrument_scope="stock",
+                    )
+                )
+    return sorted(clues, key=lambda clue: (clue.start, clue.category, clue.clue_id))
