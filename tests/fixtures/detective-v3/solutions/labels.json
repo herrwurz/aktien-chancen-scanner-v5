@@ -1,0 +1,15 @@
+{
+  "schema_version": 3,
+  "cases": {
+    "0d7c4a91": {"asset_id": "synthetic:001", "forbidden_identifiers": ["SYN001"]},
+    "18af03c2": {"asset_id": "synthetic:002", "forbidden_identifiers": ["SYN002"]},
+    "24be91d0": {"asset_id": "synthetic:003", "forbidden_identifiers": ["SYN003"]},
+    "39c16f74": {"asset_id": "synthetic:004", "forbidden_identifiers": ["SYN004"]},
+    "45d807ab": {"asset_id": "synthetic:005", "forbidden_identifiers": ["SYN005"]},
+    "56ea2c90": {"asset_id": "synthetic:006", "forbidden_identifiers": ["SYN006"]},
+    "61bf930d": {"asset_id": "synthetic:007", "forbidden_identifiers": ["SYN007"]},
+    "73c209e1": {"asset_id": "synthetic:008", "forbidden_identifiers": ["SYN008"]},
+    "84da10f3": {"asset_id": "synthetic:009", "forbidden_identifiers": ["SYN009"], "expected_in_universe": false},
+    "95eb21a4": {"asset_id": "synthetic:010", "forbidden_identifiers": ["SYN010"], "expected_in_universe": false}
+  }
+}

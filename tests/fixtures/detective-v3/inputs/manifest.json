@@ -1,0 +1,16 @@
+{
+  "schema_version": 3,
+  "corpus_kind": "synthetic_functional",
+  "cases": [
+    {"case_id": "0d7c4a91", "teaser_text": "US-Pharmakonzern meldet eine Prognoseanhebung.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "18af03c2", "teaser_text": "Deutscher Netzbetreiber meldet einen Großauftrag.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "24be91d0", "teaser_text": "Kanadischer Goldproduzent mit steigendem Umsatz.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "39c16f74", "teaser_text": "US-Versicherer erhöht die Dividende.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "45d807ab", "teaser_text": "Europäischer Sportartikelhersteller hebt die Prognose an.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "56ea2c90", "teaser_text": "US-Medizintechnikunternehmen erhält eine Zulassung.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "61bf930d", "teaser_text": "Landmaschinenhersteller meldet steigende Gewinne.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "73c209e1", "teaser_text": "Laborunternehmen kündigt eine Übernahme an.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "84da10f3", "teaser_text": "Einmalige Chance mit 1.717 Prozent Rendite.", "publication_at": "2025-01-10T12:00:00Z"},
+    {"case_id": "95eb21a4", "teaser_text": "Europäisches Unternehmen ohne weitere überprüfbare Angaben.", "publication_at": "2025-01-10T12:00:00Z"}
+  ]
+}
