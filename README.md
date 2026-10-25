@@ -30,6 +30,11 @@ technische Merkmale, Point-in-Time-Katalysatoren und nicht ausführbare Risikosz
 Ergebnis ist Research (`candidate_research`, `watch_only` oder `unavailable`), keine
 Kaufempfehlung, Wahrscheinlichkeit oder historische Rendite.
 
+Die [V2.6-Marktabdeckung](docs/first-usable-stock-scanner-v26.md) erweitert diesen Pfad in
+deterministischen, quotengeschützten Seiten auf zunächst 100 reale US-Aktien. Sie dokumentiert
+Korrekturfenster, archivweite Revisionen, den getrennten SPY-Benchmark und den weiterhin
+geschlossenen offiziellen Kalender-Gate.
+
 ## MVP
 - Python 3.12, FastAPI, PostgreSQL, SQLAlchemy/Alembic, pytest.
 - Isolated Docker Compose stack alongside existing Immich; no changes to Immich resources.

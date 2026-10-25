@@ -249,6 +249,40 @@ class MarketDataArchive:
             ).fetchone()
         return row["latest"]
 
+    def instrument_coverage(self, asset_id: str, provider: str) -> dict:
+        """Summarize the complete archive, rather than only the latest fetched window."""
+        with self._connect() as db:
+            bars = db.execute(
+                """SELECT COUNT(DISTINCT session_date) AS sessions,
+                          COUNT(*) AS revisions,
+                          SUM(CASE WHEN revision > 1 THEN 1 ELSE 0 END) AS revised,
+                          MIN(session_date) AS first_session,
+                          MAX(session_date) AS latest_session
+                   FROM bar_revision WHERE asset_id=? AND provider=?""",
+                (asset_id, provider),
+            ).fetchone()
+            actions = db.execute(
+                """SELECT COUNT(*) AS actions FROM corporate_action
+                   WHERE asset_id=? AND provider=?""",
+                (asset_id, provider),
+            ).fetchone()
+        return {
+            "session_count": bars["sessions"],
+            "revision_count": bars["revisions"],
+            "revised_session_count": bars["revised"] or 0,
+            "corporate_action_count": actions["actions"],
+            "first_session": (
+                datetime.strptime(bars["first_session"], "%Y-%m-%d").date()
+                if bars["first_session"]
+                else None
+            ),
+            "latest_session": (
+                datetime.strptime(bars["latest_session"], "%Y-%m-%d").date()
+                if bars["latest_session"]
+                else None
+            ),
+        }
+
     def latest_storage_time(self) -> datetime:
         """Return the deterministic upper visibility bound of the immutable archive."""
         with self._connect() as db:

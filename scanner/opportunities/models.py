@@ -75,6 +75,11 @@ class RiskScenario(StrictModel):
     executable: Literal[False] = False
 
 
+class StrategyChannel(StrictModel):
+    status: Literal["inactive", "triggered", "awaiting_confirmation"]
+    reasons: list[str]
+
+
 class OpportunityCandidate(StrictModel):
     asset_id: str
     ticker: str | None
@@ -90,6 +95,7 @@ class OpportunityCandidate(StrictModel):
     features: TechnicalFeatures | None
     catalysts: list[CatalystEvidence]
     risk: RiskScenario | None
+    strategy_channels: dict[str, StrategyChannel]
     historical_availability_verified: Literal[False] = False
     training_eligible: Literal[False] = False
     probability_claimed: Literal[False] = False

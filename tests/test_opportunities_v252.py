@@ -357,6 +357,40 @@ def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
     assert candidate.training_eligible is False
     assert "benchmark_unavailable" in candidate.uncertainties
     assert "calendar_unverified" in candidate.uncertainties
+    assert candidate.strategy_channels["technical_momentum"].status == "triggered"
+    assert candidate.strategy_channels["catalyst_market_confirmation"].status == "inactive"
+
+
+def test_catalyst_requires_independent_market_confirmation():
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    bars = feature_bars(sessions=250, final_close="100", final_volume="100")
+    as_of = datetime.combine(
+        date.fromisoformat(bars[-1]["session_date"]), datetime.max.time(), tzinfo=UTC
+    )
+    catalyst = {
+        "source_id": "issuer:contract",
+        "source_type": "PRIMARY",
+        "url": "https://issuer.example/contract",
+        "title": "Contract announcement",
+        "event_type": "major_contract",
+        "published_at": as_of.isoformat(),
+        "source_available_at": as_of.isoformat(),
+        "evidence_status": "issuer_publication",
+    }
+
+    result = evaluate_candidate(
+        stock_identity(),
+        bars,
+        as_of=as_of,
+        catalysts=[catalyst],
+        policy=OpportunityPolicy(min_median_dollar_volume=Decimal("1")),
+    )
+
+    assert result.status == "watch_only"
+    catalyst_channel = result.strategy_channels["catalyst_market_confirmation"]
+    assert catalyst_channel.status == "awaiting_confirmation"
+    assert result.strategy_channels["technical_momentum"].status == "inactive"
 
 
 @pytest.mark.parametrize(
