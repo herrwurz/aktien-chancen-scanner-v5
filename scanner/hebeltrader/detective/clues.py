@@ -14,7 +14,9 @@ NUMBER_UNIT = re.compile(
     r"\b(\d+(?:[.,]\d+)?)\s*(mrd\.?|mio\.?|millionen?|milliarden?|eur|usd)\b", re.I
 )
 PERCENT_TOKEN = r"(?:%|prozent)"
-PROMO_CUE = r"(?:gewinnchance|rendite|call|optionsschein|potenzial|chance)"
+PROMO_CUE = (
+    r"(?:gewinnchance|renditechance|rendite|call|optionsschein|hebelprodukt|potenzial|chance)"
+)
 FINANCIAL_METRIC = re.compile(
     rf"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b[^\d%]{{0,30}}"
     rf"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>{PERCENT_TOKEN}|mrd\.?|mio\.?)",
@@ -67,7 +69,12 @@ LEXICONS = {
         "major_contract": ("großauftrag", "bedeutender auftrag", "major contract"),
         "regulatory_decision": ("zulassung", "regulatorische entscheidung"),
         "management_change": ("managementwechsel", "ceo-wechsel", "vorstandswechsel"),
-        "share_buyback": ("aktienrückkauf", "share buyback"),
+        "share_buyback": (
+            "aktienrückkäufen",
+            "aktienrückkäufe",
+            "aktienrückkauf",
+            "share buyback",
+        ),
         "capital_action": ("kapitalmaßnahme", "kapitalerhöhung"),
     },
     "countries": {

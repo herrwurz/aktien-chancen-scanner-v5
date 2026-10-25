@@ -117,12 +117,32 @@ def test_promotional_cue_before_percentage_and_negated_stock_clue_stay_separate(
         ("Gewinnchance von 1.717 Prozent", "1717"),
         ("1.717 % Potenzial!", "1717"),
         ("2.631 Prozent mit diesem Call", "2631"),
+        (
+            "Mit dem empfohlenen Hebelprodukt winkt eine Renditechance von bis zu 1.900 Prozent.",
+            "1900",
+        ),
     ],
 )
 def test_promotional_returns_accept_prozent_and_potenzial_chance_cues(text, expected):
     clues = extract_atomic_clues(text, [SourceSpan(source_id="input", start=0, end=len(text))])
     promotional = [item for item in clues if item.category == "promotional_derivative_return"]
     assert [item.value for item in promotional] == [expected]
+    assert not any(item.category == "financial_metric" for item in clues)
+
+
+def test_turnaround_teaser_keeps_buyback_and_excludes_promotional_1900():
+    text = (
+        "Ein internationaler Branchenriese sendet mit milliardenschweren Aktienrückkäufen "
+        "ein Signal. Steigende Gewinne und eine Renditechance von bis zu 1.900 Prozent."
+    )
+    clues = extract_atomic_clues(text, [SourceSpan(source_id="input", start=0, end=len(text))])
+    assert any(item.category == "events" and item.value == "share_buyback" for item in clues)
+    assert any(
+        item.category == "fact_claims" and item.value == "net_income_increase" for item in clues
+    )
+    assert any(
+        item.category == "promotional_derivative_return" and item.value == "1900" for item in clues
+    )
     assert not any(item.category == "financial_metric" for item in clues)
 
 
