@@ -400,6 +400,9 @@ def test_candidate_hard_gates_fail_closed(
 
     assert candidate.status == "unavailable"
     assert expected_gate in candidate.failed_gates
+    if expected_gate == "insufficient_liquidity":
+        assert candidate.features is not None
+        assert candidate.risk is None
 
 
 def test_missing_or_late_news_never_creates_a_confirmed_catalyst():

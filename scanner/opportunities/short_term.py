@@ -37,6 +37,7 @@ def _unavailable(
     gates: list[str],
     *,
     uncertainties: list[str] | None = None,
+    features=None,
 ) -> OpportunityCandidate:
     return OpportunityCandidate(
         asset_id=_asset_id(identity),
@@ -50,7 +51,7 @@ def _unavailable(
         selection_reasons=[],
         failed_gates=sorted(set(gates)),
         uncertainties=sorted(set(uncertainties or [])),
-        features=None,
+        features=features,
         catalysts=[],
         risk=None,
     )
@@ -106,8 +107,20 @@ def evaluate_candidate(
                     "benchmark_status": "available",
                 }
             )
+    uncertainties: list[str] = []
+    if identity.instrument_type != "operating_company":
+        uncertainties.append("instrument_type_unverified")
+    if features.benchmark_status == "unavailable":
+        uncertainties.append("benchmark_unavailable")
+    if any(row.get("session_end_status") != "verified_exchange_calendar" for row in bounded):
+        uncertainties.append("calendar_unverified")
     if features.median_dollar_volume_20 < policy.min_median_dollar_volume:
-        return _unavailable(identity, ["insufficient_liquidity"])
+        return _unavailable(
+            identity,
+            ["insufficient_liquidity"],
+            uncertainties=uncertainties,
+            features=features,
+        )
 
     selected = select_catalysts(catalysts, signal_at=cutoff)
     score = 0
@@ -140,13 +153,6 @@ def evaluate_candidate(
         )
     if features.atr_percent > policy.high_atr_percent:
         award(-2, "high_volatility")
-    uncertainties: list[str] = []
-    if identity.instrument_type != "operating_company":
-        uncertainties.append("instrument_type_unverified")
-    if features.benchmark_status == "unavailable":
-        uncertainties.append("benchmark_unavailable")
-    if any(row.get("session_end_status") != "verified_exchange_calendar" for row in bounded):
-        uncertainties.append("calendar_unverified")
 
     triggers: list[str] = []
     if features.volume_ratio >= policy.volume_spike_ratio:
