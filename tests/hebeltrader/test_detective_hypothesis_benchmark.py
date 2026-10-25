@@ -4,7 +4,7 @@ from pathlib import Path
 
 from scanner.hebeltrader.detective.benchmark_scan import scan_manifest
 from scanner.hebeltrader.detective.clue_enrichment import HeuristicClueEnricher
-from scanner.hebeltrader.detective.eu_universe import load_eu_dach_assets
+from scanner.hebeltrader.detective.eu_universe import load_curated_hypothesis_assets
 from scanner.hebeltrader.detective.hypothesis_source import HypothesisCandidateSource
 from scanner.hebeltrader.detective.news_channel import FixtureNewsSearcher
 from scanner.hebeltrader.detective.service import DetectiveService
@@ -16,7 +16,7 @@ NOW = datetime(2025, 6, 5, 12, tzinfo=UTC)
 def _service():
     news = json.loads((ROOT / "fixture_news.json").read_text(encoding="utf-8"))["items"]
     source = HypothesisCandidateSource(
-        eu_assets=load_eu_dach_assets(),
+        eu_assets=load_curated_hypothesis_assets(),
         news_searcher=FixtureNewsSearcher(news),
     )
     return DetectiveService(

@@ -9,7 +9,7 @@ from threading import Lock
 from scanner.hebeltrader.detective.catalog import default_candidate_source, load_products
 from scanner.hebeltrader.detective.clue_enrichment import build_enricher
 from scanner.hebeltrader.detective.eu_universe import (
-    load_eu_dach_assets,
+    load_curated_hypothesis_assets,
     load_openfigi_identity_records,
     merge_universes,
 )
@@ -134,7 +134,7 @@ def _fixture_news_searcher(enabled: bool):
 
 
 def _eu_assets(settings):
-    assets = load_eu_dach_assets()
+    assets = load_curated_hypothesis_assets()
     openfigi = getattr(settings, "detective_openfigi_identities", None)
     if openfigi is not None and Path(openfigi).is_file():
         assets = merge_universes(assets, load_openfigi_identity_records(Path(openfigi)))

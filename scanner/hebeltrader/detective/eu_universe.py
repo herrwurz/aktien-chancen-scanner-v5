@@ -1,4 +1,4 @@
-"""Curated DACH/EU operating-company universe for hypothesis retrieval."""
+"""Curated operating-company universes for hypothesis retrieval (EU/DACH + US seed)."""
 
 from __future__ import annotations
 
@@ -15,28 +15,58 @@ from scanner.research_index.identity import stable_asset_id
 from .geo import country_matches
 
 DEFAULT_AS_OF = datetime(2024, 1, 1, 12, tzinfo=UTC)
-PACKAGE_DATA = Path(__file__).resolve().parent / "eu_dach_universe.json"
-TEST_FIXTURE = (
-    Path(__file__).resolve().parents[3]
-    / "tests/fixtures/detective-hypothesis/eu_dach_universe.json"
-)
+PACKAGE_DIR = Path(__file__).resolve().parent
+TEST_DIR = Path(__file__).resolve().parents[3] / "tests/fixtures/detective-hypothesis"
+PACKAGE_DATA = PACKAGE_DIR / "eu_dach_universe.json"
+TEST_FIXTURE = TEST_DIR / "eu_dach_universe.json"
 PACKAGE_FIXTURE = PACKAGE_DATA if PACKAGE_DATA.is_file() else TEST_FIXTURE
+US_PACKAGE_DATA = PACKAGE_DIR / "us_seed_universe.json"
+US_TEST_FIXTURE = TEST_DIR / "us_seed_universe.json"
+US_PACKAGE_FIXTURE = US_PACKAGE_DATA if US_PACKAGE_DATA.is_file() else US_TEST_FIXTURE
 
 
-def load_eu_dach_assets(path: Path | None = None) -> list[AssetIdentity]:
-    target = path or PACKAGE_FIXTURE
-    payload = json.loads(target.read_text(encoding="utf-8"))
+def _load_curated_assets(
+    path: Path,
+    *,
+    source_id: str,
+    default_available_at: datetime = DEFAULT_AS_OF,
+) -> list[AssetIdentity]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
     assets = []
     for row in payload["assets"]:
         values = dict(row)
         values.setdefault("asset_type", "stock")
         values.setdefault("instrument_type", "operating_company")
         values.setdefault("instrument_type_status", "source_verified")
-        values.setdefault("source_id", "eu-dach-curated-v1")
-        values.setdefault("source_available_at", DEFAULT_AS_OF.isoformat())
-        values.setdefault("retrieved_at", DEFAULT_AS_OF.isoformat())
+        values.setdefault("source_id", source_id)
+        values.setdefault("source_available_at", default_available_at.isoformat())
+        values.setdefault("retrieved_at", values.get("source_available_at"))
         assets.append(AssetIdentity.model_validate(values))
     return assets
+
+
+def load_eu_dach_assets(path: Path | None = None) -> list[AssetIdentity]:
+    return _load_curated_assets(
+        path or PACKAGE_FIXTURE,
+        source_id="eu-dach-curated-v1",
+    )
+
+
+def load_us_seed_assets(path: Path | None = None) -> list[AssetIdentity]:
+    """Small US seed for hypothesis tests (JNJ/JPM/COST + sector peers)."""
+    return _load_curated_assets(
+        path or US_PACKAGE_FIXTURE,
+        source_id="us-seed-curated-v1",
+        default_available_at=datetime(2020, 1, 2, 12, tzinfo=UTC),
+    )
+
+
+def load_curated_hypothesis_assets(
+    *,
+    eu_path: Path | None = None,
+    us_path: Path | None = None,
+) -> list[AssetIdentity]:
+    return merge_universes(load_eu_dach_assets(eu_path), load_us_seed_assets(us_path))
 
 
 def load_openfigi_identity_records(path: Path) -> list[AssetIdentity]:
@@ -88,13 +118,14 @@ def assets_for_research_index(
     *,
     base_assets: list[AssetIdentity] | None = None,
     eu_path: Path | None = None,
+    us_path: Path | None = None,
     openfigi_path: Path | None = None,
 ) -> list[AssetIdentity]:
-    """Merge SEC/base assets with curated DACH/EU seed and optional OpenFIGI cache."""
+    """Merge SEC/base assets with curated EU/US seeds and optional OpenFIGI cache."""
     groups: list[list[AssetIdentity]] = []
     if base_assets:
         groups.append(list(base_assets))
-    groups.append(load_eu_dach_assets(eu_path))
+    groups.append(load_curated_hypothesis_assets(eu_path=eu_path, us_path=us_path))
     if openfigi_path is not None and Path(openfigi_path).is_file():
         groups.append(load_openfigi_identity_records(Path(openfigi_path)))
     return merge_universes(*groups)
@@ -108,12 +139,14 @@ def build_index_with_eu_universe(
     facts=None,
     news=None,
     eu_path: Path | None = None,
+    us_path: Path | None = None,
     openfigi_path: Path | None = None,
 ):
-    """Build a research index that includes curated DACH/EU (+ optional OpenFIGI) assets."""
+    """Build a research index that includes curated EU/US (+ optional OpenFIGI) assets."""
     merged = assets_for_research_index(
         base_assets=assets or [],
         eu_path=eu_path,
+        us_path=us_path,
         openfigi_path=openfigi_path,
     )
     return build_index(
@@ -149,9 +182,12 @@ def _sector_overlap(clue_sectors: set[str], asset_sector: str | None) -> bool:
 
 
 def filter_assets_by_clues(
-    assets: list[AssetIdentity], clues
+    assets: list[AssetIdentity],
+    clues,
+    *,
+    as_of: datetime | None = None,
 ) -> list[tuple[AssetIdentity, int, list[str]]]:
-    """Score curated EU assets against structured stock clues."""
+    """Score curated assets against structured stock clues (point-in-time aware)."""
     sectors = {
         clue.value or clue.normalized
         for clue in clues
@@ -168,6 +204,8 @@ def filter_assets_by_clues(
     }
     ranked = []
     for asset in assets:
+        if as_of is not None and not asset.historically_available_at(as_of):
+            continue
         score = 0
         reasons = []
         if sectors and _sector_overlap(sectors, asset.sector):

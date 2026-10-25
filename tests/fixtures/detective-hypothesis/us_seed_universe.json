@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "kind": "curated_us_hypothesis_seed",
+  "license_note": "Public listing identifiers for offline hypothesis tests; not a licensed market-data feed. OpenFIGI names used only as identity labels.",
+  "assets": [
+    {
+      "name": "Johnson & Johnson",
+      "ticker": "JNJ",
+      "wkn": "853260",
+      "isin": "US4781601046",
+      "cik": "0000200406",
+      "country": "US",
+      "sector": "healthcare",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "UnitedHealth Group Inc",
+      "ticker": "UNH",
+      "wkn": "A0YJQU",
+      "isin": "US91324P1021",
+      "cik": "0000731766",
+      "country": "US",
+      "sector": "healthcare",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "Pfizer Inc",
+      "ticker": "PFE",
+      "wkn": "852009",
+      "isin": "US7170811035",
+      "cik": "0000078003",
+      "country": "US",
+      "sector": "pharma",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "JPMorgan Chase & Co",
+      "ticker": "JPM",
+      "wkn": "850628",
+      "isin": "US46625H1005",
+      "cik": "0000019617",
+      "country": "US",
+      "sector": "finance",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "Bank of America Corp",
+      "ticker": "BAC",
+      "wkn": "858388",
+      "isin": "US0605051046",
+      "cik": "0000070858",
+      "country": "US",
+      "sector": "finance",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "Goldman Sachs Group Inc",
+      "ticker": "GS",
+      "wkn": "940876",
+      "isin": "US38141G1040",
+      "cik": "0000886982",
+      "country": "US",
+      "sector": "finance",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "Costco Wholesale Corp",
+      "ticker": "COST",
+      "wkn": "888513",
+      "isin": "US22160K1051",
+      "cik": "0000909832",
+      "country": "US",
+      "sector": "retail",
+      "exchange": "NASDAQ",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "Walmart Inc",
+      "ticker": "WMT",
+      "wkn": "860807",
+      "isin": "US9311421039",
+      "cik": "0000104169",
+      "country": "US",
+      "sector": "retail",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    },
+    {
+      "name": "Target Corp",
+      "ticker": "TGT",
+      "wkn": "856073",
+      "isin": "US87612E1064",
+      "cik": "0000027419",
+      "country": "US",
+      "sector": "retail",
+      "exchange": "NYSE",
+      "source_available_at": "2020-01-02T12:00:00+00:00"
+    }
+  ]
+}

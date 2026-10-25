@@ -7,7 +7,7 @@ from datetime import timedelta
 from scanner.research import AssetIdentity
 from scanner.research_index.identity import stable_asset_id
 
-from .eu_universe import filter_assets_by_clues, load_eu_dach_assets
+from .eu_universe import filter_assets_by_clues, load_curated_hypothesis_assets
 from .news_channel import match_news_to_assets
 from .retrieval import (
     CHANNEL_LIMIT,
@@ -46,9 +46,9 @@ _BASE_COVERAGE_KEYS = (
 
 
 class HypothesisCandidateSource:
-    """Stage-A source for usable top-3 hypotheses across EU curated + optional index/news."""
+    """Stage-A source for usable top-3 hypotheses across curated EU/US + optional index/news."""
 
-    source_id = "hypothesis-eu-dach-v1"
+    source_id = "hypothesis-curated-v1"
 
     def __init__(
         self,
@@ -59,7 +59,10 @@ class HypothesisCandidateSource:
         stage_a_limit=50,
         base_source=None,
     ):
-        self.eu_assets = list(eu_assets if eu_assets is not None else load_eu_dach_assets())
+        # Parameter name kept for callers; payload is the merged curated hypothesis universe.
+        self.eu_assets = list(
+            eu_assets if eu_assets is not None else load_curated_hypothesis_assets()
+        )
         self.index = index
         self.news_searcher = news_searcher
         self.stage_a_limit = stage_a_limit
@@ -69,12 +72,15 @@ class HypothesisCandidateSource:
         self._evidence = {stable_asset_id(asset): [] for asset in self.eu_assets}
         self.coverage = {
             "status": "not_searched",
-            "kind": "hypothesis_eu_dach",
+            "kind": "hypothesis_curated_eu_us",
             "real_market_data": False,
             "eu_universe_size": len(self.eu_assets),
+            "curated_universe_size": len(self.eu_assets),
             "stage_a_limit": stage_a_limit,
             "channel_limit": CHANNEL_LIMIT,
-            "not_covered_note": "Curated DACH/EU seed universe; not complete market coverage",
+            "not_covered_note": (
+                "Curated EU/DACH + US seed universe; not complete market coverage"
+            ),
         }
         self._overlay_base_coverage()
 
@@ -171,13 +177,13 @@ class HypothesisCandidateSource:
 
         base_count = self._ingest_base_catalog(add, clues)
 
-        # Curated EU/DACH structural matches.
-        eu_matches = filter_assets_by_clues(self.eu_assets, clues)
+        # Curated EU/DACH + US seed structural matches (point-in-time filtered).
+        eu_matches = filter_assets_by_clues(self.eu_assets, clues, as_of=point_in_time)
         for identity, score, reasons in eu_matches:
             add(
                 identity,
                 structured=score,
-                ranks={"eu_sector": 1},
+                ranks={"curated_sector": 1, "eu_sector": 1},
                 reasons=reasons,
             )
 
@@ -286,12 +292,14 @@ class HypothesisCandidateSource:
             matched_before_limit=len(candidates),
             channel_limit=CHANNEL_LIMIT,
             channel_counts={
+                "curated": len(eu_matches),
                 "eu_curated": len(eu_matches),
                 "news": len(news_hits),
                 "index": len(index_report.candidates) if index_report else 0,
                 "base_catalog": base_count,
             },
             channel_matched_before_limit={
+                "curated": len(eu_matches),
                 "eu_curated": len(eu_matches),
                 "news": len(news_hits),
                 "base_catalog": base_count,
@@ -330,11 +338,13 @@ class HypothesisCandidateSource:
             rows = self.base_source.evidence_for(identity)
             if rows:
                 return rows
-        # Synthesize minimal sector/country evidence for curated EU identities.
+        # Synthesize minimal sector/country evidence for curated seed identities.
         asset_id = stable_asset_id(identity)
         if asset_id not in {stable_asset_id(asset) for asset in self.eu_assets}:
             return []
         if self._point_in_time is None:
+            return []
+        if not identity.historically_available_at(self._point_in_time):
             return []
         available = identity.source_available_at or self._point_in_time
         facts = {}
@@ -342,16 +352,17 @@ class HypothesisCandidateSource:
             facts["sectors"] = [identity.sector]
         if identity.country:
             facts["countries"] = [identity.country]
+        origin = identity.source_id or "curated-identity"
         payload = {
-            "source_id": f"eu-identity:{asset_id}",
-            "url": f"fixture://eu-dach/{asset_id}",
+            "source_id": f"{origin}:{asset_id}",
+            "url": f"fixture://curated/{asset_id}",
             "title": f"Curated identity card for {identity.name}",
             "published_at": available.isoformat(),
             "retrieved_at": available.isoformat(),
             "effective_at": available.isoformat(),
             "source_available_at": available.isoformat(),
             "source_kind": "regulatory",
-            "facts": {**facts, "origin_id": f"eu-identity:{asset_id}"},
+            "facts": {**facts, "origin_id": f"{origin}:{asset_id}"},
             "content_sha256": "e" * 64,
         }
         return [payload]

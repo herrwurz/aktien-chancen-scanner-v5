@@ -33,32 +33,29 @@ def test_handelsraum_does_not_count_as_retail():
     assert "retail" not in extract_clues(text)["structured"]["sectors"]
 
 
-def test_wall_street_health_does_not_fake_eu_likely_candidate():
-    """EU-only seed cannot confirm a Wall-Street name; abstain rather than invent."""
+def test_wall_street_health_hypotheses_include_jnj_not_likely():
     result = _service().analyze(
         DetectiveRequest(teaser_text=HEALTH, publication_at="2025-10-01T12:00:00+02:00")
     )
-    assert result["identification"]["status"] in {"unresolved", "hypothesis_top3"}
-    if result["identification"]["status"] == "hypothesis_top3":
-        # Any hypothesis must be flagged for manual review and not auto-confirmed.
-        assert result["identification"]["requires_manual_review"] is True
-        assert result["automatic_confirmation"] is False
-    # Must not claim a strict likely EU stock for an explicit Wall-Street teaser.
+    assert result["identification"]["status"] == "hypothesis_top3"
+    assert result["identification"]["requires_manual_review"] is True
+    assert result["automatic_confirmation"] is False
     assert result["identification"]["status"] != "likely_candidate"
+    top_ids = [row["asset_id"] for row in result["candidates"][:3]]
+    assert "cik:0000200406" in top_ids  # JNJ
 
 
-def test_finance_and_retail_abstain_without_universe_coverage():
-    for text in (FINANCE, RETAIL):
+def test_finance_and_retail_include_gold_peers():
+    cases = [
+        (FINANCE, "cik:0000019617"),  # JPM
+        (RETAIL, "cik:0000909832"),  # COST
+    ]
+    for text, expected in cases:
         result = _service().analyze(
             DetectiveRequest(teaser_text=text, publication_at="2025-10-01T12:00:00+02:00")
         )
-        assert result["identification"]["status"] == "unresolved"
-        assert result["identification"]["failure_code"] in {
-            "retrieval_missed",
-            "not_in_universe",
-            "evidence_missing",
-            "all_candidates_contradicted",
-            "insufficiently_constrained",
-        }
+        assert result["identification"]["status"] == "hypothesis_top3"
+        top_ids = [row["asset_id"] for row in result["candidates"][:3]]
+        assert expected in top_ids
         clues = extract_atomic_clues(text, [SourceSpan(source_id="t", start=0, end=len(text))])
         assert any(clue.category == "sectors" for clue in clues)

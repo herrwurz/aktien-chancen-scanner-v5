@@ -10,7 +10,7 @@ from pathlib import Path
 
 from scanner.config import Settings
 from scanner.hebeltrader.detective.clue_enrichment import HeuristicClueEnricher
-from scanner.hebeltrader.detective.eu_universe import load_eu_dach_assets
+from scanner.hebeltrader.detective.eu_universe import load_curated_hypothesis_assets
 from scanner.hebeltrader.detective.factory import build_detective
 from scanner.hebeltrader.detective.hypothesis_source import HypothesisCandidateSource
 from scanner.hebeltrader.detective.news_channel import FixtureNewsSearcher
@@ -218,7 +218,7 @@ def _hypothesis_fixture_service() -> DetectiveService:
     root = Path("tests/fixtures/detective-hypothesis")
     news = json.loads((root / "fixture_news.json").read_text(encoding="utf-8"))["items"]
     source = HypothesisCandidateSource(
-        eu_assets=load_eu_dach_assets(),
+        eu_assets=load_curated_hypothesis_assets(),
         news_searcher=FixtureNewsSearcher(news),
     )
     return DetectiveService(

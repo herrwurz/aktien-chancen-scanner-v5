@@ -42,24 +42,22 @@ hart und rutscht hinter deutsche Logistiknamen. Nach dem Fix ist
 Publikationszeit hier nur Platzhalter (`2025-10-01+02:00`). Gold-Call-WKNs (OpenFIGI-Namen der
 Scheine, nicht als offizielle Produktbestätigung im Detektiv):
 
-| Teaser | Gold-Call | Underlying (OpenFIGI-Kurzname) | Extrahiert | Detektiv |
+| Teaser | Gold-Call | Underlying | Extrahiert | Nach US-Seed |
 |---|---|---|---|---|
-| Gesundheit + Wall-Street, +1761 % | `JE11C1` | Johnson & Johnson (`JNJ`) | `healthcare`, `US` | `all_candidates_contradicted` |
-| Finanzschwergewicht, +1705 % | `MN6CYX` | JPMorgan Chase (`JPM`) | `finance` | `retrieval_missed` |
-| Handels-Gigant, +1438 % | `JY5SQZ` | Costco Wholesale (`COST`) | `retail` | `retrieval_missed` |
+| Gesundheit + Wall-Street, +1761 % | `JE11C1` | J&J (`cik:0000200406`) | `healthcare`, `US` | Top-3 enthält JNJ (mit PFE/UNH) |
+| Finanzschwergewicht, +1705 % | `MN6CYX` | JPM (`cik:0000019617`) | `finance` | Top-3: JPM, BAC, GS |
+| Handels-Gigant, +1438 % | `JY5SQZ` | COST (`cik:0000909832`) | `retail` | Top-3 enthält COST (mit TGT/WMT) |
 
-Alle drei Basiswerte sind **US-Aktien**. Der EU/DACH-Seed enthält sie nicht; Enthalten ist damit
-richtig (`abstention_ok`), kein falscher DAX-Treffer. Die Call-WKNs stehen nicht im Teasertext —
-ohne Produktkatalog/Terms kann der Detektiv sie nicht raten und darf sie nicht erfinden.
+Status jeweils `hypothesis_top3` (manuell prüfen, keine Auto-Bestätigung). Call-WKNs stehen nicht im
+Teaser und werden nicht erraten. Der US-Seed (`us_seed_universe.json`) ist kuratiert und
+point-in-time über `source_available_at` gefiltert — **kein** vollständiger US-Markt.
 
-Vor dem Lexikon-Nachzug war bei allen dreien nur die Promo-Prozentzahl sichtbar
-(`insufficiently_constrained`) — der Detektiv wirkte „blind“, obwohl der Text Sektor/Region nennt.
+Frühere Stufen: nur Promo-% → `insufficiently_constrained`; danach ohne US-Seed → EU-Widerspruch /
+`retrieval_missed`.
 
-## Was als Nächstes braucht echte Teaser
+## Was als Nächstes
 
-1. Dieselben Teaser mit **belegter** `publication_at` + erlaubtem `rights_status` und optional Gold-WKN
-2. Universum/News für US-Healthcare, Finance und Retail (lizenziert, point-in-time)
-3. Diagnose-CSV über 5–10 weitere Originalteaser
-4. UI: bei `hypothesis_top3` klar „Hypothesen“; bei `unresolved` den `failure_code` zeigen
-
-Ohne Schritt 2 bleibt die Identifikation dieser drei Themen blockiert — absichtlich, statt falsche EU-Namen.
+1. Belegte `publication_at` + `rights_status` für echte Abnahme
+2. US-Seed über SEC-Index/News verbreitern (weiterhin PIT, Budget 0–20 EUR)
+3. UI: `hypothesis_top3` klar als Hypothese; optional Derivat erst nach expliziter WKN/Terms
+4. Weitere Originalteaser in die Diagnose-CSV

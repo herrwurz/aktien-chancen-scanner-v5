@@ -38,9 +38,11 @@ Im strengen Modus endet eine Analyse ohne belegte Publikationszeit mit
 Korrekturen werden nicht verwendet. Heute abgerufene Stammdaten gelten nicht automatisch als
 historisch verfügbar.
 
-DACH/EU-Stammdaten fließen über das kuratierte Seed-Universum und optional OpenFIGI-Identitäten
-(`DETECTIVE_OPENFIGI_IDENTITIES`) in Stage A; `build_index_with_eu_universe` schreibt sie in den
-Research-Index. News-Queries aus dem Clue-Enrichment speisen den Fixture-/GDELT-News-Kanal.
+DACH/EU-Stammdaten und ein kleines US-Seed (u. a. JNJ/JPM/COST-Peers) fließen über das kuratierte
+Universum und optional OpenFIGI-Identitäten (`DETECTIVE_OPENFIGI_IDENTITIES`) in Stage A;
+`build_index_with_eu_universe` schreibt sie in den Research-Index. Sichtbarkeit ist
+point-in-time über `source_available_at`. News-Queries aus dem Clue-Enrichment speisen den
+Fixture-/GDELT-News-Kanal.
 
 `unresolved` trägt einen konkreten `failure_code`, soweit belegbar:
 
