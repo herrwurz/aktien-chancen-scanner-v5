@@ -15,7 +15,12 @@ NUMBER_UNIT = re.compile(
 )
 PERCENT_TOKEN = r"(?:%|prozent)"
 PROMO_CUE = (
-    r"(?:gewinnchance|renditechance|rendite|call|optionsschein|hebelprodukt|potenzial|chance)"
+    r"(?:gewinnchance|renditechance|rendite|call|optionsschein|hebelprodukt|"
+    r"hebel|potenzial|chance)"
+)
+DERIVATIVE_CONTEXT = re.compile(
+    r"\b(?:call|optionsschein|turbo|hebelprodukt|hebel)\b",
+    re.I,
 )
 FINANCIAL_METRIC = re.compile(
     rf"\b(?P<metric>umsatz|gewinn|marge|cashflow)\b[^\d%]{{0,30}}"
@@ -30,11 +35,16 @@ FINANCIAL_PERCENT_SENTENCE = re.compile(
 DATE_HINT = re.compile(r"\b(?:Q[1-4]\s+20\d{2}|20\d{2}|\d{1,2}\.\d{1,2}\.20\d{2})\b", re.I)
 PROMOTIONAL_RETURN = re.compile(
     rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}"
-    rf"(?=[^.!?]{{0,45}}\b{PROMO_CUE}\b)",
+    rf"(?=[^.!?]{{0,120}}\b{PROMO_CUE}\b)",
     re.I,
 )
 PROMOTIONAL_RETURN_PREFIXED = re.compile(
-    rf"\b{PROMO_CUE}\b[^.!?]{{0,45}}"
+    rf"\b{PROMO_CUE}\b[^.!?]{{0,120}}"
+    rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}",
+    re.I,
+)
+PROMOTIONAL_PLUS_RETURN = re.compile(
+    rf"(?:bis zu\s+(?:plus\s+)?|plus\s+)"
     rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}",
     re.I,
 )
@@ -52,6 +62,7 @@ LEXICONS = {
         "agriculture_machinery": ("landmaschinen", "traktor", "agrartechnik"),
         "gold_mining": ("goldmine", "goldminen", "goldproduzent"),
         "insurance": ("versicherer", "versicherung", "insurance"),
+        "logistics": ("logistik", "logistics", "schienenlogistik"),
     },
     "events": {
         "quarterly_results": ("quartalszahlen", "quartalsergebnis", "quarterly results"),
@@ -65,7 +76,14 @@ LEXICONS = {
             "guidance raise",
         ),
         "earnings_beat": ("gewinn über erwartung", "ergebnisüberraschung", "earnings beat"),
-        "acquisition_or_stake": ("übernahme", "akquisition", "beteiligung", "acquisition"),
+        "acquisition_or_stake": (
+            "übernahmefantasie",
+            "übernahmekandidat",
+            "übernahme",
+            "akquisition",
+            "beteiligung",
+            "acquisition",
+        ),
         "major_contract": ("großauftrag", "bedeutender auftrag", "major contract"),
         "regulatory_decision": ("zulassung", "regulatorische entscheidung"),
         "management_change": ("managementwechsel", "ceo-wechsel", "vorstandswechsel"),
@@ -89,6 +107,8 @@ LEXICONS = {
             "gewinnsteigerung",
             "steigender gewinn",
             "steigende gewinne",
+            "gewinne steigen",
+            "gewinn steigt",
         ),
         "net_income_decrease": ("gewinnrückgang", "sinkender gewinn"),
         "revenue_increase": ("umsatzanstieg", "umsatzwachstum", "steigender umsatz"),
@@ -210,8 +230,14 @@ def extract_atomic_clues(text, spans):
     """Extract auditable clues while keeping promotional returns out of fundamentals."""
     clues = []
     promotional_ranges = []
+    promotional_matches = [
+        *PROMOTIONAL_RETURN.finditer(text),
+        *PROMOTIONAL_RETURN_PREFIXED.finditer(text),
+    ]
+    if DERIVATIVE_CONTEXT.search(text):
+        promotional_matches.extend(PROMOTIONAL_PLUS_RETURN.finditer(text))
     promotional_matches = sorted(
-        [*PROMOTIONAL_RETURN.finditer(text), *PROMOTIONAL_RETURN_PREFIXED.finditer(text)],
+        promotional_matches,
         key=lambda item: (item.start(), item.end()),
     )
     for match in promotional_matches:

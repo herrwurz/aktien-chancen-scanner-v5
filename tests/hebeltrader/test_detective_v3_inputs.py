@@ -146,6 +146,24 @@ def test_turnaround_teaser_keeps_buyback_and_excludes_promotional_1900():
     assert not any(item.category == "financial_metric" for item in clues)
 
 
+def test_logistics_takeover_teaser_extracts_sector_event_and_distant_promo():
+    text = (
+        "Gewinne steigen, Synergien locken – Logistik-Schwergewicht im Ausbruch! "
+        "Ein Logistik-Gigant ist ins Visier einer Übernahmefantasie geraten. "
+        "Ein Call-Optionsschein mit sportlichem Hebel. Der Höhepunkt: bis zu plus 1.610 Prozent."
+    )
+    clues = extract_atomic_clues(text, [SourceSpan(source_id="input", start=0, end=len(text))])
+    assert any(item.category == "sectors" and item.value == "logistics" for item in clues)
+    assert any(item.category == "events" and item.value == "acquisition_or_stake" for item in clues)
+    assert any(
+        item.category == "fact_claims" and item.value == "net_income_increase" for item in clues
+    )
+    assert any(
+        item.category == "promotional_derivative_return" and item.value == "1610" for item in clues
+    )
+    assert not any(item.category == "financial_metric" for item in clues)
+
+
 def test_financial_metric_accepts_prozent_word_without_becoming_promotional():
     text = "Der Umsatz stieg im Q2 2025 um 18 Prozent."
     clues = extract_atomic_clues(text, [SourceSpan(source_id="input", start=0, end=len(text))])
