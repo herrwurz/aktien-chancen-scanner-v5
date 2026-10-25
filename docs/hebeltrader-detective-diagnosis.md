@@ -37,15 +37,20 @@ Länderlexikon erkennt jetzt u. a. `deutscher` / `deutsche` / `deutschland` und
 hart und rutscht hinter deutsche Logistiknamen. Nach dem Fix ist
 `german-logistics-heavyweight` Top-1 `isin:DE0005552004` (DHL), nicht mehr Kuehne + Nagel.
 
-## Beispiel: drei reale Werbe-Teaser (ohne Gold-Label)
+## Beispiel: drei reale Werbe-Teaser
 
-Publikationszeit hier nur Platzhalter (`2025-10-01+02:00`). Nach Lexikon-Nachzug:
+Publikationszeit hier nur Platzhalter (`2025-10-01+02:00`). Gold-Call-WKNs (OpenFIGI-Namen der
+Scheine, nicht als offizielle Produktbestätigung im Detektiv):
 
-| Fall | Extrahiert | Outcome | Bedeutung |
-|---|---|---|---|
-| Gesundheitssektor + Wall-Street, +1761 % | `healthcare`, `US`, Umsatz/Ertrag | `all_candidates_contradicted` | EU-Seed hat Pharma, aber **US**-Hinweis widerspricht DE/CH-Namen → korrekt keine Fake-Aktie |
-| Finanzschwergewicht, +1705 % | `finance`, Ertrag | `retrieval_missed` | Sektor erkannt, **kein Finanzwert** im kuratierten Universum |
-| Handels-Gigant, +1438 % | `retail` | `retrieval_missed` | Sektor erkannt, **kein Retail-Titel** im Seed |
+| Teaser | Gold-Call | Underlying (OpenFIGI-Kurzname) | Extrahiert | Detektiv |
+|---|---|---|---|---|
+| Gesundheit + Wall-Street, +1761 % | `JE11C1` | Johnson & Johnson (`JNJ`) | `healthcare`, `US` | `all_candidates_contradicted` |
+| Finanzschwergewicht, +1705 % | `MN6CYX` | JPMorgan Chase (`JPM`) | `finance` | `retrieval_missed` |
+| Handels-Gigant, +1438 % | `JY5SQZ` | Costco Wholesale (`COST`) | `retail` | `retrieval_missed` |
+
+Alle drei Basiswerte sind **US-Aktien**. Der EU/DACH-Seed enthält sie nicht; Enthalten ist damit
+richtig (`abstention_ok`), kein falscher DAX-Treffer. Die Call-WKNs stehen nicht im Teasertext —
+ohne Produktkatalog/Terms kann der Detektiv sie nicht raten und darf sie nicht erfinden.
 
 Vor dem Lexikon-Nachzug war bei allen dreien nur die Promo-Prozentzahl sichtbar
 (`insufficiently_constrained`) — der Detektiv wirkte „blind“, obwohl der Text Sektor/Region nennt.
