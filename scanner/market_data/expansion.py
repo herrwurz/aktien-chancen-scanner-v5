@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from decimal import Decimal
 from pathlib import Path
 
 from .pilot import write_pilot_report
@@ -42,12 +43,18 @@ def aggregate_batch_reports(paths, *, output_prefix, archive_sha256, target_coun
     calendar_verified = sum(
         row.get("calendar_status") == "verified_complete" for row in instruments
     )
+    requests_attempted = sum(int(batch.get("requests_attempted", 0)) for _, _, batch in reports)
+    cost = sum((Decimal(str(batch.get("cost_eur", "0"))) for _, _, batch in reports), Decimal())
     report = {
         "schema_version": "1.0",
         "coverage_kind": "real_provider_archive",
         "target_count": target_count,
         "distinct_instruments": len(instruments),
+        "selected_count": len(instruments),
         "successful_instruments": successful,
+        "requests_attempted": requests_attempted,
+        "cost_eur": str(cost),
+        "real_provider_coverage_measured": successful > 0,
         "minimum_250_sessions_met": complete,
         "calendar_verified_complete": calendar_verified,
         "identity_conflicts": sorted(conflicts),

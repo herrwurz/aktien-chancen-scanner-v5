@@ -233,6 +233,10 @@ def test_expansion_aggregate_rejects_synthetic_and_verifies_each_batch(tmp_path)
     assert report["distinct_instruments"] == 2
     assert report["minimum_250_sessions_met"] == 2
     assert report["calendar_verified_complete"] == 2
+    assert report["selected_count"] == 2
+    assert report["real_provider_coverage_measured"] is True
+    assert report["requests_attempted"] == 0
+    assert report["cost_eur"] == "0"
     assert artifacts["sha256_file"].is_file()
 
     synthetic = dict(first, coverage_kind="synthetic_fixture")

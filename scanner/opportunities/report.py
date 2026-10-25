@@ -58,6 +58,21 @@ def _identity_failure(listing: dict, reason: str) -> dict:
     }
 
 
+def _supported_benchmark(listing: dict) -> bool:
+    """Recognize the reviewed SPY provider identity without treating it as a company."""
+    return listing == {
+        "asset_id": "benchmark:SPY",
+        "ticker": "SPY",
+        "exchange": "NYSE Arca",
+        "mic": "ARCX",
+        "currency": "USD",
+        "timezone": "America/New_York",
+        "provider_symbol": "SPY",
+        "cik": None,
+        "isin": None,
+    }
+
+
 def _reviewed_identity(identity: AssetIdentity, asset_id: str, reviews: dict | None, as_of):
     if not reviews:
         return identity
@@ -149,13 +164,7 @@ def run_dry_run(
             (row for row in instruments if row["asset_id"] == benchmark_asset_id), None
         )
         if benchmark_listing is not None:
-            benchmark_resolution = index.resolve_identity(
-                _archive_identity(benchmark_listing), as_of=as_of
-            )
-            if (
-                benchmark_resolution["status"] == "ok"
-                and benchmark_resolution["asset_id"] == benchmark_asset_id
-            ):
+            if benchmark_asset_id == "benchmark:SPY" and _supported_benchmark(benchmark_listing):
                 candidate_benchmark = archive.prices(
                     benchmark_asset_id,
                     start=(signal_date - timedelta(days=500)).isoformat(),
@@ -174,7 +183,11 @@ def run_dry_run(
     results = []
     matched = 0
     conflicts = 0
+    benchmark_instruments = 0
     for listing in instruments:
+        if listing["asset_id"].startswith("benchmark:"):
+            benchmark_instruments += 1
+            continue
         supplied = _archive_identity(listing)
         resolution = index.resolve_identity(supplied, as_of=as_of)
         if resolution["status"] != "ok" or resolution["asset_id"] != listing["asset_id"]:
@@ -247,6 +260,8 @@ def run_dry_run(
             for reason in sorted({reason for row in results for reason in row["failed_gates"]})
         },
     }
+    if benchmark_instruments:
+        coverage["benchmark_instruments_excluded"] = benchmark_instruments
     if benchmark_asset_id and benchmark_bars:
         eligible = [row for row in results if row.get("features") is not None]
         benchmark_matches = sum(

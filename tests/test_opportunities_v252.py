@@ -799,6 +799,56 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     assert "opportunities.csv" in sidecar
 
 
+def test_spy_benchmark_is_used_but_never_enters_company_results(tmp_path):
+    from scanner.market_data.archive import MarketDataArchive
+    from scanner.market_data.pilot import benchmark_listing
+    from scanner.opportunities.report import run_dry_run
+    from scanner.research import AssetIdentity
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    available = datetime(2025, 1, 1, tzinfo=UTC)
+    company = AssetIdentity(
+        asset_type="stock",
+        name="Alpha Corporation",
+        ticker="AAA",
+        cik="0000000001",
+        exchange="NASDAQ",
+        mic="XNAS",
+        country="US",
+        instrument_type="operating_company",
+        source_available_at=available,
+        retrieved_at=available,
+    )
+    index_path = tmp_path / "research.db"
+    build_index(index_path, assets=[company], events=[], facts=[], news=[])
+    archive_path = tmp_path / "market.sqlite"
+    writer = MarketDataArchive(
+        archive_path,
+        now=lambda: datetime(2026, 10, 25, 9, tzinfo=UTC),
+    )
+    writer.import_batch(
+        market_batch(asset_id="cik:0000000001", cik="0000000001", ticker="AAA", sessions=250)
+    )
+    spy = market_batch(asset_id="cik:0000000999", cik="0000000999", ticker="SPY", sessions=250)
+    writer.import_batch(spy.model_copy(update={"instrument": benchmark_listing()}))
+
+    report = run_dry_run(
+        ResearchIndex(index_path),
+        MarketDataArchive(archive_path, read_only=True),
+        as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+        signal_date=date(2025, 9, 8),
+        benchmark_asset_id="benchmark:SPY",
+        minimum_liquidity=Decimal("1"),
+    )
+
+    assert report["benchmark_status"] == "available"
+    assert report["coverage"]["benchmark_instruments_excluded"] == 1
+    assert report["coverage"]["identity_matched"] == 1
+    assert [row["asset_id"] for row in report["results"]] == ["cik:0000000001"]
+    assert report["results"][0]["features"]["benchmark_status"] == "available"
+
+
 def test_opportunity_cli_has_no_network_path_and_writes_audited_outputs(
     tmp_path, monkeypatch, capsys
 ):
