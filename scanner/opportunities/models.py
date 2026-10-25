@@ -22,6 +22,7 @@ class TechnicalFeatures(StrictModel):
     average_volume_prior_20: Decimal
     volume_ratio: Decimal
     median_dollar_volume_20: Decimal
+    liquidity_price_basis: Literal["raw_close_x_raw_volume_usd"]
     atr_14: Decimal
     atr_percent: Decimal
     gap_percent: Decimal
@@ -49,6 +50,10 @@ class RiskScenario(StrictModel):
     reference_date: date
     reference_price: Decimal
     entry_basis: Literal["modeled_reference_close"] = "modeled_reference_close"
+    reference_price_basis: Literal["raw_session_close"] = "raw_session_close"
+    feature_price_basis: Literal["adjusted_ohlc"] = "adjusted_ohlc"
+    raw_per_adjusted_scale: Decimal
+    raw_atr_14: Decimal
     stop_price: Decimal
     target_price: Decimal
     gross_crv: Decimal

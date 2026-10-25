@@ -10,20 +10,25 @@ if [[ ! "$signal_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
   echo "SIGNAL_DATE must use YYYY-MM-DD." >&2
   exit 2
 fi
-for required in sec-pilot-index.db sec-pilot-index.db.manifest.json market-data.sqlite; do
+for required in sec-pilot-index.db sec-pilot-index.db.manifest.json market-data.sqlite coverage.json coverage.sha256; do
   if [[ ! -f "$pilot_dir/$required" ]]; then
     echo "Missing V2.5.1 pilot artifact: $pilot_dir/$required" >&2
     exit 2
   fi
 done
-mkdir -p -- "$output_dir"
-chmod 700 -- "$output_dir"
-pilot_dir=$(cd -- "$pilot_dir" && pwd)
-output_dir=$(cd -- "$output_dir" && pwd)
-if [[ "$pilot_dir" == "$output_dir" ]]; then
-  echo "OUTPUT_DIR must differ from the read-only pilot directory." >&2
+pilot_dir=$(cd -- "$pilot_dir" && pwd -P)
+output_dir=$(realpath -m -- "$output_dir")
+if [[ "$pilot_dir" == "$output_dir" || "$output_dir" == "$pilot_dir"/* || "$pilot_dir" == "$output_dir"/* ]]; then
+  echo "PILOT_DIR and OUTPUT_DIR must not overlap." >&2
   exit 2
 fi
+(cd -- "$pilot_dir" && sha256sum -c coverage.sha256)
+if [[ "${VALIDATE_ONLY:-0}" == "1" ]]; then
+  echo "Runner paths and source coverage integrity validated."
+  exit 0
+fi
+mkdir -p -- "$output_dir"
+chmod 700 -- "$output_dir"
 
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 docker build -t "$image" "$repo_root"
@@ -34,6 +39,7 @@ docker run --rm --network none --user "$(id -u):$(id -g)" \
   "$image" python -m scanner.opportunities.cli \
     --research-index /input/sec-pilot-index.db \
     --market-archive /input/market-data.sqlite \
+    --pilot-coverage /input/coverage.json \
     --as-of "$as_of" \
     --signal-date "$signal_date" \
     --output /output

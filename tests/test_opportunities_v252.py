@@ -1,6 +1,10 @@
 import hashlib
+import json
+import os
+import subprocess
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
+from pathlib import Path
 
 import pytest
 
@@ -204,6 +208,48 @@ def test_adjusted_history_prevents_false_split_or_dividend_event():
     assert features.gap_percent == 0
     assert features.volume_ratio == 1
     assert features.breakout_20 is False
+
+
+def test_raw_usd_turnover_and_raw_risk_scale_survive_adjustment_difference():
+    from scanner.opportunities.features import compute_features
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    bars = feature_bars(sessions=250, final_close="110", final_volume="100")
+    for row in bars:
+        row["raw"] = {
+            "open": "200",
+            "high": "202",
+            "low": "198",
+            "close": "200",
+            "volume": "50",
+        }
+    bars[-1]["raw"] = {
+        "open": "210",
+        "high": "222",
+        "low": "208",
+        "close": "220",
+        "volume": "50",
+    }
+    for row in bars[-20:]:
+        row["adjusted"]["volume"] = "400"
+    signal_date = date.fromisoformat(bars[-1]["session_date"])
+
+    features = compute_features(bars, signal_date=signal_date)
+    candidate = evaluate_candidate(
+        stock_identity(),
+        bars,
+        as_of=datetime.combine(signal_date, datetime.max.time(), tzinfo=UTC),
+        catalysts=[],
+        policy=OpportunityPolicy(min_median_dollar_volume=Decimal("1")),
+    )
+
+    assert features.median_dollar_volume_20 == Decimal("10000")
+    assert features.liquidity_price_basis == "raw_close_x_raw_volume_usd"
+    assert candidate.risk.reference_price == Decimal("220")
+    assert candidate.risk.reference_price_basis == "raw_session_close"
+    assert candidate.risk.feature_price_basis == "adjusted_ohlc"
+    assert candidate.risk.raw_per_adjusted_scale == Decimal("2")
+    assert candidate.risk.stop_price < Decimal("220") < candidate.risk.target_price
 
 
 def test_relative_strength_uses_same_bounded_twenty_session_window():
@@ -535,12 +581,29 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
             )
         )
 
+    archive = MarketDataArchive(archive_path, read_only=True)
+    pilot_coverage = {
+        "status": "partial",
+        "selected_count": 4,
+        "successful_instruments": 3,
+        "archive_sha256": archive.logical_sha256(),
+        "requests_attempted": 4,
+        "cost_eur": "0",
+        "instruments": [
+            {"ticker": "AAA", "status": "imported", "session_count": 250},
+            {"ticker": "BBB", "status": "imported", "session_count": 250},
+            {"ticker": "PXED", "status": "imported", "session_count": 58},
+            {"ticker": "VOGX", "status": "provider_data_error", "session_count": 0},
+        ],
+        "coverage_report_sha256": "c" * 64,
+    }
     report = run_dry_run(
         ResearchIndex(index_path),
-        MarketDataArchive(archive_path, read_only=True),
+        archive,
         as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
         signal_date=date(2025, 9, 8),
         minimum_liquidity=Decimal("1000"),
+        pilot_coverage=pilot_coverage,
     )
 
     assert report["mode"] == "modeled_research"
@@ -553,11 +616,20 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
         "candidate_research": 2,
         "watch_only": 0,
         "unavailable": 1,
+        "analyzed": 2,
+        "gate_reason_counts": {"fund": 1},
     }
     assert report["network_requests"] == 0
     assert report["cost_eur"] == "0"
     assert report["historical_availability_verified"] is False
     assert report["training_eligible"] is False
+    assert report["source_pilot"]["status"] == "partial"
+    assert report["source_pilot"]["failed_or_incomplete"] == [
+        {"session_count": 58, "status": "imported", "ticker": "PXED"},
+        {"session_count": 0, "status": "provider_data_error", "ticker": "VOGX"},
+    ]
+    assert report["coverage"]["analyzed"] == 2
+    assert report["top_candidates"][0]["ticker"] == "AAA"
     assert [row["ticker"] for row in report["results"]] == ["AAA", "BBB", "FND"]
     assert report["results"][0]["exchange"] == "NASDAQ"
     assert report["results"][0]["mic"] == "XNAS"
@@ -572,9 +644,28 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
         as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
         signal_date=date(2025, 9, 18),
         minimum_liquidity=Decimal("1000"),
+        pilot_coverage=pilot_coverage,
     )
     assert stale_report["coverage"]["unavailable"] == 3
     assert all("stale_price" in row["failed_gates"] for row in stale_report["results"][:2])
+
+    with pytest.raises(ValueError, match="as_of precedes requested signal date"):
+        run_dry_run(
+            ResearchIndex(index_path),
+            archive,
+            as_of=datetime(2025, 9, 7, 12, tzinfo=UTC),
+            signal_date=date(2025, 9, 8),
+            minimum_liquidity=Decimal("1000"),
+        )
+    with pytest.raises(ValueError, match="pilot coverage archive mismatch"):
+        run_dry_run(
+            ResearchIndex(index_path),
+            archive,
+            as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+            signal_date=date(2025, 9, 8),
+            minimum_liquidity=Decimal("1000"),
+            pilot_coverage=pilot_coverage | {"archive_sha256": "0" * 64},
+        )
 
     repeated = run_dry_run(
         ResearchIndex(index_path),
@@ -582,6 +673,7 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
         as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
         signal_date=date(2025, 9, 8),
         minimum_liquidity=Decimal("1000"),
+        pilot_coverage=pilot_coverage,
     )
     assert repeated == report
     first = write_report(report, tmp_path / "first")
@@ -635,6 +727,68 @@ def test_opportunity_cli_has_no_network_path_and_writes_audited_outputs(
     assert exit_code == 0
     assert calls["signal_date"] == date(2025, 9, 8)
     assert '"mode": "modeled_research"' in capsys.readouterr().out
+
+
+def test_docker_runner_rejects_overlapping_paths_and_verifies_input_sha(tmp_path):
+    pilot = tmp_path / "pilot"
+    pilot.mkdir()
+    for name in ("sec-pilot-index.db", "sec-pilot-index.db.manifest.json", "market-data.sqlite"):
+        (pilot / name).write_text("fixture")
+    coverage = pilot / "coverage.json"
+    coverage.write_text(json.dumps({"status": "partial"}))
+    digest = hashlib.sha256(coverage.read_bytes()).hexdigest()
+    (pilot / "coverage.sha256").write_text(f"{digest}  coverage.json\n")
+    script = str(Path(__file__).resolve().parents[1] / "scripts" / "run-opportunity-dry-run.sh")
+    environment = os.environ | {
+        "PILOT_DIR": str(pilot),
+        "VALIDATE_ONLY": "1",
+        "SIGNAL_DATE": "2025-12-31",
+    }
+
+    overlap = subprocess.run(
+        ["bash", script],
+        env=environment | {"OUTPUT_DIR": str(pilot / "nested")},
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert overlap.returncode == 2
+    assert "must not overlap" in overlap.stderr
+    assert not (pilot / "nested").exists()
+
+    separate = subprocess.run(
+        ["bash", script],
+        env=environment | {"OUTPUT_DIR": str(tmp_path / "output")},
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert separate.returncode == 0
+    assert "coverage.json: OK" in separate.stdout
+
+    coverage.write_text("tampered")
+    tampered = subprocess.run(
+        ["bash", script],
+        env=environment | {"OUTPUT_DIR": str(tmp_path / "other-output")},
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert tampered.returncode != 0
+
+
+def test_cli_rejects_tampered_pilot_coverage_sidecar(tmp_path):
+    from scanner.opportunities.cli import _load_pilot_coverage
+
+    path = tmp_path / "coverage.json"
+    path.write_text('{"status":"partial"}')
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    path.with_suffix(".sha256").write_text(f"{digest}  coverage.json\n")
+    assert _load_pilot_coverage(str(path))["coverage_report_sha256"] == digest
+
+    path.write_text('{"status":"accepted"}')
+    with pytest.raises(ValueError, match="SHA mismatch"):
+        _load_pilot_coverage(str(path))
 
 
 @pytest.mark.parametrize("value", ["0", "-1", "NaN", "Infinity", "not-a-number"])

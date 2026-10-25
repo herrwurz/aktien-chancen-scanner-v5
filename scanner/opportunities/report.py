@@ -51,6 +51,9 @@ def _identity_failure(listing: dict, reason: str) -> dict:
         "historical_availability_verified": False,
         "training_eligible": False,
         "probability_claimed": False,
+        "requested_signal_date": None,
+        "market_data_cutoff_at": None,
+        "data_age_calendar_days": None,
     }
 
 
@@ -62,6 +65,7 @@ def run_dry_run(
     signal_date: date,
     benchmark_asset_id: str | None = None,
     minimum_liquidity: Decimal = Decimal("1000000"),
+    pilot_coverage: dict | None = None,
 ) -> dict:
     """Evaluate every archived listing without network, writes or execution claims."""
     if as_of.tzinfo is None:
@@ -69,6 +73,32 @@ def run_dry_run(
     if not minimum_liquidity.is_finite() or minimum_liquidity <= 0:
         raise ValueError("minimum_liquidity must be finite and positive")
     as_of = as_of.astimezone(UTC)
+    if as_of.date() < signal_date:
+        raise ValueError("as_of precedes requested signal date")
+    archive_sha256 = archive.logical_sha256()
+    source_pilot = None
+    if pilot_coverage is not None:
+        if pilot_coverage.get("archive_sha256") != archive_sha256:
+            raise ValueError("pilot coverage archive mismatch")
+        rows = pilot_coverage.get("instruments") or []
+        incomplete = [
+            {
+                "ticker": row.get("ticker"),
+                "status": row.get("status"),
+                "session_count": row.get("session_count", 0),
+            }
+            for row in rows
+            if row.get("status") != "imported" or int(row.get("session_count", 0)) < 250
+        ]
+        source_pilot = {
+            "status": pilot_coverage.get("status"),
+            "selected_count": pilot_coverage.get("selected_count"),
+            "successful_instruments": pilot_coverage.get("successful_instruments"),
+            "requests_attempted": pilot_coverage.get("requests_attempted"),
+            "cost_eur": str(pilot_coverage.get("cost_eur", "0")),
+            "coverage_report_sha256": pilot_coverage.get("coverage_report_sha256"),
+            "failed_or_incomplete": sorted(incomplete, key=lambda row: row["ticker"] or ""),
+        }
     evaluation_at = datetime.combine(signal_date, time.max, tzinfo=UTC)
     instruments = archive.list_instruments()
     benchmark_bars = None
@@ -135,7 +165,19 @@ def run_dry_run(
             benchmark_bars=benchmark_bars,
             policy=OpportunityPolicy(min_median_dollar_volume=minimum_liquidity),
         )
-        results.append(candidate.model_dump(mode="json") | {"currency": listing.get("currency")})
+        results.append(
+            candidate.model_dump(mode="json")
+            | {
+                "currency": listing.get("currency"),
+                "requested_signal_date": signal_date.isoformat(),
+                "market_data_cutoff_at": signal_at.isoformat() if prices else None,
+                "data_age_calendar_days": (
+                    signal_date - date.fromisoformat(latest["session_date"])
+                ).days
+                if prices
+                else None,
+            }
+        )
 
     status_order = {"candidate_research": 0, "watch_only": 1, "unavailable": 2}
     results.sort(
@@ -158,6 +200,11 @@ def run_dry_run(
         "candidate_research": sum(row["status"] == "candidate_research" for row in results),
         "watch_only": sum(row["status"] == "watch_only" for row in results),
         "unavailable": sum(row["status"] == "unavailable" for row in results),
+        "analyzed": sum(row.get("features") is not None for row in results),
+        "gate_reason_counts": {
+            reason: sum(reason in row["failed_gates"] for row in results)
+            for reason in sorted({reason for row in results for reason in row["failed_gates"]})
+        },
     }
     if benchmark_asset_id and benchmark_bars:
         eligible = [row for row in results if row.get("features") is not None]
@@ -170,6 +217,7 @@ def run_dry_run(
             benchmark_status = "partial_session_alignment"
         else:
             benchmark_status = "unavailable_for_candidate_sessions"
+    top_candidates = [row for row in results if row["status"] == "candidate_research"][:10]
     return {
         "schema_version": "2.5.2",
         "mode": "modeled_research",
@@ -180,11 +228,13 @@ def run_dry_run(
         "training_eligible": False,
         "network_requests": 0,
         "cost_eur": "0",
-        "archive_sha256": archive.logical_sha256(),
+        "archive_sha256": archive_sha256,
         "index_payload_sha256": index.manifest.payload_sha256,
         "benchmark_asset_id": benchmark_asset_id,
         "benchmark_status": benchmark_status,
+        "source_pilot": source_pilot,
         "coverage": coverage,
+        "top_candidates": top_candidates,
         "results": results,
     }
 
@@ -212,6 +262,9 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
         "failed_gates",
         "uncertainties",
         "signal_date",
+        "requested_signal_date",
+        "market_data_cutoff_at",
+        "data_age_calendar_days",
         "reference_price",
         "gross_crv",
         "net_crv",
@@ -242,6 +295,11 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
                     "failed_gates": "|".join(row["failed_gates"]),
                     "uncertainties": "|".join(row["uncertainties"]),
                     "signal_date": features.get("signal_date", ""),
+                    "requested_signal_date": row.get("requested_signal_date") or "",
+                    "market_data_cutoff_at": row.get("market_data_cutoff_at") or "",
+                    "data_age_calendar_days": row.get("data_age_calendar_days")
+                    if row.get("data_age_calendar_days") is not None
+                    else "",
                     "reference_price": risk.get("reference_price", ""),
                     "gross_crv": risk.get("gross_crv", ""),
                     "net_crv": risk.get("net_crv", ""),

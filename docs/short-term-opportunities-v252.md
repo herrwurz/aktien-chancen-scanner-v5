@@ -31,7 +31,7 @@ entfernt. Verwendet werden:
 
 - adjustiertes Momentum über 5, 10 und 20 Sitzungen;
 - Volumen der Signalsitzung geteilt durch den Mittelwert der 20 vorherigen Sitzungen;
-- Median des adjustierten Dollarvolumens, ATR(14), ATR-Prozent und Eröffnungslücke;
+- Median aus **Rohschluss × Rohvolumen in USD**, ATR(14), ATR-Prozent und Eröffnungslücke;
 - SMA-5/SMA-20-Trend, Abstand zum vorherigen 20-Sitzungs-Hoch und optionaler Ausbruch;
 - relative 20-Sitzungs-Stärke nur bei einem ausdrücklich angegebenen, belegten Benchmark-Archiv;
 - belegte Nachrichten, deren Veröffentlichung und Quellenverfügbarkeit spätestens am Signalzeitpunkt
@@ -51,6 +51,18 @@ Das ATR-Szenario nennt Referenzkurs, modellierten Stopp, Ziel und Brutto-CRV. Da
 ausführbaren Bid-/Ask-Quotes liefert, bleiben `spread_status=unavailable`, `net_crv=null` und
 `executable=false`. Die ausgewiesene Kostenannahme wird nicht in ein scheinpräzises Netto-CRV
 umgerechnet.
+
+Momentum, ATR und Breakout werden auf der für Corporate Actions vergleichbaren adjustierten Skala
+berechnet. Der angezeigte Referenzkurs ist dagegen der Rohschluss der Signalsitzung. ATR-Abstände
+werden mit dem Verhältnis Rohschluss/adjustierter Schluss auf dieselbe Rohpreisskala transformiert,
+bevor Stopp und Ziel modelliert werden. Die Felder `reference_price_basis`, `feature_price_basis`
+und `raw_per_adjusted_scale` machen diese Umrechnung prüfbar. Sie bleibt ausdrücklich
+nicht ausführbar.
+
+`signal_date` im Berichtsheader ist der angeforderte Stichtag. Pro Titel stehen der tatsächlich
+verwendete letzte Sitzungstag, `market_data_cutoff_at` und `data_age_calendar_days`. Nachrichten
+werden höchstens bis zum modellierten beziehungsweise kalenderbelegten Schluss dieser Sitzung
+zugelassen; eine Meldung nach Börsenschluss kann kein Signal derselben Schlusskerze auslösen.
 
 ## Offline-Lauf auf dem Hetzner-Archiv
 
@@ -72,6 +84,11 @@ Der Pilotordner wird read-only eingebunden. Der neue Ordner enthält `opportunit
 `opportunities.csv` und `opportunities.sha256`. Vor Auswertung ist zu prüfen, ob `2025-12-31`
 tatsächlich die letzte gewünschte gemeinsame Signalsitzung ist. Der Befehl beeinflusst Immich und
 Produktivdatenbanken nicht.
+
+Vor dem Containerstart validiert der Runner `coverage.sha256` und bindet `coverage.json` an den
+logischen SHA des SQLite-Archivs. `PILOT_DIR` und `OUTPUT_DIR` dürfen weder identisch noch ineinander
+verschachtelt sein. PXED und VOGX bleiben dadurch auch dann im Quellen-Audit sichtbar, wenn sie
+nicht als vollständig analysierbare Archivinstrumente vorliegen.
 
 Der reale Dry-run wurde in der Codex-Arbeitsumgebung nicht ausgeführt, weil das lizenzgebundene
 Tiingo-Archiv nur auf Hetzner liegt. Erfolgreiche Offline-Fixtures werden nicht als reale Abnahme

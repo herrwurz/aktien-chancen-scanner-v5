@@ -154,19 +154,23 @@ def evaluate_candidate(
     if any(row.verification_status == "confirmed" for row in selected):
         triggers.append("confirmed_catalyst")
 
-    reference = features.adjusted_reference_close
+    reference = features.raw_reference_close
     if features.atr_14 <= 0:
         return _unavailable(
             identity,
             ["risk_range_unavailable"],
             uncertainties=uncertainties,
         )
-    stop = max(Decimal("0.01"), reference - features.atr_14 * Decimal("1.5"))
-    target = reference + features.atr_14 * Decimal("3")
+    raw_scale = reference / features.adjusted_reference_close
+    raw_atr = features.atr_14 * raw_scale
+    stop = max(Decimal("0.01"), reference - raw_atr * Decimal("1.5"))
+    target = reference + raw_atr * Decimal("3")
     gross_crv = (target - reference) / (reference - stop)
     risk = RiskScenario(
         reference_date=features.signal_date,
         reference_price=reference,
+        raw_per_adjusted_scale=raw_scale,
+        raw_atr_14=raw_atr,
         stop_price=stop,
         target_price=target,
         gross_crv=gross_crv,

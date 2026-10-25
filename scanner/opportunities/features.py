@@ -27,8 +27,9 @@ def _prepare(bars, signal_date):
             continue
         adjusted = row.get("adjusted") or {}
         values = {field: _number(adjusted.get(field)) for field in FIELDS}
-        raw_close = _number((row.get("raw") or {}).get("close"))
-        prepared.append((day, values, raw_close))
+        raw = row.get("raw") or {}
+        raw_values = {field: _number(raw.get(field)) for field in FIELDS}
+        prepared.append((day, values, raw_values))
     prepared.sort(key=lambda value: value[0])
     if len({row[0] for row in prepared}) != len(prepared):
         raise ValueError("duplicate feature session")
@@ -84,14 +85,15 @@ def compute_features(bars, *, signal_date, benchmark_bars=None) -> TechnicalFeat
     return TechnicalFeatures(
         signal_date=current[0],
         session_count_available=len(rows),
-        raw_reference_close=current[2],
+        raw_reference_close=current[2]["close"],
         adjusted_reference_close=close,
         momentum_5=_return(rows, 5),
         momentum_10=_return(rows, 10),
         momentum_20=momentum_20,
         average_volume_prior_20=average_volume,
         volume_ratio=current_values["volume"] / average_volume,
-        median_dollar_volume_20=median(row[1]["close"] * row[1]["volume"] for row in rows[-20:]),
+        median_dollar_volume_20=median(row[2]["close"] * row[2]["volume"] for row in rows[-20:]),
+        liquidity_price_basis="raw_close_x_raw_volume_usd",
         atr_14=atr,
         atr_percent=atr / close,
         gap_percent=current_values["open"] / rows[-2][1]["close"] - 1,
