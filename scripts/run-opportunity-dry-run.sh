@@ -33,6 +33,10 @@ chmod 700 -- "$output_dir"
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 docker build -t "$image" "$repo_root"
 scan_started=$SECONDS
+review_args=()
+if [[ -f "$pilot_dir/instrument-reviews.json" ]]; then
+  review_args=(--instrument-reviews /input/instrument-reviews.json)
+fi
 docker run --rm --network none --user "$(id -u):$(id -g)" \
   --mount "type=bind,src=$pilot_dir,dst=/input,readonly" \
   --mount "type=bind,src=$output_dir,dst=/output" \
@@ -42,7 +46,8 @@ docker run --rm --network none --user "$(id -u):$(id -g)" \
     --pilot-coverage /input/coverage.json \
     --as-of archive-latest \
     --signal-date "$signal_date" \
-    --output /output
+    --output /output \
+    "${review_args[@]}"
 
 (cd -- "$output_dir" && sha256sum -c opportunities.sha256)
 scan_duration=$((SECONDS - scan_started))
@@ -66,6 +71,17 @@ summary = {
             "reference_price": (row.get("risk") or {}).get("reference_price"),
         }
         for row in report["top_candidates"]
+    ],
+    "top_watchlist": [
+        {
+            "ticker": row["ticker"],
+            "score": row["score"],
+            "selection_reasons": row["selection_reasons"],
+            "uncertainties": row["uncertainties"],
+            "reference_date": (row.get("risk") or {}).get("reference_date"),
+            "reference_price": (row.get("risk") or {}).get("reference_price"),
+        }
+        for row in report["top_watchlist"]
     ],
 }
 print(json.dumps(summary, indent=2, sort_keys=True))'

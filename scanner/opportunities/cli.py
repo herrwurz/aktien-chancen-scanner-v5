@@ -56,6 +56,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", required=True)
     parser.add_argument("--benchmark-asset-id")
     parser.add_argument("--pilot-coverage")
+    parser.add_argument("--instrument-reviews")
     parser.add_argument("--minimum-liquidity", type=_positive_decimal, default=Decimal("1000000"))
     return parser
 
@@ -72,6 +73,11 @@ def main(argv=None) -> int:
     pilot_coverage = None
     if args.pilot_coverage:
         pilot_coverage = _load_pilot_coverage(args.pilot_coverage)
+    instrument_reviews = None
+    if args.instrument_reviews:
+        review_raw = Path(args.instrument_reviews).read_bytes()
+        instrument_reviews = json.loads(review_raw)
+        instrument_reviews["file_sha256"] = hashlib.sha256(review_raw).hexdigest()
     report = run_dry_run(
         ResearchIndex(args.research_index),
         archive,
@@ -80,6 +86,7 @@ def main(argv=None) -> int:
         benchmark_asset_id=args.benchmark_asset_id,
         minimum_liquidity=args.minimum_liquidity,
         pilot_coverage=pilot_coverage,
+        instrument_reviews=instrument_reviews,
     )
     artifacts = write_report(report, args.output)
     print(

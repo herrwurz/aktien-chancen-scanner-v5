@@ -47,6 +47,12 @@ Ein technischer Ausbruch, ungewöhnliches Volumen oder ein bestätigter Katalysa
 `unavailable`. Der ganzzahlige Score ist nur eine offen ausgewiesene Sortierregel. Er ist keine
 Wahrscheinlichkeit.
 
+Ein SEC-Aktieneintrag mit `instrument_type=unknown` wird technisch ausgewertet, bleibt jedoch
+unabhängig vom Trigger `watch_only` und trägt `instrument_type_unverified`. Eine Freigabe als
+`operating_company` erfolgt ausschließlich über die optionale Datei
+`PILOT_DIR/instrument-reviews.json` mit CIK/Ticker, Originalquelle, Quellen-SHA, Abrufzeitpunkt,
+Reviewer und Reviewzeitpunkt. Fonds und als `other` belegte Instrumente bleiben ausgeschlossen.
+
 Das ATR-Szenario nennt Referenzkurs, modellierten Stopp, Ziel und Brutto-CRV. Da Tiingo-EOD keine
 ausführbaren Bid-/Ask-Quotes liefert, bleiben `spread_status=unavailable`, `net_crv=null` und
 `executable=false`. Die ausgewiesene Kostenannahme wird nicht in ein scheinpräzises Netto-CRV

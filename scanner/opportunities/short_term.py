@@ -77,7 +77,7 @@ def evaluate_candidate(
         gates.append("non_stock")
     if identity.instrument_type == "fund":
         gates.append("fund")
-    elif identity.instrument_type != "operating_company":
+    elif identity.instrument_type == "other":
         gates.append("non_operating_company")
     if len(bounded) < policy.min_sessions:
         gates.append("insufficient_sessions")
@@ -141,6 +141,8 @@ def evaluate_candidate(
     if features.atr_percent > policy.high_atr_percent:
         award(-2, "high_volatility")
     uncertainties: list[str] = []
+    if identity.instrument_type != "operating_company":
+        uncertainties.append("instrument_type_unverified")
     if features.benchmark_status == "unavailable":
         uncertainties.append("benchmark_unavailable")
     if any(row.get("session_end_status") != "verified_exchange_calendar" for row in bounded):
@@ -182,7 +184,11 @@ def evaluate_candidate(
         name=identity.name,
         exchange=identity.exchange,
         mic=identity.mic,
-        status="candidate_research" if triggers else "watch_only",
+        status=(
+            "candidate_research"
+            if triggers and identity.instrument_type == "operating_company"
+            else "watch_only"
+        ),
         score=score,
         score_reasons=reasons,
         selection_reasons=triggers,

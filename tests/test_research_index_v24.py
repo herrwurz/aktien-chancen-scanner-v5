@@ -185,6 +185,19 @@ def test_identity_resolution_rejects_any_unmatched_supplied_stable_identifier(tm
     }
 
 
+def test_identity_resolution_accepts_exchange_display_alias_when_mic_matches(tmp_path):
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    indexed = asset(1).model_copy(update={"exchange": "Nasdaq", "mic": "XNAS"})
+    build_index(tmp_path / "index.db", assets=[indexed], events=[], facts=[], news=[])
+    supplied = indexed.model_copy(update={"exchange": "NASDAQ"})
+
+    result = ResearchIndex(tmp_path / "index.db").resolve_identity(supplied, as_of=NOW)
+
+    assert result["status"] == "ok"
+
+
 def test_detective_uses_full_index_retrieval_before_top_three(tmp_path):
     from scanner.hebeltrader.detective.index_source import IndexCandidateSource
     from scanner.hebeltrader.detective.schemas import DetectiveRequest

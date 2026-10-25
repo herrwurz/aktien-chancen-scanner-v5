@@ -9,6 +9,7 @@ from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 from pathlib import Path
 
+from scanner.opportunities.models import InstrumentTypeReview
 from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
 from scanner.research import AssetIdentity
 
@@ -57,6 +58,37 @@ def _identity_failure(listing: dict, reason: str) -> dict:
     }
 
 
+def _reviewed_identity(identity: AssetIdentity, asset_id: str, reviews: dict | None, as_of):
+    if not reviews:
+        return identity
+    matches = [row for row in reviews.get("records", []) if row.get("asset_id") == asset_id]
+    if len(matches) > 1:
+        raise ValueError("duplicate instrument review")
+    if not matches:
+        return identity
+    review = InstrumentTypeReview.model_validate(matches[0])
+    if review.cik != identity.cik or review.ticker != identity.ticker:
+        raise ValueError("instrument review identity mismatch")
+    if (
+        review.source_retrieved_at.utcoffset() is None
+        or review.reviewed_at.utcoffset() is None
+        or review.source_retrieved_at > as_of
+        or review.reviewed_at > as_of
+    ):
+        raise ValueError("instrument review is not available at as_of")
+    if len(review.source_sha256) != 64 or any(
+        char not in "0123456789abcdef" for char in review.source_sha256
+    ):
+        raise ValueError("invalid instrument review source SHA")
+    return identity.model_copy(
+        update={
+            "instrument_type": review.instrument_type,
+            "instrument_type_status": "source_verified",
+            "instrument_type_evidence": review.source_url,
+        }
+    )
+
+
 def run_dry_run(
     index,
     archive,
@@ -66,6 +98,7 @@ def run_dry_run(
     benchmark_asset_id: str | None = None,
     minimum_liquidity: Decimal = Decimal("1000000"),
     pilot_coverage: dict | None = None,
+    instrument_reviews: dict | None = None,
 ) -> dict:
     """Evaluate every archived listing without network, writes or execution claims."""
     if as_of.tzinfo is None:
@@ -150,6 +183,7 @@ def run_dry_run(
             continue
         matched += 1
         identity = AssetIdentity.model_validate(resolution["identity"])
+        identity = _reviewed_identity(identity, listing["asset_id"], instrument_reviews, as_of)
         price_result = archive.prices(
             listing["asset_id"],
             start=(signal_date - timedelta(days=500)).isoformat(),
@@ -225,6 +259,7 @@ def run_dry_run(
         else:
             benchmark_status = "unavailable_for_candidate_sessions"
     top_candidates = [row for row in results if row["status"] == "candidate_research"][:10]
+    top_watchlist = [row for row in results if row["status"] == "watch_only"][:10]
     return {
         "schema_version": "2.5.2",
         "mode": "modeled_research",
@@ -240,8 +275,10 @@ def run_dry_run(
         "benchmark_asset_id": benchmark_asset_id,
         "benchmark_status": benchmark_status,
         "source_pilot": source_pilot,
+        "instrument_reviews_sha256": (instrument_reviews or {}).get("file_sha256"),
         "coverage": coverage,
         "top_candidates": top_candidates,
+        "top_watchlist": top_watchlist,
         "results": results,
     }
 

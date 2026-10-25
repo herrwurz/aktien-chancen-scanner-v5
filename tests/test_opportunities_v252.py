@@ -364,7 +364,7 @@ def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
     [
         (stock_identity(instrument_type="fund"), feature_bars(sessions=250), 0, "1", "fund"),
         (
-            stock_identity(instrument_type="unknown"),
+            stock_identity(instrument_type="other"),
             feature_bars(sessions=250),
             0,
             "1",
@@ -478,6 +478,64 @@ def test_missing_optional_benchmark_does_not_change_candidate_score():
     assert invalid.status == without.status
     assert invalid.score == without.score
     assert invalid.features.benchmark_status == "unavailable"
+
+
+def test_unknown_instrument_type_is_analyzed_but_cannot_become_candidate():
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    bars = feature_bars(sessions=250, final_volume="20000")
+    as_of = datetime.combine(
+        date.fromisoformat(bars[-1]["session_date"]), datetime.max.time(), tzinfo=UTC
+    )
+    result = evaluate_candidate(
+        stock_identity(instrument_type="unknown"),
+        bars,
+        as_of=as_of,
+        catalysts=[],
+        policy=OpportunityPolicy(min_median_dollar_volume=Decimal("1")),
+    )
+
+    assert result.features is not None
+    assert result.status == "watch_only"
+    assert result.selection_reasons
+    assert "instrument_type_unverified" in result.uncertainties
+
+
+def test_source_bound_instrument_review_can_release_operating_company():
+    from scanner.opportunities.report import _reviewed_identity
+
+    identity = stock_identity(instrument_type="unknown")
+    as_of = datetime(2026, 10, 25, 12, tzinfo=UTC)
+    reviews = {
+        "schema_version": "1.0",
+        "records": [
+            {
+                "asset_id": "cik:0000000042",
+                "cik": "0000000042",
+                "ticker": "EXM",
+                "instrument_type": "operating_company",
+                "source_url": "https://www.sec.gov/Archives/example.json",
+                "source_sha256": "a" * 64,
+                "source_retrieved_at": "2026-10-25T09:00:00+00:00",
+                "reviewer": "manual-reviewer",
+                "reviewed_at": "2026-10-25T10:00:00+00:00",
+            }
+        ],
+    }
+
+    reviewed = _reviewed_identity(identity, "cik:0000000042", reviews, as_of)
+
+    assert reviewed.instrument_type == "operating_company"
+    assert reviewed.instrument_type_status == "source_verified"
+    assert reviewed.instrument_type_evidence.startswith("https://www.sec.gov/")
+
+    with pytest.raises(ValueError, match="not available"):
+        _reviewed_identity(
+            identity,
+            "cik:0000000042",
+            reviews,
+            datetime(2026, 10, 25, 8, tzinfo=UTC),
+        )
 
 
 def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
@@ -633,6 +691,7 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     ]
     assert report["coverage"]["analyzed"] == 2
     assert report["top_candidates"][0]["ticker"] == "AAA"
+    assert report["top_watchlist"] == []
     assert [row["ticker"] for row in report["results"]] == ["AAA", "BBB", "FND"]
     assert report["results"][0]["exchange"] == "NASDAQ"
     assert report["results"][0]["mic"] == "XNAS"

@@ -8,7 +8,11 @@ from pathlib import Path
 
 from scanner.research import AssetIdentity
 from scanner.research_index.builder import SCHEMA_VERSION, IndexManifest
-from scanner.research_index.identity import canonicalize_identity, stable_asset_id
+from scanner.research_index.identity import (
+    canonical_exchange,
+    canonicalize_identity,
+    stable_asset_id,
+)
 from scanner.research_index.models import CandidateBatch, CandidateHit, CandidateQuery
 
 
@@ -88,13 +92,18 @@ class ResearchIndex:
         row = matches[0]
         indexed = AssetIdentity.model_validate_json(row["identity_json"])
         comparable = ("ticker", "exchange", "mic", "isin", "wkn", "lei", "cik")
-        conflicts = [
-            field
-            for field in comparable
-            if getattr(identity, field) is not None
-            and getattr(indexed, field) is not None
-            and getattr(identity, field) != getattr(indexed, field)
-        ]
+        conflicts = []
+        for field in comparable:
+            supplied = getattr(identity, field)
+            stored = getattr(indexed, field)
+            if supplied is None or stored is None:
+                continue
+            if field == "exchange":
+                same = canonical_exchange(supplied) == canonical_exchange(stored)
+            else:
+                same = supplied == stored
+            if not same:
+                conflicts.append(field)
         if conflicts:
             return {
                 "status": "identity_conflict",

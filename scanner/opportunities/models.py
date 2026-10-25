@@ -46,6 +46,18 @@ class CatalystEvidence(StrictModel):
     verification_status: Literal["confirmed", "context_only"]
 
 
+class InstrumentTypeReview(StrictModel):
+    asset_id: str
+    cik: str
+    ticker: str
+    instrument_type: Literal["operating_company", "fund", "other"]
+    source_url: str
+    source_sha256: str
+    source_retrieved_at: datetime
+    reviewer: str
+    reviewed_at: datetime
+
+
 class RiskScenario(StrictModel):
     reference_date: date
     reference_price: Decimal
