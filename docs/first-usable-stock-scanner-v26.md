@@ -142,5 +142,18 @@ getrennt anhand zeitlich passender Primärquellen geprüft werden.
 
 Der Gesamtstatus lautet weiterhin `partial`: Für keine der 100 Reihen wurde bereits ein
 SHA-archivierter offizieller Handelskalender eingebunden. Der Lauf belegt reale Providerabdeckung,
-aber noch keinen kalenderverifizierten Backtestbestand. SPY wird in einem getrennten Lauf ergänzt;
-sein Ergebnis ist in diesen Aktienzahlen noch nicht enthalten.
+aber noch keinen kalenderverifizierten Backtestbestand.
+
+Der getrennte SPY-Lauf wurde anschließend mit einem Providerrequest erfolgreich abgeschlossen:
+
+- Identität und Rolle: `benchmark:SPY`, `benchmark_only_not_candidate`;
+- 454 archivierte Sitzungen, Mindestumfang von 250 Sitzungen erfüllt;
+- Bericht-SHA: `bcac45a1adf1367e89cf1b7d3704ddb3dd577e483cfb62060249d2589c815377`;
+- Rohdaten-SHA: `b44de1ee6e2f11745952e8fe36ef45480e7b97ec2bc5c17fca84ecd22ca388f1`;
+- Manifest-SHA: `1238de2f4cd2e94d2ac1906a9a740f13384ec7bffbd91b46450162675fa94c4a`;
+- logischer Archiv-SHA nach SPY:
+  `9da9dacb0f5deeb5e3725319ff86dea60c5d317ae2619e041d19255b2d0a0105`.
+
+Auch SPY trägt `calendar_status=unavailable_not_inferred`. Er ermöglicht damit eine reale,
+modellierte Relative-Stärke-Berechnung auf demselben Providerarchiv, belegt aber noch keine
+historische Datenverfügbarkeit oder kalenderverifizierte Ausführung.
