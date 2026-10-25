@@ -1,0 +1,61 @@
+{
+  "schema_version": 3,
+  "cases": {
+    "logistics-takeover-1610": {
+      "asset_id": "isin:DE0005552004",
+      "acceptable_asset_ids": ["isin:DE0005552004", "isin:CH0025238863", "isin:DE000HLAG475"],
+      "forbidden_identifiers": [],
+      "expected_in_universe": true,
+      "resolution_note": "Public logistics/takeover theme; DHL Group is a primary hypothesis among EU logistics names."
+    },
+    "pharma-guidance-us": {
+      "asset_id": "fixture-unresolved-ok",
+      "acceptable_asset_ids": [],
+      "forbidden_identifiers": [],
+      "expected_in_universe": false,
+      "resolution_note": "US pharma without EU curated identity; abstention or non-hit acceptable."
+    },
+    "promo-only-empty": {
+      "asset_id": "fixture-unresolved-ok",
+      "acceptable_asset_ids": [],
+      "forbidden_identifiers": [],
+      "expected_in_universe": false,
+      "resolution_note": "Promotional-only teaser must not invent a stock."
+    },
+    "buyback-turnaround": {
+      "asset_id": "fixture-unresolved-ok",
+      "acceptable_asset_ids": [],
+      "forbidden_identifiers": [],
+      "expected_in_universe": false,
+      "resolution_note": "Too generic without sector/geography."
+    },
+    "rail-logistics-synergy": {
+      "asset_id": "isin:CH0025238863",
+      "acceptable_asset_ids": ["isin:CH0025238863", "isin:DE0005552004", "isin:DE000A0RAIL1"],
+      "forbidden_identifiers": [],
+      "expected_in_universe": true,
+      "resolution_note": "Rail/logistics takeover theme; Kuehne+Nagel is an acceptable top hypothesis."
+    },
+    "swiss-logistics": {
+      "asset_id": "isin:CH0025238863",
+      "acceptable_asset_ids": ["isin:CH0025238863"],
+      "forbidden_identifiers": [],
+      "expected_in_universe": true,
+      "resolution_note": "Explicit Swiss logistics points to Kuehne + Nagel in the curated universe."
+    },
+    "german-logistics-heavyweight": {
+      "asset_id": "isin:DE0005552004",
+      "acceptable_asset_ids": ["isin:DE0005552004", "isin:DE000HLAG475", "isin:DE0007667107"],
+      "forbidden_identifiers": [],
+      "expected_in_universe": true,
+      "resolution_note": "German logistics heavyweight maps to DHL/Hapag/Vossloh cluster."
+    },
+    "container-shipping-eu": {
+      "asset_id": "isin:DE000HLAG475",
+      "acceptable_asset_ids": ["isin:DE000HLAG475", "isin:DE0005552004", "isin:CH0025238863"],
+      "forbidden_identifiers": [],
+      "expected_in_universe": true,
+      "resolution_note": "EU container/logistics theme; Hapag-Lloyd acceptable among logistics peers."
+    }
+  }
+}

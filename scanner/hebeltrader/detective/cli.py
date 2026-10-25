@@ -18,6 +18,11 @@ def main(argv=None):
     parser.add_argument("--image-media-type", choices=("image/png", "image/jpeg", "image/webp"))
     parser.add_argument("--publication-at")
     parser.add_argument(
+        "--analysis-mode",
+        choices=("hypothesis", "strict"),
+        default="hypothesis",
+    )
+    parser.add_argument(
         "--research-mode",
         choices=("fixture", "cached_research", "indexed_research", "live_research"),
         default="fixture",
@@ -35,6 +40,7 @@ def main(argv=None):
     if args.image and not args.image_media_type:
         parser.error("--image-media-type is required with --image")
     payload = DetectiveRequest(
+        analysis_mode=args.analysis_mode,
         teaser_text=args.text_file.read_text(encoding="utf-8") if args.text_file else "",
         screenshot_base64=(
             base64.b64encode(args.image.read_bytes()).decode() if args.image else None

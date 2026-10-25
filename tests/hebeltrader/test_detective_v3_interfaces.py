@@ -117,7 +117,7 @@ def test_indexed_service_without_publication_time_is_unresolved_and_does_not_res
 
     source = MustNotRun()
     result = DetectiveService(candidate_source=source, news_source=source, products=[]).analyze(
-        DetectiveRequest(teaser_text="US-Pharma")
+        DetectiveRequest(analysis_mode="strict", teaser_text="US-Pharma")
     )
     assert result["identification"]["status"] == "unresolved"
     assert result["identification"]["reason"] == "missing_publication_time"
@@ -147,7 +147,8 @@ def test_template_uses_dom_text_content_instead_of_html_injection():
     assert "textContent" in template
     assert "c.identity||c" in template
     assert "failure_code" in template
-    assert "historical_blind" in template
+    assert "hypothesis_top3" in template
+    assert "search_queries" in template
     assert "Harte Widersprüche" in template
     assert "Primärbelege" in template
     assert "coverage_warnings" in template

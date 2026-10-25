@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "source_id": "fixture-news-dhl-1",
+      "title": "DHL Group Logistik Übernahme Fantasie und Synergien",
+      "url": "fixture://news/dhl-takeover",
+      "published_at": "2025-06-01T10:00:00+00:00",
+      "themes": ["logistik", "übernahme", "logistics", "takeover", "synerg"]
+    },
+    {
+      "source_id": "fixture-news-kn-1",
+      "title": "Kuehne + Nagel prüft Logistik Übernahme und Schienenverkehr",
+      "url": "fixture://news/kn-rail",
+      "published_at": "2025-06-02T09:00:00+00:00",
+      "themes": ["logistik", "übernahme", "schienen", "rail", "logistics"]
+    },
+    {
+      "source_id": "fixture-news-hapag-1",
+      "title": "Hapag-Lloyd Container Logistik Markt",
+      "url": "fixture://news/hlag",
+      "published_at": "2025-06-03T08:00:00+00:00",
+      "themes": ["logistik", "logistics", "shipping"]
+    },
+    {
+      "source_id": "fixture-news-bayer-1",
+      "title": "Bayer Pharma Gewinnanstieg ohne Logistik",
+      "url": "fixture://news/bayer",
+      "published_at": "2025-06-04T08:00:00+00:00",
+      "themes": ["pharma", "gewinn"]
+    }
+  ]
+}

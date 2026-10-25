@@ -21,10 +21,16 @@
   und Optionsscheindaten müssen anhand zeitgerechter Originalquellen geprüft werden.</p>
   <form id="form">
     <label for="text">Teasertext</label><textarea id="text" maxlength="20000"></textarea>
+    <label for="mode">Analysemodus</label>
+    <select id="mode">
+      <option value="hypothesis" selected>Hypothesen Top-3 (manuell prüfen)</option>
+      <option value="strict">Streng (likely_candidate)</option>
+    </select>
     <label for="published">Veröffentlichungszeit (historische Blindanalyse)</label>
     <input id="published" type="datetime-local">
     <p class="muted">Mit Zeitstempel prüft der Detektiv nur Evidenz, die damals bereits verfügbar war
-      (`historical_blind`). Ohne Zeitstempel endet die Analyse mit `missing_publication_time`.</p>
+      (`historical_blind`). Im Hypothesenmodus ohne Zeitstempel wird die Analysezeit genutzt
+      (nicht historical_blind). Im strengen Modus fehlt dann `missing_publication_time`.</p>
     <label for="image">Screenshot oder PDF (Bilder maximal 2 MiB; PDF maximal 20 MiB/40 Seiten)</label>
     <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
     <button>Hinweise analysieren</button>
@@ -53,12 +59,18 @@ const renderOverview=data=>{
   const box=el('article');box.className='meta';
   const id=data.identification||{};
   box.append(el('h2','Ergebnis'));
-  box.append(el('p',`Status: ${id.status||'unbekannt'}`));
+  box.append(el('p',`Analyse: ${data.analysis_mode||'hypothesis'} · Status: ${id.status||'unbekannt'}`));
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
   else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
+  if(id.status==='hypothesis_top3')box.append(el('p',
+    'Hypothesen-Top-3: manuell prüfbare Kandidaten, keine bestätigte Identifikation.'));
   box.append(el('p', data.publication_at
-    ? `Modus: historical_blind bis ${data.publication_at}`
-    : 'Modus: ohne Publikationszeit (keine historische Evidenzprüfung)'));
+    ? `Zeitbezug: ${data.publication_at}`
+    : 'Ohne Publikationszeit (Hypothesenmodus nutzt Analysezeit, nicht historical_blind)'));
+  if((data.search_queries||[]).length){
+    box.append(el('h3','Suchqueries'));
+    box.append(list(data.search_queries));
+  }
   const coverage=(data.candidate_source&&data.candidate_source.coverage)||{};
   const coverageBits=[
     coverage.visible_universe_size!=null?`sichtbares Universum ${coverage.visible_universe_size}`:null,
@@ -108,6 +120,10 @@ const renderCandidate=(c,index)=>{
     article.append(el('h4','Bestätigte Hinweise'));
     article.append(list(supporting.map(clueLabel)));
   }
+  if(c.hypothesis_reasons&&c.hypothesis_reasons.length){
+    article.append(el('h4','Hypothesengründe'));
+    article.append(list(c.hypothesis_reasons));
+  }
   if(c.evidence_matrix&&c.evidence_matrix.length){
     article.append(el('h4','Evidenzmatrix'));
     article.append(list(c.evidence_matrix.map(cell=>{
@@ -127,6 +143,7 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
   const body={teaser_text:document.querySelector('#text').value,
+    analysis_mode:document.querySelector('#mode').value,
     publication_at:published?new Date(published).toISOString():null};
   if(file&&file.type==='application/pdf'){body.pdf_base64=await asBase64(file);
     body.pdf_media_type=file.type}else if(file){body.screenshot_base64=await asBase64(file);

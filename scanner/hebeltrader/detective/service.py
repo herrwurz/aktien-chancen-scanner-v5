@@ -7,8 +7,11 @@ from datetime import UTC, datetime
 from scanner.research import AssetIdentity, EvidenceRecord
 
 from .catalog import CATALOG_REVISION, default_candidate_source, load_products
+from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues, extract_clues
 from .documents import extract_document
+from .hypothesis import decide_hypothesis, hypothesis_reasons, select_hypothesis_candidates
+from .hypothesis_source import HypothesisCandidateSource
 from .ocr import TesseractOcr
 from .schemas import SourceSpan
 from .verification import decide, verify_candidates
@@ -30,13 +33,17 @@ class DetectiveService:
         products=None,
         clock=None,
         research_mode="fixture",
+        enricher=None,
     ):
         self.ocr = ocr or TesseractOcr()
-        self.candidate_source = candidate_source or default_candidate_source()
+        self.candidate_source = candidate_source or HypothesisCandidateSource(
+            base_source=default_candidate_source()
+        )
         self.news_source = news_source or self.candidate_source
         self.products = products if products is not None else load_products()
         self.clock = clock or (lambda: datetime.now(UTC))
         self.research_mode = research_mode
+        self.enricher = enricher or HeuristicClueEnricher()
 
     def analyze(self, request):
         text_parts = []
@@ -102,6 +109,12 @@ class DetectiveService:
         combined = "\n".join(combined_parts)
         clues = extract_clues(combined)
         atomic_clues = extract_atomic_clues(combined, spans)
+        enrichment = self.enricher.enrich(combined, atomic_clues, spans)
+        if enrichment.extra_clues:
+            atomic_clues = sorted(
+                [*atomic_clues, *enrichment.extra_clues],
+                key=lambda clue: (clue.start, clue.category, clue.clue_id),
+            )
         if hasattr(self.candidate_source, "retrieve_candidates"):
             return self._analyze_v3(
                 request,
@@ -110,6 +123,7 @@ class DetectiveService:
                 clues,
                 atomic_clues,
                 image_sha,
+                enrichment,
             )
         ranked = self._rank(combined, clues, request.publication_at)
         decision = self._decision(ranked)
@@ -155,27 +169,52 @@ class DetectiveService:
         legacy_clues,
         atomic_clues,
         image_sha,
+        enrichment,
     ):
         stage_a_asset_ids = []
-        if request.publication_at is None:
+        analysis_mode = getattr(request, "analysis_mode", "hypothesis")
+        as_of = request.publication_at
+        if as_of is None and analysis_mode == "hypothesis":
+            as_of = self.clock()
+            review_hints.append(
+                "hypothesis mode without publication_at uses analysis clock; not historical_blind"
+            )
+        if as_of is None:
             retrieval_status = "missing_publication_time"
             verified = []
             review_hints.append(
                 "Publication timestamp missing; historical evidence and products cannot be verified"
             )
         else:
-            retrieval = self.candidate_source.retrieve_candidates(
-                atomic_clues, request.publication_at
-            )
+            retrieve = self.candidate_source.retrieve_candidates
+            try:
+                retrieval = retrieve(atomic_clues, as_of, search_queries=enrichment.search_queries)
+            except TypeError:
+                retrieval = retrieve(atomic_clues, as_of)
             retrieval_status = retrieval.status
             stage_a_asset_ids = [row.asset_id for row in retrieval.candidates]
             verified = verify_candidates(
                 retrieval,
                 atomic_clues,
                 self.news_source.evidence_for,
-                request.publication_at,
+                as_of,
             )
-        decision = decide(verified, retrieval_status)
+            if analysis_mode == "hypothesis":
+                verified = sorted(
+                    verified,
+                    key=lambda row: (
+                        bool(row.hard_contradictions),
+                        -row.evidence_score,
+                        -row.retrieval_score,
+                        row.asset_id,
+                    ),
+                )
+        if analysis_mode == "hypothesis":
+            decision = decide_hypothesis(verified, retrieval_status, analysis_mode=analysis_mode)
+            selected_rows = select_hypothesis_candidates(verified, decision)
+        else:
+            decision = decide(verified, retrieval_status)
+            selected_rows = verified[:3]
         selected = next(
             (row for row in verified if row.asset_id == decision.selected_asset_id), None
         )
@@ -183,17 +222,19 @@ class DetectiveService:
         derivative = self._find_derivative(
             legacy_clues, derivative_decision, request.publication_at
         )
-        if decision.status != "likely_candidate":
+        if decision.status not in {"likely_candidate", "hypothesis_top3"}:
             review_hints.append(decision.reason)
+        review_hints.extend(enrichment.notes)
         clues_by_id = {clue.clue_id: clue for clue in atomic_clues}
         candidate_payloads = []
-        for row in verified[:3]:
+        for row in selected_rows:
             supporting = [
                 {
                     "type": clues_by_id[clue_id].category,
                     "value": clues_by_id[clue_id].value or clues_by_id[clue_id].normalized,
                 }
                 for clue_id in row.confirmed_clue_ids
+                if clue_id in clues_by_id
             ]
             contradictions = [
                 {
@@ -201,6 +242,7 @@ class DetectiveService:
                     "value": clues_by_id[clue_id].value or clues_by_id[clue_id].normalized,
                 }
                 for clue_id in row.contradicted_clue_ids
+                if clue_id in clues_by_id
             ]
             candidate_payloads.append(
                 {
@@ -209,12 +251,13 @@ class DetectiveService:
                     "supporting_clues": supporting,
                     "hard_facts": [item for item in supporting if item["type"] == "identifier"],
                     "contradictions": contradictions,
+                    "hypothesis_reasons": hypothesis_reasons(row),
                     "evidence_strength": (
                         "contradicted"
                         if contradictions
                         else "supported_uncalibrated"
                         if supporting
-                        else "evidence_missing"
+                        else "hypothesis_only"
                     ),
                     "relevance_score_not_probability": row.evidence_score,
                 }
@@ -222,10 +265,13 @@ class DetectiveService:
         coverage = dict(getattr(self.candidate_source, "coverage", {}) or {})
         coverage.setdefault("stage_a_asset_ids", stage_a_asset_ids)
         coverage.setdefault("channel_limit", 50)
+        coverage["search_queries"] = enrichment.search_queries
+        coverage["enrichment_provider"] = enrichment.provider
         return {
             "schema_version": 3,
             "status": "candidate_identification_only",
             "strategy": "HEBELTRADER_DETECTIVE",
+            "analysis_mode": analysis_mode,
             "research_mode": self.research_mode,
             "analyzed_at": self.clock().isoformat(),
             "publication_at": (
@@ -238,6 +284,7 @@ class DetectiveService:
             },
             "input_sources": input_sources,
             "extracted_clues": [clue.model_dump(mode="json") for clue in atomic_clues],
+            "search_queries": enrichment.search_queries,
             "identification": {
                 **decision.model_dump(mode="json"),
                 "failure_code": (decision.reason if decision.status == "unresolved" else None),

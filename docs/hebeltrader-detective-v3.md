@@ -1,9 +1,14 @@
 # HEBELTRADER-Detektiv V3
 
 Der Detektiv untersucht unbekannte Börsenteaser aus Text, PDF oder Bild. Er durchsucht den zum
-Publikationszeitpunkt sichtbaren lokalen Research-Index, prüft bis zu 50 Kandidaten gegen
-archivierte Evidenz und gibt höchstens drei Kandidaten aus. Der Evidenzwert ist keine
-Trefferwahrscheinlichkeit und keine Kaufempfehlung.
+Publikationszeitpunkt sichtbaren lokalen Research-Index bzw. ein kuratiertes EU/DACH-Universum,
+prüft bis zu 50 Kandidaten gegen archivierte Evidenz und gibt höchstens drei Kandidaten aus. Der
+Evidenzwert ist keine Trefferwahrscheinlichkeit und keine Kaufempfehlung.
+
+Standardmodus ist `analysis_mode=hypothesis`: brauchbare Top-3-Hypothesen mit Gründen
+(`hypothesis_top3`), manuell zu prüfen. `analysis_mode=strict` behält die hohe
+`likely_candidate`-Schwelle. Clue-Enrichment erzeugt Suchqueries (heuristisch, optional per
+`DETECTIVE_LLM_ENDPOINT`). Promo-Renditen bleiben außerhalb der Fundamentalbewertung.
 
 ## Datenfluss
 
@@ -24,9 +29,15 @@ Trefferwahrscheinlichkeit und keine Kaufempfehlung.
    Punkte Abstand zum besten widerspruchsfreien Zweitplatzierten. Ansonsten lautet das Ergebnis
    `unclear` oder `unresolved`.
 
-Eine historische Analyse ohne belegte Publikationszeit endet mit `missing_publication_time`.
-Quellen ohne nachweisbares `available_at` und später veröffentlichte Korrekturen werden nicht
-verwendet. Heute abgerufene Stammdaten gelten nicht automatisch als historisch verfügbar.
+Im strengen Modus endet eine Analyse ohne belegte Publikationszeit mit
+`missing_publication_time`. Im Hypothesenmodus wird ohne Zeitstempel die Analysezeit genutzt
+(nicht `historical_blind`). Quellen ohne nachweisbares `available_at` und später veröffentlichte
+Korrekturen werden nicht verwendet. Heute abgerufene Stammdaten gelten nicht automatisch als
+historisch verfügbar.
+
+DACH/EU-Stammdaten fließen über das kuratierte Seed-Universum und optional OpenFIGI-Identitäten
+(`DETECTIVE_OPENFIGI_IDENTITIES`) in Stage A; `build_index_with_eu_universe` schreibt sie in den
+Research-Index. News-Queries aus dem Clue-Enrichment speisen den Fixture-/GDELT-News-Kanal.
 
 `unresolved` trägt einen konkreten `failure_code`, soweit belegbar:
 

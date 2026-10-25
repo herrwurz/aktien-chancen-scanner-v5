@@ -25,6 +25,7 @@ def scan_manifest(manifest_path, service):
         text = case["teaser_text"]
         result = service.analyze(
             DetectiveRequest(
+                analysis_mode=case.get("analysis_mode", "hypothesis"),
                 teaser_text=text,
                 publication_at=case.get("publication_at"),
             )

@@ -98,6 +98,7 @@ LEXICONS = {
     "countries": {
         "US": ("us-konzern", "us unternehmen", "us-versicherer", "amerikanisch", "usa"),
         "DE": ("deutscher konzern", "deutsches unternehmen", "deutsches", "dax"),
+        "CH": ("schweizer konzern", "schweizer", "schweiz"),
         "CA": ("kanadisch", "kanada"),
         "EU": ("europäisch", "europäischer", "europäische", "europa"),
     },

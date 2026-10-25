@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 class DetectiveRequest(BaseModel):
     schema_version: int = 3
+    analysis_mode: Literal["hypothesis", "strict"] = "hypothesis"
     teaser_text: str = Field(default="", max_length=20_000)
     screenshot_base64: str | None = Field(default=None, max_length=3_000_000)
     screenshot_media_type: str | None = None

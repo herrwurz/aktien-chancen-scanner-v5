@@ -1,11 +1,21 @@
 """Configured detective construction; live sources remain lazy at API startup."""
 
 import hmac
+import json
 from datetime import UTC, datetime
+from pathlib import Path
 from threading import Lock
 
 from scanner.hebeltrader.detective.catalog import default_candidate_source, load_products
+from scanner.hebeltrader.detective.clue_enrichment import build_enricher
+from scanner.hebeltrader.detective.eu_universe import (
+    load_eu_dach_assets,
+    load_openfigi_identity_records,
+    merge_universes,
+)
+from scanner.hebeltrader.detective.hypothesis_source import HypothesisCandidateSource
 from scanner.hebeltrader.detective.index_source import IndexCandidateSource
+from scanner.hebeltrader.detective.news_channel import FixtureNewsSearcher
 from scanner.hebeltrader.detective.research_source import ResearchCandidateSource
 from scanner.hebeltrader.detective.service import DetectiveService
 from scanner.hebeltrader.detective.sources import UnavailableResearchSource
@@ -13,6 +23,10 @@ from scanner.research_index.repository import ResearchIndex
 from scanner.research_live import collect_sec_snapshot
 from scanner.research_providers.sec_edgar import SecEdgarClient
 from scanner.research_snapshot import load_snapshot
+
+FIXTURE_NEWS = (
+    Path(__file__).resolve().parents[3] / "tests/fixtures/detective-hypothesis/fixture_news.json"
+)
 
 
 def _cached_source(path, *, now=None):
@@ -112,15 +126,53 @@ def live_api_access_status(settings, provided_token):
     return "authorized"
 
 
+def _fixture_news_searcher(enabled: bool):
+    if not enabled or not FIXTURE_NEWS.is_file():
+        return None
+    rows = json.loads(FIXTURE_NEWS.read_text(encoding="utf-8"))["items"]
+    return FixtureNewsSearcher(rows)
+
+
+def _eu_assets(settings):
+    assets = load_eu_dach_assets()
+    openfigi = getattr(settings, "detective_openfigi_identities", None)
+    if openfigi is not None and Path(openfigi).is_file():
+        assets = merge_universes(assets, load_openfigi_identity_records(Path(openfigi)))
+    return assets
+
+
 def build_detective(settings, *, clock=None, sec_client=None):
     mode = settings.detective_research_mode
+    news_searcher = _fixture_news_searcher(getattr(settings, "detective_hypothesis_news", True))
+    enricher = build_enricher(
+        endpoint=getattr(settings, "detective_llm_endpoint", None),
+        api_key=(
+            settings.detective_llm_api_token.get_secret_value()
+            if getattr(settings, "detective_llm_api_token", None)
+            else None
+        ),
+    )
+    eu_assets = _eu_assets(settings)
     if mode == "fixture":
-        source = default_candidate_source()
+        base = default_candidate_source()
+        source = HypothesisCandidateSource(
+            eu_assets=eu_assets, base_source=base, news_searcher=news_searcher
+        )
     elif mode == "cached_research":
-        source = _cached_source(settings.detective_research_snapshot)
+        base = _cached_source(settings.detective_research_snapshot)
+        source = HypothesisCandidateSource(
+            eu_assets=eu_assets, base_source=base, news_searcher=news_searcher
+        )
     elif mode == "indexed_research":
         try:
-            source = IndexCandidateSource(ResearchIndex(settings.detective_research_index))
+            index = ResearchIndex(settings.detective_research_index)
+            base = IndexCandidateSource(index)
+            source = HypothesisCandidateSource(
+                eu_assets=eu_assets,
+                index=index,
+                base_source=base,
+                news_searcher=news_searcher,
+            )
         except (OSError, ValueError, KeyError, TypeError):
             source = UnavailableResearchSource("research_index_unavailable_or_invalid")
     elif not (
@@ -140,11 +192,14 @@ def build_detective(settings, *, clock=None, sec_client=None):
             max_requests=settings.detective_live_max_requests,
             request_timeout_seconds=settings.detective_live_request_timeout_seconds,
         )
-        source = LazyLiveResearchSource(
+        live = LazyLiveResearchSource(
             client,
             settings.detective_research_snapshot,
             settings.detective_live_max_candidates,
             settings.detective_live_max_duration_seconds,
+        )
+        source = HypothesisCandidateSource(
+            eu_assets=eu_assets, base_source=live, news_searcher=news_searcher
         )
     return DetectiveService(
         candidate_source=source,
@@ -152,4 +207,5 @@ def build_detective(settings, *, clock=None, sec_client=None):
         products=load_products(),
         clock=clock,
         research_mode=mode,
+        enricher=enricher,
     )
