@@ -47,7 +47,11 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--research-index", required=True)
     parser.add_argument("--market-archive", required=True)
-    parser.add_argument("--as-of", required=True, help="Aware archive retrieval cutoff")
+    parser.add_argument(
+        "--as-of",
+        required=True,
+        help="Aware archive retrieval cutoff or deterministic 'archive-latest'",
+    )
     parser.add_argument("--signal-date", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--benchmark-asset-id")
@@ -58,15 +62,19 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = _parser().parse_args(argv)
-    as_of = datetime.fromisoformat(args.as_of.replace("Z", "+00:00"))
-    if as_of.tzinfo is None:
-        raise ValueError("--as-of must include a timezone")
+    archive = MarketDataArchive(args.market_archive, read_only=True)
+    if args.as_of == "archive-latest":
+        as_of = archive.latest_storage_time()
+    else:
+        as_of = datetime.fromisoformat(args.as_of.replace("Z", "+00:00"))
+        if as_of.tzinfo is None:
+            raise ValueError("--as-of must include a timezone")
     pilot_coverage = None
     if args.pilot_coverage:
         pilot_coverage = _load_pilot_coverage(args.pilot_coverage)
     report = run_dry_run(
         ResearchIndex(args.research_index),
-        MarketDataArchive(args.market_archive, read_only=True),
+        archive,
         as_of=as_of,
         signal_date=date.fromisoformat(args.signal_date),
         benchmark_asset_id=args.benchmark_asset_id,

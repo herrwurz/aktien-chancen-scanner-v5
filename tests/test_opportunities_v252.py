@@ -105,6 +105,7 @@ def test_read_only_archive_lists_canonical_instruments_without_mutation(tmp_path
             "isin": None,
         }
     ]
+    assert reader.latest_storage_time() == datetime(2026, 10, 25, 9, tzinfo=UTC)
     assert hashlib.sha256(path.read_bytes()).hexdigest() == digest_before
 
 
@@ -587,6 +588,8 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
         "selected_count": 4,
         "successful_instruments": 3,
         "archive_sha256": archive.logical_sha256(),
+        "coverage_kind": "real_provider_archive",
+        "real_provider_coverage_measured": True,
         "requests_attempted": 4,
         "cost_eur": "0",
         "instruments": [
@@ -665,6 +668,16 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
             signal_date=date(2025, 9, 8),
             minimum_liquidity=Decimal("1000"),
             pilot_coverage=pilot_coverage | {"archive_sha256": "0" * 64},
+        )
+    with pytest.raises(ValueError, match="not measured real-provider"):
+        run_dry_run(
+            ResearchIndex(index_path),
+            archive,
+            as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+            signal_date=date(2025, 9, 8),
+            minimum_liquidity=Decimal("1000"),
+            pilot_coverage=pilot_coverage
+            | {"coverage_kind": "synthetic_fixture", "real_provider_coverage_measured": False},
         )
 
     repeated = run_dry_run(

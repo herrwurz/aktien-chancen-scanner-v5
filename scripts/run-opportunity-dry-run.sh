@@ -32,7 +32,6 @@ chmod 700 -- "$output_dir"
 
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 docker build -t "$image" "$repo_root"
-as_of=$(date -u +%Y-%m-%dT%H:%M:%S+00:00)
 scan_started=$SECONDS
 docker run --rm --network none --user "$(id -u):$(id -g)" \
   --mount "type=bind,src=$pilot_dir,dst=/input,readonly" \
@@ -41,7 +40,7 @@ docker run --rm --network none --user "$(id -u):$(id -g)" \
     --research-index /input/sec-pilot-index.db \
     --market-archive /input/market-data.sqlite \
     --pilot-coverage /input/coverage.json \
-    --as-of "$as_of" \
+    --as-of archive-latest \
     --signal-date "$signal_date" \
     --output /output
 

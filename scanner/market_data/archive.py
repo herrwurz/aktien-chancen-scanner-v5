@@ -249,6 +249,17 @@ class MarketDataArchive:
             ).fetchone()
         return row["latest"]
 
+    def latest_storage_time(self) -> datetime:
+        """Return the deterministic upper visibility bound of the immutable archive."""
+        with self._connect() as db:
+            row = db.execute("SELECT MAX(first_stored_at) AS latest FROM bar_revision").fetchone()
+        if row["latest"] is None:
+            raise ValueError("market archive has no stored bars")
+        value = datetime.fromisoformat(row["latest"])
+        if value.utcoffset() is None:
+            raise ValueError("market archive storage time is not timezone-aware")
+        return value.astimezone(UTC)
+
     def prices(self, asset_id, *, start, end, as_of, availability_mode="strict"):
         if availability_mode not in {"strict", "modeled"}:
             raise ValueError("invalid availability mode")

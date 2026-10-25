@@ -80,6 +80,11 @@ def run_dry_run(
     if pilot_coverage is not None:
         if pilot_coverage.get("archive_sha256") != archive_sha256:
             raise ValueError("pilot coverage archive mismatch")
+        if (
+            pilot_coverage.get("coverage_kind") != "real_provider_archive"
+            or pilot_coverage.get("real_provider_coverage_measured") is not True
+        ):
+            raise ValueError("pilot coverage is not measured real-provider data")
         rows = pilot_coverage.get("instruments") or []
         incomplete = [
             {
@@ -97,6 +102,8 @@ def run_dry_run(
             "requests_attempted": pilot_coverage.get("requests_attempted"),
             "cost_eur": str(pilot_coverage.get("cost_eur", "0")),
             "coverage_report_sha256": pilot_coverage.get("coverage_report_sha256"),
+            "coverage_kind": pilot_coverage.get("coverage_kind"),
+            "real_provider_coverage_measured": True,
             "failed_or_incomplete": sorted(incomplete, key=lambda row: row["ticker"] or ""),
         }
     evaluation_at = datetime.combine(signal_date, time.max, tzinfo=UTC)

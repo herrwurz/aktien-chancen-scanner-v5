@@ -90,6 +90,12 @@ logischen SHA des SQLite-Archivs. `PILOT_DIR` und `OUTPUT_DIR` dürfen weder ide
 verschachtelt sein. PXED und VOGX bleiben dadurch auch dann im Quellen-Audit sichtbar, wenn sie
 nicht als vollständig analysierbare Archivinstrumente vorliegen.
 
+Der Scanner akzeptiert den Pilotbericht nur mit `coverage_kind=real_provider_archive` und
+`real_provider_coverage_measured=true`. Der Analyse-Cutoff `as_of` wird deterministisch aus dem
+letzten lokalen Speicherzeitpunkt des unveränderlichen Archivs gelesen (`archive-latest`) und nicht
+aus der aktuellen Systemuhr erzeugt. Derselbe Archiv-/Index-/Signalstand liefert daher wieder
+denselben JSON- und CSV-Inhalt.
+
 Der reale Dry-run wurde in der Codex-Arbeitsumgebung nicht ausgeführt, weil das lizenzgebundene
 Tiingo-Archiv nur auf Hetzner liegt. Erfolgreiche Offline-Fixtures werden nicht als reale Abnahme
 ausgegeben.
