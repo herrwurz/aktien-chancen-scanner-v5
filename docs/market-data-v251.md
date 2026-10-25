@@ -14,10 +14,16 @@ Vantage wurden auditiert, in diesem PR jedoch nicht angebunden.
 Die Codex-Umgebung enthielt am 24. Oktober 2026 weder einen realen SEC-Index noch
 `TIINGO_API_TOKEN`, `EODHD_API_TOKEN`, `TWELVE_DATA_API_KEY` oder
 `ALPHA_VANTAGE_API_KEY`. Deshalb wurde **keine reale 10-Aktien-Abdeckung gemessen**. Das ist ein
-externer Datenblocker, kein erfolgreiches Akzeptanzergebnis. Offline-Tests mit 10 synthetischen
-Titeln und jeweils 250 Zeilen prüfen nur Verarbeitung und Reporting.
+externer Blocker dieser Entwicklungsumgebung. Am 25. Oktober 2026 wurde der isolierte Hetzner-
+Pilot anschließend mit einem erneuerten, nur zur Laufzeit eingegebenen Tiingo-Schlüssel real
+ausgeführt: 9 von 10 Titeln wurden importiert, davon 8 mit 250 Sitzungen. Der Gesamtstatus ist
+korrekt `partial`; Details und Grenzen stehen im
+[Live-Pilotbericht](market-data-v251-hetzner-pilot.md). Offline-Tests mit 10 synthetischen Titeln
+und jeweils 250 Zeilen prüfen weiterhin ausschließlich Verarbeitung und Reporting.
 Der kanonische [Workspace-Coverage-Bericht](market-data-v251-codex-coverage.json), seine CSV und
 SHA-256-Sidecar halten diesen Nullbefund reproduzierbar fest; sie enthalten keine erfundenen Titel.
+Der Workspace-Bericht beschreibt ausschließlich die Codex-Umgebung und wird durch den späteren
+Serverlauf nicht rückwirkend umgedeutet.
 
 ## Datenvertrag
 
@@ -73,7 +79,35 @@ Tiingo-Konto widerrufen und erneuert. Der neue Schlüssel wird ausschließlich a
 Eingabeaufforderung des Runners eingegeben oder vorab über eine geschützte Server-Umgebungsvariable
 bereitgestellt. Er gehört weder in diesen Befehlsblock noch in eine `.env`-Datei.
 
-Der Runner verwendet das bestehende Reports-Verzeichnis ausschließlich als Read-only-Quelle. Er
+Falls `/opt/scanner-v251-sec-source` noch nicht existiert, wird das öffentliche SEC-Universe mit
+genau einer kostenlosen, begrenzten Anfrage in diesem isolierten Verzeichnis archiviert. Die SEC
+verlangt dafür einen User-Agent mit Kontaktadresse:
+
+```bash
+(
+  set -e
+  cd /opt/scanner-v251-pr21
+  SEC_SOURCE=/opt/scanner-v251-sec-source
+  install -d -m 700 "$SEC_SOURCE"
+  read -rp 'Kontakt-E-Mail für den SEC User-Agent: ' SEC_CONTACT
+  test -n "$SEC_CONTACT"
+  export SEC_USER_AGENT="Scanner V6 research contact $SEC_CONTACT"
+  docker run --rm --network bridge --user "$(id -u):$(id -g)" \
+    -e SEC_USER_AGENT \
+    --mount "type=bind,src=$SEC_SOURCE,dst=/sec-source" \
+    scanner-v251-pr21 \
+    python -m scanner.research_cli \
+      --cache-dir /sec-source/sec-cache \
+      --output /sec-source/sec-universe.json \
+      --allow-network --max-requests 1 sec-universe
+  unset SEC_USER_AGENT SEC_CONTACT
+)
+```
+
+Der Fehlercode der Subshell beendet die SSH-Anmeldung nicht. Das erzeugte Quellarchiv wird beim
+anschließenden Tiingo-Pilot nur lesend eingebunden.
+
+Der Runner verwendet das isolierte SEC-Quellverzeichnis ausschließlich als Read-only-Quelle. Er
 findet genau ein SHA-geprüftes SEC-Universe-Manifest, baut daraus den Pilotindex und schreibt alle
 neuen Dateien nach `/opt/scanner-v251-tiingo-pilot`. Vor dem Providerabruf prüft er, dass Index und
 SEC-Audit zusammengehören und der aktuelle `as-of`-Zeitpunkt nicht vor der belegten
@@ -81,20 +115,28 @@ SEC-Archivierung liegt. Der gesamte Ablauf lässt sich in Termius als ein Block 
 erneuerte Schlüssel wird anschließend verdeckt abgefragt:
 
 ```bash
-set -e
-cd /opt/aktien-chancen-scanner-v5
-git fetch origin feat/short-term-market-data-v2-5-1
-if [ ! -e /opt/scanner-v251-pr21/.git ]; then
-  git worktree add --detach /opt/scanner-v251-pr21 origin/feat/short-term-market-data-v2-5-1
-else
-  test -z "$(git -C /opt/scanner-v251-pr21 status --porcelain)"
-  git -C /opt/scanner-v251-pr21 checkout --detach origin/feat/short-term-market-data-v2-5-1
+(
+  set -e
+  cd /opt/aktien-chancen-scanner-v5
+  git fetch origin feat/short-term-market-data-v2-5-1
+  if [ ! -e /opt/scanner-v251-pr21/.git ]; then
+    git worktree add --detach /opt/scanner-v251-pr21 \
+      origin/feat/short-term-market-data-v2-5-1
+  else
+    test -z "$(git -C /opt/scanner-v251-pr21 status --porcelain)"
+    git -C /opt/scanner-v251-pr21 checkout --detach \
+      origin/feat/short-term-market-data-v2-5-1
+  fi
+  cd /opt/scanner-v251-pr21
+  unset TIINGO_API_TOKEN
+  SOURCE_REPORTS=/opt/scanner-v251-sec-source \
+  OUTPUT_DIR=/opt/scanner-v251-tiingo-pilot \
+  bash scripts/run-tiingo-pilot.sh
+)
+status=$?
+if [ "$status" -ne 0 ]; then
+  echo "Pilot mit Fehlercode $status beendet; die SSH-Sitzung bleibt geöffnet."
 fi
-cd /opt/scanner-v251-pr21
-unset TIINGO_API_TOKEN
-SOURCE_REPORTS=/opt/aktien-chancen-scanner-v5/reports \
-OUTPUT_DIR=/opt/scanner-v251-tiingo-pilot \
-bash scripts/run-tiingo-pilot.sh
 ```
 
 Der Test nutzt weder Docker Compose noch PostgreSQL und referenziert daher keine Container,

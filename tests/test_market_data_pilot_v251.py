@@ -4,6 +4,7 @@ import json
 import subprocess
 from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -451,3 +452,21 @@ def test_server_runner_exposes_safe_runtime_configuration_help():
     assert "SOURCE_REPORTS" in result.stdout
     assert "OUTPUT_DIR" in result.stdout
     assert "does not use Docker Compose or PostgreSQL" in result.stdout
+
+
+def test_server_runner_reads_report_with_calling_user_permissions():
+    script = Path("scripts/run-tiingo-pilot.sh").read_text()
+    summary_command = script.split("sha256sum -c coverage.sha256)", maxsplit=1)[1]
+
+    assert '--user "$(id -u):$(id -g)"' in summary_command
+
+
+def test_server_runner_defaults_to_isolated_sec_source_directory():
+    result = subprocess.run(
+        ["bash", "scripts/run-tiingo-pilot.sh", "--help"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "Default: /opt/scanner-v251-sec-source" in result.stdout

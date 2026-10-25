@@ -65,7 +65,7 @@
 **Files:**
 - Modify: PR #21 description/review response only after local verification.
 
-- [ ] Run Ruff and full pytest against isolated PostgreSQL.
-- [ ] Validate both Compose profiles and build the Docker image.
-- [ ] Push the same branch and wait for all GitHub Actions checks.
-- [ ] Report the real pilot as blocked unless an authorized server run produced artifacts.
+- [x] Run Ruff and full pytest against isolated PostgreSQL.
+- [x] Validate both Compose profiles and build the Docker image.
+- [x] Push the same branch and wait for all GitHub Actions checks.
+- [x] Report the real pilot result only after the authorized server run produced SHA-verified artifacts.

@@ -9,7 +9,7 @@ Usage: scripts/run-tiingo-pilot.sh
 
 Optional environment variables:
   SOURCE_REPORTS  Existing archived research reports (read-only mount).
-                  Default: /opt/aktien-chancen-scanner-v5/reports
+                  Default: /opt/scanner-v251-sec-source
   OUTPUT_DIR      Isolated pilot artifacts. Default: /opt/scanner-v251-tiingo-pilot
   IMAGE           Local image name. Default: scanner-v251-pr21
 
@@ -32,7 +32,7 @@ if [[ $- == *x* ]]; then
 fi
 
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
-source_reports=${SOURCE_REPORTS:-/opt/aktien-chancen-scanner-v5/reports}
+source_reports=${SOURCE_REPORTS:-/opt/scanner-v251-sec-source}
 output_dir=${OUTPUT_DIR:-/opt/scanner-v251-tiingo-pilot}
 image=${IMAGE:-scanner-v251-pr21}
 
@@ -95,7 +95,7 @@ unset TIINGO_API_TOKEN
 trap - EXIT
 (cd -- "$output_dir" && sha256sum -c coverage.sha256)
 
-docker run --rm --network none \
+docker run --rm --network none --user "$(id -u):$(id -g)" \
   --mount "type=bind,src=$output_dir,dst=/output,readonly" \
   "$image" python -c \
   'import json; r=json.load(open("/output/coverage.json")); print(json.dumps({k:r.get(k) for k in ("status","blocker_code","selected_count","successful_instruments","requests_attempted","cost_eur")}, sort_keys=True))'
