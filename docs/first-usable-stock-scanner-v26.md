@@ -121,3 +121,26 @@ Handelssignal. V2.6 kann deshalb trotz breiterer realer Daten korrekt null Kandi
 Ein späterer Forward-Monitor protokolliert pro Lauf Datenstand, Cutoff, Universumsabdeckung,
 Kandidaten, Watchlist, Ausschlüsse, nächste zulässige Sitzung und spätere Outcomes. Er erzeugt
 keine Order und darf erst nach einem eingefrorenen Walk-forward-Protokoll Trainingslabels setzen.
+
+## Reale Hetzner-Abnahme: 100 Aktien
+
+Der isolierte Lauf vom 25. Oktober 2026 hat alle drei vorab bestimmten SEC-Seiten erfolgreich
+abgerufen und ihre Einzelberichte per SHA-256 geprüft:
+
+- Offset 0: 40 von 40 importiert, Bericht-SHA
+  `fd91a8d8236ac9bd7bedbc354998c38ea8c716a3ed3883985236d868201e6479`;
+- Offset 40: 40 von 40 importiert, Bericht-SHA
+  `30adae620a128395a96b8828f0c298aec2018a68c6c65dd17259669e5c5c8695`;
+- Offset 80: 20 von 20 importiert, Bericht-SHA
+  `047f48243812612373d8a79a50d2ff6cdb0e0637d97ecfe69f8ecc1dc2992f22`.
+
+Der aggregierte Bericht enthält 100 eindeutige Instrumente, 100 erfolgreiche Importe, keine
+Identitätskonflikte und 92 Reihen mit mindestens 250 Sitzungen. Acht Reihen bleiben ohne
+Ursachenbehauptung unvollständig: RYZ 169, SGP 180, VOGX 52, BSP 81, SOEZ 224, BRAI 176, EROC 95
+und CTY 6 Sitzungen. Listingbeginn, Delisting, Symbolwechsel und Providerabdeckung müssen dafür
+getrennt anhand zeitlich passender Primärquellen geprüft werden.
+
+Der Gesamtstatus lautet weiterhin `partial`: Für keine der 100 Reihen wurde bereits ein
+SHA-archivierter offizieller Handelskalender eingebunden. Der Lauf belegt reale Providerabdeckung,
+aber noch keinen kalenderverifizierten Backtestbestand. SPY wird in einem getrennten Lauf ergänzt;
+sein Ergebnis ist in diesen Aktienzahlen noch nicht enthalten.
