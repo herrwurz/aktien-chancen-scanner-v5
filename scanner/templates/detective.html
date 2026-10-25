@@ -9,7 +9,9 @@
     main,article{background:white;border-radius:12px;padding:1rem;margin:1rem 0;box-shadow:0 2px 10px #0001}
     label{display:block;font-weight:650;margin-top:1rem}textarea,input,button{box-sizing:border-box;width:100%;padding:.75rem;margin-top:.4rem}
     textarea{min-height:10rem}button{background:#164e63;color:white;border:0;border-radius:8px;font-weight:700}
-    .warning{border-left:4px solid #d97706;padding:.75rem;background:#fffbeb}.candidate{border-top:1px solid #ddd}
+    .warning{border-left:4px solid #d97706;padding:.75rem;background:#fffbeb}
+    .meta,.candidate{border-top:1px solid #ddd;padding-top:.75rem;margin-top:.75rem}
+    .muted{color:#4b5563;font-size:.95rem}ul{margin:.4rem 0 .8rem 1.2rem;padding:0}
     code{overflow-wrap:anywhere}@media(max-width:600px){body{padding:.5rem}}
   </style>
 </head>
@@ -19,7 +21,10 @@
   und Optionsscheindaten müssen anhand zeitgerechter Originalquellen geprüft werden.</p>
   <form id="form">
     <label for="text">Teasertext</label><textarea id="text" maxlength="20000"></textarea>
-    <label for="published">Veröffentlichungszeit</label><input id="published" type="datetime-local">
+    <label for="published">Veröffentlichungszeit (historische Blindanalyse)</label>
+    <input id="published" type="datetime-local">
+    <p class="muted">Mit Zeitstempel prüft der Detektiv nur Evidenz, die damals bereits verfügbar war
+      (`historical_blind`). Ohne Zeitstempel endet die Analyse mit `missing_publication_time`.</p>
     <label for="image">Screenshot oder PDF (Bilder maximal 2 MiB; PDF maximal 20 MiB/40 Seiten)</label>
     <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
     <button>Hinweise analysieren</button>
@@ -29,6 +34,95 @@
 const form=document.querySelector('#form'), result=document.querySelector('#result');
 const asBase64=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;
   r.onload=()=>resolve(r.result.split(',')[1]);r.readAsDataURL(file)});
+const el=(tag,text)=>{const node=document.createElement(tag);if(text!=null)node.textContent=text;return node};
+const list=(items)=>{const ul=el('ul');(items||[]).forEach(item=>{ul.append(el('li',item));});return ul;};
+const clueLabel=item=>{
+  if(!item)return '';
+  if(typeof item==='string')return item;
+  const type=item.type||item.category||'hinweis';
+  const value=item.value||item.normalized||item.clue_id||'';
+  return `${type}: ${value}`;
+};
+const sourceLine=record=>{
+  const parts=[record.source_kind||'quelle', record.title||record.source_id||'ohne Titel'];
+  if(record.url)parts.push(record.url);
+  if(record.source_available_at)parts.push(`verfügbar ${record.source_available_at}`);
+  return parts.join(' · ');
+};
+const renderOverview=data=>{
+  const box=el('article');box.className='meta';
+  const id=data.identification||{};
+  box.append(el('h2','Ergebnis'));
+  box.append(el('p',`Status: ${id.status||'unbekannt'}`));
+  if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
+  else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
+  box.append(el('p', data.publication_at
+    ? `Modus: historical_blind bis ${data.publication_at}`
+    : 'Modus: ohne Publikationszeit (keine historische Evidenzprüfung)'));
+  const coverage=(data.candidate_source&&data.candidate_source.coverage)||{};
+  const coverageBits=[
+    coverage.visible_universe_size!=null?`sichtbares Universum ${coverage.visible_universe_size}`:null,
+    coverage.matched_before_limit!=null?`Treffer vor Cutoff ${coverage.matched_before_limit}`:null,
+    coverage.channel_limit!=null?`Kanal-Limit ${coverage.channel_limit}`:null,
+    coverage.investigated_count!=null?`untersucht ${coverage.investigated_count}`:null,
+  ].filter(Boolean);
+  if(coverageBits.length)box.append(el('p',`Abdeckung: ${coverageBits.join(' · ')}`));
+  const channelCounts=coverage.channel_counts||{};
+  const channelLines=Object.keys(channelCounts).sort().map(key=>{
+    const matched=(coverage.channel_matched_before_limit||{})[key];
+    return matched==null?`${key}: ${channelCounts[key]}`:`${key}: ${channelCounts[key]} (vor Cutoff ${matched})`;
+  });
+  if(channelLines.length){box.append(el('h3','Kanäle'));box.append(list(channelLines));}
+  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[])];
+  const inputWarnings=[];
+  (data.input_sources||[]).forEach(source=>{
+    if(source.type==='screenshot_ocr')inputWarnings.push(`OCR (${source.engine||'lokal'}): visuelle Prüfung nötig`);
+    (source.pages||[]).forEach(page=>{
+      (page.warnings||[]).forEach(warning=>inputWarnings.push(`Seite ${page.number}: ${warning}`));
+      if(page.requires_manual_review)inputWarnings.push(`Seite ${page.number}: manuelle Prüfung der Extraktion`);
+    });
+  });
+  const allWarnings=[...warnings,...inputWarnings];
+  if(allWarnings.length){box.append(el('h3','Hinweise und Warnungen'));box.append(list(allWarnings));}
+  result.append(box);
+};
+const renderCandidate=(c,index)=>{
+  const article=el('article');article.className='candidate';
+  const identity=c.identity||c;
+  article.append(el('h3',`${index+1}. ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
+  const wknNote=identity.wkn
+    ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
+    : 'WKN unbekannt';
+  article.append(el('p',`${wknNote} · Evidenzwert ${c.evidence_score??c.relevance_score_not_probability}`));
+  if(c.hard_contradictions&&c.hard_contradictions.length){
+    article.append(el('h4','Harte Widersprüche'));
+    article.append(list(c.hard_contradictions.map(clueLabel)));
+  }
+  const contradictions=c.contradictions||[];
+  if(contradictions.length){
+    article.append(el('h4','Widersprüche'));
+    article.append(list(contradictions.map(clueLabel)));
+  }
+  const supporting=c.supporting_clues||c.hard_facts||[];
+  if(supporting.length){
+    article.append(el('h4','Bestätigte Hinweise'));
+    article.append(list(supporting.map(clueLabel)));
+  }
+  if(c.evidence_matrix&&c.evidence_matrix.length){
+    article.append(el('h4','Evidenzmatrix'));
+    article.append(list(c.evidence_matrix.map(cell=>{
+      const reason=cell.reason?` (${cell.reason})`:'';
+      return `${cell.clue_id}: ${cell.status}${reason}`;
+    })));
+  }
+  const sources=c.eligible_evidence||[];
+  if(sources.length){
+    article.append(el('h4','Primärbelege'));
+    article.append(list(sources.map(sourceLine)));
+  }
+  article.append(el('p','Bestätigung: manuell erforderlich'));
+  result.append(article);
+};
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
@@ -40,18 +134,13 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const response=await fetch('/api/hebeltrader/detective/analyze',{method:'POST',
     headers:{'content-type':'application/json'},body:JSON.stringify(body)});
   const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';return}
-  result.replaceChildren();const heading=document.createElement('h2');heading.textContent='Kandidaten';
-  result.append(heading);if(!data.candidates.length){const empty=document.createElement('p');
-    empty.textContent='Keine belastbaren Kandidaten.';result.append(empty);return}
-  data.candidates.forEach((c,i)=>{const article=document.createElement('article');
-    article.className='candidate';const identity=c.identity||c;const title=document.createElement('h3');
-    title.textContent=`${i+1}. ${identity.name} (${identity.ticker||'ohne Ticker'})`;article.append(title);
-    const summary=document.createElement('p');summary.textContent=`WKN ${identity.wkn||'unbekannt'}, `+
-      `Evidenzwert: ${c.evidence_score??c.relevance_score_not_probability}`;
-    article.append(summary);const evidence=document.createElement('p');
-    evidence.textContent=c.evidence_matrix?c.evidence_matrix.map(e=>`${e.clue_id}: ${e.status}`).join(', '):
-      [...c.hard_facts,...c.supporting_clues].map(e=>e.value).join(', ');
-    article.append(evidence);const status=document.createElement('p');
-    status.textContent='Bestätigung: manuell erforderlich';article.append(status);result.append(article)});
+  result.replaceChildren();
+  renderOverview(data);
+  result.append(el('h2','Kandidaten'));
+  if(!data.candidates.length){
+    result.append(el('p','Keine belastbaren Kandidaten. Siehe Failure-Code und Abdeckung oben.'));
+    return;
+  }
+  data.candidates.forEach((candidate,index)=>renderCandidate(candidate,index));
 });
 </script></body></html>

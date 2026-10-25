@@ -146,3 +146,9 @@ def test_template_uses_dom_text_content_instead_of_html_injection():
     assert "innerHTML" not in template
     assert "textContent" in template
     assert "c.identity||c" in template
+    assert "failure_code" in template
+    assert "historical_blind" in template
+    assert "Harte Widersprüche" in template
+    assert "Primärbelege" in template
+    assert "coverage_warnings" in template
+    assert "requires_manual_review" in template
