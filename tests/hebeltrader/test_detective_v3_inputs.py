@@ -121,4 +121,3 @@ def test_cli_accepts_pdf_through_same_request_contract(tmp_path, monkeypatch):
     assert captured["request"].schema_version == 3
     assert base64.b64decode(captured["request"].pdf_base64) == source.read_bytes()
     assert captured["request"].pdf_media_type == "application/pdf"
-

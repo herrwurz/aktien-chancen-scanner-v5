@@ -183,6 +183,40 @@ class DetectiveService:
         )
         if decision.status != "likely_candidate":
             review_hints.append(decision.reason)
+        clues_by_id = {clue.clue_id: clue for clue in atomic_clues}
+        candidate_payloads = []
+        for row in verified[:3]:
+            supporting = [
+                {
+                    "type": clues_by_id[clue_id].category,
+                    "value": clues_by_id[clue_id].value or clues_by_id[clue_id].normalized,
+                }
+                for clue_id in row.confirmed_clue_ids
+            ]
+            contradictions = [
+                {
+                    "type": clues_by_id[clue_id].category,
+                    "value": clues_by_id[clue_id].value or clues_by_id[clue_id].normalized,
+                }
+                for clue_id in row.contradicted_clue_ids
+            ]
+            candidate_payloads.append(
+                {
+                    **row.identity,
+                    **row.model_dump(mode="json"),
+                    "supporting_clues": supporting,
+                    "hard_facts": [item for item in supporting if item["type"] == "identifier"],
+                    "contradictions": contradictions,
+                    "evidence_strength": (
+                        "contradicted"
+                        if contradictions
+                        else "supported_uncalibrated"
+                        if supporting
+                        else "insufficient_evidence"
+                    ),
+                    "relevance_score_not_probability": row.evidence_score,
+                }
+            )
         return {
             "schema_version": 3,
             "status": "candidate_identification_only",
@@ -200,7 +234,7 @@ class DetectiveService:
             "input_sources": input_sources,
             "extracted_clues": [clue.model_dump(mode="json") for clue in atomic_clues],
             "identification": decision.model_dump(mode="json"),
-            "candidates": [row.model_dump(mode="json") for row in verified[:3]],
+            "candidates": candidate_payloads,
             "derivative_candidate": derivative,
             "review_hints": review_hints,
             "identification_is_investment_recommendation": False,

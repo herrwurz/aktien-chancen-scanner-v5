@@ -31,9 +31,7 @@ def extract_document(data: bytes, media_type: str, *, ocr) -> ExtractedDocument:
                 text = (page.extract_text() or "").strip()
                 if text:
                     pages.append(
-                        ExtractedPage(
-                            number=number, text=text, method="pdf_text", status="ok"
-                        )
+                        ExtractedPage(number=number, text=text, method="pdf_text", status="ok")
                     )
                     continue
                 try:

@@ -44,6 +44,7 @@ class VerifiedCandidate(BaseModel):
     confirmed_categories: list[str]
     hard_contradictions: list[str]
     excluded_source_ids: list[str]
+    eligible_evidence: list[dict] = Field(default_factory=list)
     uncertainties: list[str] = Field(default_factory=list)
 
 
@@ -133,6 +134,19 @@ def _cell(clue, records, source_to_cluster, identity):
             status="contradicted",
             reason="archived_value_mismatch",
         )
+    if clue.category in {"countries", "sectors"}:
+        field = "country" if clue.category == "countries" else "sector"
+        identity_value = getattr(identity, field)
+        if identity_value is not None:
+            return EvidenceCell(
+                clue_id=clue.clue_id,
+                status=(
+                    "confirmed"
+                    if (clue.value or clue.normalized) == identity_value
+                    else "contradicted"
+                ),
+                reason="historically_available_identity",
+            )
     return EvidenceCell(clue_id=clue.clue_id, status="unknown", reason="no_concrete_evidence")
 
 
@@ -171,6 +185,7 @@ def verify_candidates(
                 confirmed_categories=sorted({by_id[item].category for item in confirmed}),
                 hard_contradictions=hard,
                 excluded_source_ids=excluded,
+                eligible_evidence=[record.model_dump(mode="json") for record in records[:8]],
                 uncertainties=candidate.uncertainties,
             )
         )
