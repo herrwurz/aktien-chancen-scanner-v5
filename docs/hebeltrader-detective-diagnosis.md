@@ -37,12 +37,24 @@ Länderlexikon erkennt jetzt u. a. `deutscher` / `deutsche` / `deutschland` und
 hart und rutscht hinter deutsche Logistiknamen. Nach dem Fix ist
 `german-logistics-heavyweight` Top-1 `isin:DE0005552004` (DHL), nicht mehr Kuehne + Nagel.
 
+## Beispiel: drei reale Werbe-Teaser (ohne Gold-Label)
+
+Publikationszeit hier nur Platzhalter (`2025-10-01+02:00`). Nach Lexikon-Nachzug:
+
+| Fall | Extrahiert | Outcome | Bedeutung |
+|---|---|---|---|
+| Gesundheitssektor + Wall-Street, +1761 % | `healthcare`, `US`, Umsatz/Ertrag | `all_candidates_contradicted` | EU-Seed hat Pharma, aber **US**-Hinweis widerspricht DE/CH-Namen → korrekt keine Fake-Aktie |
+| Finanzschwergewicht, +1705 % | `finance`, Ertrag | `retrieval_missed` | Sektor erkannt, **kein Finanzwert** im kuratierten Universum |
+| Handels-Gigant, +1438 % | `retail` | `retrieval_missed` | Sektor erkannt, **kein Retail-Titel** im Seed |
+
+Vor dem Lexikon-Nachzug war bei allen dreien nur die Promo-Prozentzahl sichtbar
+(`insufficiently_constrained`) — der Detektiv wirkte „blind“, obwohl der Text Sektor/Region nennt.
+
 ## Was als Nächstes braucht echte Teaser
 
-1. 5–10 unveränderte Originalteaser + belegte `publication_at` + erlaubter `rights_status`
-2. Diagnose-Lauf je Fall (CSV) und Häufigkeitszählung der `failure_code`s
-3. Eine lizenzierte, zeitpunktgenaue EU/DACH-Nachrichten-/Identitätsquelle (0–20 EUR/Monat)
-4. UI: bei `hypothesis_top3` klar „Hypothesen, manuell prüfen“; bei Gleichstand keinen
-   Einzelgewinner als WKN hervorheben
+1. Dieselben Teaser mit **belegter** `publication_at` + erlaubtem `rights_status` und optional Gold-WKN
+2. Universum/News für US-Healthcare, Finance und Retail (lizenziert, point-in-time)
+3. Diagnose-CSV über 5–10 weitere Originalteaser
+4. UI: bei `hypothesis_top3` klar „Hypothesen“; bei `unresolved` den `failure_code` zeigen
 
-Ohne Schritt 1–3 bleibt die reale Erkennungsrate ungemessen; Code-Rewrites ersetzen das nicht.
+Ohne Schritt 2 bleibt die Identifikation dieser drei Themen blockiert — absichtlich, statt falsche EU-Namen.

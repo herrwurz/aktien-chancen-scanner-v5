@@ -129,6 +129,25 @@ def assets_by_id(assets: list[AssetIdentity]) -> dict[str, AssetIdentity]:
     return {stable_asset_id(asset): asset for asset in assets}
 
 
+# Teaser wording often uses umbrella sectors; curated assets use finer labels.
+SECTOR_EQUIVALENCE = {
+    "healthcare": frozenset({"healthcare", "pharma", "medical_technology"}),
+    "pharma": frozenset({"pharma", "healthcare"}),
+    "medical_technology": frozenset({"medical_technology", "healthcare"}),
+}
+
+
+def _sector_overlap(clue_sectors: set[str], asset_sector: str | None) -> bool:
+    if not asset_sector or not clue_sectors:
+        return False
+    if asset_sector in clue_sectors:
+        return True
+    for clue in clue_sectors:
+        if asset_sector in SECTOR_EQUIVALENCE.get(clue, ()):
+            return True
+    return False
+
+
 def filter_assets_by_clues(
     assets: list[AssetIdentity], clues
 ) -> list[tuple[AssetIdentity, int, list[str]]]:
@@ -151,7 +170,7 @@ def filter_assets_by_clues(
     for asset in assets:
         score = 0
         reasons = []
-        if sectors and asset.sector in sectors:
+        if sectors and _sector_overlap(sectors, asset.sector):
             score += 40
             reasons.append(f"sector:{asset.sector}")
         elif sectors and asset.sector:

@@ -51,8 +51,15 @@ PROMOTIONAL_PLUS_RETURN = re.compile(
 
 LEXICONS = {
     "sectors": {
-        "healthcare": ("gesundheit", "healthcare", "gesundheitskonzern"),
-        "pharma": ("pharma", "medikamente"),
+        "healthcare": (
+            "gesundheitssektor",
+            "gesundheitsriese",
+            "gesundheitskonzern",
+            "gesundheit",
+            "healthcare",
+            "health care",
+        ),
+        "pharma": ("pharma", "pharmakonzern", "medikamente"),
         "semiconductors": ("halbleiter", "semiconductor"),
         "medical_technology": ("medizintechnik", "medical technology"),
         "laboratory": ("labor", "laborausrüstung", "life science"),
@@ -62,6 +69,23 @@ LEXICONS = {
         "agriculture_machinery": ("landmaschinen", "traktor", "agrartechnik"),
         "gold_mining": ("goldmine", "goldminen", "goldproduzent"),
         "insurance": ("versicherer", "versicherung", "insurance"),
+        "finance": (
+            "finanzschwergewicht",
+            "finanzriese",
+            "finanzkonzern",
+            "bankenriese",
+            "bankenschwergewicht",
+            "wall-street-bank",
+            "finance heavyweight",
+        ),
+        "retail": (
+            "handels-gigant",
+            "handelsgigant",
+            "handelsriese",
+            "einzelhandel",
+            "retail giant",
+            "im handel",
+        ),
         "logistics": ("logistik", "logistics", "schienenlogistik"),
     },
     "events": {
@@ -97,6 +121,9 @@ LEXICONS = {
     },
     "countries": {
         "US": (
+            "wall-street-schwergewicht",
+            "wall-street",
+            "wall street",
             "us-konzern",
             "us unternehmen",
             "us-versicherer",
@@ -129,9 +156,17 @@ LEXICONS = {
             "steigende gewinne",
             "gewinne steigen",
             "gewinn steigt",
+            "gewinne im aufwind",
+            "erträge im sprung",
+            "ertragskraft auf rekordniveau",
         ),
         "net_income_decrease": ("gewinnrückgang", "sinkender gewinn"),
-        "revenue_increase": ("umsatzanstieg", "umsatzwachstum", "steigender umsatz"),
+        "revenue_increase": (
+            "umsatzanstieg",
+            "umsatzwachstum",
+            "steigender umsatz",
+            "umsatz im aufwind",
+        ),
         "revenue_decrease": ("umsatzrückgang", "sinkender umsatz"),
     },
 }

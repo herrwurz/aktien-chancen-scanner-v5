@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from scanner.research import EvidenceRecord
 
+from .eu_universe import _sector_overlap
 from .geo import country_matches
 from .retrieval import RetrievalReport
 from .schemas import AtomicClue
@@ -206,6 +207,8 @@ def _cell(clue, records, source_to_cluster, identity, as_of):
         matched = target in values
         if clue.category == "countries" and not matched:
             matched = any(country_matches(target, item) for item in values)
+        if clue.category == "sectors" and not matched:
+            matched = any(_sector_overlap({target}, item) for item in values)
         if matched:
             supporting.append(source_to_cluster[record.source_id])
     if supporting:
@@ -228,7 +231,7 @@ def _cell(clue, records, source_to_cluster, identity, as_of):
             matched = (
                 country_matches(target, identity_value)
                 if clue.category == "countries"
-                else target == identity_value
+                else _sector_overlap({target}, identity_value)
             )
             return EvidenceCell(
                 clue_id=clue.clue_id,
