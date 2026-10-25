@@ -12,6 +12,8 @@ from scanner.research import AssetIdentity
 from scanner.research_index.builder import build_index
 from scanner.research_index.identity import stable_asset_id
 
+from .geo import country_matches
+
 DEFAULT_AS_OF = datetime(2024, 1, 1, 12, tzinfo=UTC)
 PACKAGE_DATA = Path(__file__).resolve().parent / "eu_dach_universe.json"
 TEST_FIXTURE = (
@@ -155,7 +157,7 @@ def filter_assets_by_clues(
         elif sectors and asset.sector:
             score -= 15
             reasons.append(f"sector_mismatch:{asset.sector}")
-        if countries and asset.country in countries:
+        if countries and any(country_matches(country, asset.country) for country in countries):
             score += 20
             reasons.append(f"country:{asset.country}")
         elif countries and asset.country:

@@ -13,7 +13,14 @@ from pydantic import BaseModel, Field, ValidationError
 from .schemas import AtomicClue, SourceSpan
 
 SECTOR_SYNONYMS = {
-    "logistics": ("logistik", "freight", "shipping", "rail logistics", "schienenlogistik"),
+    "logistics": (
+        "logistik",
+        "freight",
+        "shipping",
+        "container",
+        "rail logistics",
+        "schienenlogistik",
+    ),
     "pharma": ("pharma", "pharmaceutical", "medikamente"),
     "semiconductors": ("halbleiter", "chip", "semiconductor"),
     "energy": ("energie", "utility", "strom"),
@@ -82,10 +89,9 @@ def _query_parts(clues: list[AtomicClue]) -> EnrichmentResult:
                     queries.append(f"{synonym} {event_syn}")
             if facts:
                 queries.append(f"{synonym} {' '.join(facts[:1])}")
-    if not sectors and events:
-        for event in events:
-            for event_syn in EVENT_SYNONYMS.get(event, (event,)):
-                queries.append(event_syn)
+    # Events/facts alone are too generic for Stage-A queries (buyback/earnings noise).
+    if not sectors and not countries and events:
+        notes.append("events_without_sector_or_country_skipped_for_queries")
     if countries:
         queries = [f"{query} {countries[0]}" for query in queries] or [f"aktie {countries[0]}"]
     deduped = list(dict.fromkeys(item.strip() for item in queries if item.strip()))[:12]
@@ -103,37 +109,39 @@ class HeuristicClueEnricher:
         result = _query_parts(clues)
         extra: list[AtomicClue] = []
         lowered = text.casefold()
-        if re.search(r"\bschienen\b", lowered) and not any(
+        logistics_match = re.search(r"\b(Schienen|Container)\b", text) or re.search(
+            r"\b(schienen|container)\b", text, re.I
+        )
+        if logistics_match and not any(
             clue.value == "logistics" for clue in clues if clue.category == "sectors"
         ):
-            match = re.search(r"\bSchienen\b", text) or re.search(r"\bschienen\b", text, re.I)
-            if match:
-                payload = f"enrichment|rail|{match.start()}|{match.end()}"
-                extra.append(
-                    AtomicClue(
-                        clue_id=hashlib.sha256(payload.encode()).hexdigest(),
-                        category="sectors",
-                        normalized="logistics",
-                        quote=match.group(0),
-                        source_id="enrichment:heuristic",
-                        start=match.start(),
-                        end=match.end(),
-                        instrument_scope="stock",
-                        value="logistics",
-                        extraction_method="heuristic_enrichment",
-                        confidence_class="medium",
-                    )
+            payload = f"enrichment|logistics|{logistics_match.start()}|{logistics_match.end()}"
+            extra.append(
+                AtomicClue(
+                    clue_id=hashlib.sha256(payload.encode()).hexdigest(),
+                    category="sectors",
+                    normalized="logistics",
+                    quote=logistics_match.group(0),
+                    source_id="enrichment:heuristic",
+                    start=logistics_match.start(),
+                    end=logistics_match.end(),
+                    instrument_scope="stock",
+                    value="logistics",
+                    extraction_method="heuristic_enrichment",
+                    confidence_class="medium",
                 )
-                result.search_queries = list(
-                    dict.fromkeys(
-                        [
-                            *result.search_queries,
-                            "rail logistics takeover",
-                            "bahn logistik übernahme",
-                        ]
-                    )
-                )[:12]
-                result.notes.append("inferred_logistics_from_schienen")
+            )
+            result.search_queries = list(
+                dict.fromkeys(
+                    [
+                        *result.search_queries,
+                        "rail logistics takeover",
+                        "bahn logistik übernahme",
+                        "container shipping logistics",
+                    ]
+                )
+            )[:12]
+            result.notes.append(f"inferred_logistics_from_{logistics_match.group(0).casefold()}")
         if re.search(r"\bsynerg", lowered) and "acquisition_or_stake" not in {
             clue.value for clue in clues if clue.category == "events"
         }:

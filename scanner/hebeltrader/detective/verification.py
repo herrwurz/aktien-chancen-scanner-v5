@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from scanner.research import EvidenceRecord
 
+from .geo import country_matches
 from .retrieval import RetrievalReport
 from .schemas import AtomicClue
 
@@ -198,10 +199,14 @@ def _cell(clue, records, source_to_cluster, identity, as_of):
             reason="unsupported_by_archived_sources",
         )
     supporting, observed = [], set()
+    target = clue.value or clue.normalized
     for record in records:
         values = set(record.facts.get(clue.category, []))
         observed.update(values)
-        if (clue.value or clue.normalized) in values:
+        matched = target in values
+        if clue.category == "countries" and not matched:
+            matched = any(country_matches(target, item) for item in values)
+        if matched:
             supporting.append(source_to_cluster[record.source_id])
     if supporting:
         return EvidenceCell(
@@ -219,7 +224,12 @@ def _cell(clue, records, source_to_cluster, identity, as_of):
         field = "country" if clue.category == "countries" else "sector"
         identity_value = getattr(identity, field)
         if identity_value is not None and identity_proven:
-            matched = (clue.value or clue.normalized) == identity_value
+            target = clue.value or clue.normalized
+            matched = (
+                country_matches(target, identity_value)
+                if clue.category == "countries"
+                else target == identity_value
+            )
             return EvidenceCell(
                 clue_id=clue.clue_id,
                 status=("confirmed" if matched != (clue.polarity == "negated") else "contradicted"),

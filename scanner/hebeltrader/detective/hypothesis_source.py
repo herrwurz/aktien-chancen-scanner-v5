@@ -235,27 +235,29 @@ class HypothesisCandidateSource:
         candidates.sort(key=lambda item: (-item.total_score, item.asset_id))
         limited = candidates[: self.stage_a_limit]
         self._hits = limited
-        stock_categories = {
+        # Events/earnings alone are too weak; require sector/geo/identity constraints.
+        hard_categories = {
             "sectors",
             "countries",
-            "events",
-            "fact_claims",
             "identifier",
             "business",
             "products",
             "technologies",
         }
-        stock_clues = [
+        hard_clues = [
             clue
             for clue in clues
-            if clue.instrument_scope == "stock" and clue.category in stock_categories
+            if clue.instrument_scope == "stock" and clue.category in hard_categories
         ]
-        if limited:
+        if limited and hard_clues:
             status = "ok"
+        elif not hard_clues:
+            status = "insufficiently_constrained"
+            limited = []
+            self._hits = []
+            candidates = []
         elif index_report is not None and index_report.status != "ok":
             status = index_report.status
-        elif not stock_clues and not search_queries:
-            status = "insufficiently_constrained"
         else:
             status = "retrieval_missed"
 
