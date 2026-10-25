@@ -173,7 +173,65 @@ _PRODUCTS = [
             "2025-08-05T06:00:00Z",
             {"document": "HEBELTRADER 130/2025 page 1", "official_termsheet": False},
         ),
-    }
+    },
+    # Explicit-call research stubs only; never invent these WKNs from promo text alone.
+    {
+        "identity": {
+            "asset_type": "derivative",
+            "name": "JE11C1 JNJ call candidate",
+            "ticker": "JE11C1",
+            "wkn": "JE11C1",
+            "isin": None,
+        },
+        "underlying_wkn": "853260",
+        "issuer": "JPMSE",
+        "maturity": "2027-12-17",
+        "strike": None,
+        "ratio": None,
+        "evidence": _evidence(
+            "je11c1-openfigi-label",
+            "2024-01-02T12:00:00Z",
+            {"document": "OpenFIGI identity label only", "official_termsheet": False},
+        ),
+    },
+    {
+        "identity": {
+            "asset_type": "derivative",
+            "name": "MN6CYX JPM call candidate",
+            "ticker": "MN6CYX",
+            "wkn": "MN6CYX",
+            "isin": None,
+        },
+        "underlying_wkn": "850628",
+        "issuer": "MOR STA",
+        "maturity": "2027-12-17",
+        "strike": None,
+        "ratio": None,
+        "evidence": _evidence(
+            "mn6cyx-openfigi-label",
+            "2024-01-02T12:00:00Z",
+            {"document": "OpenFIGI identity label only", "official_termsheet": False},
+        ),
+    },
+    {
+        "identity": {
+            "asset_type": "derivative",
+            "name": "JY5SQZ COST call candidate",
+            "ticker": "JY5SQZ",
+            "wkn": "JY5SQZ",
+            "isin": None,
+        },
+        "underlying_wkn": "888513",
+        "issuer": "JPMSE",
+        "maturity": "2027-12-17",
+        "strike": None,
+        "ratio": None,
+        "evidence": _evidence(
+            "jy5sqz-openfigi-label",
+            "2024-01-02T12:00:00Z",
+            {"document": "OpenFIGI identity label only", "official_termsheet": False},
+        ),
+    },
 ]
 
 

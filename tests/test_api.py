@@ -69,7 +69,13 @@ def test_detective_text_api_returns_explained_unconfirmed_candidates(client):
     )
     assert response.status_code == 200
     payload = response.json()
-    assert payload["identification"]["selected_wkn"] == "853260"
+    # Hypothesis mode does not crown a single WKN winner.
+    assert payload["identification"]["status"] == "hypothesis_top3"
+    assert payload["identification"]["selected_wkn"] is None
+    assert any(
+        row.get("wkn") == "853260" or (row.get("identity") or {}).get("wkn") == "853260"
+        for row in payload["candidates"]
+    )
     assert payload["derivative_candidate"]["candidates"][0]["confirmed"] is False
     assert payload["automatic_confirmation"] is False
     assert client.post("/api/hebeltrader/detective/analyze", json={}).status_code == 422

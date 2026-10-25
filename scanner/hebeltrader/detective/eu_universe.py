@@ -208,17 +208,20 @@ def filter_assets_by_clues(
             continue
         score = 0
         reasons = []
-        if sectors and _sector_overlap(sectors, asset.sector):
-            score += 40
-            reasons.append(f"sector:{asset.sector}")
+        if sectors and asset.sector in sectors:
+            score += 45
+            reasons.append(f"sector_exact:{asset.sector}")
+        elif sectors and _sector_overlap(sectors, asset.sector):
+            score += 30
+            reasons.append(f"sector_related:{asset.sector}")
         elif sectors and asset.sector:
             score -= 15
             reasons.append(f"sector_mismatch:{asset.sector}")
         if countries and any(country_matches(country, asset.country) for country in countries):
-            score += 20
+            score += 25
             reasons.append(f"country:{asset.country}")
         elif countries and asset.country:
-            score -= 20
+            score -= 25
             reasons.append(f"country_mismatch:{asset.country}")
         if score > 0:
             ranked.append((asset, score, reasons))

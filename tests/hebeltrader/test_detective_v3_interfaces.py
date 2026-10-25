@@ -153,3 +153,7 @@ def test_template_uses_dom_text_content_instead_of_html_injection():
     assert "Primärbelege" in template
     assert "coverage_warnings" in template
     assert "requires_manual_review" in template
+    assert "statusBanner" in template
+    assert "Extrahierte Hinweise" in template
+    assert "kein einzelner WKN-Gewinner" in template
+    assert "innerHTML" not in template

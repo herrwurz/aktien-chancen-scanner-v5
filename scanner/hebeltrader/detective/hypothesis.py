@@ -61,16 +61,11 @@ def decide_hypothesis(
         return DetectiveDecision(status="unresolved", reason="all_candidates_contradicted")
 
     # Prefer candidates with any confirmed clue or positive evidence/retrieval score.
-    scored = [
-        row
-        for row in viable
-        if row.confirmed_clue_ids or row.evidence_score > 0 or row.retrieval_score > 0
-    ]
-    leaders = scored or viable
+    # selected_asset_id stays None: Top-3 are peer hypotheses, not a single winner.
     return DetectiveDecision(
         status="hypothesis_top3",
         reason="top_hypothesis_candidates_require_manual_review",
-        selected_asset_id=leaders[0].asset_id,
+        selected_asset_id=None,
         score_is_probability=False,
         requires_manual_review=True,
     )

@@ -217,7 +217,11 @@ class DetectiveService:
         selected = next(
             (row for row in verified if row.asset_id == decision.selected_asset_id), None
         )
-        derivative_decision = {"selected_wkn": selected.identity.get("wkn") if selected else None}
+        top_wkNs = [row.identity.get("wkn") for row in selected_rows if row.identity.get("wkn")]
+        derivative_decision = {
+            "selected_wkn": selected.identity.get("wkn") if selected else None,
+            "candidate_wkNs": top_wkNs,
+        }
         derivative = self._find_derivative(
             legacy_clues, derivative_decision, request.publication_at
         )
@@ -287,12 +291,9 @@ class DetectiveService:
             "identification": {
                 **decision.model_dump(mode="json"),
                 "selected_wkn": (
-                    (selected.identity.get("wkn") if selected else None)
-                    or (
-                        selected_rows[0].identity.get("wkn")
-                        if selected_rows and decision.status == "hypothesis_top3"
-                        else None
-                    )
+                    None
+                    if decision.status == "hypothesis_top3"
+                    else (selected.identity.get("wkn") if selected else None)
                 ),
                 "failure_code": (decision.reason if decision.status == "unresolved" else None),
             },
@@ -489,7 +490,10 @@ class DetectiveService:
             record = EvidenceRecord.model_validate(raw["evidence"])
             if point_in_time is None or not record.available_at(point_in_time):
                 continue
-            underlying_matches = decision.get("selected_wkn") == raw["underlying_wkn"]
+            peer_wkNs = set(decision.get("candidate_wkNs") or [])
+            if decision.get("selected_wkn"):
+                peer_wkNs.add(decision["selected_wkn"])
+            underlying_matches = raw["underlying_wkn"] in peer_wkNs
             candidates.append(
                 {
                     **identity.model_dump(mode="json"),

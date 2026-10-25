@@ -7,9 +7,12 @@
   <style>
     body{font:16px system-ui;margin:auto;max-width:900px;padding:1rem;background:#f5f7fa;color:#16202a}
     main,article{background:white;border-radius:12px;padding:1rem;margin:1rem 0;box-shadow:0 2px 10px #0001}
-    label{display:block;font-weight:650;margin-top:1rem}textarea,input,button{box-sizing:border-box;width:100%;padding:.75rem;margin-top:.4rem}
+    label{display:block;font-weight:650;margin-top:1rem}textarea,input,button,select{box-sizing:border-box;width:100%;padding:.75rem;margin-top:.4rem}
     textarea{min-height:10rem}button{background:#164e63;color:white;border:0;border-radius:8px;font-weight:700}
     .warning{border-left:4px solid #d97706;padding:.75rem;background:#fffbeb}
+    .banner{border-left:4px solid #164e63;padding:.75rem;background:#ecfeff;margin-top:.75rem}
+    .banner.unresolved{border-left-color:#b45309;background:#fff7ed}
+    .banner.hypothesis{border-left-color:#0369a1;background:#f0f9ff}
     .meta,.candidate{border-top:1px solid #ddd;padding-top:.75rem;margin-top:.75rem}
     .muted{color:#4b5563;font-size:.95rem}ul{margin:.4rem 0 .8rem 1.2rem;padding:0}
     code{overflow-wrap:anywhere}@media(max-width:600px){body{padding:.5rem}}
@@ -18,7 +21,8 @@
 <body><main>
   <h1>HEBELTRADER analysieren</h1>
   <p class="warning">Die Rangliste ist eine Identifikationshilfe und keine Kaufempfehlung. Treffer
-  und Optionsscheindaten müssen anhand zeitgerechter Originalquellen geprüft werden.</p>
+  und Optionsscheindaten müssen anhand zeitgerechter Originalquellen geprüft werden. Ein einzelner
+  WKN-Gewinner wird im Hypothesenmodus nicht behauptet.</p>
   <form id="form">
     <label for="text">Teasertext</label><textarea id="text" maxlength="20000"></textarea>
     <label for="mode">Analysemodus</label>
@@ -55,18 +59,41 @@ const sourceLine=record=>{
   if(record.source_available_at)parts.push(`verfügbar ${record.source_available_at}`);
   return parts.join(' · ');
 };
+const statusBanner=id=>{
+  const box=el('div');
+  if(id.status==='hypothesis_top3'){
+    box.className='banner hypothesis';
+    box.append(el('p','Hypothesen-Top-3 — manuell prüfbare Kandidaten, keine bestätigte Identifikation und kein einzelner WKN-Gewinner.'));
+  }else if(id.status==='unresolved'||id.status==='unclear'){
+    box.className='banner unresolved';
+    const code=id.failure_code||id.reason||'unresolved';
+    box.append(el('p',`Ungeklärt (${code}). Keine Aktie als Treffer ausgeben.`));
+  }else if(id.status==='likely_candidate'){
+    box.className='banner';
+    box.append(el('p','Strenger Likely-Kandidat — trotzdem Originalquellen prüfen; keine Kaufempfehlung.'));
+  }else{
+    box.className='banner';
+    box.append(el('p',`Status: ${id.status||'unbekannt'}`));
+  }
+  return box;
+};
 const renderOverview=data=>{
   const box=el('article');box.className='meta';
   const id=data.identification||{};
   box.append(el('h2','Ergebnis'));
+  box.append(statusBanner(id));
   box.append(el('p',`Analyse: ${data.analysis_mode||'hypothesis'} · Status: ${id.status||'unbekannt'}`));
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
   else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
-  if(id.status==='hypothesis_top3')box.append(el('p',
-    'Hypothesen-Top-3: manuell prüfbare Kandidaten, keine bestätigte Identifikation.'));
+  if(id.selected_wkn)box.append(el('p',`Ausgewählte WKN (nur strenger Modus): ${id.selected_wkn}`));
   box.append(el('p', data.publication_at
     ? `Zeitbezug: ${data.publication_at}`
     : 'Ohne Publikationszeit (Hypothesenmodus nutzt Analysezeit, nicht historical_blind)'));
+  const clues=data.extracted_clues||[];
+  if(clues.length){
+    box.append(el('h3','Extrahierte Hinweise'));
+    box.append(list(clues.map(clueLabel)));
+  }
   if((data.search_queries||[]).length){
     box.append(el('h3','Suchqueries'));
     box.append(list(data.search_queries));
@@ -96,16 +123,25 @@ const renderOverview=data=>{
   });
   const allWarnings=[...warnings,...inputWarnings];
   if(allWarnings.length){box.append(el('h3','Hinweise und Warnungen'));box.append(list(allWarnings));}
+  const derivative=data.derivative_candidate||{};
+  if(derivative.status&&derivative.status!=='not_identified'){
+    box.append(el('h3','Derivat-Kandidat'));
+    box.append(el('p',`${derivative.status}${derivative.reason?' · '+derivative.reason:''}`));
+    (derivative.candidates||[]).forEach(item=>{
+      box.append(el('p',
+        `WKN ${item.wkn||'?'} → Underlying ${item.underlying_wkn||'?'} · confirmed=${item.confirmed===true}`));
+    });
+  }
   result.append(box);
 };
 const renderCandidate=(c,index)=>{
   const article=el('article');article.className='candidate';
   const identity=c.identity||c;
-  article.append(el('h3',`${index+1}. ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
+  article.append(el('h3',`Hypothese ${index+1}: ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
   const wknNote=identity.wkn
-    ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
+    ? `WKN ${identity.wkn} (Anzeige; keine Auto-Bestätigung)`
     : 'WKN unbekannt';
-  article.append(el('p',`${wknNote} · Evidenzwert ${c.evidence_score??c.relevance_score_not_probability}`));
+  article.append(el('p',`${wknNote} · Evidenzwert ${c.evidence_score??c.relevance_score_not_probability} · ${c.evidence_strength||'unbekannt'}`));
   if(c.hard_contradictions&&c.hard_contradictions.length){
     article.append(el('h4','Harte Widersprüche'));
     article.append(list(c.hard_contradictions.map(clueLabel)));

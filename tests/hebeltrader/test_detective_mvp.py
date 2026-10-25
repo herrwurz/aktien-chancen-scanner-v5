@@ -252,6 +252,11 @@ def test_offline_cli_writes_machine_readable_audit_report(tmp_path):
         == 0
     )
     report = json.loads(output.read_bytes())
-    assert report["identification"]["selected_wkn"] == "853260"
+    assert report["identification"]["status"] == "hypothesis_top3"
+    assert report["identification"]["selected_wkn"] is None
+    assert any(
+        (row.get("wkn") == "853260") or ((row.get("identity") or {}).get("wkn") == "853260")
+        for row in report["candidates"]
+    )
     assert report["candidate_source"]["coverage"]["general_market_coverage"] is False
     assert report["derivative_candidate"]["status"] == "not_identified"

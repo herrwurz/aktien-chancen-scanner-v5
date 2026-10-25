@@ -81,10 +81,23 @@ def test_three_real_teasers_hit_gold_underlyings_in_top3():
             DetectiveRequest(teaser_text=text, publication_at="2025-10-01T12:00:00+02:00")
         )
         assert result["identification"]["status"] == "hypothesis_top3", label
+        assert result["identification"]["selected_wkn"] is None, label
+        assert result["identification"]["selected_asset_id"] is None, label
         top_ids = [row["asset_id"] for row in result["candidates"][:3]]
         assert expected in top_ids, (label, top_ids)
         assert result["identification"]["requires_manual_review"] is True
         assert result["automatic_confirmation"] is False
+
+
+def test_healthcare_exact_sector_outranks_related_pharma_peer():
+    result = _service().analyze(
+        DetectiveRequest(teaser_text=HEALTH, publication_at="2025-10-01T12:00:00+02:00")
+    )
+    top_ids = [row["asset_id"] for row in result["candidates"][:3]]
+    assert GOLD["health"] in top_ids
+    # Exact healthcare peers (JNJ/UNH) should appear before related pharma-only PFE.
+    if "cik:0000078003" in top_ids:  # PFE
+        assert top_ids.index(GOLD["health"]) < top_ids.index("cik:0000078003")
 
 
 def test_curated_universe_merges_eu_and_us():

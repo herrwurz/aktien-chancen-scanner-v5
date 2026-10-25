@@ -48,8 +48,10 @@ Scheine, nicht als offizielle Produktbestätigung im Detektiv):
 | Finanzschwergewicht, +1705 % | `MN6CYX` | JPM (`cik:0000019617`) | `finance` | Top-3: JPM, BAC, GS |
 | Handels-Gigant, +1438 % | `JY5SQZ` | COST (`cik:0000909832`) | `retail` | Top-3 enthält COST (mit TGT/WMT) |
 
-Status jeweils `hypothesis_top3` (manuell prüfen, keine Auto-Bestätigung). Call-WKNs stehen nicht im
-Teaser und werden nicht erraten. Der US-Seed (`us_seed_universe.json`) ist kuratiert und
+Status jeweils `hypothesis_top3` (manuell prüfen, keine Auto-Bestätigung, **kein** einzelner
+`selected_wkn`-Gewinner). Nach exaktem Sektor-Bonus steht JNJ in der Gesundheits-Top-3 vorne.
+Call-WKNs stehen nicht im Teaser und werden nicht erraten; nur bei ausdrücklicher Call-WKN im Text
+erscheint ein unbestätigter Derivat-Kandidat. Der US-Seed (`us_seed_universe.json`) ist kuratiert und
 point-in-time über `source_available_at` gefiltert — **kein** vollständiger US-Markt.
 
 Frühere Stufen: nur Promo-% → `insufficiently_constrained`; danach ohne US-Seed → EU-Widerspruch /
