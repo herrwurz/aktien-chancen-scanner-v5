@@ -132,6 +132,8 @@ def evaluate_candidate(
     if features.benchmark_status == "unavailable":
         award(-1, "benchmark_unavailable")
         uncertainties.append("benchmark_unavailable")
+    if any(row.get("session_end_status") != "verified_exchange_calendar" for row in bounded):
+        uncertainties.append("calendar_unverified")
 
     triggers: list[str] = []
     if features.volume_ratio >= policy.volume_spike_ratio:
@@ -141,7 +143,13 @@ def evaluate_candidate(
     if any(row.verification_status == "confirmed" for row in selected):
         triggers.append("confirmed_catalyst")
 
-    reference = features.raw_reference_close
+    reference = features.adjusted_reference_close
+    if features.atr_14 <= 0:
+        return _unavailable(
+            identity,
+            ["risk_range_unavailable"],
+            uncertainties=uncertainties,
+        )
     stop = max(Decimal("0.01"), reference - features.atr_14 * Decimal("1.5"))
     target = reference + features.atr_14 * Decimal("3")
     gross_crv = (target - reference) / (reference - stop)

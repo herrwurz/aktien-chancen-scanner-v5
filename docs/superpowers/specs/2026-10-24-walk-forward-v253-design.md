@@ -7,6 +7,11 @@ sind akzeptierte Preis-, Kalender-, Action-, Identitäts- und Ereignis-Coverage 
 festgelegte Kostenannahmen. Optionsscheinrenditen und HEBELTRADER-Regeln gehören nicht in diesen
 Aktien-Backtest.
 
+Der V2.5.1-Pilot erfüllt diese Voraussetzungen noch nicht: Nur acht Reihen erreichen 250 Zeilen,
+der Kalender ist unbelegt, ein historisch korrektes Benchmark-Archiv fehlt und die lokale
+Verfügbarkeit beginnt erst 2026. Ein V2.5.2-Dry-run darf deshalb Testmechanik prüfen, aber weder als
+historisch validierte Stichprobe noch zum Abstimmen der Schwellen verwendet werden.
+
 ## Zeitmodell
 
 Entwicklung, Schwellenwahl und Test werden in chronologisch getrennte, rollierende Fenster
@@ -35,3 +40,8 @@ Abnahmetests erzwingen unveränderliche Eingabe-SHAs, zeitlich korrekte Revision
 Folgedaten, Corporate-Action-Behandlung, konservative Same-bar-Reihenfolge und reproduzierbare
 Resultate. Ein positives Ergebnis darf erst nach einem vollständig unangetasteten Out-of-sample-
 Fenster als Forschungsbefund bezeichnet werden; es bleibt keine Renditezusage und keine Order.
+
+Vor Implementierungsbeginn werden mindestens benötigt: ein point-in-time rekonstruierbares,
+delistingfähiges Universum; archivierte Benchmark- und Kalenderdaten; eine dokumentierte
+Provider-Korrekturpolitik; vorab fixierte Kostenbänder; sowie genügend unabhängige Zeitfenster, um
+Entwicklung, Kalibrierung und finalen Test strikt zu trennen.

@@ -198,9 +198,7 @@ class MarketDataArchive:
 
     def list_instruments(self):
         with self._connect() as db:
-            rows = db.execute(
-                "SELECT identity_json FROM listing ORDER BY asset_id"
-            ).fetchall()
+            rows = db.execute("SELECT identity_json FROM listing ORDER BY asset_id").fetchall()
         return [json.loads(row["identity_json"]) for row in rows]
 
     def revision_history(self, asset_id: str, provider: str, session_date: str):

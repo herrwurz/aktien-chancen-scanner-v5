@@ -24,6 +24,12 @@ kontrollierte Tiingo-Pilot sind in [Historische Kursdatenpipeline](docs/market-d
 dokumentiert. Ohne echten Provider- und SEC-Index-Export meldet sie einen Blocker; synthetische
 Tests werden nicht als reale Marktabdeckung ausgegeben.
 
+Der darauf aufbauende, vollständig lesende
+[V2.5.2-Kandidatenscanner](docs/short-term-opportunities-v252.md) berechnet nachvollziehbare
+technische Merkmale, Point-in-Time-Katalysatoren und nicht ausführbare Risikoszenarien. Sein
+Ergebnis ist Research (`candidate_research`, `watch_only` oder `unavailable`), keine
+Kaufempfehlung, Wahrscheinlichkeit oder historische Rendite.
+
 ## MVP
 - Python 3.12, FastAPI, PostgreSQL, SQLAlchemy/Alembic, pytest.
 - Isolated Docker Compose stack alongside existing Immich; no changes to Immich resources.

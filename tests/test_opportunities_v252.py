@@ -304,6 +304,7 @@ def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
     assert candidate.historical_availability_verified is False
     assert candidate.training_eligible is False
     assert "benchmark_unavailable" in candidate.uncertainties
+    assert "calendar_unverified" in candidate.uncertainties
 
 
 @pytest.mark.parametrize(

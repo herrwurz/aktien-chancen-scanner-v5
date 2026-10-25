@@ -13,7 +13,6 @@ _SUPPORTED_EVENTS = {
     "guidance_raise",
     "major_contract",
     "partnership",
-    "quarterly_results",
     "regulatory_decision",
 }
 _SOURCE_TYPES = {"PRIMARY", "SECONDARY", "COMMUNITY"}

@@ -75,8 +75,8 @@
 
 **Files:** `docs/short-term-opportunities-v252.md`, `docs/short-term-opportunities-v252-pilot.md`, `docs/superpowers/specs/2026-10-24-walk-forward-v253-design.md`
 
-- [ ] Document PXED/VOGX evidence limits, legal calendar options, incremental Tiingo updates and independently selected universe expansion.
-- [ ] Provide an isolated, read-only Hetzner command and label output as limited modeled research.
+- [x] Document PXED/VOGX evidence limits, legal calendar options, incremental Tiingo updates and independently selected universe expansion.
+- [x] Provide an isolated, read-only Hetzner command and label output as limited modeled research.
 - [ ] Run the authorized real dry-run; record aggregate SHA-bound results without committing licensed raw data.
-- [ ] Document V2.5.3 blockers without implementing backtesting.
+- [x] Document V2.5.3 blockers without implementing backtesting.
 - [ ] Run Ruff, full pytest, Compose, Docker, push a separate PR and wait for GitHub Actions.
