@@ -418,6 +418,20 @@ def test_missing_optional_benchmark_does_not_change_candidate_score():
     assert missing.score == without.score
     assert missing.features.benchmark_status == "unavailable"
 
+    malformed = feature_bars(sessions=21)
+    malformed[-1]["adjusted"]["close"] = None
+    invalid = evaluate_candidate(
+        stock_identity(),
+        bars,
+        as_of=as_of,
+        catalysts=[],
+        benchmark_bars=malformed,
+        policy=policy,
+    )
+    assert invalid.status == without.status
+    assert invalid.score == without.score
+    assert invalid.features.benchmark_status == "unavailable"
+
 
 def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     from scanner.market_data.archive import MarketDataArchive
@@ -551,6 +565,16 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     assert report["results"][0]["catalysts"][0]["source_type"] == "PRIMARY"
     assert report["results"][1]["catalysts"] == []
     assert report["results"][2]["failed_gates"] == ["fund"]
+
+    stale_report = run_dry_run(
+        ResearchIndex(index_path),
+        MarketDataArchive(archive_path, read_only=True),
+        as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+        signal_date=date(2025, 9, 18),
+        minimum_liquidity=Decimal("1000"),
+    )
+    assert stale_report["coverage"]["unavailable"] == 3
+    assert all("stale_price" in row["failed_gates"] for row in stale_report["results"][:2])
 
     repeated = run_dry_run(
         ResearchIndex(index_path),

@@ -67,6 +67,7 @@ def run_dry_run(
     if as_of.tzinfo is None:
         raise ValueError("as_of must be timezone-aware")
     as_of = as_of.astimezone(UTC)
+    evaluation_at = datetime.combine(signal_date, time.max, tzinfo=UTC)
     instruments = archive.list_instruments()
     benchmark_bars = None
     benchmark_status = "not_requested"
@@ -127,7 +128,7 @@ def run_dry_run(
         candidate = evaluate_candidate(
             identity,
             prices,
-            as_of=signal_at,
+            as_of=evaluation_at,
             catalysts=evidence,
             benchmark_bars=benchmark_bars,
             policy=OpportunityPolicy(min_median_dollar_volume=minimum_liquidity),
@@ -156,6 +157,17 @@ def run_dry_run(
         "watch_only": sum(row["status"] == "watch_only" for row in results),
         "unavailable": sum(row["status"] == "unavailable" for row in results),
     }
+    if benchmark_asset_id and benchmark_bars:
+        eligible = [row for row in results if row.get("features") is not None]
+        benchmark_matches = sum(
+            row["features"].get("benchmark_status") == "available" for row in eligible
+        )
+        if eligible and benchmark_matches == len(eligible):
+            benchmark_status = "available"
+        elif benchmark_matches:
+            benchmark_status = "partial_session_alignment"
+        else:
+            benchmark_status = "unavailable_for_candidate_sessions"
     return {
         "schema_version": "2.5.2",
         "mode": "modeled_research",

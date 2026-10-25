@@ -91,13 +91,21 @@ def evaluate_candidate(
         return _unavailable(identity, ["stale_price"])
 
     try:
-        features = compute_features(
-            bounded,
-            signal_date=last_date,
-            benchmark_bars=benchmark_bars or None,
-        )
+        features = compute_features(bounded, signal_date=last_date)
     except (KeyError, TypeError, ValueError):
         return _unavailable(identity, ["incomplete_provider_data"])
+    if benchmark_bars:
+        try:
+            benchmark = compute_features(benchmark_bars, signal_date=last_date)
+        except (KeyError, TypeError, ValueError):
+            benchmark = None
+        if benchmark is not None and benchmark.signal_date == features.signal_date:
+            features = features.model_copy(
+                update={
+                    "relative_strength_20": features.momentum_20 - benchmark.momentum_20,
+                    "benchmark_status": "available",
+                }
+            )
     if features.median_dollar_volume_20 < policy.min_median_dollar_volume:
         return _unavailable(identity, ["insufficient_liquidity"])
 
