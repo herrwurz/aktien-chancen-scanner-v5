@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict
 
 from scanner.opportunities.catalysts import select_catalysts
 from scanner.opportunities.features import compute_features
-from scanner.opportunities.models import OpportunityCandidate, RiskScenario
+from scanner.opportunities.models import OpportunityCandidate, RiskScenario, StrategyChannel
 from scanner.research import AssetIdentity
 
 
@@ -54,6 +54,10 @@ def _unavailable(
         features=features,
         catalysts=[],
         risk=None,
+        strategy_channels={
+            "catalyst_market_confirmation": StrategyChannel(status="inactive", reasons=[]),
+            "technical_momentum": StrategyChannel(status="inactive", reasons=[]),
+        },
     )
 
 
@@ -160,7 +164,39 @@ def evaluate_candidate(
     if features.breakout_20:
         triggers.append("breakout_20")
     if any(row.verification_status == "confirmed" for row in selected):
-        triggers.append("confirmed_catalyst")
+        confirmed_catalyst = True
+    else:
+        confirmed_catalyst = False
+
+    technical_reasons = [reason for reason in triggers if reason in {"volume_spike", "breakout_20"}]
+    market_confirmation = bool(
+        technical_reasons or features.momentum_5 > 0 or features.trend == "up"
+    )
+    catalyst_triggered = confirmed_catalyst and market_confirmation
+    if catalyst_triggered:
+        triggers.append("catalyst_with_market_confirmation")
+    channels = {
+        "technical_momentum": StrategyChannel(
+            status="triggered" if technical_reasons else "inactive",
+            reasons=technical_reasons,
+        ),
+        "catalyst_market_confirmation": StrategyChannel(
+            status=(
+                "triggered"
+                if catalyst_triggered
+                else "awaiting_confirmation"
+                if confirmed_catalyst
+                else "inactive"
+            ),
+            reasons=(
+                ["confirmed_catalyst", "positive_market_confirmation"]
+                if catalyst_triggered
+                else ["confirmed_catalyst", "market_confirmation_missing"]
+                if confirmed_catalyst
+                else []
+            ),
+        ),
+    }
 
     reference = features.raw_reference_close
     if features.atr_14 <= 0:
@@ -203,4 +239,5 @@ def evaluate_candidate(
         features=features,
         catalysts=selected,
         risk=risk,
+        strategy_channels=channels,
     )

@@ -357,6 +357,40 @@ def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
     assert candidate.training_eligible is False
     assert "benchmark_unavailable" in candidate.uncertainties
     assert "calendar_unverified" in candidate.uncertainties
+    assert candidate.strategy_channels["technical_momentum"].status == "triggered"
+    assert candidate.strategy_channels["catalyst_market_confirmation"].status == "inactive"
+
+
+def test_catalyst_requires_independent_market_confirmation():
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    bars = feature_bars(sessions=250, final_close="100", final_volume="100")
+    as_of = datetime.combine(
+        date.fromisoformat(bars[-1]["session_date"]), datetime.max.time(), tzinfo=UTC
+    )
+    catalyst = {
+        "source_id": "issuer:contract",
+        "source_type": "PRIMARY",
+        "url": "https://issuer.example/contract",
+        "title": "Contract announcement",
+        "event_type": "major_contract",
+        "published_at": as_of.isoformat(),
+        "source_available_at": as_of.isoformat(),
+        "evidence_status": "issuer_publication",
+    }
+
+    result = evaluate_candidate(
+        stock_identity(),
+        bars,
+        as_of=as_of,
+        catalysts=[catalyst],
+        policy=OpportunityPolicy(min_median_dollar_volume=Decimal("1")),
+    )
+
+    assert result.status == "watch_only"
+    catalyst_channel = result.strategy_channels["catalyst_market_confirmation"]
+    assert catalyst_channel.status == "awaiting_confirmation"
+    assert result.strategy_channels["technical_momentum"].status == "inactive"
 
 
 @pytest.mark.parametrize(
@@ -763,6 +797,56 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     sidecar = (tmp_path / "first" / "opportunities.sha256").read_text()
     assert "opportunities.json" in sidecar
     assert "opportunities.csv" in sidecar
+
+
+def test_spy_benchmark_is_used_but_never_enters_company_results(tmp_path):
+    from scanner.market_data.archive import MarketDataArchive
+    from scanner.market_data.pilot import benchmark_listing
+    from scanner.opportunities.report import run_dry_run
+    from scanner.research import AssetIdentity
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    available = datetime(2025, 1, 1, tzinfo=UTC)
+    company = AssetIdentity(
+        asset_type="stock",
+        name="Alpha Corporation",
+        ticker="AAA",
+        cik="0000000001",
+        exchange="NASDAQ",
+        mic="XNAS",
+        country="US",
+        instrument_type="operating_company",
+        source_available_at=available,
+        retrieved_at=available,
+    )
+    index_path = tmp_path / "research.db"
+    build_index(index_path, assets=[company], events=[], facts=[], news=[])
+    archive_path = tmp_path / "market.sqlite"
+    writer = MarketDataArchive(
+        archive_path,
+        now=lambda: datetime(2026, 10, 25, 9, tzinfo=UTC),
+    )
+    writer.import_batch(
+        market_batch(asset_id="cik:0000000001", cik="0000000001", ticker="AAA", sessions=250)
+    )
+    spy = market_batch(asset_id="cik:0000000999", cik="0000000999", ticker="SPY", sessions=250)
+    writer.import_batch(spy.model_copy(update={"instrument": benchmark_listing()}))
+
+    report = run_dry_run(
+        ResearchIndex(index_path),
+        MarketDataArchive(archive_path, read_only=True),
+        as_of=datetime(2026, 10, 25, 12, tzinfo=UTC),
+        signal_date=date(2025, 9, 8),
+        benchmark_asset_id="benchmark:SPY",
+        minimum_liquidity=Decimal("1"),
+    )
+
+    assert report["benchmark_status"] == "available"
+    assert report["coverage"]["benchmark_instruments_excluded"] == 1
+    assert report["coverage"]["identity_matched"] == 1
+    assert [row["asset_id"] for row in report["results"]] == ["cik:0000000001"]
+    assert report["results"][0]["features"]["benchmark_status"] == "available"
 
 
 def test_opportunity_cli_has_no_network_path_and_writes_audited_outputs(

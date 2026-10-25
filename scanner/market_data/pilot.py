@@ -152,9 +152,11 @@ def _rank(identity):
     return hashlib.sha256(f"market-pilot-v1:cik:{identity.cik}".encode()).hexdigest()
 
 
-def select_us_pilot(index, *, as_of, count=10):
+def select_us_pilot(index, *, as_of, count=10, offset=0, with_metadata=False):
     if not 1 <= count <= 50:
-        raise ValueError("pilot count must be between 1 and 50")
+        raise ValueError("batch count must be between 1 and 50")
+    if type(offset) is not int or offset < 0:
+        raise ValueError("selection offset must be a non-negative integer")
     eligible = [
         row
         for row in index.market_universe(as_of=as_of)
@@ -169,7 +171,11 @@ def select_us_pilot(index, *, as_of, count=10):
     by_cik = {}
     for row in eligible:
         by_cik.setdefault(row.cik, row)
-    return sorted(by_cik.values(), key=_rank)[:count]
+    ordered = sorted(by_cik.values(), key=_rank)
+    selected = ordered[offset : offset + count]
+    if with_metadata:
+        return selected, {"eligible_universe": len(ordered), "selection_offset": offset}
+    return selected
 
 
 def _listing(identity: AssetIdentity):
@@ -189,8 +195,32 @@ def _listing(identity: AssetIdentity):
     )
 
 
-def _next_day(value):
-    return (date.fromisoformat(value) + timedelta(days=1)).isoformat()
+def correction_window_start(start, latest, correction_lookback_days=0):
+    if type(correction_lookback_days) is not int or correction_lookback_days < 0:
+        raise ValueError("correction lookback must be a non-negative integer")
+    if latest is None:
+        return start
+    latest_date = date.fromisoformat(latest)
+    candidate = (
+        latest_date + timedelta(days=1)
+        if correction_lookback_days == 0
+        else latest_date - timedelta(days=correction_lookback_days)
+    )
+    return max(date.fromisoformat(start), candidate).isoformat()
+
+
+def benchmark_listing(symbol="SPY"):
+    if symbol != "SPY":
+        raise ValueError("unsupported benchmark")
+    return InstrumentListing(
+        asset_id="benchmark:SPY",
+        ticker="SPY",
+        exchange="NYSE Arca",
+        mic="ARCX",
+        currency="USD",
+        timezone="America/New_York",
+        provider_symbol="SPY",
+    )
 
 
 def run_tiingo_pilot(
@@ -211,6 +241,8 @@ def run_tiingo_pilot(
     max_duration_seconds=120,
     calendar: ExchangeCalendar | None = None,
     monotonic=time.monotonic,
+    selection_offset=0,
+    correction_lookback_days=0,
 ):
     try:
         cost = Decimal(str(monthly_cost_eur))
@@ -222,11 +254,14 @@ def run_tiingo_pilot(
         raise ValueError("invalid pilot duration ceiling")
     if coverage_kind not in {"real_provider_archive", "synthetic_fixture"}:
         raise ValueError("invalid coverage kind")
-    selected = select_us_pilot(index, as_of=as_of, count=count)
+    selected, selection = select_us_pilot(
+        index, as_of=as_of, count=count, offset=selection_offset, with_metadata=True
+    )
     if len(selected) < count:
         base = _base_report(selected, monthly_cost_eur, coverage_kind)
         return {
             **base,
+            **selection,
             "status": "blocked",
             "blocker_code": "insufficient_sec_universe",
             "instruments": [],
@@ -272,10 +307,30 @@ def run_tiingo_pilot(
             incremental_start = start
             latest = market_archive.latest_session(listing.asset_id, "Tiingo")
             if latest:
-                incremental_start = max(start, _next_day(latest))
+                incremental_start = correction_window_start(start, latest, correction_lookback_days)
             if incremental_start > end:
+                coverage = market_archive.instrument_coverage(listing.asset_id, "Tiingo")
                 rows.append(
-                    _instrument_row(identity, status="up_to_date", session_count=0, actions=0)
+                    _instrument_row(
+                        identity,
+                        status="up_to_date",
+                        session_count=coverage["session_count"],
+                        actions=coverage["corporate_action_count"],
+                        archive_session_count=coverage["session_count"],
+                        archive_revision_count=coverage["revision_count"],
+                        archive_revised_session_count=coverage["revised_session_count"],
+                        archive_first_session=(
+                            coverage["first_session"].isoformat()
+                            if coverage["first_session"]
+                            else None
+                        ),
+                        archive_latest_session=(
+                            coverage["latest_session"].isoformat()
+                            if coverage["latest_session"]
+                            else None
+                        ),
+                        correction_lookback_days=correction_lookback_days,
+                    )
                 )
                 continue
             record = provider.fetch(identity.ticker, start=incremental_start, end=end)
@@ -283,6 +338,26 @@ def run_tiingo_pilot(
             batch = normalize_tiingo(record, listing, calendar=calendar)
             imported = market_archive.import_batch(batch)
             audit = audit_batch(batch, calendar=calendar, start=start, end=end, as_of=as_of)
+            archive_coverage = market_archive.instrument_coverage(listing.asset_id, "Tiingo")
+            audit.update(
+                fetched_session_count=audit["session_count"],
+                session_count=archive_coverage["session_count"],
+                archive_session_count=archive_coverage["session_count"],
+                archive_revision_count=archive_coverage["revision_count"],
+                archive_revised_session_count=archive_coverage["revised_session_count"],
+                archive_first_session=(
+                    archive_coverage["first_session"].isoformat()
+                    if archive_coverage["first_session"]
+                    else None
+                ),
+                archive_latest_session=(
+                    archive_coverage["latest_session"].isoformat()
+                    if archive_coverage["latest_session"]
+                    else None
+                ),
+                minimum_250_sessions_met=archive_coverage["session_count"] >= 250,
+                correction_lookback_days=correction_lookback_days,
+            )
             rows.append(
                 _instrument_row(
                     identity,
@@ -326,6 +401,7 @@ def run_tiingo_pilot(
         blocker_code = "all_provider_requests_failed"
     return {
         **base,
+        **selection,
         "status": status,
         "blocker_code": blocker_code,
         "instruments": rows,
@@ -335,6 +411,63 @@ def run_tiingo_pilot(
         "duration_seconds": round(monotonic() - started, 6),
         "real_provider_coverage_measured": real_measured,
         "archive_sha256": market_archive.logical_sha256(),
+    }
+
+
+def run_tiingo_benchmark(
+    *,
+    market_archive,
+    raw_cache,
+    start,
+    end,
+    as_of,
+    allow_network=False,
+    authorize_usage=False,
+    max_requests=0,
+    monthly_cost_eur="0",
+    client=None,
+    calendar=None,
+    correction_lookback_days=0,
+):
+    """Collect SPY for comparison while keeping it outside the candidate universe."""
+    if not allow_network or not authorize_usage:
+        raise ValueError("benchmark collection requires explicit network and provider approval")
+    if max_requests < 1:
+        raise ValueError("benchmark request ceiling must be positive")
+    listing = benchmark_listing()
+    provider = client or TiingoClient(
+        raw_cache,
+        allow_network=allow_network,
+        authorize_usage=authorize_usage,
+        max_requests=max_requests,
+        monthly_cost_eur=monthly_cost_eur,
+    )
+    latest = market_archive.latest_session(listing.asset_id, "Tiingo")
+    incremental_start = correction_window_start(start, latest, correction_lookback_days)
+    record = provider.fetch(listing.provider_symbol, start=incremental_start, end=end)
+    batch = normalize_tiingo(record, listing, calendar=calendar)
+    imported = market_archive.import_batch(batch)
+    audit = audit_batch(batch, calendar=calendar, start=start, end=end, as_of=as_of)
+    coverage = market_archive.instrument_coverage(listing.asset_id, "Tiingo")
+    return {
+        "schema_version": "1.0",
+        "role": "benchmark_only_not_candidate",
+        "asset_id": listing.asset_id,
+        "ticker": listing.ticker,
+        "status": "imported",
+        "fetched_session_count": audit["session_count"],
+        "session_count": coverage["session_count"],
+        "minimum_250_sessions_met": coverage["session_count"] >= 250,
+        "calendar_status": audit["calendar_status"],
+        "missing_sessions": audit["missing_sessions"],
+        "correction_lookback_days": correction_lookback_days,
+        "imported": imported,
+        "api_requests": getattr(provider, "attempted_requests", 0),
+        "raw_sha256": batch.raw_sha256,
+        "manifest_sha256": batch.manifest_sha256,
+        "archive_sha256": market_archive.logical_sha256(),
+        "historical_availability_verified": False,
+        "training_eligible": False,
     }
 
 
