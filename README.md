@@ -1,5 +1,8 @@
 # Multi-Asset Chancen-Scanner V6
 
+Die Nutzung und reale read-only Abnahme des HEBELTRADER-Detektivs V3 ist in
+[`docs/hebeltrader-detective-v3.md`](docs/hebeltrader-detective-v3.md) beschrieben.
+
 Der HEBELTRADER-Detektiv-MVP verarbeitet Teasertext oder Screenshots lokal und erstellt eine
 begründete, unbestätigte Kandidatenrangliste. Architektur, Grenzen, Offline-CLI und Hetzner-Test:
 [HEBELTRADER-Detektiv MVP](docs/architecture-hebeltrader-detective-mvp.md). Die Identifikation ist
