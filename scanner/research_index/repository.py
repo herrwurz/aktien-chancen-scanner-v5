@@ -64,6 +64,7 @@ class ResearchIndex:
             return {"status": "unavailable", "reason": "stable_identifier_required"}
         with self._connect() as connection:
             matches = []
+            unmatched = []
             for kind, value in identifiers:
                 row = connection.execute(
                     f"SELECT * FROM asset WHERE {kind}=? AND available_at<=?",  # noqa: S608
@@ -71,8 +72,16 @@ class ResearchIndex:
                 ).fetchone()
                 if row is not None:
                     matches.append(row)
+                else:
+                    unmatched.append(kind)
         if not matches:
             return {"status": "unavailable", "reason": "identity_not_visible_at_as_of"}
+        if unmatched:
+            return {
+                "status": "identity_conflict",
+                "reason": "supplied_identifier_not_indexed",
+                "conflicting_fields": sorted(unmatched),
+            }
         asset_ids = {row["asset_id"] for row in matches}
         if len(asset_ids) != 1:
             return {"status": "identity_conflict", "reason": "identifiers_resolve_differently"}
@@ -351,6 +360,7 @@ class ResearchIndex:
                     "event_type": events[0] if events else "unknown",
                     "published_at": value.get("published_at"),
                     "source_available_at": value.get("source_available_at"),
+                    "evidence_status": facts.get("evidence_status", "unknown"),
                 }
             )
         return records

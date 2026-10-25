@@ -41,6 +41,7 @@ class CatalystEvidence(StrictModel):
     event_type: str
     published_at: datetime
     source_available_at: datetime
+    evidence_status: str
     verification_status: Literal["confirmed", "context_only"]
 
 

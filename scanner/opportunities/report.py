@@ -67,17 +67,36 @@ def run_dry_run(
     if as_of.tzinfo is None:
         raise ValueError("as_of must be timezone-aware")
     as_of = as_of.astimezone(UTC)
-    signal_at = datetime.combine(signal_date, time.max, tzinfo=UTC)
     instruments = archive.list_instruments()
     benchmark_bars = None
+    benchmark_status = "not_requested"
     if benchmark_asset_id:
-        benchmark_bars = archive.prices(
-            benchmark_asset_id,
-            start=(signal_date - timedelta(days=500)).isoformat(),
-            end=signal_date.isoformat(),
-            as_of=as_of,
-            availability_mode="modeled",
-        )["prices"]
+        benchmark_status = "missing_archive_identity"
+        benchmark_listing = next(
+            (row for row in instruments if row["asset_id"] == benchmark_asset_id), None
+        )
+        if benchmark_listing is not None:
+            benchmark_resolution = index.resolve_identity(
+                _archive_identity(benchmark_listing), as_of=as_of
+            )
+            if (
+                benchmark_resolution["status"] == "ok"
+                and benchmark_resolution["asset_id"] == benchmark_asset_id
+            ):
+                candidate_benchmark = archive.prices(
+                    benchmark_asset_id,
+                    start=(signal_date - timedelta(days=500)).isoformat(),
+                    end=signal_date.isoformat(),
+                    as_of=as_of,
+                    availability_mode="modeled",
+                )["prices"]
+                if len(candidate_benchmark) >= 21:
+                    benchmark_bars = candidate_benchmark
+                    benchmark_status = "available"
+                else:
+                    benchmark_status = "insufficient_history"
+            else:
+                benchmark_status = "identity_conflict"
 
     results = []
     matched = 0
@@ -98,10 +117,16 @@ def run_dry_run(
             as_of=as_of,
             availability_mode="modeled",
         )
+        prices = price_result["prices"]
+        if prices:
+            latest = max(prices, key=lambda row: row["session_date"])
+            signal_at = datetime.fromisoformat(latest["modeled_available_at"])
+        else:
+            signal_at = datetime.combine(signal_date, time.max, tzinfo=UTC)
         evidence = index.opportunity_evidence(identity, as_of=signal_at)
         candidate = evaluate_candidate(
             identity,
-            price_result["prices"],
+            prices,
             as_of=signal_at,
             catalysts=evidence,
             benchmark_bars=benchmark_bars,
@@ -144,6 +169,7 @@ def run_dry_run(
         "archive_sha256": archive.logical_sha256(),
         "index_payload_sha256": index.manifest.payload_sha256,
         "benchmark_asset_id": benchmark_asset_id,
+        "benchmark_status": benchmark_status,
         "coverage": coverage,
         "results": results,
     }
@@ -167,6 +193,7 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
         "currency",
         "status",
         "score",
+        "score_reasons",
         "selection_reasons",
         "failed_gates",
         "uncertainties",
@@ -175,6 +202,9 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
         "gross_crv",
         "net_crv",
         "training_eligible",
+        "features_json",
+        "catalysts_json",
+        "risk_json",
     )
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
@@ -193,6 +223,7 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
                     "currency": row.get("currency") or "",
                     "status": row["status"],
                     "score": row["score"],
+                    "score_reasons": "|".join(row["score_reasons"]),
                     "selection_reasons": "|".join(row["selection_reasons"]),
                     "failed_gates": "|".join(row["failed_gates"]),
                     "uncertainties": "|".join(row["uncertainties"]),
@@ -201,13 +232,32 @@ def write_report(report: dict, output_dir) -> dict[str, str]:
                     "gross_crv": risk.get("gross_crv", ""),
                     "net_crv": risk.get("net_crv", ""),
                     "training_eligible": str(row["training_eligible"]).lower(),
+                    "features_json": json.dumps(
+                        row.get("features"),
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ),
+                    "catalysts_json": json.dumps(
+                        row.get("catalysts"),
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ),
+                    "risk_json": json.dumps(
+                        row.get("risk"), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+                    ),
                 }
             )
     digest = hashlib.sha256(json_payload).hexdigest()
-    sha_path.write_text(f"{digest}  {json_path.name}\n", encoding="ascii")
+    csv_digest = hashlib.sha256(csv_path.read_bytes()).hexdigest()
+    sha_path.write_text(
+        f"{digest}  {json_path.name}\n{csv_digest}  {csv_path.name}\n", encoding="ascii"
+    )
     return {
         "json": str(json_path),
         "csv": str(csv_path),
         "sha256_file": str(sha_path),
         "sha256": digest,
+        "csv_sha256": csv_digest,
     }

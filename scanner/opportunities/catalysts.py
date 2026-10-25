@@ -16,6 +16,7 @@ _SUPPORTED_EVENTS = {
     "regulatory_decision",
 }
 _SOURCE_TYPES = {"PRIMARY", "SECONDARY", "COMMUNITY"}
+_PROVEN_EVIDENCE = {"issuer_publication", "source_document", "verified_company_fact"}
 
 
 def _timestamp(value: Any) -> datetime | None:
@@ -52,6 +53,7 @@ def select_catalysts(
         available_at = _timestamp(row.get("source_available_at"))
         source_type = str(row.get("source_type", "")).upper()
         event_type = str(row.get("event_type", ""))
+        evidence_status = str(row.get("evidence_status", "unknown"))
         if (
             published_at is None
             or available_at is None
@@ -59,6 +61,7 @@ def select_catalysts(
             or available_at > cutoff
             or source_type not in _SOURCE_TYPES
             or event_type not in _SUPPORTED_EVENTS
+            or (source_type != "COMMUNITY" and evidence_status not in _PROVEN_EVIDENCE)
         ):
             continue
         try:
@@ -71,6 +74,7 @@ def select_catalysts(
                     event_type=event_type,
                     published_at=published_at,
                     source_available_at=available_at,
+                    evidence_status=evidence_status,
                     verification_status=(
                         "context_only" if source_type == "COMMUNITY" else "confirmed"
                     ),

@@ -250,6 +250,7 @@ def test_catalysts_require_point_in_time_evidence_and_preserve_evidence_class():
             "event_type": "guidance_raise",
             "published_at": "2025-09-07T12:00:00+00:00",
             "source_available_at": "2025-09-07T12:01:00+00:00",
+            "evidence_status": "issuer_publication",
         },
         {
             "source_id": "news:late",
@@ -259,6 +260,7 @@ def test_catalysts_require_point_in_time_evidence_and_preserve_evidence_class():
             "event_type": "analyst_revision",
             "published_at": "2025-09-08T08:00:00+00:00",
             "source_available_at": "2025-09-08T08:01:00+00:00",
+            "evidence_status": "source_document",
         },
         {
             "source_id": "community:1",
@@ -268,6 +270,7 @@ def test_catalysts_require_point_in_time_evidence_and_preserve_evidence_class():
             "event_type": "partnership",
             "published_at": "2025-09-07T10:00:00+00:00",
             "source_available_at": "2025-09-07T10:01:00+00:00",
+            "evidence_status": "discovery_only",
         },
     ]
 
@@ -313,6 +316,13 @@ def test_candidate_has_transparent_score_and_non_executable_risk_scenario():
     ("identity", "bars", "as_of_delta", "minimum_liquidity", "expected_gate"),
     [
         (stock_identity(instrument_type="fund"), feature_bars(sessions=250), 0, "1", "fund"),
+        (
+            stock_identity(instrument_type="unknown"),
+            feature_bars(sessions=250),
+            0,
+            "1",
+            "non_operating_company",
+        ),
         (stock_identity(), feature_bars(sessions=249), 0, "1", "insufficient_sessions"),
         (stock_identity(), feature_bars(sessions=250), 10, "1", "stale_price"),
         (
@@ -366,6 +376,47 @@ def test_missing_or_late_news_never_creates_a_confirmed_catalyst():
         )
         == []
     )
+    assert (
+        select_catalysts(
+            [
+                {
+                    "source_id": "unknown-proof",
+                    "source_type": "PRIMARY",
+                    "url": "https://issuer.example/unproved",
+                    "title": "Unproved guidance claim",
+                    "event_type": "guidance_raise",
+                    "published_at": "2025-01-01T10:00:00+00:00",
+                    "source_available_at": "2025-01-01T10:01:00+00:00",
+                    "evidence_status": "unknown",
+                }
+            ],
+            signal_at=datetime(2025, 1, 1, 12, tzinfo=UTC),
+        )
+        == []
+    )
+
+
+def test_missing_optional_benchmark_does_not_change_candidate_score():
+    from scanner.opportunities.short_term import OpportunityPolicy, evaluate_candidate
+
+    bars = feature_bars(sessions=250, final_volume="20000")
+    as_of = datetime.combine(
+        date.fromisoformat(bars[-1]["session_date"]), datetime.max.time(), tzinfo=UTC
+    )
+    policy = OpportunityPolicy(min_median_dollar_volume=Decimal("5000"))
+    without = evaluate_candidate(stock_identity(), bars, as_of=as_of, catalysts=[], policy=policy)
+    missing = evaluate_candidate(
+        stock_identity(),
+        bars,
+        as_of=as_of,
+        catalysts=[],
+        benchmark_bars=[],
+        policy=policy,
+    )
+
+    assert missing.status == without.status == "candidate_research"
+    assert missing.score == without.score
+    assert missing.features.benchmark_status == "unavailable"
 
 
 def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
@@ -433,7 +484,24 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
             license_status="permitted_metadata",
             content_hash="1" * 64,
             origin_id="issuer:alpha",
-        )
+        ),
+        NewsItem(
+            source_id="issuer:beta-after-close",
+            source_type="PRIMARY",
+            url="https://beta.example/release",
+            title="Beta raises guidance after close",
+            published_at=datetime(2025, 9, 8, 22, tzinfo=UTC),
+            first_seen_at=datetime(2025, 9, 8, 22, 1, tzinfo=UTC),
+            retrieved_at=datetime(2025, 9, 8, 22, 1, tzinfo=UTC),
+            source_available_at=datetime(2025, 9, 8, 22, 1, tzinfo=UTC),
+            company_identifiers={"cik": ["0000000002"]},
+            event_type="guidance_raise",
+            event_confidence="source_claim",
+            evidence_status="issuer_publication",
+            license_status="permitted_metadata",
+            content_hash="2" * 64,
+            origin_id="issuer:beta",
+        ),
     ]
     index_path = tmp_path / "research.db"
     build_index(index_path, assets=assets, events=[], facts=[], news=news)
@@ -481,6 +549,7 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
     assert report["results"][0]["mic"] == "XNAS"
     assert report["results"][0]["currency"] == "USD"
     assert report["results"][0]["catalysts"][0]["source_type"] == "PRIMARY"
+    assert report["results"][1]["catalysts"] == []
     assert report["results"][2]["failed_gates"] == ["fund"]
 
     repeated = run_dry_run(
@@ -500,6 +569,9 @@ def test_whole_archive_dry_run_is_read_only_complete_and_reproducible(tmp_path):
         tmp_path / "second" / "opportunities.csv"
     ).read_bytes()
     assert first["sha256"] == second["sha256"]
+    sidecar = (tmp_path / "first" / "opportunities.sha256").read_text()
+    assert "opportunities.json" in sidecar
+    assert "opportunities.csv" in sidecar
 
 
 def test_opportunity_cli_has_no_network_path_and_writes_audited_outputs(

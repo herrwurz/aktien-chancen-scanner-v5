@@ -168,6 +168,23 @@ def test_same_company_name_does_not_assign_an_unproven_identifier(tmp_path):
     ] == ["0000000001"]
 
 
+def test_identity_resolution_rejects_any_unmatched_supplied_stable_identifier(tmp_path):
+    from scanner.research_index.builder import build_index
+    from scanner.research_index.repository import ResearchIndex
+
+    indexed = asset(1)
+    build_index(tmp_path / "index.db", assets=[indexed], events=[], facts=[], news=[])
+    supplied = indexed.model_copy(update={"isin": "US0378331005"})
+
+    result = ResearchIndex(tmp_path / "index.db").resolve_identity(supplied, as_of=NOW)
+
+    assert result == {
+        "status": "identity_conflict",
+        "reason": "supplied_identifier_not_indexed",
+        "conflicting_fields": ["isin"],
+    }
+
+
 def test_detective_uses_full_index_retrieval_before_top_three(tmp_path):
     from scanner.hebeltrader.detective.index_source import IndexCandidateSource
     from scanner.hebeltrader.detective.schemas import DetectiveRequest

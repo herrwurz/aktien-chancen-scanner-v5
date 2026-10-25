@@ -77,6 +77,8 @@ def evaluate_candidate(
         gates.append("non_stock")
     if identity.instrument_type == "fund":
         gates.append("fund")
+    elif identity.instrument_type != "operating_company":
+        gates.append("non_operating_company")
     if len(bounded) < policy.min_sessions:
         gates.append("insufficient_sessions")
     if not bounded:
@@ -92,7 +94,7 @@ def evaluate_candidate(
         features = compute_features(
             bounded,
             signal_date=last_date,
-            benchmark_bars=benchmark_bars,
+            benchmark_bars=benchmark_bars or None,
         )
     except (KeyError, TypeError, ValueError):
         return _unavailable(identity, ["incomplete_provider_data"])
@@ -132,7 +134,6 @@ def evaluate_candidate(
         award(-2, "high_volatility")
     uncertainties: list[str] = []
     if features.benchmark_status == "unavailable":
-        award(-1, "benchmark_unavailable")
         uncertainties.append("benchmark_unavailable")
     if any(row.get("session_end_status") != "verified_exchange_calendar" for row in bounded):
         uncertainties.append("calendar_unverified")
