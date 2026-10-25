@@ -13,7 +13,7 @@ from scanner.research_index.builder import build_index
 from scanner.research_index.identity import stable_asset_id
 
 DEFAULT_AS_OF = datetime(2024, 1, 1, 12, tzinfo=UTC)
-PACKAGE_DATA = Path(__file__).resolve().parent / "data" / "eu_dach_universe.json"
+PACKAGE_DATA = Path(__file__).resolve().parent / "eu_dach_universe.json"
 TEST_FIXTURE = (
     Path(__file__).resolve().parents[3]
     / "tests/fixtures/detective-hypothesis/eu_dach_universe.json"
