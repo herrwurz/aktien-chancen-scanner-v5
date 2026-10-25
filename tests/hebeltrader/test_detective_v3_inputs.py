@@ -95,6 +95,21 @@ def test_atomic_clues_keep_quotes_scope_and_exclude_promotional_returns():
     assert len({clue.clue_id for clue in clues}) == len(clues)
 
 
+def test_promotional_cue_before_percentage_and_negated_stock_clue_stay_separate():
+    text = "Kein US-Konzern. Die Rendite mit diesem Call könnte 2.631 % betragen."
+    clues = extract_atomic_clues(
+        text, [SourceSpan(source_id="input", page=1, start=0, end=len(text))]
+    )
+
+    assert any(
+        item.category == "promotional_derivative_return" and item.value == "2631" for item in clues
+    )
+    assert any(
+        item.category == "countries" and item.value == "US" and item.polarity == "negated"
+        for item in clues
+    )
+
+
 def test_request_accepts_bounded_pdf_and_declares_schema_v3():
     payload = base64.b64encode(pdf_bytes("Teaser")).decode()
     request = DetectiveRequest(pdf_base64=payload, pdf_media_type="application/pdf")

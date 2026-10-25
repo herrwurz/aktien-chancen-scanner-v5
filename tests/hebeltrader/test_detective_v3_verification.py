@@ -121,6 +121,21 @@ def test_reposts_share_one_cluster_and_missing_or_future_availability_is_exclude
     assert verified.excluded_source_ids == ["future", "missing-availability"]
 
 
+def test_identical_content_with_different_claimed_origins_is_one_cluster():
+    asset = identity()
+    first = evidence("portal-a", origin="claimed-a", facts={"events": ["guidance_raise"]})
+    second = evidence("portal-b", origin="claimed-b", facts={"events": ["guidance_raise"]})
+    second = second.model_copy(update={"content_sha256": first.content_sha256})
+    verified = verify_candidates(
+        report(candidate(asset, 100)),
+        [clue("events", "guidance_raise")],
+        lambda _: [first, second],
+        AS_OF,
+    )[0]
+    assert len(verified.evidence_clusters) == 1
+    assert verified.evidence_clusters[0].source_ids == ["portal-a", "portal-b"]
+
+
 def test_decision_uses_frozen_likely_unclear_and_unresolved_thresholds():
     alpha = identity()
     beta = identity("Beta", "0000000002")
@@ -166,3 +181,16 @@ def test_missing_publication_time_fails_closed_before_evidence_use():
     assert decision.status == "unresolved"
     assert decision.reason == "missing_publication_time"
     assert asset.historically_available_at(AS_OF)
+
+
+def test_negated_country_is_contradicted_when_candidate_has_that_country():
+    asset = identity()
+    negative = clue("countries", "US").model_copy(update={"polarity": "negated"})
+    verified = verify_candidates(
+        report(candidate(asset, 100)),
+        [negative],
+        lambda _: [evidence("sec-a", facts={"countries": ["US"]})],
+        AS_OF,
+    )[0]
+    assert verified.evidence_matrix[0].status == "contradicted"
+    assert verified.hard_contradictions == ["countries:US"]

@@ -1,7 +1,6 @@
 """Point-in-time Stage-B evidence verification and uncalibrated decisions."""
 
 import hashlib
-from collections import defaultdict
 
 from pydantic import BaseModel, Field
 
@@ -75,20 +74,41 @@ def _eligible(records, as_of):
 
 
 def _cluster(records):
-    groups = defaultdict(list)
+    groups = []
     for record in records:
         origin = str(record.facts.get("origin_id") or record.source_id)
-        groups[origin].append(record)
+        matching = [
+            group
+            for group in groups
+            if origin in group["origins"] or record.content_sha256 in group["hashes"]
+        ]
+        if matching:
+            group = matching[0]
+            for extra in matching[1:]:
+                group["rows"].extend(extra["rows"])
+                group["origins"].update(extra["origins"])
+                group["hashes"].update(extra["hashes"])
+                groups.remove(extra)
+        else:
+            group = {"rows": [], "origins": set(), "hashes": set()}
+            groups.append(group)
+        group["rows"].append(record)
+        group["origins"].add(origin)
+        group["hashes"].add(record.content_sha256)
     clusters = []
     source_to_cluster = {}
-    for origin, rows in sorted(groups.items()):
-        cluster_id = hashlib.sha256(origin.encode()).hexdigest()
+    groups.sort(key=lambda group: sorted(group["origins"]))
+    for group in groups:
+        rows = group["rows"]
+        origins = sorted(group["origins"])
+        fingerprint = "|".join([*origins, *sorted(group["hashes"])])
+        cluster_id = hashlib.sha256(fingerprint.encode()).hexdigest()
         for row in rows:
             source_to_cluster[row.source_id] = cluster_id
         clusters.append(
             EvidenceCluster(
                 cluster_id=cluster_id,
-                origin_id=origin,
+                origin_id=origins[0],
                 source_ids=sorted(row.source_id for row in rows),
                 source_kinds=sorted({row.source_kind for row in rows}),
                 primary=any(row.source_kind in PRIMARY_KINDS for row in rows),
@@ -125,26 +145,23 @@ def _cell(clue, records, source_to_cluster, identity):
     if supporting:
         return EvidenceCell(
             clue_id=clue.clue_id,
-            status="confirmed",
+            status="contradicted" if clue.polarity == "negated" else "confirmed",
             evidence_cluster_ids=sorted(set(supporting)),
         )
     if observed and clue.category in {"countries", "sectors"}:
         return EvidenceCell(
             clue_id=clue.clue_id,
-            status="contradicted",
+            status="confirmed" if clue.polarity == "negated" else "contradicted",
             reason="archived_value_mismatch",
         )
     if clue.category in {"countries", "sectors"}:
         field = "country" if clue.category == "countries" else "sector"
         identity_value = getattr(identity, field)
         if identity_value is not None:
+            matched = (clue.value or clue.normalized) == identity_value
             return EvidenceCell(
                 clue_id=clue.clue_id,
-                status=(
-                    "confirmed"
-                    if (clue.value or clue.normalized) == identity_value
-                    else "contradicted"
-                ),
+                status=("confirmed" if matched != (clue.polarity == "negated") else "contradicted"),
                 reason="historically_available_identity",
             )
     return EvidenceCell(clue_id=clue.clue_id, status="unknown", reason="no_concrete_evidence")

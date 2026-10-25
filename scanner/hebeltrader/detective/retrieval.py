@@ -45,7 +45,9 @@ def _values(clues, category):
         {
             clue.value or clue.normalized
             for clue in clues
-            if clue.category == category and clue.instrument_scope == "stock"
+            if clue.category == category
+            and clue.instrument_scope == "stock"
+            and clue.polarity == "asserted"
         }
     )
 

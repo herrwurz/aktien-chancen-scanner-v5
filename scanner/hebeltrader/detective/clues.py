@@ -24,6 +24,11 @@ PROMOTIONAL_RETURN = re.compile(
     r"(?=[^.!?]{0,45}(?:gewinnchance|rendite|call|optionsschein))",
     re.I,
 )
+PROMOTIONAL_RETURN_PREFIXED = re.compile(
+    r"(?:gewinnchance|rendite|call|optionsschein)[^.!?]{0,45}"
+    r"(?P<value>\d{1,3}(?:\.\d{3})+|\d+(?:[,.]\d+)?)\s*%",
+    re.I,
+)
 
 LEXICONS = {
     "sectors": {
@@ -178,7 +183,13 @@ def extract_atomic_clues(text, spans):
     """Extract auditable clues while keeping promotional returns out of fundamentals."""
     clues = []
     promotional_ranges = []
-    for match in PROMOTIONAL_RETURN.finditer(text):
+    promotional_matches = sorted(
+        [*PROMOTIONAL_RETURN.finditer(text), *PROMOTIONAL_RETURN_PREFIXED.finditer(text)],
+        key=lambda item: (item.start(), item.end()),
+    )
+    for match in promotional_matches:
+        if any(start <= match.start() and match.end() <= end for start, end in promotional_ranges):
+            continue
         value = match.group("value").replace(".", "").replace(",", ".")
         promotional_ranges.append((match.start(), match.end()))
         clues.append(
@@ -224,21 +235,27 @@ def extract_atomic_clues(text, spans):
             )
         )
     legacy = extract_clues(text)
-    for group, values in legacy["structured"].items():
-        for value in values:
-            phrase_match = None
-            for phrase in LEXICONS[group][value]:
-                phrase_match = re.search(re.escape(phrase), text, re.I)
+    for group in legacy["structured"]:
+        for polarity, values in (
+            ("asserted", legacy["structured"][group]),
+            ("negated", legacy["negative"][group]),
+        ):
+            for value in values:
+                phrase_match = None
+                for phrase in LEXICONS[group][value]:
+                    phrase_match = re.search(re.escape(phrase), text, re.I)
+                    if phrase_match:
+                        break
                 if phrase_match:
-                    break
-            if phrase_match:
-                clues.append(
-                    _atomic(
-                        group,
-                        value,
-                        phrase_match,
-                        spans,
-                        instrument_scope="stock",
+                    clues.append(
+                        _atomic(
+                            group,
+                            value,
+                            phrase_match,
+                            spans,
+                            instrument_scope="stock",
+                            value=value,
+                            polarity=polarity,
+                        )
                     )
-                )
     return sorted(clues, key=lambda clue: (clue.start, clue.category, clue.clue_id))

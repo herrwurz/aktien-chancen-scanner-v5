@@ -138,6 +138,14 @@ def test_derivative_identifier_never_constrains_stock_retrieval():
     assert index.queries == []
 
 
+def test_negated_clue_is_not_used_as_positive_retrieval_constraint():
+    index = FakeIndex({"country": [identity("Wrong", "0000000014")]})
+    negative = clue("countries", "US").model_copy(update={"polarity": "negated"})
+    report = retrieve_candidates(index, [negative], as_of=AS_OF)
+    assert report.status == "insufficiently_constrained"
+    assert index.queries == []
+
+
 def test_index_source_exposes_v3_retrieval_and_selected_candidates():
     alpha = identity("Alpha", "0000000013")
     source = IndexCandidateSource(FakeIndex({"sector": [alpha]}))
