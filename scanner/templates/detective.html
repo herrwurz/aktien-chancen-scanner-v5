@@ -202,7 +202,7 @@ document.querySelector('#load-cases').addEventListener('click',async()=>{
 });
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
   const submit=form.querySelector('button');submit.disabled=true;
-  try{ 
+  try{
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
   const body={teaser_text:document.querySelector('#text').value,
