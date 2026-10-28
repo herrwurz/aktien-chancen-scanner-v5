@@ -181,3 +181,52 @@ def test_repository_v19_assumptions_are_historical_and_explicitly_hypothetical()
         (value["volatility_window"], value["iv_multiplier"])
         for value in assumptions["scenarios"].values()
     } == {("120", "0.85"), ("60", "1.00"), ("20", "1.15")}
+
+
+def test_v20_cli_is_opt_in_and_keeps_v19_scenario_command(tmp_path):
+    from scanner.hebeltrader.derivatives_cli import main
+
+    paths = _write_inputs(tmp_path)
+    assumptions = json.loads(paths["assumptions.json"].read_bytes())
+    assumptions["v20_analysis"] = {
+        "iv_stress_path": {
+            "sessions": 20,
+            "status": "hypothetical_explicit_stress",
+        },
+        "slippage": {
+            "zero": "0",
+            "stress": "0.25",
+            "stress_rationale": "synthetic regression assumption",
+        },
+    }
+    paths["assumptions.json"].write_text(json.dumps(assumptions))
+    output = tmp_path / "v20.json"
+    result = main(
+        [
+            "scenario-v20",
+            "--underlying",
+            str(paths["current.json"]),
+            "--prehistory",
+            str(paths["prior.json"]),
+            "--fx",
+            str(paths["fx.csv"]),
+            "--input-audit",
+            str(paths["audit.json"]),
+            "--assumptions",
+            str(paths["assumptions.json"]),
+            "--publication-at",
+            "2025-08-05T08:15:00+02:00",
+            "--output",
+            str(output),
+        ]
+    )
+    assert result == 0
+    report = json.loads(output.read_bytes())
+    assert report["status"] == "hypothetical_v20_iv_attribution"
+    assert report["base_v19_report"]["status"] == "three_mode_report"
+    assert report["observed_hs5rmp_quotes_used"] is False
+    markdown = output.with_suffix(".md").read_text()
+    assert "Historische Datenqualität" in markdown
+    assert "IV-Pfade und Handelsergebnisse" in markdown
+    assert "Keine beobachteten HS5RMP" in markdown
+    assert "Produktparameter-Sensitivität" in markdown
