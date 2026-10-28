@@ -339,3 +339,11 @@ Der [Betriebs-, Quellen- und Abnahmebericht](docs/research-v23.md) beschreibt SE
 GLEIF-Identitäten, Point-in-time-Grenzen und den realen Blindteaser-Versuch. Die Anwendung ist
 wegen begrenzter Branchen- und internationaler Nachrichtenevidenz noch nicht allgemein für
 unbekannte Teaser einsetzbar und liefert bei Mehrdeutigkeit `unresolved`.
+
+### V2.7 SEC-Live-Pilot
+
+Der separate, automatisch ausführbare SEC-Pilot erfasst aktuelle Meldungen aus einem
+frischen Universum von mindestens 100 US-gelisteten Emittenten, prüft verfügbare
+EOD-Marktdaten und protokolliert Entscheidungen dauerhaft. Er erteilt noch keine
+Kauf-Limits. [Betrieb und Datenlücken](docs/live-v27.md),
+[tatsächlicher Abnahmebericht](docs/live-v27-acceptance.md).

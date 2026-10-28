@@ -14,3 +14,4 @@ data/
 reports/
 *.dump
 .superpowers/
+!.env.live-v27.example

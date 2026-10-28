@@ -1,0 +1,207 @@
+{
+  "acceptance": "NOT_PASSED_MARKET_REACTION_MISSING",
+  "run_id": "f4c33cc52a1f46cd838f98f5e568640b",
+  "started_at": "2026-10-28T07:01:36.420065+00:00",
+  "summary": {
+    "buy_signals": 0,
+    "checked_issuers": 100,
+    "errors": [],
+    "evaluated_events": 10,
+    "finished_at": "2026-10-28T07:02:07.535443+00:00",
+    "new_events": 27,
+    "run_id": "f4c33cc52a1f46cd838f98f5e568640b",
+    "status": "completed",
+    "uncovered_markets": [
+      "DE",
+      "AT",
+      "CH"
+    ]
+  },
+  "http_status_counts": {
+    "200": 104
+  },
+  "decisions": {
+    "NICHT VERFÜGBAR": 10
+  },
+  "documents": {
+    "unavailable": 7,
+    "archived": 3
+  },
+  "evidence_examples": [
+    {
+      "seq": 346,
+      "kind": "event_evidence",
+      "payload": {
+        "accession_number": "0001565687-26-000128",
+        "counterarguments": [
+          "full_exhibit_review_required"
+        ],
+        "document_retrieved_at": "2026-10-28T07:02:07.067044+00:00",
+        "document_sha256": "3313a3afbc6b5e6a65f5773af2240ab47a981f439385f65dced52bd6c0e90e04",
+        "document_status": "archived",
+        "document_type": "10-Q",
+        "document_url": "https://www.sec.gov/Archives/edgar/data/1565687/000156568726000128/inta-20260930.htm",
+        "event_id": "sec:0001565687-26-000128",
+        "financial_quantities": [],
+        "first_realistic_trade_at": null,
+        "form": "10-Q",
+        "fundamental_confirmation": "unverified_text_hints_only",
+        "identity": {
+          "asset_type": "stock",
+          "cik": "1565687",
+          "country": "US",
+          "exchange": "Nasdaq",
+          "instrument_type": "unknown",
+          "instrument_type_evidence": null,
+          "instrument_type_status": "unknown",
+          "isin": null,
+          "lei": null,
+          "mic": null,
+          "name": "Intapp, Inc.",
+          "quality_status": "incomplete",
+          "retrieved_at": "2026-10-28T07:01:37.091970Z",
+          "sector": null,
+          "source_available_at": null,
+          "source_id": "sec-company-tickers-exchange",
+          "ticker": "INTA",
+          "valid_from": null,
+          "valid_to": null,
+          "wkn": null
+        },
+        "items": "",
+        "new_to_scanner": true,
+        "publication_basis": "SEC_acceptance_not_earliest_issuer_release",
+        "published_at": "2026-10-27T20:41:31+00:00",
+        "retrieved_at": "2026-10-28T07:01:52.746020+00:00",
+        "run_id": "f4c33cc52a1f46cd838f98f5e568640b",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1565687/000156568726000128/0001565687-26-000128-index.html",
+        "text_hints": [
+          "earnings",
+          "dilution"
+        ],
+        "trade_time_status": "calendar_and_original_release_unverified"
+      },
+      "previous_sha256": "812fadb96a66aee4ece2fe9cd95b37ee602d29fe92ea0c73a1b00826c9f8902c",
+      "sha256": "1d3609ec9c142c1c179541382de8aebc31796849ee92a633b7220c16ec9cc4c3"
+    },
+    {
+      "seq": 350,
+      "kind": "event_evidence",
+      "payload": {
+        "accession_number": "0001140361-26-040903",
+        "counterarguments": [
+          "full_exhibit_review_required"
+        ],
+        "document_retrieved_at": "2026-10-28T07:02:07.306941+00:00",
+        "document_sha256": "cfba56a90dfd2fbeec519998e051482ee58ad6f821cf946638ca7f0effeaf62a",
+        "document_status": "archived",
+        "document_type": "8-K",
+        "document_url": "https://www.sec.gov/Archives/edgar/data/920522/000114036126040903/ef20084268_8k.htm",
+        "event_id": "sec:0001140361-26-040903",
+        "financial_quantities": [],
+        "first_realistic_trade_at": null,
+        "form": "8-K",
+        "fundamental_confirmation": "unverified_text_hints_only",
+        "identity": {
+          "asset_type": "stock",
+          "cik": "920522",
+          "country": "US",
+          "exchange": "NYSE",
+          "instrument_type": "unknown",
+          "instrument_type_evidence": null,
+          "instrument_type_status": "unknown",
+          "isin": null,
+          "lei": null,
+          "mic": null,
+          "name": "ESSEX PROPERTY TRUST, INC.",
+          "quality_status": "incomplete",
+          "retrieved_at": "2026-10-28T07:01:37.091970Z",
+          "sector": null,
+          "source_available_at": null,
+          "source_id": "sec-company-tickers-exchange",
+          "ticker": "ESS",
+          "valid_from": null,
+          "valid_to": null,
+          "wkn": null
+        },
+        "items": "2.02,9.01",
+        "new_to_scanner": true,
+        "publication_basis": "SEC_acceptance_not_earliest_issuer_release",
+        "published_at": "2026-10-27T20:34:17+00:00",
+        "retrieved_at": "2026-10-28T07:01:41.302477+00:00",
+        "run_id": "f4c33cc52a1f46cd838f98f5e568640b",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/920522/000114036126040903/0001140361-26-040903-index.html",
+        "text_hints": [
+          "earnings"
+        ],
+        "trade_time_status": "calendar_and_original_release_unverified"
+      },
+      "previous_sha256": "72a4cefb54868c6050f6b94b3dc6027c98c51a2f9b0bd69e405134ee84a42266",
+      "sha256": "6f73ee47d91016d8fd5f872190bf3b1050dcf872802f06ad82ec3a64de59979b"
+    },
+    {
+      "seq": 360,
+      "kind": "event_evidence",
+      "payload": {
+        "accession_number": "0001565687-26-000125",
+        "counterarguments": [
+          "full_exhibit_review_required"
+        ],
+        "document_retrieved_at": "2026-10-28T07:02:07.501802+00:00",
+        "document_sha256": "d7cd9017d081fafc38ce51070222bb7914e44e2f73f729cd62a3ef762c4b9972",
+        "document_status": "archived",
+        "document_type": "8-K",
+        "document_url": "https://www.sec.gov/Archives/edgar/data/1565687/000156568726000125/inta-20261027.htm",
+        "event_id": "sec:0001565687-26-000125",
+        "financial_quantities": [],
+        "first_realistic_trade_at": null,
+        "form": "8-K",
+        "fundamental_confirmation": "unverified_text_hints_only",
+        "identity": {
+          "asset_type": "stock",
+          "cik": "1565687",
+          "country": "US",
+          "exchange": "Nasdaq",
+          "instrument_type": "unknown",
+          "instrument_type_evidence": null,
+          "instrument_type_status": "unknown",
+          "isin": null,
+          "lei": null,
+          "mic": null,
+          "name": "Intapp, Inc.",
+          "quality_status": "incomplete",
+          "retrieved_at": "2026-10-28T07:01:37.091970Z",
+          "sector": null,
+          "source_available_at": null,
+          "source_id": "sec-company-tickers-exchange",
+          "ticker": "INTA",
+          "valid_from": null,
+          "valid_to": null,
+          "wkn": null
+        },
+        "items": "2.02,9.01",
+        "new_to_scanner": true,
+        "publication_basis": "SEC_acceptance_not_earliest_issuer_release",
+        "published_at": "2026-10-27T20:17:26+00:00",
+        "retrieved_at": "2026-10-28T07:01:52.746020+00:00",
+        "run_id": "f4c33cc52a1f46cd838f98f5e568640b",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1565687/000156568726000125/0001565687-26-000125-index.html",
+        "text_hints": [
+          "earnings"
+        ],
+        "trade_time_status": "calendar_and_original_release_unverified"
+      },
+      "previous_sha256": "57d8e0c37f281009545cf0228cad0572be12ed843baee387e58e8956bc91c81c",
+      "sha256": "28b3f82fe4b9f929f565855d369b923f85e8ddc1aeb9c0450828810d7e604e62"
+    }
+  ],
+  "journal_head_sha256": "fea5a183db7259112a9bf2f0277e224d77b95690d0305e541e149e88dd2dba15",
+  "journal_rows": 383,
+  "notes": [
+    "Observed in this workspace, not on Hetzner.",
+    "SEC contact derived from configured git author identity for this controlled run.",
+    "No Tiingo credentials present. No market reaction, buy signal or return proven.",
+    "Form 4 XSL document paths were rejected by conservative primary-document path gate.",
+    "Raw sources and full hash-chained journal are in local evidence bundle."
+  ]
+}

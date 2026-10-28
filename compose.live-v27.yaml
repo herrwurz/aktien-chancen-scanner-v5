@@ -1,0 +1,55 @@
+# Separate opt-in project: never run this file together with the production compose.yaml.
+name: scanner-live-v27
+services:
+  pilot:
+    image: scanner-live-v27:local
+    build: .
+    user: "${SCANNER_UID:-10001}:${SCANNER_GID:-10001}"
+    env_file:
+      - path: .env.live-v27
+        required: true
+    command: ["python", "-m", "scanner.live_pilot", "watch", "--interval-seconds", "900"]
+    volumes:
+      - type: bind
+        source: ${LIVE_PILOT_DATA_DIR:-./data/live-v27}
+        target: /data/live-v27
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    init: true
+    mem_limit: 512m
+    cpus: 1
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "3"
+  api:
+    image: scanner-live-v27:local
+    user: "${SCANNER_UID:-10001}:${SCANNER_GID:-10001}"
+    command: ["uvicorn", "scanner.live_pilot:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["127.0.0.1:8270:8000"]
+    volumes:
+      - type: bind
+        source: ${LIVE_PILOT_DATA_DIR:-./data/live-v27}
+        target: /data/live-v27
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    init: true
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "3"
