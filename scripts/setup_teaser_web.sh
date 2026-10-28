@@ -11,7 +11,8 @@ if [ -e .env ] || [ -e secrets ]; then
   echo 'Vorhandene Konfiguration bleibt unverändert. Siehe docs/teaser-web-hetzner.md.' >&2
   exit 1
 fi
-read -rp 'Gewünschte Domain (z.B. teaser.example.at): ' teaser_domain
+read -rp 'Domain [teaser.hofreither.at]: ' teaser_domain
+teaser_domain=${teaser_domain:-teaser.hofreither.at}
 if [[ ! "$teaser_domain" =~ ^[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?$ ]] || [[ "$teaser_domain" != *.* ]]; then
   echo 'Bitte nur einen vollständigen Domainnamen ohne https:// oder Pfad eingeben.' >&2
   exit 1

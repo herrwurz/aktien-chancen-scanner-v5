@@ -9,7 +9,9 @@ beseitigt keine Quellenlücken und garantiert keine Identifikation.
 
 ## Vor dem Start
 
-Benötigt werden eine eigene Subdomain, ein DNS-A-Eintrag auf die Hetzner-IP und
+Gewählte Adresse: **https://teaser.hofreither.at**.
+
+Benötigt werden diese Subdomain, ein DNS-A-Eintrag auf die Hetzner-IP und
 Docker Compose. Ein vorhandener AAAA-Eintrag muss ebenfalls zum Server führen.
 Ports 80 und 443 müssen frei und erreichbar sein. **Wenn bereits Immich oder ein anderer
 Reverse Proxy diese Ports nutzt, dieses Compose-Paket noch nicht starten.** Den vorhandenen
@@ -50,7 +52,7 @@ docker compose up -d
 docker compose ps
 ```
 
-Dann `https://DEINE-DOMAIN` öffnen und mit `admin` und dem selbst vergebenen Passwort
+Dann `https://teaser.hofreither.at` öffnen und mit `admin` und dem selbst vergebenen Passwort
 anmelden. Caddy beschafft und erneuert das kostenlose HTTPS-Zertifikat automatisch.
 Die erste Zertifikatsausstellung benötigt funktionierendes DNS und die offenen Ports.
 Die Anmeldung gilt für Oberfläche und APIs. HTTPS ist für die Passwortübertragung zwingend.
