@@ -21,7 +21,7 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 11. Unaufgelöste Fälle bleiben im Register. „Nicht bekannt“ ist kein Fehlalarm und keine erfolgreiche Identifikation.
 12. Keine Erfolgsquote ohne vollständig datierten, nachvollziehbaren Nenner; frühere aggregierte Erinnerungszahlen sind nicht automatisch belastbare Benchmarks.
 
-## Fallregister – 16 historische Teaser-Fälle (15 ursprüngliche Blindtests + Analog Devices)
+## Fallregister – 18 dokumentierte Teaser-Fälle (15 ursprüngliche Fälle + JPMorgan Chase + Johnson & Johnson + Analog Devices)
 
 | ID | Teaser / Kontext | Aktie / Ticker | Call-WKN | Status / Beleg | Besondere Umstände und offene Felder |
 |---|---|---|---|---|---|
@@ -41,19 +41,23 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 | HT-013 | Historischer Teaser zu **Danaher**; genauer Wortlaut/Ausgabe noch offen | **Danaher** | **JY3SF7** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp und spezifische Gegenhinweise aus Originalprotokoll rekonstruieren. |
 | HT-014 | Historischer Teaser zu **SAP**; genauer Wortlaut/Ausgabe noch offen | **SAP** | **UP9A9X** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
 | HT-015 | Historischer Teaser zu **Leonardo**; genauer Wortlaut/Ausgabe noch offen | **Leonardo** | **VJ2RFH** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
-| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams** (Bezeichnung aus damaligem Fallregister; genaue Emittentenidentität offen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |
+| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams Companies** (historische Bezeichnung; Originalquelle noch zu prüfen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest Nr. 2 | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |\n| HT-017 | **Check 16**, aufgelöst **19.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **JPMorgan Chase (JPM)** | **MN6CYX** | Nutzer-Auflösung / damalige Produktzuordnung; **Ersttipp falsch** | Ursprünglicher Assistententipp **Goldman Sachs (GS)**; Auflösung anhand der WKN MN6CYX als JPMorgan-Call. Teasertext, Originalquelle und Derivatstammdaten unabhängig nachprüfen. |\n| HT-018 | **Check 17**, bestätigt **21.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **Johnson & Johnson (JNJ)** | **JE11C1** | Nutzerbestätigter Blindtest; **Ersttipp richtig** | In der früheren Bilanz nach diesem Check: 10 richtige, 6 falsche, 16 abgeschlossene Tests (Williams nicht mitgezählt). Originalteaser, Rangliste und Produktparameter nachtragen. |
 
 ### Weitere genannte WKNs – **noch keinem Teaser belastbar zugeordnet**
 
-**HM43B1, MN6CYX, JE11C1.** Diese Codes sind aus früheren Diskussionen bekannt, aber ohne geprüfte Teaser-/Aktien-Zuordnung. Nicht als bestätigte Treffer zählen.
+**HM43B1.** Diese Codes sind aus früheren Diskussionen bekannt, aber ohne geprüfte Teaser-/Aktien-Zuordnung. Nicht als bestätigte Treffer zählen.
 
 **FG8HCH:** In einer früheren Unterhaltung als gekaufter alternativer Nasdaq-Inc.-Call (500 Stück) erwähnt; **nicht** als beworbene Original-WKN eines HEBELTRADER-Teasers bestätigt. Nicht in die Trefferquote aufnehmen.
 
-### Nachvollziehbare Bilanz der bisherigen Blindtests
+### Rekonstruierte Bilanz der bisherigen Blindtests
 
-**Ursprüngliche 15 Fälle:** 9 richtig (Costco, Micron, UnitedHealth, Vertiv, KKR, Pfizer, Broadcom, Thales, BASF), 5 falsch (Zurich, Salesforce, Danaher, SAP, Leonardo), 1 offen (Williams). **Analog Devices** wurde am 28.10.2026 zunächst falsch als Lattice identifiziert und danach vom Nutzer aufgelöst. **Stand 16 Fälle: 9 richtig, 6 falsch, 1 offen.** Die Bilanz bezeichnet die **ursprüngliche Erstidentifikation**, nicht die nachträgliche Auflösung. Erfolgsquote bezogen auf 15 aufgelöste Fälle: 9/15 = **60 %**; bei Einschluss des offenen Falls: 9/16 = **56,25 %**. Beides ist nur eine historische Gesprächsbilanz, keine unabhängig archivierte Benchmark-Auswertung. Die früher einmal genannten 9/14 = 64,3 % schließen Williams aus und dürfen nicht als Gesamtquote erscheinen.
+Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams**, Nr. 2). Damit zunächst 14 abgeschlossene Identifikationen. Der frühere Wert 9/14 = 64,3 % bezog sich ausschließlich auf die abgeschlossenen Fälle.
 
-**Status der Belege:** Die ursprüngliche Fallliste und die Ersttrefferbilanz stammen aus der historischen Nutzer-/Assistenten-Auswertung vom 16.10.2026; vollständige Originalteaser und Rankings liegen hier noch nicht für alle Fälle vor. Alle 16 Einträge sind zu erhalten, auch Fehlversuche und ungelöste Fälle.
+- **19.10.2026, Check 16:** JPMorgan Chase / MN6CYX, Ersttipp Goldman Sachs → **falsch**. Bilanz: 9 richtig, 6 falsch, 1 ungelöst = 16 erfasste Fälle, davon 15 abgeschlossen.
+- **21.10.2026, Check 17:** Johnson & Johnson / JE11C1 → **richtig**. Bilanz: 10 richtig, 6 falsch, 1 ungelöst = 17 erfasste Fälle, davon 16 abgeschlossen. Die damalige Angabe „10 richtig / 6 falsch / 16 Tests = 62,5 %“ bezog sich auf die **abgeschlossenen** Tests und schloss Williams aus.
+- **28.10.2026:** Analog Devices / MN84GA; Ersttipp Lattice Semiconductor → **falsch**.
+
+**Aktueller Stand: 18 erfasste Fälle, davon 17 aufgelöst: 10 richtig, 7 falsch, 1 ungelöst.** Trefferquote abgeschlossener Fälle: **10/17 = 58,8 %**; bezogen auf alle erfassten Fälle: **10/18 = 55,6 %**. Das sind rekonstruierte Gesprächsangaben, **kein unabhängig validierter Benchmark**. Für fehlende Originalteaser und Rankings dürfen keine Details erfunden werden.
 
 ## Fehlerprotokoll
 
@@ -81,6 +85,6 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 
 ## Änderungsjournal
 
-- **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.\n- **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
+- **2026-10-28 (erneute Vollständigkeitsprüfung):** Historische Check-16-/Check-17-Auflösungen ergänzt: JPMorgan Chase MN6CYX (Ersttipp Goldman Sachs falsch) und Johnson & Johnson JE11C1 (richtig). 18 Fälle insgesamt, 10 richtig, 7 falsch, 1 ungelöst; historische Quote 10/16 vor Analog Devices bezog sich auf abgeschlossene Fälle ohne Williams.\n- **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.\n- **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
 
 > Hinweis: Das Repository enthält bereits `docs/hebeltrader-detective-v3.md`, `docs/hebeltrader.md` und `docs/hebeltrader-test-results.md`. Dieses Register ist ergänzend; es behauptet **keine** automatische Integration in den Detektivcode und **keine** selbsttätige Aktualisierung ohne neuen Auftrag oder eingerichteten Workflow.
