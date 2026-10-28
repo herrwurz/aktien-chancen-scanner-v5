@@ -454,7 +454,7 @@ class Investigator:
             )
         peer_comparison["candidates_after_discovery"] = len(ranked)
         falsification = {
-            "status": "not_performed_offline",
+            "status": "not_performed_offline" if offline else "not_performed_no_candidates",
             "queries": [],
             "leader_before": ranked[0]["asset_id"] if ranked else None,
         }
@@ -581,13 +581,26 @@ class Investigator:
             "review_hints": notes,
             "observed_image_sha256": image_sha,
         }
+        source_errors = errors + list(getattr(self.web, "discovery_errors", []))
+        report["research_diagnostics"] = {
+            "documents": len(fetched),
+            "documents_with_company_identity": sum(bool(d.get("company_name")) for d in fetched),
+            "request_attempts": len(getattr(self.web, "attempts", [])),
+            "requests_remaining": getattr(self.web, "remaining", None),
+            "source_errors": source_errors,
+        }
+        source_blocked = not offline and not ranked and bool(source_errors)
         report["decision"] = {
-            "status": "likely_identified"
+            "status": "research_unavailable"
+            if source_blocked
+            else "likely_identified"
             if identified
             else "plausible_hypothesis"
             if ranked and any(r["confirmed_specific_clues"] for r in ranked[:3])
             else "insufficient_evidence",
-            "label": "Wahrscheinlich identifiziert"
+            "label": "Recherche derzeit nicht verfügbar"
+            if source_blocked
+            else "Wahrscheinlich identifiziert"
             if identified
             else "Plausible Hypothese"
             if ranked and any(r["confirmed_specific_clues"] for r in ranked[:3])

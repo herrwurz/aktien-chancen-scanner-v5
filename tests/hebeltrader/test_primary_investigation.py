@@ -238,3 +238,32 @@ def test_comparison_sentence_does_not_attribute_other_company_numbers(tmp_path):
     )
     assert not candidate["confirmed_specific_clues"]
     assert report["identification"]["status"] == "not_identified"
+
+
+def test_online_search_failure_is_not_reported_as_offline(tmp_path):
+    class Blocked:
+        discovery_errors = [{"source": "bing_rss", "error": "robots denied or unavailable"}]
+        attempts = []
+        remaining = 37
+
+        def search(self, query, limit=10):
+            raise ValueError("robots denied or unavailable")
+
+    report = Investigator(tmp_path, clock=lambda: NOW, web=Blocked()).analyze(
+        InvestigationRequest(teaser_text="KI-Kühltechnik und wiederkehrende Digitalerlöse.")
+    )
+    assert report["research_mode"] == "public_web"
+    assert report["falsification"]["status"] == "not_performed_no_candidates"
+    assert report["decision"]["status"] == "research_unavailable"
+    assert report["research_diagnostics"]["documents"] == 0
+    assert report["research_diagnostics"]["documents_with_company_identity"] == 0
+    assert report["research_diagnostics"]["source_errors"]
+    assert report["identification"]["status"] == "not_identified"
+
+
+def test_successful_empty_online_search_remains_distinct_from_source_failure(tmp_path):
+    report = Investigator(tmp_path, clock=lambda: NOW, web=PublicFixture([])).analyze(
+        InvestigationRequest(teaser_text="Unbekannter Technologiekonzern.")
+    )
+    assert report["falsification"]["status"] == "not_performed_no_candidates"
+    assert report["decision"]["status"] == "insufficient_evidence"

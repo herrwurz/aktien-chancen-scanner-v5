@@ -46,6 +46,17 @@ def create_web_app():
     engine.dispose()
     app = create_app(settings)
 
+    @app.get("/api/hebeltrader/runtime")
+    def runtime_status():
+        return {
+            "public_research_enabled": settings.detective_public_allow_network,
+            "peer_research_supported": True,
+            "source_diagnostics_supported": True,
+            "max_requests_per_analysis": settings.detective_public_max_requests,
+            "discovery_feeds": settings.detective_discovery_feeds,
+            "search_provider": "bing_rss",
+        }
+
     @app.get("/api/hebeltrader/references")
     def historical_library():
         from scanner.reference_library import library

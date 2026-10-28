@@ -120,3 +120,18 @@ def test_reference_import_rejects_changed_content(tmp_path, monkeypatch):
         == 503
     )
     assert not list((tmp_path / "state" / "references").glob("*.json"))
+
+
+def test_runtime_diagnostics_are_private_and_report_effective_network_settings(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setenv("DETECTIVE_PUBLIC_ALLOW_NETWORK", "true")
+    client = web(tmp_path, monkeypatch)
+    assert client.get("/api/hebeltrader/runtime").status_code == 401
+    response = client.get("/api/hebeltrader/runtime", auth=("admin", "private-password"))
+    assert response.status_code == 200
+    data = response.json()
+    assert data["public_research_enabled"] is True
+    assert data["peer_research_supported"] is True
+    assert "private-token" not in response.text
+    assert "private-password" not in response.text

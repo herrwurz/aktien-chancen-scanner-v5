@@ -112,7 +112,28 @@ const renderOverview=data=>{
       detail.append(list(peers.queries));box.append(detail);
     }
   }
-  if(data.falsification)box.append(el('p',`Gegenprüfung: ${data.falsification.status}`));
+  if(data.falsification){
+    const states={not_performed_offline:'Nicht ausgeführt: Offline-Analyse',
+      not_performed_no_candidates:'Nicht möglich: Recherche lieferte keine Kandidaten',
+      performed:'Ausgeführt',performed_with_source_gaps:'Ausgeführt mit Quellenlücken'};
+    box.append(el('p',`Gegenprüfung: ${states[data.falsification.status]||data.falsification.status}`));
+  }
+  if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode==='public_web'?'Öffentliche Online-Recherche':data.research_mode}`));
+  if(data.research_diagnostics){
+    const diagnostic=data.research_diagnostics;
+    box.append(el('p',`Abgerufene Dokumente: ${diagnostic.documents} · mit Unternehmenszuordnung: ${diagnostic.documents_with_company_identity}`));
+    if(diagnostic.source_errors.length){
+      const detail=el('details');detail.append(el('summary','Quellenprobleme anzeigen'));
+      const lines=diagnostic.source_errors.map(row=>`${row.source||row.url||row.query||'Recherche'}: ${row.error}`);
+      detail.append(list([...new Set(lines)]));box.append(detail);
+    }
+  }
+  const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';
+  exportButton.addEventListener('click',()=>{
+    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const link=el('a');link.href=url;link.download=`teaser-${data.case_id||'analyse'}.json`;
+    link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });box.append(exportButton);
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
   else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
   if(id.status==='hypothesis_top3')box.append(el('p',
