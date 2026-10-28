@@ -434,6 +434,25 @@ class Investigator:
             return result
 
         ranked = compare()
+        peer_comparison = {
+            "status": "not_performed_offline" if offline else "not_performed_no_candidates",
+            "queries": [],
+            "initial_candidates": len(ranked),
+        }
+        if not offline and ranked:
+            peer_queries = [
+                f'"{row["identity"]["name"]}" competitors peer group annual report'
+                for row in ranked[:3]
+            ]
+            previous_errors = len(errors)
+            for query in peer_queries:
+                research(query)
+            ranked = compare()
+            peer_comparison.update(
+                status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
+                queries=peer_queries,
+            )
+        peer_comparison["candidates_after_discovery"] = len(ranked)
         falsification = {
             "status": "not_performed_offline",
             "queries": [],
@@ -532,6 +551,7 @@ class Investigator:
             "criteria": [clue.model_dump(mode="json") for clue in clues],
             "source_timing": [assess_document(doc, cutoff) for doc in fetched],
             "falsification": falsification,
+            "peer_comparison": peer_comparison,
             "search_queries": queries,
             "limitations": limits,
             "research_errors": errors,

@@ -210,3 +210,14 @@ Nachweis: [maschinenlesbare Quellenbestätigung](hebeltrader-20026-source-confir
   Wahrscheinlichkeit oder unabhängige Erfolgsquote. Die 10/7/1-Bilanz bleibt Nutzerhistorie.
 - JSON-Export und Evaluator sind getrennt. Der eigentliche Scanner bekommt keine
   Referenz-/Lösungsdatei, historischen Ersttipps, WKNs oder Fehleranalysen.
+
+### Änderungsjournal 28.10.2026 – öffentliche Auswahlstrategie
+
+Ergänzung, keine Änderung historischer Fallprognosen: Die öffentliche HEBELTRADER-Shopseite
+und die Deere-Leseprobe zeigen die Bedeutung von Unternehmenskennzahlen und Peer-Vergleich.
+Die Rechercheplanung nutzt nun gezielte Ereignis-/Finanzfragen und aktive Wettbewerbersuche
+vor der Falsifikation. Operativer und freier Cashflow werden in Suchfragen unterschieden;
+Übernahmegerüchte bleiben Gerüchte. Charttechnik dient nur als ergänzender Suchhinweis,
+Werberenditen weiterhin nicht als Aktienbeweis. Keine Herausgeber-Erfolgszahl gilt als eigene
+Trefferquote. Details und Quellenkritik: [Strategieübernahme](hebeltrader-publisher-strategy.md).
+Die 18 historischen Fallzuordnungen bleiben unverändert.

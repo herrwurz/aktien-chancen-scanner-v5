@@ -102,6 +102,16 @@ const renderOverview=data=>{
   box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'unbekannt'} · ${data.case_status||''}`));
   if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
   box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
+  if(data.peer_comparison){
+    const peers=data.peer_comparison;
+    box.append(el('p',`Wettbewerberrecherche: ${peers.queries.length} Suchanfragen · ${peers.candidates_after_discovery} Kandidaten danach`));
+    if(peers.status==='not_performed_offline')box.append(el('p','Offline-Analyse: keine aktive Wettbewerbersuche.'));
+    if(peers.status==='searched_with_source_gaps')box.append(el('p','Wettbewerbersuche mit Quellenlücken.'));
+    if(peers.queries.length){
+      const detail=el('details');detail.append(el('summary','Suchanfragen zu Wettbewerbern'));
+      detail.append(list(peers.queries));box.append(detail);
+    }
+  }
   if(data.falsification)box.append(el('p',`Gegenprüfung: ${data.falsification.status}`));
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
   else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
