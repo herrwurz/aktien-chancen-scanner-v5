@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "case_id": "TI-ffbb614727fb96f052ea",
+  "first_ranking_sha256": "ce5dabf44e707bc1179ff70d554a555a85a59ca93828f9c8f873a703d5767dd6",
+  "first_ranking_frozen_at": "2026-10-28T14:02:39.770477+00:00",
+  "resolution_recorded_at": "2026-10-28T14:51:46.305050+00:00",
+  "pdf": {
+    "filename": "Hebeltrader_2026-198.pdf",
+    "sha256": "fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+    "pages": 6,
+    "publication_date": "2026-10-26",
+    "source": "user_supplied_publisher_pdf",
+    "full_pdf_or_full_text_committed": false
+  },
+  "resolution": {
+    "asset_id": "SLB",
+    "name": "SLB (frueher Schlumberger)",
+    "source": "Vom Nutzer bereitgestellte Herausgeber-PDF Hebeltrader_2026-198.pdf; Ausgabe 198/2026 vom 26.10.2026; Seiten 1-3; PDF-SHA256 fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+    "basis": "primary_source",
+    "call_wkn": "VY95PV",
+    "error_analysis": "Erstprognose SLB auf Rang 1 durch die erst spaeter bereitgestellte PDF bestaetigt. Foerdergeschaeft, Rechenzentren/Kuehltechnik, geplante Kelvion-Uebernahme und Digitalsparte stimmen ueberein. Kein falscher Basiswert. Call-WKN war vor der Aufloesung korrekt als unbekannt markiert. Kein Beleg einer vollautonomen Scanner-Identifikation oder kalibrierten Trefferquote.",
+    "algorithm_change": "Keine fallbezogene Gewinnerregel einbauen. Kombination konkreter Unternehmensereignisse vor generischen KI-/Chartmerkmalen beibehalten; nach Nutzeraufloesung als Entwicklungsfall behandeln.",
+    "confirmed_at": "2026-10-28T14:51:46.305050+00:00",
+    "original_sha256": "4a4f6537957e5e7f5253418e67234bb092b6dff6eb274d59220eaaafbc728292",
+    "correct_rank": 1,
+    "prediction_outcome": "confirmed",
+    "product_verification": "not_verified",
+    "original_call_status": "original_reported_by_source",
+    "case_status": "bestaetigt"
+  },
+  "newsletter_stated_product": {
+    "underlying": "SLB",
+    "call_wkn": "VY95PV",
+    "stock_wkn": "853390",
+    "strike_usd": "65.00",
+    "maturity": "2027-03-19",
+    "issuer": null,
+    "isin": null,
+    "verification_scope": "Newsletter content only; issuer product terms and live quotes not independently verified"
+  },
+  "journal_integrity": {
+    "valid": true,
+    "events": 4,
+    "head_sha256": "9321b53dbd1483a872b6fb55462402bb26b00cc64bf5e9e1842931eac8e3e8ed"
+  },
+  "first_ranking_unchanged": true,
+  "correct_rank": 1,
+  "execution_mode": "assistant_research_not_autonomous_scanner",
+  "independent_benchmark": false,
+  "quality": {
+    "journal": {
+      "valid": true,
+      "events": 4,
+      "head_sha256": "9321b53dbd1483a872b6fb55462402bb26b00cc64bf5e9e1842931eac8e3e8ed"
+    },
+    "cases": [
+      {
+        "case_id": "TI-ffbb614727fb96f052ea",
+        "evaluation_class": "retrospective",
+        "opened_at": "2026-10-28T14:02:39.768044+00:00",
+        "original_top3": [
+          {
+            "asset_id": "SLB",
+            "counterarguments": [
+              "Kelvion closing expected H1 2027, not already owned at teaser date.",
+              "Digital Q3 revenue -1% sequentially; GAAP EPS -6% sequentially.",
+              "No exact publication time or historically authenticated content snapshot; chart and call unknown."
+            ],
+            "evidence_matrix": [
+              {
+                "clue": "Foerderungsnahes Geschaeft",
+                "historical_version_verified": false,
+                "note": "Reservoir Performance, Well Construction and Production Systems in issuer results.",
+                "score_points": 4,
+                "sources": [
+                  "https://investorcenter.slb.com/news-releases/news-release-details/slb-announces-third-quarter-2026-results"
+                ],
+                "status": "confirmed"
+              },
+              {
+                "clue": "KI-Kuehltechnik / Rechenzentren",
+                "historical_version_verified": false,
+                "note": "Existing Data Center Solutions; Kelvion thermal-management acquisition agreed August 31, not yet closed.",
+                "score_points": 4,
+                "sources": [
+                  "https://investorcenter.slb.com/news-releases/news-release-details/slb-acquire-kelvion-expanding-its-role-across-data-center",
+                  "https://investorcenter.slb.com/news-releases/news-release-details/slb-announces-third-quarter-2026-results"
+                ],
+                "status": "confirmed"
+              },
+              {
+                "clue": "Digitalsparte mit wiederkehrenden Milliardenerloesen",
+                "historical_version_verified": false,
+                "note": "Digital annualized recurring revenue USD 1.04bn at September 30, 2026; not total segment revenue.",
+                "score_points": 4,
+                "sources": [
+                  "https://investorcenter.slb.com/news-releases/news-release-details/slb-announces-third-quarter-2026-results"
+                ],
+                "status": "confirmed"
+              },
+              {
+                "clue": "Quartalsbericht ueberraschte Skeptiker",
+                "historical_version_verified": false,
+                "note": "Promotional claim; no dated consensus comparison.",
+                "score_points": 0,
+                "sources": [],
+                "status": "unknown"
+              },
+              {
+                "clue": "200-session moving-average defense",
+                "historical_version_verified": false,
+                "note": "No verified price series or publication-time snapshot.",
+                "score_points": 0,
+                "sources": [],
+                "status": "unknown"
+              }
+            ],
+            "evidence_score": 12,
+            "identity": {
+              "isin": null,
+              "name": "SLB (frueher Schlumberger)",
+              "ticker": "SLB"
+            },
+            "sources": [
+              "https://investorcenter.slb.com/news-releases/news-release-details/slb-acquire-kelvion-expanding-its-role-across-data-center",
+              "https://investorcenter.slb.com/news-releases/news-release-details/slb-announces-third-quarter-2026-results"
+            ]
+          },
+          {
+            "asset_id": "Schneider Electric",
+            "counterarguments": [
+              "No equally specific oilfield-service transformation evidence.",
+              "ARR growth is not proof of absolute recurring billions; do not confuse total software sales with ARR."
+            ],
+            "evidence_matrix": [
+              {
+                "clue": "Foerderungsnahes Geschaeft",
+                "historical_version_verified": false,
+                "note": "Energy & Chemicals end markets do not establish the described oilfield-service heritage.",
+                "score_points": 0,
+                "sources": [
+                  "https://www.se.com/ww/en/assets/pdf/release-hy-results-2026"
+                ],
+                "status": "unknown"
+              },
+              {
+                "clue": "KI-Kuehltechnik / Rechenzentren",
+                "historical_version_verified": false,
+                "note": "75% Motivair controlling acquisition closed February 28, 2025; direct liquid cooling.",
+                "score_points": 4,
+                "sources": [
+                  "https://www.se.com/ww/en/assets/564/document/506659/Schneider%20Electric-completes-acquisition-of-Motivair-Corporation.pdf"
+                ],
+                "status": "confirmed"
+              },
+              {
+                "clue": "Digitalsparte mit wiederkehrenden Milliardenerloesen",
+                "historical_version_verified": false,
+                "note": "AVEVA recurring software and ARR +11% established; absolute billion ARR not verified in inspected source.",
+                "score_points": 2,
+                "sources": [
+                  "https://www.se.com/ww/en/assets/pdf/release-hy-results-2026"
+                ],
+                "status": "unknown"
+              },
+              {
+                "clue": "Quartalsbericht ueberraschte Skeptiker",
+                "historical_version_verified": false,
+                "note": "Promotional claim; no dated consensus comparison.",
+                "score_points": 0,
+                "sources": [],
+                "status": "unknown"
+              },
+              {
+                "clue": "200-session moving-average defense",
+                "historical_version_verified": false,
+                "note": "No verified price series or publication-time snapshot.",
+                "score_points": 0,
+                "sources": [],
+                "status": "unknown"
+              }
+            ],
+            "evidence_score": 6,
+            "identity": {
+              "isin": null,
+              "name": "Schneider Electric",
+              "ticker": null
+            },
+            "sources": [
+              "https://www.se.com/ww/en/assets/564/document/506659/Schneider%20Electric-completes-acquisition-of-Motivair-Corporation.pdf",
+              "https://www.se.com/ww/en/assets/pdf/release-hy-results-2026"
+            ]
+          },
+          {
+            "asset_id": "EMR",
+            "counterarguments": [
+              "Cooling source describes instrumentation rather than the same cooling-systems transformation.",
+              "ACV, backlog and ARR are different metrics; no unsupported billion comparison."
+            ],
+            "evidence_matrix": [
+              {
+                "clue": "Foerderungsnahes Geschaeft",
+                "historical_version_verified": false,
+                "note": "Aspen Geolog supports upstream exploration; industrial supplier, less direct than SLB.",
+                "score_points": 2,
+                "sources": [
+                  "https://www.emerson.com/en/corporate/news/2026/emerson-selected-by-logtek-as-to-accelerate-upstream-exploration"
+                ],
+                "status": "confirmed"
+              },
+              {
+                "clue": "KI-Kuehltechnik / Rechenzentren",
+                "historical_version_verified": false,
+                "note": "October 8 Rosemount flow measurement for hydronic cooling, not an equivalent full thermal-management business.",
+                "score_points": 2,
+                "sources": [
+                  "https://www.emerson.com/en/corporate/news/2026/emersons-new-flow-measurement-improves-data-center-reliability"
+                ],
+                "status": "confirmed"
+              },
+              {
+                "clue": "Digitalsparte mit wiederkehrenden Milliardenerloesen",
+                "historical_version_verified": false,
+                "note": "AspenTech recurring contract portfolio is documented; an absolute billion ARR figure is not verified.",
+                "score_points": 1,
+                "sources": [
+                  "https://ir.emerson.com/_assets/_39b9c4b55c1314921bb642cd27956a1b/emerson/db/938/10242/presentation/Emerson+2026+Q3+Earnings+Presentation.pdf"
+                ],
+                "status": "unknown"
+              },
+              {
+                "clue": "Quartalsbericht ueberraschte Skeptiker",
+                "historical_version_verified": false,
+                "note": "Promotional claim; no dated consensus comparison.",
+                "score_points": 0,
+                "sources": [],
+                "status": "unknown"
+              },
+              {
+                "clue": "200-session moving-average defense",
+                "historical_version_verified": false,
+                "note": "No verified price series or publication-time snapshot.",
+                "score_points": 0,
+                "sources": [],
+                "status": "unknown"
+              }
+            ],
+            "evidence_score": 5,
+            "identity": {
+              "isin": null,
+              "name": "Emerson",
+              "ticker": "EMR"
+            },
+            "sources": [
+              "https://ir.emerson.com/_assets/_39b9c4b55c1314921bb642cd27956a1b/emerson/db/938/10242/presentation/Emerson+2026+Q3+Earnings+Presentation.pdf",
+              "https://www.emerson.com/en/corporate/news/2026/emerson-selected-by-logtek-as-to-accelerate-upstream-exploration",
+              "https://www.emerson.com/en/corporate/news/2026/emersons-new-flow-measurement-improves-data-center-reliability"
+            ]
+          }
+        ],
+        "resolved": true,
+        "correct_rank": 1,
+        "top1_hit": true,
+        "top3_hit": true,
+        "false_identification": false,
+        "analysis_seconds": null,
+        "source_quality": {
+          "historical_content_version_verified": false,
+          "scope": "seven manually compared companies; issuer-original evidence prioritized"
+        },
+        "countercandidate_count": 6,
+        "resolution": {
+          "algorithm_change": "Keine fallbezogene Gewinnerregel einbauen. Kombination konkreter Unternehmensereignisse vor generischen KI-/Chartmerkmalen beibehalten; nach Nutzeraufloesung als Entwicklungsfall behandeln.",
+          "asset_id": "SLB",
+          "basis": "primary_source",
+          "call_wkn": "VY95PV",
+          "case_status": "bestaetigt",
+          "confirmed_at": "2026-10-28T14:51:46.305050+00:00",
+          "correct_rank": 1,
+          "error_analysis": "Erstprognose SLB auf Rang 1 durch die erst spaeter bereitgestellte PDF bestaetigt. Foerdergeschaeft, Rechenzentren/Kuehltechnik, geplante Kelvion-Uebernahme und Digitalsparte stimmen ueberein. Kein falscher Basiswert. Call-WKN war vor der Aufloesung korrekt als unbekannt markiert. Kein Beleg einer vollautonomen Scanner-Identifikation oder kalibrierten Trefferquote.",
+          "name": "SLB (frueher Schlumberger)",
+          "original_call_status": "original_reported_by_source",
+          "original_sha256": "4a4f6537957e5e7f5253418e67234bb092b6dff6eb274d59220eaaafbc728292",
+          "prediction_outcome": "confirmed",
+          "product_verification": "not_verified",
+          "source": "Vom Nutzer bereitgestellte Herausgeber-PDF Hebeltrader_2026-198.pdf; Ausgabe 198/2026 vom 26.10.2026; Seiten 1-3; PDF-SHA256 fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+          "recorded_at": "2026-10-28T14:51:46.306710+00:00"
+        }
+      }
+    ],
+    "all": {
+      "total": 1,
+      "resolved_denominator": 1,
+      "unresolved": 0,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "false_identifications": 0,
+      "top1_rate": null,
+      "top3_rate": null,
+      "unresolved_fraction": 0.0,
+      "average_research_seconds": null,
+      "rate_basis": "no_validated_independent_denominator",
+      "source_documents": 0,
+      "primary_documents": 0
+    },
+    "independent": {
+      "total": 0,
+      "resolved_denominator": 0,
+      "unresolved": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "false_identifications": 0,
+      "top1_rate": null,
+      "top3_rate": null,
+      "unresolved_fraction": null,
+      "average_research_seconds": null,
+      "rate_basis": "no_validated_independent_denominator",
+      "source_documents": 0,
+      "primary_documents": 0
+    },
+    "development_regression": {
+      "total": 0,
+      "resolved_denominator": 0,
+      "unresolved": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "false_identifications": 0,
+      "top1_rate": null,
+      "top3_rate": null,
+      "unresolved_fraction": null,
+      "average_research_seconds": null,
+      "rate_basis": "no_validated_independent_denominator",
+      "source_documents": 0,
+      "primary_documents": 0
+    },
+    "quality_over_time": [
+      {
+        "case_id": "TI-ffbb614727fb96f052ea",
+        "opened_at": "2026-10-28T14:02:39.768044+00:00",
+        "evaluation_class": "retrospective",
+        "resolved": true,
+        "correct_rank": 1
+      }
+    ],
+    "warning": "Counts use unchanged first rankings. Prospective independence requires operator provenance; hashes are not external signatures."
+  }
+}

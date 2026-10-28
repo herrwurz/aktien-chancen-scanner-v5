@@ -76,3 +76,10 @@ Rohquellen, tatsächliche eigene HTTP-Abrufzeiten und Providerantworten liegen u
 kopiert. Provider-Extrakte ohne ausgewiesenen Abrufzeitpunkt sind entsprechend markiert.
 **Noch kein Treffer gezählt.** Die spätere tatsächliche Aktie/Call-WKN darf erst danach
 als neuer Auflösungseintrag folgen; die Erstprognose bleibt unverändert.
+
+
+## Nachtrag nach Einfrieren der Erstprognose
+
+Die danach vom Nutzer bereitgestellte Original-PDF bestätigt **SLB auf Rang 1** und
+nennt **VY95PV** als beworbenen Call. Die ursprüngliche Rangliste und ihr Hash bleiben
+unverändert. Siehe [separater Auflösungsnachweis](hebeltrader-19826-resolution.md).
