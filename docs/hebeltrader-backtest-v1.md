@@ -1,6 +1,6 @@
 # Historisches HEBELTRADER-Backtesting V1
 
-Issue #4 / PR #5. Methode: `hebel-stock-ohlc-v1.2`.
+Issue #4 / PR #5. **Status: erledigt** (PR #5, erweitert durch V1.2+). GitHub-Issue kann geschlossen werden. Methode: `hebel-stock-ohlc-v1.2`.
 Die bestehende PDF-/PostgreSQL-Architektur bleibt erhalten. V1 liefert eine
 Offline-Engine mit Provider-Schnittstelle und ausschließlich lesender CLI.
 Keine Migration, Outcome-Persistierung, Scheduler, Marktdaten-Abos oder Trades.
