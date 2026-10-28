@@ -96,3 +96,36 @@ Ruff und JavaScript-Syntax erfolgreich. Der echte isolierte Docker-Prozess liefe
 Anmeldung HTTP 401, mit Anmeldung eine erfolgreiche Teaser-Annahme und anschließend einen
 persistierten Fall. `docker compose config --quiet` und Caddy-Konfigurationsvalidierung
 waren erfolgreich. Der Docker-Lauf verwendete Dummy-Secrets und keine externen Rechercheabrufe.
+
+## Coolify mit bereits vorhandenem Traefik
+
+Keinen zusätzlichen Caddy starten. In der eigenen Coolify-Anwendung Build Pack Dockerfile,
+Branch `feat/teaser-web-hetzner`, Base Directory `/`, Dockerfile `/Dockerfile`,
+Domain `https://teaser.hofreither.at`, Ports Exposes `8000`, keine Ports Mappings.
+
+Eigenes Bind-Mount-Verzeichnis auf Hetzner vorbereiten:
+
+```bash
+install -d -m 700 -o 10001 -g 10001 /opt/teaser-web-data
+```
+
+Coolify Persistent Storage: Directory/Bind Mount, Source `/opt/teaser-web-data`,
+Destination `/data`. Keine Immich- oder bestehenden Datenbankverzeichnisse verwenden.
+
+Runtime Environment Variables (nicht Build Variables):
+
+```text
+SCANNER_APP_FACTORY=scanner.web:create_web_app
+TEASER_USERNAME=admin
+TEASER_STATE_DIR=/data
+TEASER_PASSWORD_FILE=/data/private/password
+TEASER_TOKEN_FILE=/data/private/token
+DETECTIVE_PUBLIC_ALLOW_NETWORK=true
+DETECTIVE_PUBLIC_MAX_REQUESTS=40
+```
+
+Vor dem Start müssen die privaten Dateien `password` und `token` im Unterverzeichnis
+`/opt/teaser-web-data/private` angelegt werden, für UID 10001 lesbar. Passwort mindestens
+12 Zeichen; Token zufällig generieren. Keine geheimen Werte in Screenshots zeigen.
+Fehlende Dateien verhindern den Start der geschützten Web-App. Coolify übernimmt
+TLS und Routing. Keine zusätzlichen Ports oder Änderungen am bestehenden Proxy erforderlich.
