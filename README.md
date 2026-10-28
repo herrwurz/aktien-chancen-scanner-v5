@@ -3,6 +3,9 @@
 Neue [eingefrorene Erstprognose zu HEBELTRADER 198/26](docs/hebeltrader-19826-initial.md):
 assistentengestützte Quellenrecherche; die spätere PDF-Auflösung bestätigt SLB auf Rang 1.
 
+[Automatische Erfassung öffentlicher HEBELTRADER-Ausgaben](docs/hebeltrader-catalog-monitor.md):
+mit echten Ausgaben und wiederholtem Lauf geprüft; Aktienidentifikation bleibt separat offen.
+
 V3.1 ergänzt ein dauerhaftes Falljournal, spätere Auflösungen, historische Verfügbarkeit
 und öffentliche RSS-Entdeckung: [V3.1 Bedienung und Abnahme](docs/teaser-intelligence-v31.md).
 

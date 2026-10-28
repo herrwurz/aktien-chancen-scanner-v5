@@ -2,6 +2,7 @@
 
 import fcntl
 import json
+import re
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
@@ -12,18 +13,32 @@ import httpx
 from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 
 from .investigation import InvestigationRequest
+from .publisher_catalog import catalog_links, product_teaser
 
 DEFAULT_QUERY = 'site:deraktionaer.de "HEBELTRADER" "bis zu"'
 
 
 class TeaserMonitor:
-    def __init__(self, root, *, web, engine, clock=None, queries=None, recheck_seconds=86400):
+    def __init__(
+        self,
+        root,
+        *,
+        web,
+        engine,
+        clock=None,
+        queries=None,
+        recheck_seconds=86400,
+        catalog_urls=None,
+        catalog_limit=3,
+    ):
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.web, self.engine = web, engine
         self.clock = clock or (lambda: datetime.now(UTC))
         self.queries = queries or [DEFAULT_QUERY]
         self.recheck_seconds = max(300, recheck_seconds)
+        self.catalog_urls = list(catalog_urls or [])[:2]
+        self.catalog_limit = max(1, min(10, catalog_limit))
         self.path = self.root / "teasers.db"
         with sqlite3.connect(self.path) as db:
             db.executescript("""
@@ -61,8 +76,29 @@ class TeaserMonitor:
                 "duplicate_or_unchanged": 0,
                 "errors": [],
                 "notification_delivery": "local_outbox_only",
+                "newness_basis": "first_seen_by_this_monitor_not_new_publication",
+                "catalog_products_discovered": 0,
             }
             urls = {}
+            prepared = {}
+            for catalog_url in self.catalog_urls:
+                try:
+                    page = self.web.fetch(catalog_url)
+                    raw = Path(page["raw_file"]).read_text(encoding="utf-8", errors="replace")
+                    for product_url in catalog_links(raw, catalog_url, limit=self.catalog_limit):
+                        urls[product_url] = {"catalog": True}
+                        outcome["catalog_products_discovered"] += 1
+                except (ValueError, httpx.HTTPError, OSError) as exc:
+                    outcome["errors"].append({"url": catalog_url, "error": type(exc).__name__})
+            # Archive all bounded product inputs before research consumes the shared budget.
+            for product_url in list(urls):
+                try:
+                    page = self.web.fetch(product_url)
+                    raw = Path(page["raw_file"]).read_text(encoding="utf-8", errors="replace")
+                    prepared[product_url] = dict(page, **product_teaser(raw, product_url))
+                except (ValueError, httpx.HTTPError, OSError) as exc:
+                    outcome["errors"].append({"url": product_url, "error": type(exc).__name__})
+                    urls.pop(product_url, None)
             for query in self.queries[:4]:
                 try:
                     for hit in self.web.search(query, limit=20):
@@ -71,12 +107,11 @@ class TeaserMonitor:
                     outcome["errors"].append(type(exc).__name__)
             for url in list(urls)[:20]:
                 try:
-                    document = self.web.fetch(url)
+                    document = prepared.get(url) or self.web.fetch(url)
                     text = document.get("text", "")
-                    import re
 
                     title = document.get("title", "")
-                    if not (
+                    if not document.get("is_public_teaser") and not (
                         re.search(
                             r"dieser|dieses|diese|aktie|titel|unbekannt|\w*(?:konzern|gigant|riese|schwergewicht)",
                             title,
@@ -122,7 +157,10 @@ class TeaserMonitor:
                         original_source_url=document.get("url"),
                         source_retrieved_at=document.get("retrieved_at"),
                         headline=document.get("title", ""),
-                        publisher=parsed.hostname or "",
+                        publisher=document.get("publisher") or parsed.hostname or "",
+                        author=document.get("author", ""),
+                        issue=document.get("issue", ""),
+                        publication_date=document.get("publication_date"),
                         publication_at=document.get("published_at"),
                     )
                     report = self.engine.analyze(request)
@@ -175,8 +213,8 @@ class TeaserMonitor:
                     outcome["improved_identifications"] += bool(material)
                 except (ValueError, httpx.HTTPError) as exc:
                     outcome["errors"].append({"url": url, "error": type(exc).__name__})
-            exclusive(self.root / "polls" / f"{sha(canonical(outcome))}.json", canonical(outcome))
             outcome["source_gaps"] = getattr(self.web, "discovery_errors", [])
+            exclusive(self.root / "polls" / f"{sha(canonical(outcome))}.json", canonical(outcome))
             return outcome
 
 

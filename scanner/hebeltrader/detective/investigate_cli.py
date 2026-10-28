@@ -11,6 +11,7 @@ from .history import evaluate_frozen, inventory_history
 from .investigation import InvestigationRequest, Investigator
 from .monitor import TeaserMonitor
 from .public_web import PublicWebResearch
+from .publisher_catalog import CATALOG_URL
 from .resolution import ResolutionRequest
 from .workflow import run_case
 
@@ -63,6 +64,10 @@ def main(argv=None):
     parser.add_argument("--interval-seconds", type=int, default=3600)
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--query", action="append")
+    parser.add_argument(
+        "--no-catalog", action="store_true", help="Use only the existing RSS/search path"
+    )
+    parser.add_argument("--catalog-limit", type=int, default=3, choices=range(1, 11))
     parser.add_argument(
         "--history", type=Path, default=Path("docs/hebeltrader-identification-rules.md")
     )
@@ -151,7 +156,12 @@ def main(argv=None):
                 return run_case(self.investigator, request, register_path=args.register_path)
 
         monitor = TeaserMonitor(
-            args.root, web=web, engine=JournaledEngine(engine), queries=args.query
+            args.root,
+            web=web,
+            engine=JournaledEngine(engine),
+            queries=args.query,
+            catalog_urls=[] if args.no_catalog else [CATALOG_URL],
+            catalog_limit=args.catalog_limit,
         )
         print(json.dumps(monitor.scan_once(), ensure_ascii=False), flush=True)
         if args.once:

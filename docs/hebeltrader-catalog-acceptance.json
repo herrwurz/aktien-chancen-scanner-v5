@@ -1,0 +1,335 @@
+{
+  "schema_version": 1,
+  "scope": "public_catalog_discovery_and_journaling_not_identification_accuracy",
+  "catalog": "https://www.boersenmedien.de/hebeltrader",
+  "first_run": {
+    "scanned_at": "2026-10-28T16:08:39.325236+00:00",
+    "new_teasers": 3,
+    "improved_identifications": 0,
+    "analyzed": 3,
+    "duplicate_or_unchanged": 0,
+    "errors": [],
+    "notification_delivery": "local_outbox_only",
+    "newness_basis": "first_seen_by_this_monitor_not_new_publication",
+    "catalog_products_discovered": 3,
+    "source_gaps": [
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      },
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      }
+    ]
+  },
+  "second_run": {
+    "scanned_at": "2026-10-28T16:09:31.795692+00:00",
+    "new_teasers": 0,
+    "improved_identifications": 0,
+    "analyzed": 0,
+    "duplicate_or_unchanged": 3,
+    "errors": [],
+    "notification_delivery": "local_outbox_only",
+    "newness_basis": "first_seen_by_this_monitor_not_new_publication",
+    "catalog_products_discovered": 3,
+    "source_gaps": [
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "TI-6afcdc037f1e5d99f32c",
+      "issue": "200/26",
+      "headline": "Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine läuft auf Hochtouren!",
+      "author": "Rudolf Wittmer",
+      "publication_date": "2026-10-28",
+      "publication_at": null,
+      "source_url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20026-5103.html",
+      "retrieved_at": "2026-10-28T16:08:48.127440Z",
+      "teaser_characters": 886,
+      "input_sha256": "99d9cf4ee5433255d4f71ce02097e15c1dfd8936f18503ba64f9d328fd476419",
+      "case_status": "ungeloest",
+      "decision": {
+        "label": "Nicht ausreichend identifizierbar",
+        "status": "insufficient_evidence"
+      },
+      "countercandidate_count": 0,
+      "candidate_count": 0,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "teaser_publication_time_unknown",
+        "insufficient_specific_primary_evidence"
+      ]
+    },
+    {
+      "case_id": "TI-f8b77d2df74f63264ca1",
+      "issue": "199/26",
+      "headline": "Der heimliche Gewinner der nächsten Finanzrevolution!",
+      "author": "Rudolf Wittmer",
+      "publication_date": "2026-10-27",
+      "publication_at": null,
+      "source_url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19926-5099.html",
+      "retrieved_at": "2026-10-28T16:08:49.240079Z",
+      "teaser_characters": 434,
+      "input_sha256": "ffafedd35d598f5dfd50787c1ab3a5696a39415e18ad7aa79e1ec34f878a67c7",
+      "case_status": "ungeloest",
+      "decision": {
+        "label": "Nicht ausreichend identifizierbar",
+        "status": "insufficient_evidence"
+      },
+      "countercandidate_count": 0,
+      "candidate_count": 0,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "teaser_publication_time_unknown",
+        "research_source_gaps",
+        "insufficient_specific_primary_evidence"
+      ]
+    },
+    {
+      "case_id": "TI-ffbb614727fb96f052ea",
+      "issue": "198/26",
+      "headline": "Achtung, Kursexplosion voraus – KI-Boom trifft Ölgeschäft!",
+      "author": "Rudolf Wittmer",
+      "publication_date": "2026-10-26",
+      "publication_at": null,
+      "source_url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19826-5097.html",
+      "retrieved_at": "2026-10-28T16:08:50.265585Z",
+      "teaser_characters": 735,
+      "input_sha256": "2350ecae561ba6ded98c34f8f943dd4158d4a4eaae86a15420886c84be411a92",
+      "case_status": "ungeloest",
+      "decision": {
+        "label": "Nicht ausreichend identifizierbar",
+        "status": "insufficient_evidence"
+      },
+      "countercandidate_count": 0,
+      "candidate_count": 0,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "teaser_publication_time_unknown",
+        "research_source_gaps",
+        "insufficient_specific_primary_evidence"
+      ]
+    }
+  ],
+  "journal_integrity": {
+    "valid": true,
+    "events": 9,
+    "head_sha256": "a319e28b3eea4389b17b89b8a2dbf83f8a0af91263c56bb1fc2f21c073475712"
+  },
+  "notifications_after_second_run": 3,
+  "independent_blind_tests_graded": 0,
+  "qualified_automatic_stock_identifications": 0,
+  "newness_basis": "first_seen_by_this_monitor_not_new_publication",
+  "source_receipts": [
+    {
+      "raw_sha256": "a827e76bf90875725fd9595659a0bdc83c90f5951466913d2c2e4d3d2c60ec60",
+      "request_started_at": "2026-10-28T16:08:45.287402+00:00",
+      "retrieved_at": "2026-10-28T16:08:46.137428+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/robots.txt"
+    },
+    {
+      "raw_sha256": "9e4f12e8a6bf49a678eadfa38cd1104bb5d16472575bd0a9e05fc2a541077381",
+      "request_started_at": "2026-10-28T16:08:46.584376+00:00",
+      "retrieved_at": "2026-10-28T16:08:46.996524+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/hebeltrader"
+    },
+    {
+      "raw_sha256": "bb2a67b2ec4c9731ee9a842ef410a24f1d76dc1a450f97baeb32e3f9ddea7215",
+      "request_started_at": "2026-10-28T16:08:47.431371+00:00",
+      "retrieved_at": "2026-10-28T16:08:48.127440+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20026-5103.html"
+    },
+    {
+      "raw_sha256": "cd0358d6c92eb779d48b208a6150728af4cf2dd6ab19206ce475605d7db54d84",
+      "request_started_at": "2026-10-28T16:08:48.584333+00:00",
+      "retrieved_at": "2026-10-28T16:08:49.240079+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19926-5099.html"
+    },
+    {
+      "raw_sha256": "3a78125be5cf57567d9b9888baafa1e35d6b754f413ddff9ea2723ded8e5117c",
+      "request_started_at": "2026-10-28T16:08:49.857411+00:00",
+      "retrieved_at": "2026-10-28T16:08:50.265585+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19826-5097.html"
+    },
+    {
+      "raw_sha256": "40d2da70c3b443225d5b01cc7b05117944980347637cc95ab285c6e4f5548235",
+      "request_started_at": "2026-10-28T16:08:50.299957+00:00",
+      "retrieved_at": "2026-10-28T16:08:50.701196+00:00",
+      "status": 200,
+      "url": "https://www.bing.com/robots.txt"
+    },
+    {
+      "raw_sha256": "495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839",
+      "request_started_at": "2026-10-28T16:08:51.037336+00:00",
+      "retrieved_at": "2026-10-28T16:08:52.105443+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/robots.txt"
+    },
+    {
+      "raw_sha256": "fd68313ca1f03157e0de2e044fc1517b6635f60f7809f913c66d0f5672ea0120",
+      "request_started_at": "2026-10-28T16:08:52.577073+00:00",
+      "retrieved_at": "2026-10-28T16:08:53.097130+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/aktionaer-news.rss"
+    },
+    {
+      "raw_sha256": "0ae10c5d6e662f110688dbc5d25d5fdaca88dc4cfe4df7cc9cf56f7e98057459",
+      "request_started_at": "2026-10-28T16:08:55.292741+00:00",
+      "retrieved_at": "2026-10-28T16:08:55.685206+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/aktien/tk-accelis-ipo-erfolgreich-das-muessen-anleger-jetzt-wissen-20427039.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "ae7bc3144846d6fce85b652a258511609169cb72dc32c4f3f474da7fdaa87810",
+      "request_started_at": "2026-10-28T16:08:55.721831+00:00",
+      "retrieved_at": "2026-10-28T16:08:56.394099+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/pharma-biotech/aktien-report-tipp-laeuft-60-von-400-prozent-sind-geschafft-jetzt-noch-einsteigen-20427115.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "62233cc05ff2d9fb44a934c896082053cb6338bd9eb2c3c5ee49656bea594b25",
+      "request_started_at": "2026-10-28T16:08:56.601760+00:00",
+      "retrieved_at": "2026-10-28T16:08:56.978197+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/pharma-biotech/gubra-hat-grosses-vor-aktie-im-aufwind-20425684.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "2fcfa4c2a756635f6f27cbf7d839c6e2e14a37a6bfca1a9b03063b0925958c96",
+      "request_started_at": "2026-10-28T16:08:57.018777+00:00",
+      "retrieved_at": "2026-10-28T16:08:57.195924+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/aktien/vonovia-ist-die-aktie-jetzt-ein-kauf-20427043.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "41777f870d07d05cbe1a8262279d664fff8d6c8d5c434b5ba8df825ec586563b",
+      "request_started_at": "2026-10-28T16:08:57.231216+00:00",
+      "retrieved_at": "2026-10-28T16:08:57.397553+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/medien-it-technologie/amphenol-20426976.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "77505679f90c29e303b8d0e50ac76cc0bdeb59e8f8a787bba59a3fb7f887d2b5",
+      "request_started_at": "2026-10-28T16:08:57.439588+00:00",
+      "retrieved_at": "2026-10-28T16:08:57.604608+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/pharma-biotech/aktionaer-tipp-genmab-knaller-daten-aktie-hebt-ab-20427091.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "b60ebe66b0f5e771a8c280c8fa21e7748e1240c3df83f3931915000babf8f332",
+      "request_started_at": "2026-10-28T16:08:57.815073+00:00",
+      "retrieved_at": "2026-10-28T16:08:57.991443+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/medien-it-technologie/cybercrash-gold-boom-mega-chance-diese-2-aktien-stehen-jetzt-im-fokus-20427093.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "0ae10c5d6e662f110688dbc5d25d5fdaca88dc4cfe4df7cc9cf56f7e98057459",
+      "request_started_at": "2026-10-28T16:08:58.053604+00:00",
+      "retrieved_at": "2026-10-28T16:08:58.226250+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/artikel/aktien/tk-accelis-ipo-erfolgreich-das-muessen-anleger-jetzt-wissen-20427039.html?feed=directrssfeed"
+    },
+    {
+      "raw_sha256": "a827e76bf90875725fd9595659a0bdc83c90f5951466913d2c2e4d3d2c60ec60",
+      "request_started_at": "2026-10-28T16:09:37.005652+00:00",
+      "retrieved_at": "2026-10-28T16:09:37.202268+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/robots.txt"
+    },
+    {
+      "raw_sha256": "5070108eeb5e41226914459de7589e68ce7474933740002069d97e0ec7307a8e",
+      "request_started_at": "2026-10-28T16:09:37.218491+00:00",
+      "retrieved_at": "2026-10-28T16:09:37.581809+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/hebeltrader"
+    },
+    {
+      "raw_sha256": "93fc8ae5e6687f4cc9b8e7aa1a7fc755377930459ab3fb0d2fe9bb3c2074fbd3",
+      "request_started_at": "2026-10-28T16:09:37.624408+00:00",
+      "retrieved_at": "2026-10-28T16:09:37.833898+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20026-5103.html"
+    },
+    {
+      "raw_sha256": "e02e907b53cc639de2d75f00ecdf384a133951bede6191116e58744241e97e4a",
+      "request_started_at": "2026-10-28T16:09:37.865570+00:00",
+      "retrieved_at": "2026-10-28T16:09:38.066361+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19926-5099.html"
+    },
+    {
+      "raw_sha256": "d544baf1e13d5f137fa73bfedc177f9fe34092ed4f15dd8a4d646fa7e1e2347e",
+      "request_started_at": "2026-10-28T16:09:38.126953+00:00",
+      "retrieved_at": "2026-10-28T16:09:38.315108+00:00",
+      "status": 200,
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19826-5097.html"
+    },
+    {
+      "raw_sha256": "40d2da70c3b443225d5b01cc7b05117944980347637cc95ab285c6e4f5548235",
+      "request_started_at": "2026-10-28T16:09:38.370174+00:00",
+      "retrieved_at": "2026-10-28T16:09:38.892291+00:00",
+      "status": 200,
+      "url": "https://www.bing.com/robots.txt"
+    },
+    {
+      "raw_sha256": "495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839",
+      "request_started_at": "2026-10-28T16:09:38.904015+00:00",
+      "retrieved_at": "2026-10-28T16:09:39.097795+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/robots.txt"
+    },
+    {
+      "raw_sha256": "fd68313ca1f03157e0de2e044fc1517b6635f60f7809f913c66d0f5672ea0120",
+      "request_started_at": "2026-10-28T16:09:39.120799+00:00",
+      "retrieved_at": "2026-10-28T16:09:39.309038+00:00",
+      "status": 200,
+      "url": "https://www.deraktionaer.de/aktionaer-news.rss"
+    }
+  ],
+  "verification": {
+    "pytest_summary": "751 passed, 8 skipped, 1 warning in 15.32s",
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "docker_build": "passed"
+  },
+  "raw_archive": "data/catalog-live-acceptance",
+  "full_articles_or_pdf_committed": false,
+  "server_execution": false,
+  "deployed": false,
+  "merged": false,
+  "orders": false,
+  "blocker": "Global primary-company research and sufficient evidenced alternative candidates remain incomplete."
+}

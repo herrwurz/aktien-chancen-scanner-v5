@@ -3,7 +3,7 @@
 import hashlib
 import re
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from time import perf_counter
 
@@ -39,6 +39,7 @@ class InvestigationRequest(BaseModel):
     )
     previously_used_for_development: bool | None = None
     publication_at: datetime | None = None
+    publication_date: date | None = None
     advertised_return: str | None = Field(default=None, max_length=100)
     screenshot_base64: str | None = Field(default=None, max_length=3000000)
     screenshot_media_type: str | None = None
@@ -516,6 +517,9 @@ class Investigator:
             if request.publication_at
             else None,
             "publication_time_basis": publication_basis,
+            "publication_date": request.publication_date.isoformat()
+            if request.publication_date
+            else None,
             "original_source_url": str(request.original_source_url or request.teaser_url)
             if (request.original_source_url or request.teaser_url)
             else None,
