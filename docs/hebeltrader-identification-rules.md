@@ -21,7 +21,7 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 11. Unaufgelöste Fälle bleiben im Register. „Nicht bekannt“ ist kein Fehlalarm und keine erfolgreiche Identifikation.
 12. Keine Erfolgsquote ohne vollständig datierten, nachvollziehbaren Nenner; frühere aggregierte Erinnerungszahlen sind nicht automatisch belastbare Benchmarks.
 
-## Fallregister – individuell bekannte Fälle
+## Fallregister – 16 historische Teaser-Fälle (15 ursprüngliche Blindtests + Analog Devices)
 
 | ID | Teaser / Kontext | Aktie / Ticker | Call-WKN | Status / Beleg | Besondere Umstände und offene Felder |
 |---|---|---|---|---|---|
@@ -36,17 +36,24 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 | HT-009 | Historischer Fall; Titel offen | **Pfizer** | **WA4R5Q** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
 | HT-010 | Historischer Fall; Titel offen | **Broadcom** | **MN8GZP** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
 | HT-011 | Historischer Fall; Titel offen | **Thales** | **DN3NVH** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
-| HT-012 | Historischer Fall; Titel offen | **BASF** | **MJ7DU** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+| HT-012 | Historischer Fall; Titel offen | **BASF** | **MJ7DUX** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+
+| HT-013 | Historischer Teaser zu **Danaher**; genauer Wortlaut/Ausgabe noch offen | **Danaher** | **JY3SF7** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp und spezifische Gegenhinweise aus Originalprotokoll rekonstruieren. |
+| HT-014 | Historischer Teaser zu **SAP**; genauer Wortlaut/Ausgabe noch offen | **SAP** | **UP9A9X** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
+| HT-015 | Historischer Teaser zu **Leonardo**; genauer Wortlaut/Ausgabe noch offen | **Leonardo** | **VJ2RFH** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
+| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams** (Bezeichnung aus damaligem Fallregister; genaue Emittentenidentität offen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |
 
 ### Weitere genannte WKNs – **noch keinem Teaser belastbar zugeordnet**
 
-**JY3SF7, UP9A9X, HM43B1, VJ2RFH, MN6CYX, JE11C1.** Diese Codes sind aus früheren Diskussionen bekannt, aber ohne geprüfte Teaser-/Aktien-Zuordnung. Nicht als bestätigte Treffer zählen.
+**HM43B1, MN6CYX, JE11C1.** Diese Codes sind aus früheren Diskussionen bekannt, aber ohne geprüfte Teaser-/Aktien-Zuordnung. Nicht als bestätigte Treffer zählen.
 
 **FG8HCH:** In einer früheren Unterhaltung als gekaufter alternativer Nasdaq-Inc.-Call (500 Stück) erwähnt; **nicht** als beworbene Original-WKN eines HEBELTRADER-Teasers bestätigt. Nicht in die Trefferquote aufnehmen.
 
-### Historische aggregierte Blindtest-Angabe – nicht als aktuelle Statistik verwenden
+### Nachvollziehbare Bilanz der bisherigen Blindtests
 
-Eine frühere Gesprächszusammenfassung nannte **15 Blindtests: 9 richtig, 5 falsch, 1 ungelöst**; ein ungelöster **Williams**-Fall wurde später offenbar aus der Betrachtung entfernt. Es fehlen derzeit die 15 vollständigen Fallzeilen mit Originaltext, Erstprognose und Lösung. Daher **keine** belastbare aktuelle Trefferquote ableiten. Der Williams-Fall bleibt als **historisch erwähnt / unvollständig dokumentiert** im Recherche-Backlog, nicht als bestätigter Treffer oder als sicher offener aktueller Fall.
+**Ursprüngliche 15 Fälle:** 9 richtig (Costco, Micron, UnitedHealth, Vertiv, KKR, Pfizer, Broadcom, Thales, BASF), 5 falsch (Zurich, Salesforce, Danaher, SAP, Leonardo), 1 offen (Williams). **Analog Devices** wurde am 28.10.2026 zunächst falsch als Lattice identifiziert und danach vom Nutzer aufgelöst. **Stand 16 Fälle: 9 richtig, 6 falsch, 1 offen.** Die Bilanz bezeichnet die **ursprüngliche Erstidentifikation**, nicht die nachträgliche Auflösung. Erfolgsquote bezogen auf 15 aufgelöste Fälle: 9/15 = **60 %**; bei Einschluss des offenen Falls: 9/16 = **56,25 %**. Beides ist nur eine historische Gesprächsbilanz, keine unabhängig archivierte Benchmark-Auswertung. Die früher einmal genannten 9/14 = 64,3 % schließen Williams aus und dürfen nicht als Gesamtquote erscheinen.
+
+**Status der Belege:** Die ursprüngliche Fallliste und die Ersttrefferbilanz stammen aus der historischen Nutzer-/Assistenten-Auswertung vom 16.10.2026; vollständige Originalteaser und Rankings liegen hier noch nicht für alle Fälle vor. Alle 16 Einträge sind zu erhalten, auch Fehlversuche und ungelöste Fälle.
 
 ## Fehlerprotokoll
 
@@ -74,6 +81,6 @@ Eine frühere Gesprächszusammenfassung nannte **15 Blindtests: 9 richtig, 5 fal
 
 ## Änderungsjournal
 
-- **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
+- **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.\n- **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
 
 > Hinweis: Das Repository enthält bereits `docs/hebeltrader-detective-v3.md`, `docs/hebeltrader.md` und `docs/hebeltrader-test-results.md`. Dieses Register ist ergänzend; es behauptet **keine** automatische Integration in den Detektivcode und **keine** selbsttätige Aktualisierung ohne neuen Auftrag oder eingerichteten Workflow.
