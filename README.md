@@ -1,16 +1,17 @@
-# Multi-Asset Chancen-Scanner V6
+# HEBELTRADER-Teaser-Detektiv und separater Marktscanner
 
-Die Nutzung und reale read-only Abnahme des HEBELTRADER-Detektivs V3 ist in
-[`docs/hebeltrader-detective-v3.md`](docs/hebeltrader-detective-v3.md) beschrieben.
+Primäre Funktion ist die Identifikation unbekannter Aktien aus öffentlichen Teasern:
+[Bedienung und Grenzen](docs/hebeltrader-primary.md),
+[Abnahmebericht](docs/hebeltrader-primary-acceptance.md). Der Startbildschirm zeigt den
+Detektiv; der allgemeine Marktscanner bleibt unter `/market-scanner` erreichbar.
 
-Der HEBELTRADER-Detektiv-MVP verarbeitet Teasertext oder Screenshots lokal und erstellt eine
-begründete, unbestätigte Kandidatenrangliste. Architektur, Grenzen, Offline-CLI und Hetzner-Test:
-[HEBELTRADER-Detektiv MVP](docs/architecture-hebeltrader-detective-mvp.md). Die Identifikation ist
-keine Kaufempfehlung; Produktkandidaten werden ohne offizielle Belege nicht bestätigt.
-Der mitgelieferte Kandidaten-/Nachrichtenadapter enthält nur sechs synthetische, datierte
-Offline-Fixtures und besitzt keine allgemeine Marktabdeckung. Ohne eine lizenzrechtlich zulässige,
-zeitpunktgenaue externe Unternehmens- und Nachrichtenquelle ist ein allgemeiner Detektivbetrieb
-technisch blockiert; unbekannte Titel führen deshalb zur Enthaltung statt zu einem Scheintreffer.
+Der neue Recherchepfad nutzt Originalseiten, dieselbe Hinweismatrix für alle Kandidaten,
+aktive Gegenrecherche und eine eingefrorene Top-3-Rangliste. Unzureichende Belege führen
+zu **nicht identifiziert**. Unabhängige Identifikationsqualität ist noch nicht nachgewiesen.
+
+Die bisherigen [V3-Diagnosewerkzeuge](docs/hebeltrader-detective-v3.md) und der
+[Offline-MVP](docs/architecture-hebeltrader-detective-mvp.md) bleiben erhalten; deren sechs
+synthetische Adapterunternehmen werden im neuen Primärworkflow nicht verwendet.
 
 Der aktuelle HS5RMP-Derivatepilot ist in
 [Scanner V6 V1.8](docs/hebeltrader-hs5rmp-backtest-v18.md) dokumentiert. Ohne autorisierte,

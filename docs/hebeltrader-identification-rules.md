@@ -41,7 +41,9 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 | HT-013 | Historischer Teaser zu **Danaher**; genauer Wortlaut/Ausgabe noch offen | **Danaher** | **JY3SF7** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp und spezifische Gegenhinweise aus Originalprotokoll rekonstruieren. |
 | HT-014 | Historischer Teaser zu **SAP**; genauer Wortlaut/Ausgabe noch offen | **SAP** | **UP9A9X** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
 | HT-015 | Historischer Teaser zu **Leonardo**; genauer Wortlaut/Ausgabe noch offen | **Leonardo** | **VJ2RFH** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
-| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams Companies** (historische Bezeichnung; Originalquelle noch zu prüfen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest Nr. 2 | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |\n| HT-017 | **Check 16**, aufgelöst **19.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **JPMorgan Chase (JPM)** | **MN6CYX** | Nutzer-Auflösung / damalige Produktzuordnung; **Ersttipp falsch** | Ursprünglicher Assistententipp **Goldman Sachs (GS)**; Auflösung anhand der WKN MN6CYX als JPMorgan-Call. Teasertext, Originalquelle und Derivatstammdaten unabhängig nachprüfen. |\n| HT-018 | **Check 17**, bestätigt **21.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **Johnson & Johnson (JNJ)** | **JE11C1** | Nutzerbestätigter Blindtest; **Ersttipp richtig** | In der früheren Bilanz nach diesem Check: 10 richtige, 6 falsche, 16 abgeschlossene Tests (Williams nicht mitgezählt). Originalteaser, Rangliste und Produktparameter nachtragen. |
+| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams Companies** (historische Bezeichnung; Originalquelle noch zu prüfen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest Nr. 2 | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |
+| HT-017 | **Check 16**, aufgelöst **19.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **JPMorgan Chase (JPM)** | **MN6CYX** | Nutzer-Auflösung / damalige Produktzuordnung; **Ersttipp falsch** | Ursprünglicher Assistententipp **Goldman Sachs (GS)**; Auflösung anhand der WKN MN6CYX als JPMorgan-Call. Teasertext, Originalquelle und Derivatstammdaten unabhängig nachprüfen. |
+| HT-018 | **Check 17**, bestätigt **21.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **Johnson & Johnson (JNJ)** | **JE11C1** | Nutzerbestätigter Blindtest; **Ersttipp richtig** | In der früheren Bilanz nach diesem Check: 10 richtige, 6 falsche, 16 abgeschlossene Tests (Williams nicht mitgezählt). Originalteaser, Rangliste und Produktparameter nachtragen. |
 
 ### Weitere genannte WKNs – **noch keinem Teaser belastbar zugeordnet**
 
@@ -85,6 +87,23 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 
 ## Änderungsjournal
 
-- **2026-10-28 (erneute Vollständigkeitsprüfung):** Historische Check-16-/Check-17-Auflösungen ergänzt: JPMorgan Chase MN6CYX (Ersttipp Goldman Sachs falsch) und Johnson & Johnson JE11C1 (richtig). 18 Fälle insgesamt, 10 richtig, 7 falsch, 1 ungelöst; historische Quote 10/16 vor Analog Devices bezog sich auf abgeschlossene Fälle ohne Williams.\n- **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.\n- **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
+- **2026-10-28 (erneute Vollständigkeitsprüfung):** Historische Check-16-/Check-17-Auflösungen ergänzt: JPMorgan Chase MN6CYX (Ersttipp Goldman Sachs falsch) und Johnson & Johnson JE11C1 (richtig). 18 Fälle insgesamt, 10 richtig, 7 falsch, 1 ungelöst; historische Quote 10/16 vor Analog Devices bezog sich auf abgeschlossene Fälle ohne Williams.
+- **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.
+- **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
 
-> Hinweis: Das Repository enthält bereits `docs/hebeltrader-detective-v3.md`, `docs/hebeltrader.md` und `docs/hebeltrader-test-results.md`. Dieses Register ist ergänzend; es behauptet **keine** automatische Integration in den Detektivcode und **keine** selbsttätige Aktualisierung ohne neuen Auftrag oder eingerichteten Workflow.
+## Integration und allgemeine Fehlerregeln (28.10.2026)
+
+Der neue [Primärworkflow](hebeltrader-primary.md) verwendet dieses Register ausschließlich
+im getrennten Inventar-/Auswertungsschritt. Die Kandidatenrecherche liest keine Lösungen.
+Alle 18 Einträge bleiben Entwicklungsfälle; fehlende Originaltexte und Ranglisten werden
+nicht rekonstruiert oder als unabhängige Blindtests ausgegeben.
+
+Aus den dokumentierten Fehlern folgen allgemeine Prüfregeln, keine fest eingebauten
+Gewinnernamen: konkrete Unternehmensereignisse vor Werbeformulierungen; Beteiligung nicht
+als Übernahme bestätigen; Kennzahlen an Unternehmen und Berichtsperiode binden; mindestens
+fünf belegte Gegenkandidaten; gezielte Gegenrecherche; bei Lücken Enthaltung. Die konkreten
+ADI/CRM/JPM/JNJ-Auflösungen sind keine Ranglistenregeln. Williams bleibt ungelöst.
+
+Originalranglisten werden vor jeder späteren Auflösung eingefroren. Eine nachträgliche
+Auflösung macht einen bereits bekannten Entwicklungsfall nicht zu einem unabhängigen Test.
+Das Register wird nicht automatisch um angeblich bestätigte Lösungen ergänzt.

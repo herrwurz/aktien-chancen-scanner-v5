@@ -44,7 +44,8 @@ class DetectiveService:
         self.research_mode = research_mode
         self.enricher = enricher or HeuristicClueEnricher()
 
-    def analyze(self, request):
+    def extract_inputs(self, request):
+        """Shared text/PDF/OCR extraction; no candidate catalog or solution lookup."""
         text_parts = []
         input_sources = []
         review_hints = []
@@ -106,6 +107,10 @@ class DetectiveService:
             cursor += len(value)
             spans.append(SourceSpan(source_id=source_id, page=page, start=start, end=cursor))
         combined = "\n".join(combined_parts)
+        return combined, spans, input_sources, review_hints, image_sha
+
+    def analyze(self, request):
+        combined, spans, input_sources, review_hints, image_sha = self.extract_inputs(request)
         clues = extract_clues(combined)
         atomic_clues = extract_atomic_clues(combined, spans)
         enrichment = self.enricher.enrich(combined, atomic_clues, spans)

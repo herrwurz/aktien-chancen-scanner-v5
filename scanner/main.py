@@ -1,7 +1,11 @@
+import hmac
+import json
+import sqlite3
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Literal
 
+import httpx
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -12,6 +16,8 @@ from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
 from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
+from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
+from scanner.hebeltrader.detective.public_web import PublicWebResearch
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
@@ -149,7 +155,7 @@ def create_app(settings: Settings | None = None, engine=None):
                 for r in records
             ]
 
-    @app.get("/")
+    @app.get("/market-scanner")
     def dashboard(request: Request):
         values = dict(
             symbol=None, interval=None, provider=None, asset_class=None, limit=50, offset=0
@@ -164,9 +170,55 @@ def create_app(settings: Settings | None = None, engine=None):
             },
         )
 
+    @app.get("/")
     @app.get("/hebeltrader")
     def hebeltrader_detective(request: Request):
         return templates.TemplateResponse(request=request, name="detective.html", context={})
+
+    @app.get("/api/hebeltrader/updates")
+    def teaser_updates(limit: int = Query(20, ge=1, le=100)):
+        from scanner.hebeltrader.detective.monitor import notification_feed
+
+        try:
+            return notification_feed(settings.detective_public_root, limit)
+        except sqlite3.Error:
+            raise HTTPException(503, "Teaser notifications unavailable") from None
+
+    @app.post("/api/hebeltrader/investigate")
+    def investigate(payload: InvestigationRequest, request: Request):
+        if settings.detective_public_allow_network:
+            expected = settings.detective_live_api_token
+            if expected is None:
+                raise HTTPException(503, "Public research API authorization is not configured")
+            provided = request.headers.get("X-Research-Authorization", "")
+            if not hmac.compare_digest(expected.get_secret_value(), provided):
+                raise HTTPException(403, "Research authorization required")
+        try:
+            domains = (
+                json.loads(settings.detective_primary_domains.read_text())
+                if settings.detective_primary_domains
+                else {}
+            )
+            web = (
+                PublicWebResearch(
+                    settings.detective_public_root / "sources",
+                    allow_network=settings.detective_public_allow_network,
+                    max_requests=settings.detective_public_max_requests,
+                    primary_domains=domains,
+                )
+                if settings.detective_public_allow_network
+                else None
+            )
+            issuers = (
+                json.loads(settings.detective_product_issuers.read_text())
+                if settings.detective_product_issuers
+                else {}
+            )
+            return Investigator(
+                settings.detective_public_root, web=web, product_issuers=issuers
+            ).analyze(payload)
+        except (ValueError, httpx.HTTPError) as exc:
+            raise HTTPException(422, "Public research unavailable: " + type(exc).__name__) from None
 
     @app.post("/api/hebeltrader/detective/analyze")
     def analyze_hebeltrader_teaser(payload: DetectiveRequest, request: Request):
