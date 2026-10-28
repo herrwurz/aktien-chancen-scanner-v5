@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 from urllib.parse import urlsplit
 
+import httpx
+from fastapi import HTTPException
 from fastapi.responses import Response
 from pydantic import SecretStr
 
@@ -43,6 +45,28 @@ def create_web_app():
     Base.metadata.create_all(engine)
     engine.dispose()
     app = create_app(settings)
+
+    @app.get("/api/hebeltrader/references")
+    def historical_library():
+        from scanner.reference_library import library
+
+        try:
+            return library(state)
+        except FileNotFoundError:
+            raise HTTPException(404, "Referenzbestand noch nicht geladen") from None
+        except (ValueError, OSError):
+            raise HTTPException(503, "Referenzbestand konnte nicht geprüft werden") from None
+
+    @app.post("/api/hebeltrader/references/import")
+    def import_historical_library():
+        from scanner.reference_library import import_library
+
+        try:
+            return import_library(state)
+        except (ValueError, OSError, httpx.HTTPError):
+            raise HTTPException(
+                503, "Referenzimport nicht verfügbar; bitte erneut versuchen"
+            ) from None
 
     @app.middleware("http")
     async def protect(request, call_next):

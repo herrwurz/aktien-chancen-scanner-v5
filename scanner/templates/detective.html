@@ -42,6 +42,13 @@
   <section><h2>Meine Fälle</h2>
   <button type="button" id="load-cases">Gespeicherte Fälle laden</button>
   <p id="case-message" aria-live="polite"></p><ul id="cases"></ul></section>
+  {% if request.scope.get("teaser_web") %}
+  <section><h2>Historische Referenzfälle</h2>
+    <p>Rekonstruierte Gesprächshistorie: keine neue Scanner-Trefferquote.
+    Auflösungen werden nicht als Hinweise für neue Teaser übernommen.</p>
+    <button id="import-references" type="button">18 Referenzfälle laden</button>
+    <p id="reference-status" aria-live="polite"></p><div id="references"></div>
+  </section>{% endif %}
   <section id="result" aria-live="polite"></section>
   <details><summary>Spätere Auflösung oder Korrektur erfassen</summary>
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
@@ -179,6 +186,45 @@ const renderCandidate=(c,index)=>{
   article.append(el('p','Bestätigung: manuell erforderlich'));
   result.append(article);
 };
+const referenceButton=document.querySelector('#import-references');
+const referenceOutcomes={correct:'Richtig',wrong:'Falsch',unresolved:'Ungelöst'};
+const renderReferences=data=>{
+  const root=document.querySelector('#references');root.replaceChildren();
+  const summary=data.summary;
+  document.querySelector('#reference-status').textContent=
+    `${data.cases.length} historische Fälle: ${summary.correct} richtig, ${summary.wrong} falsch, ${summary.unresolved} ungelöst. Kein unabhängiger Benchmark.`;
+  [...data.cases].sort((a,b)=>a.reference_number-b.reference_number).forEach(row=>{
+    const card=el('details');card.className='candidate';
+    card.append(el('summary',`${row.reference_number}. ${row.headline} · ${referenceOutcomes[row.outcome]}`));
+    card.append(el('p',`Fall-ID: ${row.case_id} · Ausgabe: ${row.publication_issue||'unbekannt'} · Datum: ${row.publication_date||'unbekannt'}`));
+    card.append(el('p',`Ursprünglicher Tipp: ${row.first_prediction||'unbekannt'}`));
+    card.append(el('p',`Spätere Auflösung: ${row.actual_company||'Nicht gesichert'}${row.actual_ticker?' ('+row.actual_ticker+')':''}`));
+    card.append(el('p',`Gemeldete Call-WKN: ${row.derivative_wkn||'unbekannt'} · Produktdaten nicht gesondert verifiziert`));
+    if(row.failure_analysis)card.append(el('p',`Fehleranalyse: ${row.failure_analysis}`));
+    card.append(el('h3','Originaltext'));
+    card.append(el('p',row.teaser_text||'Vollständiger Originalteaser fehlt; nur Überschrift vorhanden.'));
+    if((row.key_clues||[]).length){card.append(el('h3','Dokumentierte Hinweise'));card.append(list(row.key_clues));}
+    root.append(card);
+  });
+  referenceButton.textContent='Referenzbestand erneut prüfen';
+};
+if(referenceButton){
+  fetch('/api/hebeltrader/references').then(async response=>{
+    if(response.ok)renderReferences(await response.json());
+    else document.querySelector('#reference-status').textContent=response.status===404?
+      'Noch nicht geladen. Einmal auf „18 Referenzfälle laden“ drücken.':'Referenzbestand derzeit nicht verfügbar.';
+  }).catch(()=>{document.querySelector('#reference-status').textContent='Verbindung zum Referenzbestand fehlgeschlagen.';});
+  referenceButton.addEventListener('click',async()=>{
+    referenceButton.disabled=true;
+    document.querySelector('#reference-status').textContent='Referenzbestand wird geladen und geprüft …';
+    try{
+      const response=await fetch('/api/hebeltrader/references/import',{method:'POST'});
+      if(!response.ok)throw new Error('Import fehlgeschlagen. Bitte erneut versuchen.');
+      renderReferences(await response.json());
+    }catch(error){document.querySelector('#reference-status').textContent=error.message;}
+    finally{referenceButton.disabled=false;}
+  });
+}
 document.querySelector('#load-cases').addEventListener('click',async()=>{
   const message=document.querySelector('#case-message'), cases=document.querySelector('#cases');
   message.textContent='Fälle werden geladen …';

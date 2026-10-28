@@ -66,3 +66,57 @@ def test_browser_submission_persists_and_reopens_case(tmp_path, monkeypatch):
     assert rows[0]["case_id"] == case_id
     assert rows[0]["latest_prediction"] is not None
     assert reopened.get("/api/hebeltrader/cases/" + case_id, auth=auth).status_code == 200
+
+
+def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    payload = Path("data/hebeltrader/teaser-cases.json").read_bytes()
+    client = web(tmp_path, monkeypatch)
+    assert client.post("/api/hebeltrader/references/import").status_code == 401
+    assert (
+        client.get("/api/hebeltrader/references", auth=("admin", "private-password")).status_code
+        == 404
+    )
+    from scanner import reference_library
+
+    monkeypatch.setattr(reference_library, "download", lambda: payload)
+    response = client.post("/api/hebeltrader/references/import", auth=("admin", "private-password"))
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["cases"]) == 18
+    assert data["summary"]["correct"] == 10
+    assert data["summary"]["wrong"] == 7
+    assert data["summary"]["unresolved"] == 1
+    williams = next(c for c in data["cases"] if c["case_id"] == "HT-016")
+    assert williams["actual_company"] is None
+    assert client.get("/api/hebeltrader/cases", auth=("admin", "private-password")).json() == []
+    monkeypatch.setattr(
+        reference_library, "download", lambda: (_ for _ in ()).throw(AssertionError())
+    )
+    assert (
+        client.post(
+            "/api/hebeltrader/references/import", auth=("admin", "private-password")
+        ).status_code
+        == 200
+    )
+    assert (
+        web(tmp_path, monkeypatch)
+        .get("/api/hebeltrader/references", auth=("admin", "private-password"))
+        .json()
+        == data
+    )
+
+
+def test_reference_import_rejects_changed_content(tmp_path, monkeypatch):
+    from scanner import reference_library
+
+    client = web(tmp_path, monkeypatch)
+    monkeypatch.setattr(reference_library, "download", lambda: b'{"cases": []}')
+    assert (
+        client.post(
+            "/api/hebeltrader/references/import", auth=("admin", "private-password")
+        ).status_code
+        == 503
+    )
+    assert not list((tmp_path / "state" / "references").glob("*.json"))
