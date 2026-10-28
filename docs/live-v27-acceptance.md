@@ -65,7 +65,7 @@ synthetische Testdaten umetikettiert. Der kompakte, überprüfbare Auszug liegt 
 - Unabhängiges Review fand Quota-Reservierung bei Cache-Hits, ungünstige
   Universum-Budgets und Deadline-/Abrufprotokoll-Lücken; mit Regressionen korrigiert.
 
-## Exakt verbleibende Voraussetzungen
+## Voraussetzungen nach der ersten Entwicklungsprüfung
 
 1. Auf dem späteren Ausführungssystem `SEC_USER_AGENT` mit tatsächlichem Kontakt
    konfigurieren. Für die hier gezeigte öffentliche SEC-Abfrage war kein API-Key nötig.
@@ -92,3 +92,40 @@ in dieser US-Stichprobe nicht abgedeckt. Historische Erfolgsklassen, automatisch
 Fill-/Folgeauswertung, Branchen-/Smallcap-Quote und qualifizierte Benachrichtigungen
 sind noch nicht umgesetzt. Laufzeitgrenze ist kooperativ mit höchstens zehn Sekunden
 Timeout je laufender HTTP-Phase; sie ist kein harter Prozess-Kill während Netzwerk-I/O.
+
+
+## Nachtrag: kontrollierter Hetzner-Lauf mit Tiingo am 28.10.2026
+
+Belegbasis: vom Betreiber übermittelte Termius-Screenshots, kein eigener SSH-Zugriff
+und kein hier eingelesener vollständiger Server-Journalexport. Die frühere Aussage
+„Tiingo-Token fehlt“ beschreibt die Entwicklungsumgebung; auf dem Server ist der
+Token für die SSH-Sitzung gesetzt und wurde erfolgreich verwendet.
+
+Der Betreiber baute Commit `c03d86c` in einem separaten Worktree
+`/opt/scanner-v27-pilot.IrseTn` und führte einen einmaligen Containerlauf mit
+`--authorize-tiingo` aus. Die sichtbare Zusammenfassung meldet:
+
+- Ende `2026-10-28T07:28:38.609758+00:00`, Status `completed`.
+- 100 Emittenten geprüft, 27 neue Meldungen, zehn bewertete Ereignisse.
+- Keine allgemeinen Scanfehler, null Kaufalarme.
+- Sichtbare `market_data`-Journaleinträge für **SPY, CXDO, STRT, INTA, ESS, CMRC,
+  VSXY und ULCC**, jeweils `EOD_only`, Abruf zwischen 07:28:07 und 07:28:38 UTC.
+- Die gezeigten Entscheidungen lauten `BEOBACHTEN` mit Marktreaktion `unavailable`
+  und `post_publication_price_missing`. Weitere Sperren: Kalender, flatex,
+  fundamentale Bestätigung, ISIN und aktueller ausführbarer Kurs ungeprüft.
+
+Damit ist der authentifizierte EOD-Abruf auf dem vorgesehenen Server anhand der
+Betreiberbelege nachgewiesen. Abrufzeit ist kein Kurszeitpunkt. Der Screenshot
+enthält keine vollständigen Preisreihen oder deren Session-Daten; die tatsächliche
+Marktreaktion ist weiterhin nicht nachgewiesen. Die vorsichtige Pilotlogik schließt
+den Veröffentlichungstag aus. Für Meldungen vom 27.10.2026 ist daher frühestens
+nach Ende und Datenbereitstellung der Sitzung vom 28.10.2026 ein Nachher-Kurs nutzbar.
+Ein weiterer kontrollierter Einzellauf am Morgen des 29.10.2026 kann das prüfen;
+späte Datenbereitstellung kann die Prüfung weiter verzögern. Das ist kein Nachweis
+frühzeitiger Intraday-Handelbarkeit und kein rückwirkender erfolgreicher Kaufalarm.
+
+**Fachliche Abnahme bleibt offen.** Nächster Schritt: erneute Bewertung mit dem
+bestehenden Serverjournal und tatsächlichen Vorher-/Nachher-Kursen; danach Rohdaten,
+Session-Zeitpunkte und Hashkette prüfen. Kein automatischer Dauerbetrieb eingerichtet.
+Der Key ist bisher nur als Sitzungsvariable belegt; keine dauerhafte Secret-Datei
+oder produktive Installation wird behauptet.

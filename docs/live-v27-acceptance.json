@@ -203,5 +203,33 @@
     "No Tiingo credentials present. No market reaction, buy signal or return proven.",
     "Form 4 XSL document paths were rejected by conservative primary-document path gate.",
     "Raw sources and full hash-chained journal are in local evidence bundle."
-  ]
+  ],
+  "server_followup": {
+    "evidence_basis": "operator_supplied_Termius_screenshots_not_raw_journal_import",
+    "code_commit": "c03d86c",
+    "pilot_directory": "/opt/scanner-v27-pilot.IrseTn",
+    "finished_at": "2026-10-28T07:28:38.609758+00:00",
+    "scan_status": "completed",
+    "checked_issuers": 100,
+    "new_events": 27,
+    "evaluated_events": 10,
+    "buy_signals": 0,
+    "observed_market_data_symbols": [
+      "SPY",
+      "CXDO",
+      "STRT",
+      "INTA",
+      "ESS",
+      "CMRC",
+      "VSXY",
+      "ULCC"
+    ],
+    "price_scope": "EOD_only",
+    "observed_decision_status": "BEOBACHTEN",
+    "observed_reaction_status": "unavailable",
+    "observed_missing_data": "post_publication_price_missing",
+    "full_server_journal_verified_here": false,
+    "market_reaction_verified": false,
+    "acceptance": "NOT_PASSED_MARKET_REACTION_MISSING"
+  }
 }
