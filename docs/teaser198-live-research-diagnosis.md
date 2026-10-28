@@ -54,3 +54,37 @@ die alte Erstprognose bleibt im Journal unverändert, eine Neubewertung wird ang
 
 Falls das Ergebnis erneut leer ist, dessen Quellenfehler prüfen. Ein erfolgreicher
 Containerstart ist keine Abnahme erfolgreicher Teaseridentifikation.
+
+## Bestätigung durch tatsächlichen Hetzner-Bericht
+
+Der Betreiber lieferte den JSON-Bericht für Lauf `4dfd347f99a54f319b1c425d4d03b7be`,
+analysiert am 28.10.2026 um 22:47:36 UTC. Dieser bestätigt `public_web`, die neuen
+Recherchefragen sowie den korrigierten Status `not_performed_no_candidates`.
+Die neue Version ist also bereits aktiv; ein falscher Branch oder deaktiviertes Netz
+ist für diesen Lauf nicht die Ursache.
+
+Es gab vier Requestversuche, 36 Requests waren noch frei. Bing-RSS war gesperrt.
+Der einzige zu ladende RSS-Artikel betraf Anthropic, nicht die Teaser-Kombination,
+und wurde wegen Paywall-Metadaten korrekt abgelehnt. Ergebnis: null Dokumente,
+null Primärbelege und null Gegenkandidaten. Ein zusätzliches Publikationsdatum oder
+mehr Requests würden diese konkreten Quellenprobleme nicht beheben.
+
+Separater reproduzierter Parserfehler: Die gierige Präfix-Regel für Werberenditen
+konsumierte die ersten Stellen von `421` und erfasste nur `1`. Die Präfixsuche wurde
+minimal auf nicht-gierig korrigiert und mit einem Regressionstest abgesichert.
+Diese Werbezahl ist kein fundamentaler Aktienbeleg; ihre Korrektur erzeugt keinen
+SLB-Kandidaten und keine bestätigte Derivatebewertung.
+
+Der alte Lauf wird nicht verändert. Der [extrahierte Diagnosebericht](teaser198-hetzner-diagnosis.json)
+enthält dessen SHA-256 und die belegten Befunde. Es wurde kein neues Remote-Deployment
+vorgenommen. Für die autonome Recherche bleibt eine tatsächlich verfügbare zulässige
+breite Suchquelle erforderlich; die bisherige manuelle SLB-Identifikation wird nicht
+als automatisch wiederholter Erfolg ausgegeben.
+
+Ein weiterer Modellengpass ist im Bericht erkennbar: Als Aktienhinweis wurde nur das
+generische KI-Merkmal extrahiert. Fördergeschäft, Kühltechnik und wiederkehrende
+Digitalerlöse stehen zwar teilweise in Suchfragen, aber nicht als spezifische vergleichbare
+Fakten in der Evidenzmatrix. Eine funktionierende Such-API allein ist daher noch kein
+Nachweis einer vollständigen Reparatur. Diese Kombination muss künftig quellenbelegt
+und unter sauberer Firmenzuordnung geprüft werden; die Identifikationsschranken einfach
+abzusenken wäre keine zulässige Lösung.

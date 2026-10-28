@@ -1,0 +1,44 @@
+{
+  "source": "operator_uploaded_actual_hetzner_report",
+  "source_sha256": "cbf5c78a2b01a4ee43c55d05a6863352a41d16a1f1def7d7d6a6bfa95e2dd43f",
+  "case_id": "TI-d2dbb1445c2dd2d9202a",
+  "run_id": "4dfd347f99a54f319b1c425d4d03b7be",
+  "analyzed_at": "2026-10-28T22:47:36.821619+00:00",
+  "research_mode": "public_web",
+  "decision": {
+    "status": "research_unavailable",
+    "label": "Recherche derzeit nicht verfügbar"
+  },
+  "documents": 0,
+  "primary_documents": 0,
+  "countercandidate_count": 0,
+  "request_attempts": 4,
+  "requests_remaining": 36,
+  "provider_errors": [
+    {
+      "source": "bing_rss",
+      "error": "robots denied or unavailable"
+    }
+  ],
+  "page_errors": [
+    {
+      "url": "https://www.deraktionaer.de/artikel/der-aktionaer-magazin/wie-anleger-bereits-jetzt-vom-anthropic-ipo-profitieren-20426983.html?feed=directrssfeed",
+      "error": "paywall metadata denies public extraction"
+    }
+  ],
+  "diagnosis": [
+    "New online diagnostics and strategy version is active.",
+    "Search supply failed; no eligible documents entered comparison.",
+    "Request quota was not exhausted.",
+    "Paywall rejection was correct; no paywall bypass.",
+    "Missing publication time is separate and did not cause these provider failures."
+  ],
+  "parser_regression": {
+    "observed_promotional_return": "1",
+    "correct_first_promotional_return": "421",
+    "fix": "non_greedy_prefix_regex"
+  },
+  "automatic_slb_identification_proven": false,
+  "remaining_blocker": "A lawful available broad search source and reliable issuer identity evidence are still required.",
+  "additional_model_gap": "Only a generic KI technology clue was extracted for the stock; oilfield transformation, cooling and recurring digital revenues did not become specific comparable evidence claims. A working search API alone is not a proven complete fix."
+}
