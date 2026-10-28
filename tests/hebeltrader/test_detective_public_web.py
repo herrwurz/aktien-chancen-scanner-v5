@@ -182,3 +182,36 @@ def test_related_article_date_is_not_the_original_publication():
         b'"datePublished":"2025-01-02T12:30:00Z"}}</script>'
     )
     assert parse_page(raw, "https://example.com/news")["published_at"] is None
+
+
+def test_configured_public_rss_is_discovery_fallback_without_backdating(tmp_path, monkeypatch):
+    rss = (
+        b"<rss><channel><item><title>HEBELTRADER: Dieser Chip-Gigant</title>"
+        b"<link>https://publisher.example/teaser</link>"
+        b"<pubDate>Wed, 28 Oct 2026 09:00:00 GMT</pubDate></item></channel></rss>"
+    )
+    r = PublicWebResearch(
+        tmp_path, allow_network=True, discovery_feeds=["https://publisher.example/feed"]
+    )
+    monkeypatch.setattr(r, "_validate", lambda url: None)
+
+    def robots(url):
+        if "bing.com" in url:
+            raise ValueError("robots denied")
+
+    monkeypatch.setattr(r, "_check_robots", robots)
+    raw = tmp_path / "feed.raw"
+    raw.write_bytes(rss)
+    monkeypatch.setattr(
+        r,
+        "_request",
+        lambda url: (
+            rss,
+            {"retrieved_at": NOW.isoformat(), "raw_file": str(raw), "raw_sha256": "hash"},
+        ),
+    )
+    hits = r.search("HEBELTRADER")
+    assert hits[0]["url"] == "https://publisher.example/teaser"
+    assert hits[0]["published_at"] is None
+    assert hits[0]["source_kind"] == "unknown"
+    assert r.discovery_errors

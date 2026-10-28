@@ -19,6 +19,7 @@ from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
 from .sources import UnavailableResearchSource
+from .temporal import assess_document, timestamp
 from .verification import verify_candidates
 
 
@@ -26,8 +27,17 @@ class InvestigationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     teaser_text: str = Field(default="", max_length=20000)
     teaser_url: HttpUrl | None = None
+    original_source_url: HttpUrl | None = None
+    source_retrieved_at: datetime | None = None
     headline: str = Field(default="", max_length=500)
     publisher: str = Field(default="", max_length=200)
+    author: str = Field(default="", max_length=200)
+    issue: str = Field(default="", max_length=100)
+    evaluation_class: str = Field(
+        default="unclassified",
+        pattern="^(unclassified|development_regression|retrospective|prospective_blind)$",
+    )
+    previously_used_for_development: bool | None = None
     publication_at: datetime | None = None
     advertised_return: str | None = Field(default=None, max_length=100)
     screenshot_base64: str | None = Field(default=None, max_length=3000000)
@@ -37,6 +47,8 @@ class InvestigationRequest(BaseModel):
 
     @model_validator(mode="after")
     def valid(self):
+        if self.source_retrieved_at and self.source_retrieved_at.utcoffset() is None:
+            raise ValueError("source retrieval timestamp timezone required")
         if self.publication_at and self.publication_at.utcoffset() is None:
             raise ValueError("publication timestamp timezone required")
         if not any(
@@ -125,7 +137,8 @@ def _queries(text, clues, spans):
     return list(dict.fromkeys(specific + enrichment.search_queries))[:8]
 
 
-def _evidence(document, clues):
+def _evidence(document, clues, cutoff):
+    timing = assess_document(document, cutoff)
     text = document.get("text", "")
     facts = {
         "origin_id": document["url"],
@@ -207,11 +220,9 @@ def _evidence(document, clues):
                             "value": observed.value,
                         }
                     )
-    if not document.get("published_at"):
+    if not timing["published_at"] or not timing["retrieved_at"]:
         return None
-    published = datetime.fromisoformat(document["published_at"].replace("Z", "+00:00"))
-    if published.utcoffset() is None:
-        return None
+    published = datetime.fromisoformat(timing["published_at"])
     kind = document.get("source_kind", "unknown")
     kind = kind if kind in {"issuer", "regulatory", "product_document"} else "news"
     return EvidenceRecord(
@@ -219,8 +230,14 @@ def _evidence(document, clues):
         url=document["url"],
         title=document.get("title", ""),
         published_at=published,
-        effective_at=published,
-        source_available_at=published,
+        effective_at=datetime.fromisoformat(timing["event_at"])
+        if timing["event_at"]
+        else published,
+        source_available_at=(
+            datetime.fromisoformat(timing["source_available_at"])
+            if timing["eligibility"] == "eligible"
+            else None
+        ),
         retrieved_at=datetime.fromisoformat(document["retrieved_at"].replace("Z", "+00:00")),
         source_kind=kind,
         facts=facts,
@@ -235,7 +252,7 @@ class Investigator:
         self.product_issuers = product_issuers or {}
         self.clock = clock or (lambda: datetime.now(UTC))
 
-    def analyze(self, request, *, documents=None, historical_blind=False):
+    def analyze(self, request, *, documents=None, historical_blind=False, case_id=None):
         if historical_blind and (
             documents is None or self.web is not None or request.publication_at is None
         ):
@@ -308,14 +325,11 @@ class Investigator:
             groups = {}
             for doc in fetched:
                 if (
-                    doc.get("published_at")
-                    and datetime.fromisoformat(doc["published_at"].replace("Z", "+00:00")) > cutoff
+                    timestamp(doc.get("published_at"))
+                    and timestamp(doc.get("published_at")) > cutoff
                 ):
                     continue
-                if historical_blind and (
-                    not doc.get("published_at")
-                    or datetime.fromisoformat(doc["retrieved_at"].replace("Z", "+00:00")) > cutoff
-                ):
+                if historical_blind and assess_document(doc, cutoff)["eligibility"] != "eligible":
                     continue
                 name = doc.get("company_name")
                 if not name:
@@ -330,7 +344,7 @@ class Investigator:
                 group = groups.setdefault(
                     asset_id, {"name": name, "ticker": doc.get("ticker"), "records": []}
                 )
-                record = _evidence(doc, clues)
+                record = _evidence(doc, clues, cutoff)
                 if record:
                     group["records"].append(record)
             identities = {
@@ -493,7 +507,7 @@ class Investigator:
         )
         report = {
             "schema_version": 4,
-            "case_id": run_id,
+            "case_id": case_id or run_id,
             "strategy": "HEBELTRADER_DETECTIVE",
             "run_id": run_id,
             "analyzed_at": self.clock().isoformat(),
@@ -502,8 +516,16 @@ class Investigator:
             if request.publication_at
             else None,
             "publication_time_basis": publication_basis,
+            "original_source_url": str(request.original_source_url or request.teaser_url)
+            if (request.original_source_url or request.teaser_url)
+            else None,
+            "source_retrieved_at": request.source_retrieved_at.isoformat()
+            if request.source_retrieved_at
+            else None,
             "headline": request.headline,
             "publisher": request.publisher,
+            "author": request.author,
+            "issue": request.issue,
             "advertised_return": request.advertised_return
             or next((c.value for c in clues if c.instrument_scope == "promotional"), None),
             "identification": {
@@ -516,10 +538,13 @@ class Investigator:
             "checked_candidates": ranked,
             "countercandidate_count": counter_count,
             "criteria": [clue.model_dump(mode="json") for clue in clues],
+            "source_timing": [assess_document(doc, cutoff) for doc in fetched],
             "falsification": falsification,
             "search_queries": queries,
             "limitations": limits,
             "research_errors": errors,
+            "discovery_source_gaps": getattr(self.web, "discovery_errors", []),
+            "configured_discovery_feeds": getattr(self.web, "discovery_feeds", []),
             "source_quality": {
                 "primary_documents": sum(
                     d.get("source_kind") in {"issuer", "regulatory"} for d in fetched
@@ -544,6 +569,25 @@ class Investigator:
             "review_hints": notes,
             "observed_image_sha256": image_sha,
         }
+        report["decision"] = {
+            "status": "likely_identified"
+            if identified
+            else "plausible_hypothesis"
+            if ranked and any(r["confirmed_specific_clues"] for r in ranked[:3])
+            else "insufficient_evidence",
+            "label": "Wahrscheinlich identifiziert"
+            if identified
+            else "Plausible Hypothese"
+            if ranked and any(r["confirmed_specific_clues"] for r in ranked[:3])
+            else "Nicht ausreichend identifizierbar",
+        }
+        for rank, row in enumerate(report["candidates"], 1):
+            row["ranking_reason"] = (
+                f"Rang {rank}: {len(row['confirmed_specific_clues'])} bestätigte Kernhinweise, "
+                f"{len(row['hard_contradictions'])} harte Widersprüche, "
+                f"Score {row['evidence_score']}; "
+                "Widersprüche zuerst, danach spezifische Primärevidenz."
+            )
         from .product_research import research_calls
 
         report["derivative_candidate"] = research_calls(

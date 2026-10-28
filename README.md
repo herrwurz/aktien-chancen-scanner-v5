@@ -1,5 +1,8 @@
 # HEBELTRADER-Teaser-Detektiv und separater Marktscanner
 
+V3.1 ergänzt ein dauerhaftes Falljournal, spätere Auflösungen, historische Verfügbarkeit
+und öffentliche RSS-Entdeckung: [V3.1 Bedienung und Abnahme](docs/teaser-intelligence-v31.md).
+
 Primäre Funktion ist die Identifikation unbekannter Aktien aus öffentlichen Teasern:
 [Bedienung und Grenzen](docs/hebeltrader-primary.md),
 [Abnahmebericht](docs/hebeltrader-primary-acceptance.md). Der Startbildschirm zeigt den

@@ -119,6 +119,8 @@ class TeaserMonitor:
                     request = InvestigationRequest(
                         teaser_text=text,
                         teaser_url=None,
+                        original_source_url=document.get("url"),
+                        source_retrieved_at=document.get("retrieved_at"),
                         headline=document.get("title", ""),
                         publisher=parsed.hostname or "",
                         publication_at=document.get("published_at"),
@@ -174,6 +176,7 @@ class TeaserMonitor:
                 except (ValueError, httpx.HTTPError) as exc:
                     outcome["errors"].append({"url": url, "error": type(exc).__name__})
             exclusive(self.root / "polls" / f"{sha(canonical(outcome))}.json", canonical(outcome))
+            outcome["source_gaps"] = getattr(self.web, "discovery_errors", [])
             return outcome
 
 

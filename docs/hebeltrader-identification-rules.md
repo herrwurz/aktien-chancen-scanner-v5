@@ -107,3 +107,35 @@ ADI/CRM/JPM/JNJ-Auflösungen sind keine Ranglistenregeln. Williams bleibt ungel�
 Originalranglisten werden vor jeder späteren Auflösung eingefroren. Eine nachträgliche
 Auflösung macht einen bereits bekannten Entwicklungsfall nicht zu einem unabhängigen Test.
 Das Register wird nicht automatisch um angeblich bestätigte Lösungen ergänzt.
+
+
+## V3.1 – automatisch protokollierte neue Fälle
+
+Die folgenden Erweiterungen sind append-only Journalexporte. Sie ändern keinen der
+18 historischen Einträge. Andere Autoren werden ausdrücklich getrennt ausgewiesen.
+
+<!-- TI-JOURNAL:51a2e4a819c71658a7259c9bd34ef56d90f552009d4f71926fca0d9b4b6f1d4a -->
+### TI-282b503c1ac7bf3c491f – intake – 2026-10-28T13:21:49.993600+00:00
+
+```json
+{"content_key": "12b0f6f946d8ab533a5597b0b3f0d154b5020267c0aeb801f1c24437adbc6e14", "input": {"advertised_return": null, "author": "Alfred Maydorn", "evaluation_class": "retrospective", "headline": "Doppelter Verzehnfacher: Beste Aktie, Top-Krytowährung", "issue": "", "original_source_url": "https://www.deraktionaer.de/artikel/aktien/doppelter-verzehnfacher-beste-aktie-top-krytowaehrung-20426830.html?feed=directrssfeed", "pdf_media_type": null, "previously_used_for_development": null, "publication_at": "2026-10-28T11:28:00Z", "publisher": "DER AKTIONÄR", "screenshot_media_type": null, "source_retrieved_at": "2026-10-28T13:15:02.646343Z", "teaser_text": "   Die Korrektur bei KI-Aktien und im Kryptosektor scheint überwunden. Bevor die Kurse zu schnell wieder steigen, was durchaus sehr wahrscheinlich ist, können jetzt noch die tiefen Kurse zum einstige genutzt werden. Bei einer Aktie und einer Kryptowährunf ist vom aktuellen Niveau aus sogar eine Verzehnfachung möglich.  ", "teaser_url": null}, "input_sha256": "ada264cd19d1d181d9e3ad6848b126879906529c69272566135cd065be080bd2", "source_key": "282b503c1ac7bf3c491f53168e801eea72b02073beda90487b35007257e219cc"}
+```
+
+
+<!-- TI-JOURNAL:43adea96df6b0b1ea8e643ca9dd796e52f3200be1ad5a0df783e7ddfa643b95d -->
+### TI-282b503c1ac7bf3c491f – analysis – 2026-10-28T13:22:03.126362+00:00
+
+```json
+{"first_top3_unchanged": true, "ranking_sha256": "ba86a2ddccb06b96b78a97e28ef3ec14e98c21201b2b79ff162850230c94cc31", "report": {"candidates": [], "case_id": "TI-282b503c1ac7bf3c491f", "criteria": [{"category": "technologies", "clue_id": "32fd9a81e1f0afb839200192c3d90673cff8616011e7df5e6d9d49bb9c0df840", "confidence_class": "medium", "end": 78, "extraction_method": "deterministic_regex", "instrument_scope": "stock", "normalized": "ki", "page": null, "period": null, "polarity": "asserted", "quote": "KI", "reference_date": null, "requires_manual_review": true, "source_id": "teaser_text", "start": 76, "unit": null, "value": "KI"}], "headline": "Doppelter Verzehnfacher: Beste Aktie, Top-Krytowährung", "identification": {"label": "Nicht identifiziert", "requires_manual_review": true, "score_is_probability": false, "status": "not_identified"}, "limitations": ["fewer_than_five_countercandidates", "research_source_gaps", "insufficient_specific_primary_evidence"], "run_id": "c7bb9a8017c64d959f22005f056d6f54", "source_timing": [{"availability_basis": "unknown", "availability_evidence": null, "availability_status": "uncertain", "content_revision_at": null, "eligibility": "after_cutoff", "event_at": null, "published_at": "2026-10-28T12:28:00+00:00", "retrieved_at": "2026-10-28T13:22:00.656947+00:00", "source_available_at": null, "url": "https://www.deraktionaer.de/artikel/aktien/doppelter-verzehnfacher-beste-aktie-top-krytowaehrung-20426830.html?feed=directrssfeed"}, {"availability_basis": "unknown", "availability_evidence": null, "availability_status": "uncertain", "content_revision_at": null, "eligibility": "after_cutoff", "event_at": null, "published_at": "2026-10-28T12:33:00+00:00", "retrieved_at": "2026-10-28T13:22:01.195785+00:00", "source_available_at": null, "url": "https://www.deraktionaer.de/artikel/medien-it-technologie/vertiv-20426794.html?feed=directrssfeed"}, {"availability_basis": "unknown", "availability_evidence": null, "availability_status": "uncertain", "content_revision_at": null, "eligibility": "after_cutoff", "event_at": null, "published_at": "2026-10-28T13:43:00+00:00", "retrieved_at": "2026-10-28T13:22:01.944275+00:00", "source_available_at": null, "url": "https://www.deraktionaer.de/artikel/mobilitaet-oel-energie/enphase-mit-duesteren-zahlen-solar-aktie-crasht-20426900.html?feed=directrssfeed"}, {"availability_basis": "unknown", "availability_evidence": null, "availability_status": "uncertain", "content_revision_at": null, "eligibility": "after_cutoff", "event_at": null, "published_at": "2026-10-28T13:57:00+00:00", "retrieved_at": "2026-10-28T13:22:02.156459+00:00", "source_available_at": null, "url": "https://www.deraktionaer.de/artikel/aktien/siemens-energy-erhaelt-die-aktie-rueckenwind-von-ge-vernova-20426912.html?feed=directrssfeed"}, {"availability_basis": "unknown", "availability_evidence": null, "availability_status": "uncertain", "content_revision_at": null, "eligibility": "after_cutoff", "event_at": null, "published_at": "2026-10-28T13:59:00+00:00", "retrieved_at": "2026-10-28T13:22:02.394984+00:00", "source_available_at": null, "url": "https://www.deraktionaer.de/artikel/gold-rohstoffe/biogen-ueberrascht-aktie-auf-2-jahreshoch-und-nun-20426945.html?feed=directrssfeed"}, {"availability_basis": "unknown", "availability_evidence": null, "availability_status": "uncertain", "content_revision_at": null, "eligibility": "after_cutoff", "event_at": null, "published_at": "2026-10-28T14:10:00+00:00", "retrieved_at": "2026-10-28T13:22:02.614001+00:00", "source_available_at": null, "url": "https://www.deraktionaer.de/artikel/pharma-biotech/biogen-20426885.html?feed=directrssfeed"}]}}
+```
+
+
+## Änderungsjournal – V3.1 (28.10.2026)
+
+- Die 18 historischen Fälle und ursprünglichen Fehlprognosen bleiben erhalten.
+- Neue Fälle, Erstprognosen und spätere Auflösungen werden als hashreferenzierte
+  Erweiterungen angehängt. Scanner und spätere Registerfortschreibung sind getrennt.
+- Der öffentliche RSS-Teaser von Alfred Maydorn wurde als unbewertete retrospektive
+  Recherche protokolliert, nicht als HEBELTRADER-Blindtest oder erfolgreicher Treffer.
+- Historische Verfügbarkeit benötigt eine beobachtete Originalversion oder einen
+  inhaltsgebundenen Archivbeleg; Publikation allein ist keine Verfügbarkeitsgarantie.

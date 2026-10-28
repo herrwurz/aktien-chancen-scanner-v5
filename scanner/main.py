@@ -15,10 +15,13 @@ from sqlalchemy.exc import SQLAlchemyError
 from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
+from scanner.hebeltrader.detective.case_journal import CaseJournal
 from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
 from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
 from scanner.hebeltrader.detective.public_web import PublicWebResearch
+from scanner.hebeltrader.detective.resolution import ResolutionRequest
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
+from scanner.hebeltrader.detective.workflow import run_case
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
@@ -188,7 +191,7 @@ def create_app(settings: Settings | None = None, engine=None):
     def investigate(payload: InvestigationRequest, request: Request):
         if settings.detective_public_allow_network:
             expected = settings.detective_live_api_token
-            if expected is None:
+            if expected is None or not expected.get_secret_value().strip():
                 raise HTTPException(503, "Public research API authorization is not configured")
             provided = request.headers.get("X-Research-Authorization", "")
             if not hmac.compare_digest(expected.get_secret_value(), provided):
@@ -205,6 +208,7 @@ def create_app(settings: Settings | None = None, engine=None):
                     allow_network=settings.detective_public_allow_network,
                     max_requests=settings.detective_public_max_requests,
                     primary_domains=domains,
+                    discovery_feeds=settings.detective_discovery_feeds,
                 )
                 if settings.detective_public_allow_network
                 else None
@@ -214,11 +218,55 @@ def create_app(settings: Settings | None = None, engine=None):
                 if settings.detective_product_issuers
                 else {}
             )
-            return Investigator(
-                settings.detective_public_root, web=web, product_issuers=issuers
-            ).analyze(payload)
+            return run_case(
+                Investigator(settings.detective_public_root, web=web, product_issuers=issuers),
+                payload,
+                register_path=settings.detective_case_register,
+            )
         except (ValueError, httpx.HTTPError) as exc:
             raise HTTPException(422, "Public research unavailable: " + type(exc).__name__) from None
+
+    def case_access(request: Request):
+        expected = settings.detective_live_api_token
+        if expected is None or not expected.get_secret_value().strip():
+            raise HTTPException(503, "Case journal access token is not configured")
+        if not hmac.compare_digest(
+            expected.get_secret_value(), request.headers.get("X-Research-Authorization", "")
+        ):
+            raise HTTPException(403, "Case journal authorization required")
+
+    @app.get("/api/hebeltrader/cases")
+    def case_list(request: Request):
+        case_access(request)
+        return CaseJournal(settings.detective_public_root / "cases").cases()
+
+    @app.get("/api/hebeltrader/quality")
+    def case_quality(request: Request):
+        case_access(request)
+        return CaseJournal(settings.detective_public_root / "cases").quality()
+
+    @app.get("/api/hebeltrader/cases/{case_id}")
+    def case_detail(case_id: str, request: Request):
+        case_access(request)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").case(case_id)
+        except ValueError:
+            raise HTTPException(404, "Case unavailable or integrity check failed") from None
+
+    @app.post("/api/hebeltrader/cases/{case_id}/resolution")
+    def case_resolution(case_id: str, payload: ResolutionRequest, request: Request):
+        case_access(request)
+        journal = CaseJournal(settings.detective_public_root / "cases")
+        try:
+            result = journal.resolve(case_id, payload.model_dump(exclude_none=True))
+            journal.export_register(settings.detective_public_root / "case-register.md")
+            if settings.detective_case_register:
+                journal.export_register(settings.detective_case_register)
+            return result
+        except ValueError:
+            raise HTTPException(
+                422, "Resolution requires a valid frozen case and provenance"
+            ) from None
 
     @app.post("/api/hebeltrader/detective/analyze")
     def analyze_hebeltrader_teaser(payload: DetectiveRequest, request: Request):

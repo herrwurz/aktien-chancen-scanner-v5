@@ -46,6 +46,8 @@ class Settings(BaseSettings):
     detective_public_max_requests: int = Field(default=40, ge=1, le=100)
     detective_primary_domains: Path | None = None
     detective_product_issuers: Path | None = None
+    detective_discovery_feeds: list[str] = ["https://www.deraktionaer.de/aktionaer-news.rss"]
+    detective_case_register: Path | None = None
     sec_user_agent: str | None = None
 
     @field_validator("symbols")

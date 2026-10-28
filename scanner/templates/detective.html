@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>HEBELTRADER-Detektiv</title>
+  <title>V3.1 – Teaser Intelligence Scanner</title>
   <style>
     body{font:16px system-ui;margin:auto;max-width:900px;padding:1rem;background:#f5f7fa;color:#16202a}
     main,article{background:white;border-radius:12px;padding:1rem;margin:1rem 0;box-shadow:0 2px 10px #0001}
@@ -26,6 +26,8 @@
     <label for="url">Öffentliche Teaser-URL (optional)</label><input id="url" type="url">
     <label for="headline">Überschrift (optional)</label><input id="headline" maxlength="500">
     <label for="publisher">Herausgeber (optional)</label><input id="publisher" maxlength="200">
+    <label for="author">Autor (optional)</label><input id="author" maxlength="200">
+    <label for="issue">Ausgabennummer (optional)</label><input id="issue" maxlength="100">
     <label for="advertised">Beworbene Rendite (optional, keine Prognose)</label><input id="advertised" maxlength="100">
     <label for="authorization">Recherchefreigabe (bei geschütztem Webzugriff)</label>
     <input id="authorization" type="password" autocomplete="off">
@@ -38,6 +40,20 @@
     <button>Hinweise analysieren</button>
   </form>
   <section id="result" aria-live="polite"></section>
+  <details><summary>Spätere Auflösung oder Korrektur erfassen</summary>
+    <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
+      Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
+    <form id="resolution-form">
+      <label for="case-id">Fall-ID</label><input id="case-id" required>
+      <label for="resolved-id">Aktien-ID (aus Kandidatenbericht, sonst verifizierte Identität)</label><input id="resolved-id" required>
+      <label for="resolved-name">Aufgelöster Aktienname</label><input id="resolved-name" required>
+      <label for="resolved-wkn">Beworbene Call-WKN (optional)</label><input id="resolved-wkn" pattern="[A-Z0-9]{6}">
+      <label for="resolved-source">Quelle der Nutzerauflösung</label><input id="resolved-source" required>
+      <label for="resolved-error">Fehleranalyse / Gründe der Bestätigung</label><textarea id="resolved-error" required></textarea>
+      <label for="resolved-change">Erforderliche Algorithmusänderung (optional)</label><input id="resolved-change">
+      <button>Auflösung als neuen Journaleintrag speichern</button>
+    </form><p id="resolution-result" aria-live="polite"></p>
+  </details>
   <section><h2>Neue öffentliche Teaser und verbesserte Zuordnungen</h2>
     <ul id="updates"><li>Noch keine gespeicherten Meldungen.</li></ul></section>
 </main><script>
@@ -72,7 +88,9 @@ const renderOverview=data=>{
   const box=el('article');box.className='meta';
   const id=data.identification||{};
   box.append(el('h2','Ergebnis'));
-  box.append(el('p',id.label||`Status: ${id.status||'unbekannt'}`));
+  box.append(el('p',(data.decision||{}).label||id.label||`Status: ${id.status||'unbekannt'}`));
+  box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'unbekannt'} · ${data.case_status||''}`));
+  if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
   box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
   if(data.falsification)box.append(el('p',`Gegenprüfung: ${data.falsification.status}`));
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
@@ -165,6 +183,8 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
     teaser_url:document.querySelector('#url').value||null,
     headline:document.querySelector('#headline').value,
     publisher:document.querySelector('#publisher').value,
+    author:document.querySelector('#author').value,
+    issue:document.querySelector('#issue').value,
     advertised_return:document.querySelector('#advertised').value||null,
     publication_at:published?new Date(published).toISOString():null};
   if(file&&file.type==='application/pdf'){body.pdf_base64=await asBase64(file);
@@ -187,9 +207,24 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   comparison.append(el('summary',`Alle geprüften Unternehmen (${(data.checked_candidates||[]).length})`));
   (data.checked_candidates||[]).forEach(candidate=>{
     comparison.append(el('h3',candidate.identity.name));
+    comparison.append(el('p',`Aktien-ID: ${candidate.asset_id}`));
     comparison.append(list((candidate.evidence_matrix||[]).map(cell=>
       `${cell.quote||cell.clue_id}: ${cell.status}`)));
   });
   result.append(comparison);
+});
+document.querySelector('#resolution-form').addEventListener('submit',async event=>{
+  event.preventDefault();const status=document.querySelector('#resolution-result');
+  const value=id=>document.querySelector('#'+id).value;
+  const body={asset_id:value('resolved-id'),name:value('resolved-name'),basis:'user',
+    source:value('resolved-source'),error_analysis:value('resolved-error'),
+    algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null};
+  try{
+    const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(value('case-id'))}/resolution`,{
+      method:'POST',headers:{'content-type':'application/json','X-Research-Authorization':value('authorization')},
+      body:JSON.stringify(body)});
+    const data=await response.json();
+    status.textContent=response.ok?`Gespeichert: ${data.case_status}; Original-Call: ${data.original_call_status}; Produktdaten: ${data.product_verification}`:data.detail;
+  }catch(error){status.textContent='Auflösung konnte nicht gespeichert werden.';}
 });
 </script></body></html>
