@@ -184,3 +184,46 @@ Top-3-Liste bleibt unbekannt. Emittentenprüfung zu MN84GA bleibt offen.
 Änderungsjournal: Ergänzender Quellenbeleg zu HT-001; keine Änderung des alten
 Registereintrags oder der historischen Fehlwertung.
 Nachweis: [maschinenlesbare Quellenbestätigung](hebeltrader-20026-source-confirmation.json).
+
+
+## Repository-Prüfung und Qualitätsauftrag (28.10.2026)
+
+Quelle: direkte GitHub-Prüfung der PR-Metadaten und des Codes bei
+V3.1-Commit `7483e28a66389398609590f52b96f24affc7b0ad`.
+[Konkrete Codex-Anweisung](codex-teaser-quality-instruction.md).
+
+- PR #27 ist ein offener separater SEC-Live-Draft. PR #28 enthält bereits den
+  primären Teaserworkflow; der offene Draft #29 baut darauf auf und ergänzt
+  Katalogeingang und Falljournal. Die Neuausrichtung muss nicht erneut aufgebaut werden.
+- Die PR-/Abnahmeberichte belegen technischen Fortschritt, aber weiterhin keine
+  unabhängig validierte Verbesserung der autonomen Aktienidentifikation.
+  Berichtete Testzahlen wurden bei dieser Dokumentationsprüfung nicht erneut ausgeführt.
+- Codebefund in `investigation.py`: Gegenkandidatenzählung nutzt
+  `comparison_evidence_available` aus `teaser_term_overlap`. Eine solche
+  Begriffüberschneidung allein belegt keine vollständige Prüfung eines ernsthaften
+  Gegenkandidaten. Fünf Alternativen bedeuten mindestens sechs unterschiedliche
+  Unternehmen einschließlich Favorit; Aliasse und Meldungskopien zählen nicht mehrfach.
+- Codebefund: Kandidatenbildung hängt an `company_name`; `public_web.py`
+  gewinnt Identitäten aus geprüften Domainzuordnungen bzw. expliziten Metadaten.
+  Fehlende Metadaten können daher plausible Kandidaten ausblenden. Recherche-,
+  Identitäts-, Extraktions- und Rankingfehler künftig getrennt messen.
+- Codebefund: Historische Blindläufe verlangen Offline-Pakete, während der
+  Identifikationsstatus `not offline` voraussetzt und Offline-Falsifikation als
+  nicht ausgeführt markiert wird. Geplante Korrektur: nachweislich vollständige,
+  zeitlich zulässige Gegenkandidaten-/Falsifikationspakete bewerten können;
+  fehlende Prüfung weiter mit Enthaltung beantworten. Schutzregeln nicht bloß entfernen.
+- Präzisierung zu Methodenregel 10: Ein nachträglich aufgelöster Fall wird mit
+  eingefrorener Erstprognose dokumentiert. Dies macht ihn nicht automatisch zu einem
+  unabhängigen Blindtest. Die bekannten 18 Entwicklungsfälle bleiben Entwicklung;
+  retrospektive Rekonstruktion, historisch unabhängiger Holdout und prospektiver
+  Blindlauf sind getrennte Klassen.
+- Höhere Qualität muss gegen eine eingefrorene Baseline auf derselben vorregistrierten,
+  labelblind verarbeiteten Kohorte geprüft werden. Rangtreffer, ausgesprochene
+  Identifikationen, Fehlzuordnungen, Enthaltungen, Abdeckung und offene Lösungen
+  getrennt berichten. Zehn reale Fälle sind eine Pilot-Coverage-Grenze, kein
+  statistischer Validierungsnachweis.
+
+Diese Befunde verändern keine historischen Erstversuche, Lösungen oder WKNs und
+behaupten keine bereits umgesetzte Codekorrektur. Die zugehörigen Regressionen
+sind im Codex-Auftrag konkret beschrieben und vor der späteren Implementierung
+zu ergänzen. Für diese reine Dokumentationsänderung wurden keine Produkttests ausgeführt.
