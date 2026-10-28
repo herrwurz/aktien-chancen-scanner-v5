@@ -29,8 +29,8 @@
     <label for="author">Autor (optional)</label><input id="author" maxlength="200">
     <label for="issue">Ausgabennummer (optional)</label><input id="issue" maxlength="100">
     <label for="advertised">Beworbene Rendite (optional, keine Prognose)</label><input id="advertised" maxlength="100">
-    <label for="authorization">Recherchefreigabe (bei geschütztem Webzugriff)</label>
-    <input id="authorization" type="password" autocomplete="off">
+    <div{% if request.scope.get("teaser_web") %} hidden{% endif %}><label for="authorization">Recherchefreigabe (bei geschütztem Webzugriff)</label>
+    <input id="authorization" type="password" autocomplete="off"></div>
     <label for="published">Veröffentlichungszeit (historische Blindanalyse)</label>
     <input id="published" type="datetime-local">
     <p class="muted">Unbekannte Zeiten bleiben unbekannt. Öffentliches Recherchematerial
@@ -39,6 +39,9 @@
     <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
     <button>Hinweise analysieren</button>
   </form>
+  <section><h2>Meine Fälle</h2>
+  <button type="button" id="load-cases">Gespeicherte Fälle laden</button>
+  <p id="case-message" aria-live="polite"></p><ul id="cases"></ul></section>
   <section id="result" aria-live="polite"></section>
   <details><summary>Spätere Auflösung oder Korrektur erfassen</summary>
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
@@ -176,7 +179,30 @@ const renderCandidate=(c,index)=>{
   article.append(el('p','Bestätigung: manuell erforderlich'));
   result.append(article);
 };
+document.querySelector('#load-cases').addEventListener('click',async()=>{
+  const message=document.querySelector('#case-message'), cases=document.querySelector('#cases');
+  message.textContent='Fälle werden geladen …';
+  const headers={}; const token=document.querySelector('#authorization').value;
+  if(token)headers['X-Research-Authorization']=token;
+  try{
+    const response=await fetch('/api/hebeltrader/cases',{headers});
+    if(!response.ok)throw new Error('Fälle konnten nicht geladen werden. Anmeldung prüfen.');
+    const rows=await response.json(); cases.replaceChildren();
+    message.textContent=rows.length?`${rows.length} gespeicherte Fälle`:'Noch keine gespeicherten Fälle.';
+    rows.reverse().forEach(row=>{
+      const item=el('li'),button=el('button',`${(row.input||{}).headline||row.case_id} · ${row.status}`);
+      button.type='button';button.addEventListener('click',()=>{
+        result.replaceChildren();const report=row.latest_prediction||row.first_prediction;
+        if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
+        renderOverview({...report,journal_case_id:row.case_id});
+        (report.candidates||[]).forEach(renderCandidate);
+      });item.append(button);cases.append(item);
+    });
+  }catch(error){message.textContent=error.message;}
+});
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
+  const submit=form.querySelector('button');submit.disabled=true;
+  try{ 
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
   const body={teaser_text:document.querySelector('#text').value,
@@ -212,6 +238,8 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
       `${cell.quote||cell.clue_id}: ${cell.status}`)));
   });
   result.append(comparison);
+  }catch(error){result.textContent='Die Analyse konnte nicht abgeschlossen werden. Verbindung prüfen und gespeicherte Fälle laden.';}
+  finally{submit.disabled=false;}
 });
 document.querySelector('#resolution-form').addEventListener('submit',async event=>{
   event.preventDefault();const status=document.querySelector('#resolution-result');

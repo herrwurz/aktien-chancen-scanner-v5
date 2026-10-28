@@ -17,3 +17,5 @@ data/hebeltrader/*
 reports/
 *.dump
 .superpowers/
+deploy/teaser/secrets/
+deploy/teaser/state/
