@@ -56,6 +56,22 @@ def inventory_history(path) -> dict:
                 },
             }
         )
+    # Offline inventory only. Candidate ranking never calls this function.
+    reference_path = path.parent.parent / "data/hebeltrader/teaser-cases.json"
+    if reference_path.exists():
+        from .reference_cases import load_references
+
+        structured = {c["case_id"]: c for c in load_references(reference_path)["cases"]}
+        for case in cases:
+            reference = structured.get(case["case_id"])
+            if reference:
+                case["original_text"] = reference["teaser_text"]
+                case["original_text_available"] = reference["teaser_text"] is not None
+                case["publication_date"] = reference["publication_date"]
+                case["first_prediction"] = reference["first_prediction"]
+                case["historical_outcome"] = reference["outcome"]
+                case["reference_number"] = reference["reference_number"]
+                case["structured_reference_path"] = str(reference_path)
     return {
         "cases": cases,
         "case_count": len(cases),

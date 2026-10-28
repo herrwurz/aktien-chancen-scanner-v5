@@ -15,6 +15,7 @@ from scanner.research import AssetIdentity, EvidenceRecord
 
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
+from .research_plan import build_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
@@ -126,16 +127,8 @@ def _clues(text, spans):
 
 
 def _queries(text, clues, spans):
-    named = _entities(text)
-    specific = (
-        [" ".join('"' + name + '"' for name in named[:3]) + " acquisition investment"]
-        if named
-        else []
-    )
     enrichment = HeuristicClueEnricher().enrich(text, clues, spans)
-    # Public search discovery is global, with no universe, country or solved-case seed.
-    specific += [text[:250] + " company investor relations"]
-    return list(dict.fromkeys(specific + enrichment.search_queries))[:8]
+    return build_queries(text, _entities(text), enrichment.search_queries)
 
 
 def _evidence(document, clues, cutoff):
@@ -318,8 +311,7 @@ class Investigator:
         if not offline:
             for query in queries:
                 research(query)
-                if len({d.get("company_name") for d in fetched if d.get("company_name")}) >= 8:
-                    break
+
         cutoff = request.publication_at or retrieved
 
         def compare():
@@ -448,20 +440,13 @@ class Investigator:
             "leader_before": ranked[0]["asset_id"] if ranked else None,
         }
         if not offline and ranked:
-            name = ranked[0]["identity"]["name"]
+            falsification["top3_before"] = [r["asset_id"] for r in ranked[:3]]
             falsification_queries = [
-                f'"{name}" '
+                f'"{row["identity"]["name"]}" '
                 + " ".join(_entities(text)[:2])
-                + " denied cancelled acquisition competitor"
+                + " denied cancelled acquisition earnings guidance competitor"
+                for row in ranked[:3]
             ]
-            if len(ranked) > 1:
-                falsification_queries.append(
-                    '"'
-                    + ranked[1]["identity"]["name"]
-                    + '" '
-                    + " ".join(_entities(text)[:2])
-                    + " acquisition investor relations"
-                )
             for query in falsification_queries:
                 research(query)
             falsification.update(
@@ -493,6 +478,9 @@ class Investigator:
             limits.append("ambiguous_leading_candidates")
         if ranked and falsification.get("leader_before") != ranked[0]["asset_id"]:
             limits.append("new_leader_needs_falsification")
+        checked_top3 = set(falsification.get("top3_before", []))
+        if not offline and any(r["asset_id"] not in checked_top3 for r in ranked[:3]):
+            limits.append("new_top3_candidate_needs_falsification")
         if request.publication_at and request.publication_at > retrieved:
             limits.append("future_teaser_publication")
         identified = bool(

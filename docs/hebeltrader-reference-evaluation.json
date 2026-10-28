@@ -1,0 +1,358 @@
+{
+  "ranking_sha256": "1dcc3c5bb7ab1b240332090db39c1ad20042fa3632e3f776cc86af4f21eb7c9d",
+  "historical_conversation": {
+    "total": 18,
+    "correct": 10,
+    "wrong": 7,
+    "unresolved": 1,
+    "resolved": 17,
+    "historical_conversation_percent": 58.8,
+    "independent_benchmark": false,
+    "missing_full_teasers": [
+      "HT-003",
+      "HT-016",
+      "HT-002",
+      "HT-004",
+      "HT-005",
+      "HT-006",
+      "HT-007",
+      "HT-013",
+      "HT-014",
+      "HT-008",
+      "HT-009",
+      "HT-010",
+      "HT-015",
+      "HT-011",
+      "HT-012",
+      "HT-017",
+      "HT-018"
+    ],
+    "missing_dates": [
+      "HT-016",
+      "HT-014",
+      "HT-009",
+      "HT-012",
+      "HT-017",
+      "HT-018"
+    ],
+    "missing_exact_timestamps": [
+      "HT-003",
+      "HT-016",
+      "HT-002",
+      "HT-004",
+      "HT-005",
+      "HT-006",
+      "HT-007",
+      "HT-013",
+      "HT-014",
+      "HT-008",
+      "HT-009",
+      "HT-010",
+      "HT-015",
+      "HT-011",
+      "HT-012",
+      "HT-017",
+      "HT-018",
+      "HT-001"
+    ],
+    "missing_original_top3": [
+      "HT-003",
+      "HT-016",
+      "HT-002",
+      "HT-004",
+      "HT-005",
+      "HT-006",
+      "HT-007",
+      "HT-013",
+      "HT-014",
+      "HT-008",
+      "HT-009",
+      "HT-010",
+      "HT-015",
+      "HT-011",
+      "HT-012",
+      "HT-017",
+      "HT-018",
+      "HT-001"
+    ],
+    "wrong_cases": [
+      {
+        "case_id": "HT-002",
+        "first_prediction": "UnitedHealth Group",
+        "actual_company": "Zurich Insurance Group",
+        "failure_analysis": "Allgemeine Gewinn- und defensive Branchenhinweise waren nicht spezifisch genug."
+      },
+      {
+        "case_id": "HT-004",
+        "first_prediction": "Zoom",
+        "actual_company": "Salesforce",
+        "failure_analysis": "Generisches Tech-Comeback-Narrativ überbewertet."
+      },
+      {
+        "case_id": "HT-013",
+        "first_prediction": "Zebra Technologies",
+        "actual_company": "Danaher",
+        "failure_analysis": "Allgemeine fundamentale und charttechnische Aussagen reichten nicht zur eindeutigen Identifikation."
+      },
+      {
+        "case_id": "HT-014",
+        "first_prediction": "Oracle",
+        "actual_company": "SAP",
+        "failure_analysis": "Oracle statt SAP; direkte Software-Wettbewerber und konkrete Geschäftszahlen gegeneinander prüfen."
+      },
+      {
+        "case_id": "HT-015",
+        "first_prediction": "Thales",
+        "actual_company": "Leonardo S.p.A.",
+        "failure_analysis": "Thales statt Leonardo; konkrete Aufträge, Ereignisse und Kennzahlen müssen zwischen europäischen Rüstungskonzernen entscheiden."
+      },
+      {
+        "case_id": "HT-017",
+        "first_prediction": "Goldman Sachs",
+        "actual_company": "JPMorgan Chase",
+        "failure_analysis": "Zu frühe Festlegung auf Goldman Sachs aufgrund allgemeiner Rallye-Hinweise; unkalibrierte 60-%-Angabe."
+      },
+      {
+        "case_id": "HT-001",
+        "first_prediction": "Lattice Semiconductor",
+        "actual_company": "Analog Devices",
+        "failure_analysis": "Ankereffekt und Bestätigungssuche nach frühem Lattice-Tipp; spezifische Unternehmensereignisse hätten stärker geprüft werden müssen; unkalibrierte 95-%-Angabe."
+      }
+    ]
+  },
+  "regression": {
+    "cases": 18,
+    "abstentions": 18,
+    "candidate_top1_hits": 0,
+    "candidate_top3_hits": 0,
+    "top1_rate": null,
+    "top3_rate": null,
+    "rate_status": "known_development_cases_not_independent_benchmark"
+  },
+  "missing_full_text_count": 17,
+  "independent_real_blind_tests": 0,
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "original_historical_prediction": "Costco",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.006,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-016",
+      "original_historical_prediction": "Williams",
+      "historical_outcome": "unresolved",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-002",
+      "original_historical_prediction": "UnitedHealth Group",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-004",
+      "original_historical_prediction": "Zoom",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-005",
+      "original_historical_prediction": "Micron",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-006",
+      "original_historical_prediction": "UnitedHealth",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-007",
+      "original_historical_prediction": "Vertiv",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-013",
+      "original_historical_prediction": "Zebra Technologies",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-014",
+      "original_historical_prediction": "Oracle",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-008",
+      "original_historical_prediction": "KKR",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-009",
+      "original_historical_prediction": "Pfizer",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-010",
+      "original_historical_prediction": "Broadcom",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-015",
+      "original_historical_prediction": "Thales",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-011",
+      "original_historical_prediction": "Thales",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-012",
+      "original_historical_prediction": "BASF",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-017",
+      "original_historical_prediction": "Goldman Sachs",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-018",
+      "original_historical_prediction": "Johnson & Johnson",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-001",
+      "original_historical_prediction": "Lattice Semiconductor",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    }
+  ],
+  "limitations": [
+    "Headline-only inputs are not complete original teasers.",
+    "No exact publication times are present in this reconstruction.",
+    "No identification quality proven without authentic dated candidate-source packets.",
+    "The 10/7/1 history is not the performance of this new scan."
+  ]
+}

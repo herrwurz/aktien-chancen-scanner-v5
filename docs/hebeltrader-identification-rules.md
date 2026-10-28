@@ -23,27 +23,33 @@ Dieses Register ist die versionierte, überprüfbare Wissensbasis für Rudolf-Wi
 
 ## Fallregister – 18 dokumentierte Teaser-Fälle (15 ursprüngliche Fälle + JPMorgan Chase + Johnson & Johnson + Analog Devices)
 
+Die aktuellen Werte stammen aus der ergänzten Nutzerrekonstruktion. Die bestehenden
+HT-IDs bleiben stabil; `reference_number` in der JSON-Datei entspricht Fall 01–18 im
+neuen Auftrag. [Strukturierte Referenzen](../data/hebeltrader/teaser-cases.json).
+Vorheriger Tabellenstand: [datierter Provenienz-Snapshot](archive/hebeltrader-register-before-reference-refresh-2026-10-28.md).
+Auflösungsdatum und Veröffentlichungsdatum sind getrennt; alle ursprünglichen Top-3-Listen
+und genauen Veröffentlichungsuhrzeiten bleiben unbekannt.
+
 | ID | Teaser / Kontext | Aktie / Ticker | Call-WKN | Status / Beleg | Besondere Umstände und offene Felder |
 |---|---|---|---|---|---|
-| HT-001 | „Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine läuft auf Hochtouren!“; HEBELTRADER 200/26, 28.10.2026; beworben bis 1.191 % | **Analog Devices (ADI)** | **MN84GA** | **Vom Nutzer ausdrücklich aufgelöst** | Assistent identifizierte zunächst **falsch Lattice Semiconductor (LSCC)** und behauptete unbegründete 95 % Sicherheit. Ausschlaggebend für ADI: starke Quartalskennzahlen, Bruttomarge, Free Cashflow sowie spezifische Zukäufe **Empower Semiconductor** (KI-Rechenzentren) und **Alif Semiconductor** (KI/Robotik). Produktparameter MN84GA noch nicht unabhängig geprüft. |
-| HT-002 | HEBELTRADER-Teaser zu **Zurich**; genauer Titel/Datum im aktuellen Register nicht gesichert | **Zurich Insurance Group** | **UN6E7X** | Nutzerbestätigter historischer Call | Teaser-Wortlaut, Ausgabe, ursprüngliche Rangliste, Produktdaten nachtragen. |
-| HT-003 | HEBELTRADER-Teaser zu **Costco**; genauer Titel/Datum im aktuellen Register nicht gesichert | **Costco Wholesale** | **JY55QZ** | Nutzerbestätigter historischer Call | Originalereignis, Ausgabe und frühere Fehleinschätzungen nachtragen. |
-| HT-004 | „Comeback mit Ansage: Dieser Tech-Titel startet durch!“; HEBELTRADER **176/26 vom 24.09.2026**; beworbene Call-Performance **1.717 %** | **Salesforce (CRM)** | **JG0AEJ** | **Nutzerauflösung** nach Blindtest | Assistent tippte zuvor **falsch Zoom**. Lehre: generisches „Tech-Comeback“ darf konkrete jüngste Unternehmensereignisse nicht überstimmen. |
-| HT-005 | Historischer HEBELTRADER-Fall; Originaltitel nicht im Register gesichert | **Micron Technology** | **UN87G6** | In früherem Fallkatalog als bestätigter Call berichtet; Einzelbeleg offen | Teaser, Ausgabedatum, Ergebnis des damaligen Blindtests prüfen. |
-| HT-006 | Historischer Fall; Titel offen | **UnitedHealth Group** | **VH2LU2** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Aktien-/Derivatidentität und Originalquelle nachprüfen. |
-| HT-007 | Historischer Fall; Titel offen | **Vertiv** | **HM4EB1** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Nicht mit weiterer erwähnter WKN **HM43B1** gleichsetzen. |
-| HT-008 | Historischer Fall; Titel offen | **KKR** | **VH62T5** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
-| HT-009 | Historischer Fall; Titel offen | **Pfizer** | **WA4R5Q** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
-| HT-010 | Historischer Fall; Titel offen | **Broadcom** | **MN8GZP** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
-| HT-011 | Historischer Fall; Titel offen | **Thales** | **DN3NVH** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
-| HT-012 | Historischer Fall; Titel offen | **BASF** | **MJ7DUX** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
-
-| HT-013 | Historischer Teaser zu **Danaher**; genauer Wortlaut/Ausgabe noch offen | **Danaher** | **JY3SF7** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp und spezifische Gegenhinweise aus Originalprotokoll rekonstruieren. |
-| HT-014 | Historischer Teaser zu **SAP**; genauer Wortlaut/Ausgabe noch offen | **SAP** | **UP9A9X** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
-| HT-015 | Historischer Teaser zu **Leonardo**; genauer Wortlaut/Ausgabe noch offen | **Leonardo** | **VJ2RFH** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
-| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams Companies** (historische Bezeichnung; Originalquelle noch zu prüfen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest Nr. 2 | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |
-| HT-017 | **Check 16**, aufgelöst **19.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **JPMorgan Chase (JPM)** | **MN6CYX** | Nutzer-Auflösung / damalige Produktzuordnung; **Ersttipp falsch** | Ursprünglicher Assistententipp **Goldman Sachs (GS)**; Auflösung anhand der WKN MN6CYX als JPMorgan-Call. Teasertext, Originalquelle und Derivatstammdaten unabhängig nachprüfen. |
-| HT-018 | **Check 17**, bestätigt **21.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **Johnson & Johnson (JNJ)** | **JE11C1** | Nutzerbestätigter Blindtest; **Ersttipp richtig** | In der früheren Bilanz nach diesem Check: 10 richtige, 6 falsche, 16 abgeschlossene Tests (Williams nicht mitgezählt). Originalteaser, Rangliste und Produktparameter nachtragen. |
+| HT-001 | „Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine läuft auf Hochtouren!“; HEBELTRADER 200/26; 28.10.2026 | Analog Devices (ADI) | MN84GA | FALSCH (Nutzerrekonstruktion) | Ersttipp: Lattice Semiconductor. Nutzerfall 18. Historische unkalibrierte Angabe: 95 %. Ankereffekt und Bestätigungssuche nach frühem Lattice-Tipp; spezifische Unternehmensereignisse hätten stärker geprüft werden müssen; unkalibrierte 95-%-Angabe. Volltext vorhanden. |
+| HT-002 | „Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!“; 14.10.2026 | Zurich Insurance Group | UN6E7X | FALSCH (Nutzerrekonstruktion) | Ersttipp: UnitedHealth Group. Nutzerfall 03. Allgemeine Gewinn- und defensive Branchenhinweise waren nicht spezifisch genug. Vollständiger Originalteaser fehlt. |
+| HT-003 | „Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!“; HEBELTRADER 192/26; 16.10.2026 | Costco Wholesale (COST) | JY55QZ | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Costco. Nutzerfall 01.  Vollständiger Originalteaser fehlt. |
+| HT-004 | „Comeback mit Ansage: Dieser Tech-Titel startet durch!“; HEBELTRADER 176/26; 24.09.2026 | Salesforce (CRM) | JG0AEJ | FALSCH (Nutzerrekonstruktion) | Ersttipp: Zoom. Nutzerfall 04. Generisches Tech-Comeback-Narrativ überbewertet. Vollständiger Originalteaser fehlt. |
+| HT-005 | „Gewinnsprung voraus: Der unterschätzte KI-Profiteur!“; HEBELTRADER 173/26; 21.09.2026 | Micron Technology (MU) | UN87G6 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Micron. Nutzerfall 05.  Vollständiger Originalteaser fehlt. |
+| HT-006 | „Gesundheitsriese vor der Neubewertung!“; 03.09.2026 | UnitedHealth Group (UNH) | VH2LU2 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: UnitedHealth. Nutzerfall 06.  Vollständiger Originalteaser fehlt. |
+| HT-007 | „Cloud, Strom und Kühlung: Hier liegt der Schlüssel zum nächsten KI-Schub!“; 28.08.2026 | Vertiv Holdings (VRT) | HM4EB1 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Vertiv. Nutzerfall 07.  Vollständiger Originalteaser fehlt. |
+| HT-008 | „KI, Infrastruktur, Milliarden – diese Aktie hat den perfekten Mix!“; 14.08.2026 | KKR & Co. (KKR) | VH62T5 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: KKR. Nutzerfall 10.  Vollständiger Originalteaser fehlt. |
+| HT-009 | „Diese Comeback-Aktie könnte jetzt alles in den Schatten stellen!“ | Pfizer (PFE) | WA4R5Q | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Pfizer. Nutzerfall 11.  Vollständiger Originalteaser fehlt. |
+| HT-010 | „Ausbruchsalarm bei einem Hightech-Schwergewicht!“; 10.08.2026 | Broadcom (AVGO) | MN8GZP | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Broadcom. Nutzerfall 12.  Vollständiger Originalteaser fehlt. |
+| HT-011 | „Hightech-Konzern vor neuem Rekordhoch!“; 06.08.2026 | Thales | DN3NVH | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Thales. Nutzerfall 14.  Vollständiger Originalteaser fehlt. |
+| HT-012 | „Hier steckt eine irrwitzige Turnaround-Chance drin!“; HEBELTRADER 137/26 | BASF | MJ7DUX | RICHTIG (Nutzerrekonstruktion) | Ersttipp: BASF. Nutzerfall 15.  Vollständiger Originalteaser fehlt. |
+| HT-013 | „Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!“; HEBELTRADER 154/26; 25.08.2026 | Danaher (DHR) | JY3SF7 | FALSCH (Nutzerrekonstruktion) | Ersttipp: Zebra Technologies. Nutzerfall 08. Allgemeine fundamentale und charttechnische Aussagen reichten nicht zur eindeutigen Identifikation. Vollständiger Originalteaser fehlt. |
+| HT-014 | „Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!“ | SAP | UP9A9X | FALSCH (Nutzerrekonstruktion) | Ersttipp: Oracle. Nutzerfall 09. Oracle statt SAP; direkte Software-Wettbewerber und konkrete Geschäftszahlen gegeneinander prüfen. Vollständiger Originalteaser fehlt. |
+| HT-015 | „Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!“; HEBELTRADER 141/26; 06.08.2026 | Leonardo S.p.A. | VJ2RFH | FALSCH (Nutzerrekonstruktion) | Ersttipp: Thales. Nutzerfall 13. Thales statt Leonardo; konkrete Aufträge, Ereignisse und Kennzahlen müssen zwischen europäischen Rüstungskonzernen entscheiden. Vollständiger Originalteaser fehlt. |
+| HT-016 | „Dieser Branchenführer profitiert vom Stromhunger der Zukunft!“ | Auflösung unbekannt; Verdacht: Williams Companies | unbekannt | Ungelöst | Ersttipp: Williams. Nutzerfall 02.  Vollständiger Originalteaser fehlt. |
+| HT-017 | „Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!“ | JPMorgan Chase (JPM) | MN6CYX | FALSCH (Nutzerrekonstruktion) | Ersttipp: Goldman Sachs. Nutzerfall 16. Historische unkalibrierte Angabe: 60 %. Zu frühe Festlegung auf Goldman Sachs aufgrund allgemeiner Rallye-Hinweise; unkalibrierte 60-%-Angabe. Vollständiger Originalteaser fehlt. Auflösung am 2026-10-19; kein Publikationsdatum. |
+| HT-018 | „Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!“ | Johnson & Johnson (JNJ) | JE11C1 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Johnson & Johnson. Nutzerfall 17. Historische unkalibrierte Angabe: 55 %.  Vollständiger Originalteaser fehlt. Auflösung am 2026-10-21; kein Publikationsdatum. |
 
 ### Weitere genannte WKNs – **noch keinem Teaser belastbar zugeordnet**
 
@@ -184,3 +190,23 @@ Top-3-Liste bleibt unbekannt. Emittentenprüfung zu MN84GA bleibt offen.
 Änderungsjournal: Ergänzender Quellenbeleg zu HT-001; keine Änderung des alten
 Registereintrags oder der historischen Fehlwertung.
 Nachweis: [maschinenlesbare Quellenbestätigung](hebeltrader-20026-source-confirmation.json).
+
+
+## Änderungsjournal – strukturierte 18-Fall-Referenzsammlung (28.10.2026)
+
+- Alle 18 Überschriften gemäß ergänztem Nutzerauftrag übernommen. Historische IDs behalten,
+  Nutzernummerierung separat gespeichert. Die vorherige Tabelle ist als datierter Snapshot
+  erhalten; aktuelle Tabelle ohne die bisherige Leerzeile innerhalb der 18 Datenzeilen.
+- Neu konkretisierte Ersttipps ergänzt: UnitedHealth → Zurich, Zebra → Danaher,
+  Oracle → SAP und Thales → Leonardo. Frühere Fehler und falsche 95-%-Angabe bleiben erhalten.
+- Daten/Ausgaben nur soweit angegeben. JPM-/JNJ-Auflösungsdaten nicht als Publikation
+  übernehmen; Thales-Datierung ausdrücklich als unbestätigte frühere Übersichtsangabe markieren.
+- Williams: tatsächliche Aktie, tatsächlicher Ticker und Call-WKN null. WMB ist nur Verdacht.
+- **Ein** vollständiger Originalteaser liegt jetzt vor: der vom Nutzer übermittelte
+  ADI-Text in der strukturierten Referenzsammlung. Die übrigen 17 Volltexte fehlen weiterhin.
+- Der ADI-Teaser nennt Zukäufe und Geschäftsfelder, aber **nicht** Empower oder Alif.
+  Diese Namen stammen aus der Auflösung und dürfen nicht in den Blind-Input kopiert werden.
+- Historische 60/55/95 % nur als unkalibrierte damalige Aussagen archiviert. Keine neue
+  Wahrscheinlichkeit oder unabhängige Erfolgsquote. Die 10/7/1-Bilanz bleibt Nutzerhistorie.
+- JSON-Export und Evaluator sind getrennt. Der eigentliche Scanner bekommt keine
+  Referenz-/Lösungsdatei, historischen Ersttipps, WKNs oder Fehleranalysen.

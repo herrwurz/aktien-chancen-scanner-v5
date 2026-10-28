@@ -1,0 +1,26 @@
+# Archiv: Register vor dem ergänzten Nutzerauftrag
+
+Unveränderter historischer Tabellenstand; ersetzt durch den dokumentierten JSON-Abgleich.
+
+| ID | Teaser / Kontext | Aktie / Ticker | Call-WKN | Status / Beleg | Besondere Umstände und offene Felder |
+|---|---|---|---|---|---|
+| HT-001 | „Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine läuft auf Hochtouren!“; HEBELTRADER 200/26, 28.10.2026; beworben bis 1.191 % | **Analog Devices (ADI)** | **MN84GA** | **Vom Nutzer ausdrücklich aufgelöst** | Assistent identifizierte zunächst **falsch Lattice Semiconductor (LSCC)** und behauptete unbegründete 95 % Sicherheit. Ausschlaggebend für ADI: starke Quartalskennzahlen, Bruttomarge, Free Cashflow sowie spezifische Zukäufe **Empower Semiconductor** (KI-Rechenzentren) und **Alif Semiconductor** (KI/Robotik). Produktparameter MN84GA noch nicht unabhängig geprüft. |
+| HT-002 | HEBELTRADER-Teaser zu **Zurich**; genauer Titel/Datum im aktuellen Register nicht gesichert | **Zurich Insurance Group** | **UN6E7X** | Nutzerbestätigter historischer Call | Teaser-Wortlaut, Ausgabe, ursprüngliche Rangliste, Produktdaten nachtragen. |
+| HT-003 | HEBELTRADER-Teaser zu **Costco**; genauer Titel/Datum im aktuellen Register nicht gesichert | **Costco Wholesale** | **JY55QZ** | Nutzerbestätigter historischer Call | Originalereignis, Ausgabe und frühere Fehleinschätzungen nachtragen. |
+| HT-004 | „Comeback mit Ansage: Dieser Tech-Titel startet durch!“; HEBELTRADER **176/26 vom 24.09.2026**; beworbene Call-Performance **1.717 %** | **Salesforce (CRM)** | **JG0AEJ** | **Nutzerauflösung** nach Blindtest | Assistent tippte zuvor **falsch Zoom**. Lehre: generisches „Tech-Comeback“ darf konkrete jüngste Unternehmensereignisse nicht überstimmen. |
+| HT-005 | Historischer HEBELTRADER-Fall; Originaltitel nicht im Register gesichert | **Micron Technology** | **UN87G6** | In früherem Fallkatalog als bestätigter Call berichtet; Einzelbeleg offen | Teaser, Ausgabedatum, Ergebnis des damaligen Blindtests prüfen. |
+| HT-006 | Historischer Fall; Titel offen | **UnitedHealth Group** | **VH2LU2** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Aktien-/Derivatidentität und Originalquelle nachprüfen. |
+| HT-007 | Historischer Fall; Titel offen | **Vertiv** | **HM4EB1** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Nicht mit weiterer erwähnter WKN **HM43B1** gleichsetzen. |
+| HT-008 | Historischer Fall; Titel offen | **KKR** | **VH62T5** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+| HT-009 | Historischer Fall; Titel offen | **Pfizer** | **WA4R5Q** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+| HT-010 | Historischer Fall; Titel offen | **Broadcom** | **MN8GZP** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+| HT-011 | Historischer Fall; Titel offen | **Thales** | **DN3NVH** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+| HT-012 | Historischer Fall; Titel offen | **BASF** | **MJ7DUX** | Früher als bestätigter Call berichtet; Einzelbeleg offen | Primärhinweis, Zeitpunkt, Produktparameter fehlen. |
+
+| HT-013 | Historischer Teaser zu **Danaher**; genauer Wortlaut/Ausgabe noch offen | **Danaher** | **JY3SF7** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp und spezifische Gegenhinweise aus Originalprotokoll rekonstruieren. |
+| HT-014 | Historischer Teaser zu **SAP**; genauer Wortlaut/Ausgabe noch offen | **SAP** | **UP9A9X** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
+| HT-015 | Historischer Teaser zu **Leonardo**; genauer Wortlaut/Ausgabe noch offen | **Leonardo** | **VJ2RFH** | Nutzerauflösung; ursprünglicher Blindtest **falsch** | Ersttipp, Unternehmensereignisse und Quellen noch rekonstruieren. |
+| HT-016 | Historischer **Williams**-Teaser; genaue Überschrift/Ausgabe offen | **Williams Companies** (historische Bezeichnung; Originalquelle noch zu prüfen) | **unbekannt** | **Ungelöst** im ursprünglichen Blindtest Nr. 2 | Nicht als Treffer zählen, nicht stillschweigend aus dem Nenner entfernen; Lösung und Derivat weiterhin ungeklärt. |
+| HT-017 | **Check 16**, aufgelöst **19.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **JPMorgan Chase (JPM)** | **MN6CYX** | Nutzer-Auflösung / damalige Produktzuordnung; **Ersttipp falsch** | Ursprünglicher Assistententipp **Goldman Sachs (GS)**; Auflösung anhand der WKN MN6CYX als JPMorgan-Call. Teasertext, Originalquelle und Derivatstammdaten unabhängig nachprüfen. |
+| HT-018 | **Check 17**, bestätigt **21.10.2026**; genauer Teasertitel und Ausgabe noch nicht rekonstruiert | **Johnson & Johnson (JNJ)** | **JE11C1** | Nutzerbestätigter Blindtest; **Ersttipp richtig** | In der früheren Bilanz nach diesem Check: 10 richtige, 6 falsche, 16 abgeschlossene Tests (Williams nicht mitgezählt). Originalteaser, Rangliste und Produktparameter nachtragen. |
+

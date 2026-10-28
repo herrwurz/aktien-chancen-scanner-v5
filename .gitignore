@@ -10,7 +10,10 @@ __pycache__/
 *.db
 build/
 dist/
-data/
+data/*
+!data/hebeltrader/
+data/hebeltrader/*
+!data/hebeltrader/teaser-cases.json
 reports/
 *.dump
 .superpowers/
