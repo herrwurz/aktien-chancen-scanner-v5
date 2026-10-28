@@ -163,3 +163,24 @@ Die folgenden Erweiterungen sind append-only Journalexporte. Sie ändern keinen 
 ```json
 {"algorithm_change": "Keine fallbezogene Gewinnerregel einbauen. Kombination konkreter Unternehmensereignisse vor generischen KI-/Chartmerkmalen beibehalten; nach Nutzeraufloesung als Entwicklungsfall behandeln.", "asset_id": "SLB", "basis": "primary_source", "call_wkn": "VY95PV", "case_status": "bestaetigt", "confirmed_at": "2026-10-28T14:51:46.305050+00:00", "correct_rank": 1, "error_analysis": "Erstprognose SLB auf Rang 1 durch die erst spaeter bereitgestellte PDF bestaetigt. Foerdergeschaeft, Rechenzentren/Kuehltechnik, geplante Kelvion-Uebernahme und Digitalsparte stimmen ueberein. Kein falscher Basiswert. Call-WKN war vor der Aufloesung korrekt als unbekannt markiert. Kein Beleg einer vollautonomen Scanner-Identifikation oder kalibrierten Trefferquote.", "name": "SLB (frueher Schlumberger)", "original_call_status": "original_reported_by_source", "original_sha256": "4a4f6537957e5e7f5253418e67234bb092b6dff6eb274d59220eaaafbc728292", "prediction_outcome": "confirmed", "product_verification": "not_verified", "source": "Vom Nutzer bereitgestellte Herausgeber-PDF Hebeltrader_2026-198.pdf; Ausgabe 198/2026 vom 26.10.2026; Seiten 1-3; PDF-SHA256 fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4"}
 ```
+
+
+## HT-001 – zusätzlicher Originalreport-Beleg (28.10.2026)
+
+Nachträglich vom Nutzer bereitgestellt: HEBELTRADER **200/2026 vom 28.10.2026**, sechs
+Seiten. Seite 1 nennt **Analog Devices (ADI)** und den Original-Call **MN84GA**.
+PDF-SHA256: `e8f1365890bf789b119713174e67aa1cd9a147bda870f8f4ecccb77c824ad1c2`.
+
+Die vorhandene Nutzerauflösung ist damit durch den bereitgestellten Herausgeberreport
+belegt. Der ursprüngliche Tipp **Lattice Semiconductor (LSCC) bleibt falsch**; die
+unbegründete 95-%-Angabe bleibt als Fehler dokumentiert. Kein neuer Blindtest oder Treffer.
+
+Der Report beschreibt Empower Semiconductor und einen **geplanten** Zukauf von Alif
+Semiconductor. Diese jetzt aus der Auflösung bekannten Details beweisen nicht, dass sie
+im vollständigen ursprünglichen anonymisierten Teaser verfügbar waren. Sie dürfen nicht
+nachträglich in dessen Blindtest-Eingabe übernommen werden. Die komplette ursprüngliche
+Top-3-Liste bleibt unbekannt. Emittentenprüfung zu MN84GA bleibt offen.
+
+Änderungsjournal: Ergänzender Quellenbeleg zu HT-001; keine Änderung des alten
+Registereintrags oder der historischen Fehlwertung.
+Nachweis: [maschinenlesbare Quellenbestätigung](hebeltrader-20026-source-confirmation.json).
