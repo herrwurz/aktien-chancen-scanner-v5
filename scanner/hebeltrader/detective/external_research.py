@@ -118,7 +118,7 @@ class ResearchApis:
         # Search and Extract share Tavily's credential and accounting. The live investigation
         # can issue up to 14 discovery/peer queries and then needs room to recover blocked
         # documents through Extract, while the global 40-request and monthly budget gates remain.
-        if count >= (32 if provider == "search" else 16):
+        if count >= (44 if provider == "search" else 30):
             raise ValueError(f"{provider} per-analysis API limit reached")
         encoded = json.dumps(payload, ensure_ascii=False).encode()
         if len(encoded) > 40000:

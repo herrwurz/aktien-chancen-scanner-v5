@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     detective_openfigi_identities: Path | None = None
     detective_public_root: Path = Path("data/hebeltrader-detective")
     detective_public_allow_network: bool = False
-    detective_public_max_requests: int = Field(default=40, ge=1, le=100)
+    detective_public_max_requests: int = Field(default=70, ge=1, le=100)
     detective_search_provider: Literal["public", "tavily"] = "public"
     detective_search_api_key: SecretStr | None = None
     detective_source_ai_enabled: bool = False

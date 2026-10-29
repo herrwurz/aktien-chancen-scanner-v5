@@ -138,3 +138,13 @@ def test_planner_uses_english_search_terms_for_hypothesis_verification(tmp_path)
     )
     plan = api.plan("Unternehmen, dessen Kunden kaum noch eine Wahl haben.")
     assert plan["queries"] == ['"Example Litho" sole supplier market share monopoly']
+
+
+def test_company_name_variants_merge():
+    from scanner.hebeltrader.detective.investigation import canonical_company
+
+    assert canonical_company("ASML Holding N.V.") == canonical_company("ASML")
+    assert canonical_company("ASML Holding NV") == canonical_company("ASML")
+    assert canonical_company("TSMC") == canonical_company(
+        "Taiwan Semiconductor Manufacturing Company (TSMC)"
+    )

@@ -70,7 +70,7 @@ def finding_timing(document, cutoff, *, current_hypothesis):
     if (
         current_hypothesis
         and assessment["eligibility"] == "uncertain"
-        and source_class(document) in {"A", "B", "C"}
+        and source_class(document) in {"A", "B", "C", "D"}
         and timestamp(document.get("retrieved_at"))
         and timestamp(document.get("retrieved_at")) <= cutoff
     ):
@@ -139,7 +139,23 @@ def _entities(text):
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
-SEARCH_LOGIC_VERSION = "2026-10-29-search-v2"
+SEARCH_LOGIC_VERSION = "2026-10-29-search-v3"
+_LEGAL_WORDS = re.compile(
+    r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag|se|sa|nv|n v|holding|holdings"
+    r"|co|company|group|the)\b"
+)
+_ALIASES = {
+    "tsmc": "taiwan semiconductor manufacturing",
+    "tsm": "taiwan semiconductor manufacturing",
+}
+
+
+def canonical_company(name, ticker=None):
+    """Merge legal-form, parenthetical and ticker variants of one issuer name."""
+    text = re.sub(r"\([^)]*\)", " ", str(name).casefold()).replace(".", "")
+    text = " ".join(re.findall(r"\w+", _LEGAL_WORDS.sub(" ", text)))
+    return _ALIASES.get(text, text)
+
 
 _RELATIONS = {
     "acquisition": r"übernah\w*|zukäuf\w*|acquir\w*|acquisition|merger|erwarb",
@@ -478,12 +494,7 @@ class Investigator:
                     # establish a listed-stock candidate. Keep only identities tied to a quoted
                     # teaser clue or an explicitly quoted ticker.
                     continue
-                canonical_name = re.sub(
-                    r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag)\b",
-                    "",
-                    name.casefold(),
-                )
-                canonical_name = " ".join(re.findall(r"\w+", canonical_name))
+                canonical_name = canonical_company(name, doc.get("ticker"))
                 asset_id = "company:" + hashlib.sha256(canonical_name.encode()).hexdigest()
                 group = groups.setdefault(
                     asset_id,
