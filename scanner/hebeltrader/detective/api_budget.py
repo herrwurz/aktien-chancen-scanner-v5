@@ -54,9 +54,26 @@ class ApiBudget:
             used = db.execute(
                 "SELECT COALESCE(SUM(cents),0) FROM reservations WHERE month=?", (month,)
             ).fetchone()[0]
+            rows = db.execute(
+                "SELECT provider, COUNT(*), COALESCE(SUM(cents),0) "
+                "FROM reservations WHERE month=? GROUP BY provider",
+                (month,),
+            ).fetchall()
+        per_provider = {provider: (calls, cents) for provider, calls, cents in rows}
         return {
             "month": month,
             "reserved_cents": used,
             "cap_cents": self.cap_cents,
+            "remaining_cents": max(self.cap_cents - used, 0),
+            "providers": {
+                "search": {
+                    "calls": per_provider.get("search", (0, 0))[0],
+                    "reserved_cents": per_provider.get("search", (0, 0))[1],
+                },
+                "ai": {
+                    "calls": per_provider.get("ai", (0, 0))[0],
+                    "reserved_cents": per_provider.get("ai", (0, 0))[1],
+                },
+            },
             "accounting": "pessimistic_reservations_not_provider_invoice",
         }

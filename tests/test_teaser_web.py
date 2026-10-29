@@ -135,3 +135,42 @@ def test_runtime_diagnostics_are_private_and_report_effective_network_settings(
     assert data["peer_research_supported"] is True
     assert "private-token" not in response.text
     assert "private-password" not in response.text
+
+
+def test_runtime_reports_persistent_api_cost_reservations_by_provider(tmp_path, monkeypatch):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+
+    monkeypatch.setenv("DETECTIVE_API_MONTHLY_BUDGET_EUR", "5")
+    client = web(tmp_path, monkeypatch)
+    ledger = tmp_path / "state" / "detective" / "api-budget.db"
+    budget = ApiBudget(ledger, cap_cents=500)
+    budget.reserve("search", 5)
+    budget.reserve("search", 5)
+    budget.reserve("ai", 10)
+
+    response = client.get("/api/hebeltrader/runtime", auth=("admin", "private-password"))
+
+    assert response.status_code == 200
+    costs = response.json()["api_costs"]
+    assert costs == {
+        "month": costs["month"],
+        "currency": "EUR",
+        "budget_cents": 500,
+        "reserved_cents": 20,
+        "remaining_cents": 480,
+        "usage_percent": 4.0,
+        "providers": {
+            "tavily": {"calls": 2, "reserved_cents": 10},
+            "openai": {"calls": 1, "reserved_cents": 10},
+        },
+        "accounting": "pessimistic_reservations_not_provider_invoice",
+    }
+
+
+def test_web_page_contains_api_cost_monitor(tmp_path, monkeypatch):
+    response = web(tmp_path, monkeypatch).get("/", auth=("admin", "private-password"))
+
+    assert response.status_code == 200
+    assert 'id="api-cost-monitor"' in response.text
+    assert "API-Kostenüberwachung" in response.text
+    assert "/api/hebeltrader/runtime" in response.text

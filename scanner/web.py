@@ -48,6 +48,12 @@ def create_web_app():
 
     @app.get("/api/hebeltrader/runtime")
     def runtime_status():
+        from scanner.hebeltrader.detective.api_budget import ApiBudget
+
+        budget = ApiBudget(
+            settings.detective_public_root / "api-budget.db",
+            cap_cents=settings.detective_api_monthly_budget_eur * 100,
+        ).summary()
         return {
             "public_research_enabled": settings.detective_public_allow_network,
             "peer_research_supported": True,
@@ -66,6 +72,19 @@ def create_web_app():
                 and settings.detective_source_ai_api_key.get_secret_value().strip()
             ),
             "monthly_reservation_limit_eur": settings.detective_api_monthly_budget_eur,
+            "api_costs": {
+                "month": budget["month"],
+                "currency": "EUR",
+                "budget_cents": budget["cap_cents"],
+                "reserved_cents": budget["reserved_cents"],
+                "remaining_cents": budget["remaining_cents"],
+                "usage_percent": round(budget["reserved_cents"] / budget["cap_cents"] * 100, 1),
+                "providers": {
+                    "tavily": budget["providers"]["search"],
+                    "openai": budget["providers"]["ai"],
+                },
+                "accounting": budget["accounting"],
+            },
         }
 
     @app.get("/api/hebeltrader/references")
