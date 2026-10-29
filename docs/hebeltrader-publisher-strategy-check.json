@@ -1,0 +1,37 @@
+{
+  "reviewed_at": "2026-10-28T22:30:01.076880+00:00",
+  "evaluation_class": "public_known_source_development_check",
+  "independent_blind_test": false,
+  "sources": [
+    {
+      "url": "https://www.boersenmedien.de/shop/hebeltrader.html",
+      "sha256": "300a3b309bbee7b3d003218a143b657cc3b1f15be34bb55328d0ab9b0ae0765d"
+    },
+    {
+      "url": "https://cdn.boersenmedien.com/public/4576d341-2a42-407f-a1ed-e14469510c48/Hebeltrader_2026-04_LESEPROBE.pdf",
+      "sha256": "c5963c37c0e188cfb10fa05b25f24223bc5d0650b04e4b8a540b6d1c48aa3876",
+      "reported_issue": "04/2026",
+      "reported_date": "2026-01-12",
+      "resolved_company": "Deere",
+      "reported_call_wkn": "PL893C",
+      "issuer_product_verification": false
+    }
+  ],
+  "checks": {
+    "original_known_sample_processed": true,
+    "operating_cash_flow_preserved": true,
+    "not_relabelled_free_cash_flow": true
+  },
+  "queries_from_public_known_sample": [
+    "software share buyback investor relations",
+    "software \"operating cash flow\" \"earnings\" quarterly results",
+    "\"Bedeutung\" \"CNH Industrial\" \"Gewinn\" acquisition investment",
+    "LE                                                                                          SE                                                                                                           PR                                                company investor relations"
+  ],
+  "source_caveats": [
+    "Shop mentions 2025 examples but describes 2026 recommendations.",
+    "PDF price footnote says 12.01.2025 despite issue date 12.01.2026.",
+    "Publisher returns are not independently verified realized performance."
+  ],
+  "identification_accuracy_estimate": null
+}

@@ -35,7 +35,7 @@ def client():
 def test_dashboard_and_health(client):
     assert client.get("/api/health").json() == {"status": "ok"}
     assert client.get("/api/ready").status_code == 200
-    page = client.get("/")
+    page = client.get("/market-scanner")
     assert page.status_code == 200
     assert "BTCUSDT" in page.text
     assert "fixture" in page.text
@@ -113,3 +113,35 @@ def test_readiness_requires_migration():
 def test_invalid_configuration_rejected(values):
     with pytest.raises(ValueError):
         Settings(_env_file=None, **values)
+
+
+def test_primary_detective_is_home_and_market_scanner_is_separate(client):
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "Teasertext" in page.text
+    assert "/market-scanner" in page.text
+    assert "BTCUSDT" in client.get("/market-scanner").text
+
+
+def test_primary_api_abstains_without_public_sources_and_does_not_use_case_labels(client):
+    response = client.post(
+        "/api/hebeltrader/investigate",
+        json={"teaser_text": "Unbekannter Tech-Konzern mit Comeback."},
+    )
+    assert response.status_code == 200
+    assert response.json()["identification"]["status"] == "not_identified"
+    assert response.json()["countercandidate_count"] == 0
+    assert response.json()["derivative_candidate"]["status"] == "not_identified"
+    assert (
+        client.post(
+            "/api/hebeltrader/investigate",
+            json={"teaser_text": "Test", "resolution": "a hidden answer"},
+        ).status_code
+        == 422
+    )
+
+
+def test_teaser_updates_are_read_only_and_empty_before_monitoring(client):
+    assert client.get("/api/hebeltrader/updates").status_code == 200
+    assert client.get("/api/hebeltrader/updates").json() == []
+    assert client.post("/api/hebeltrader/updates", json={}).status_code == 405

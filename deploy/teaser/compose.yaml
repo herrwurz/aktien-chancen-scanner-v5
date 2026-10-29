@@ -1,0 +1,47 @@
+name: teaser-web
+services:
+  app:
+    build: ../..
+    command: [uvicorn, scanner.web:create_web_app, --factory, --host, 0.0.0.0, --port, '8000']
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 768m
+    cpus: 1
+    environment:
+      TEASER_PASSWORD_FILE: /run/secrets/password
+      TEASER_TOKEN_FILE: /run/secrets/token
+      TEASER_USERNAME: ${TEASER_USERNAME:-admin}
+      TEASER_STATE_DIR: /data
+      DETECTIVE_PUBLIC_ALLOW_NETWORK: 'true'
+      DETECTIVE_PUBLIC_MAX_REQUESTS: '40'
+    secrets: [password, token]
+    volumes: [./state:/data]
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+  https:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    ports: ['80:80', '443:443']
+    environment:
+      TEASER_DOMAIN: ${TEASER_DOMAIN:?Set TEASER_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [app]
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+secrets:
+  password:
+    file: ./secrets/password
+  token:
+    file: ./secrets/token
+volumes:
+  caddy_data:
+  caddy_config:

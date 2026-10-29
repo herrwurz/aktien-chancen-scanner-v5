@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-28",
+  "status": "ABNAHME_OFFEN",
+  "scope": "primary_hebeltrader_detective_separate_from_PR27",
+  "base_commit": "e504ad9",
+  "branch": "feat/hebeltrader-primary-detector",
+  "historical_inventory": {
+    "cases": 18,
+    "reported_resolved": 17,
+    "unresolved": 1,
+    "complete_original_teasers": 0,
+    "exact_publication_times": 0,
+    "original_top3_rankings": 0,
+    "independent_benchmark": false
+  },
+  "quality_measurement": {
+    "real_independent_blind_runs": 0,
+    "new_verified_stock_identifications": 0,
+    "verified_original_calls": 0,
+    "rank1_hit_rate": null,
+    "top3_hit_rate": null,
+    "reason": "No complete unseen original teaser and later independent resolution available."
+  },
+  "verification": {
+    "pytest": {
+      "passed": 725,
+      "skipped": 8,
+      "warnings": 1,
+      "skip_reason": "PostgreSQL tests require TEST_DATABASE_URL; CI supplies isolated PostgreSQL."
+    },
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "docker_build": "passed",
+    "docker_offline_cli": {
+      "network": "none",
+      "read_only": true,
+      "input": "deliberately sparse synthetic teaser",
+      "result": "not_identified",
+      "frozen_ranking_integrity_verified": true,
+      "report_sha256": "c7c93716970a074c61888ae30d6c4cac3e9bd3493d9f17e48c28d1b926d3be32"
+    }
+  },
+  "public_source_smoke": {
+    "scope": "public_source_reachability_only_not_identification_accuracy",
+    "tests": [
+      {
+        "operation": "search",
+        "status": "unavailable",
+        "error": "robots denied or unavailable",
+        "error_type": "ValueError"
+      },
+      {
+        "operation": "page",
+        "status": "ok",
+        "count": 1
+      }
+    ],
+    "attempts": [
+      {
+        "url": "https://www.bing.com/robots.txt",
+        "request_started_at": "2026-10-28T12:44:33.724696+00:00",
+        "retrieved_at": "2026-10-28T12:44:34.344353+00:00",
+        "status": 200,
+        "raw_sha256": "40d2da70c3b443225d5b01cc7b05117944980347637cc95ab285c6e4f5548235",
+        "raw_file": "/workspace/hebeltrader-primary/reports/primary-acceptance-public/public-web-c24d204b69a449fb8e6916a3d3930d0c/001-40d2da70c3b443225d5b01cc7b05117944980347637cc95ab285c6e4f5548235.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/robots.txt",
+        "request_started_at": "2026-10-28T12:44:35.519269+00:00",
+        "retrieved_at": "2026-10-28T12:44:36.834735+00:00",
+        "status": 200,
+        "raw_sha256": "495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839",
+        "raw_file": "/workspace/hebeltrader-primary/reports/primary-acceptance-public/public-web-c24d204b69a449fb8e6916a3d3930d0c/002-495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/maerkte-forex-zinsen/1500-prozent-in-acht-wochen-20388547.html",
+        "request_started_at": "2026-10-28T12:44:36.849960+00:00",
+        "retrieved_at": "2026-10-28T12:44:38.081151+00:00",
+        "status": 200,
+        "raw_sha256": "984201d29060f5fc2cd2a410a1d0a645f6d72b61b7e2d1c59602197c57cb0f29",
+        "raw_file": "/workspace/hebeltrader-primary/reports/primary-acceptance-public/public-web-c24d204b69a449fb8e6916a3d3930d0c/003-984201d29060f5fc2cd2a410a1d0a645f6d72b61b7e2d1c59602197c57cb0f29.raw"
+      }
+    ],
+    "archive": "/workspace/hebeltrader-primary/reports/primary-acceptance-public/public-web-c24d204b69a449fb8e6916a3d3930d0c"
+  },
+  "artifact_retention": {
+    "raw_public_pages": "workspace_only_not_committed",
+    "reason": "No full copyrighted article copied into repository; timestamp/hash evidence and repeatable URL retained."
+  },
+  "blockers": [
+    "Tested Bing RSS endpoint denied by robots; no bypass.",
+    "No independent new full teaser with separate later resolution.",
+    "Primary issuer host mapping requires operator verification.",
+    "Explicit identity/time metadata extraction has limited recall.",
+    "External notification delivery not configured; local outbox only.",
+    "Original advertised call confirmation remains manual."
+  ],
+  "hetzner_access_used": false,
+  "deployment_performed": false,
+  "merge_performed": false,
+  "orders_performed": false,
+  "paid_services_added": false,
+  "merge_recommendation": "draft_review_only_pending_real_identification_acceptance",
+  "additional_source_probe": {
+    "source": "GDELT",
+    "url": "https://api.gdeltproject.org/robots.txt",
+    "status": 503,
+    "request_started_at": "2026-10-28T12:46:23.909010+00:00",
+    "retrieved_at": "2026-10-28T12:46:29.142992+00:00",
+    "raw_sha256": "2f85832e31ca57711e6107af6b142363351ae516adb71c69afc643fac26be7f6",
+    "outcome": "robots unavailable; API search not performed; no fallback bypass"
+  }
+}

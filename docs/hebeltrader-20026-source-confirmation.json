@@ -1,0 +1,55 @@
+{
+  "case_id": "HT-001",
+  "event": "additional_publisher_report_confirmation",
+  "recorded_at": "2026-10-28T14:57:03.440686+00:00",
+  "evaluation_class": "development_regression",
+  "independent_blind_test": false,
+  "new_hit": false,
+  "original_first_guess": "Lattice Semiconductor (LSCC)",
+  "original_first_guess_result": "wrong",
+  "original_top3": null,
+  "original_prediction_timestamp": null,
+  "known_resolution": "Analog Devices (ADI)",
+  "original_call_wkn": "MN84GA",
+  "pdf": {
+    "filename": "Hebeltrader_2026-200.pdf",
+    "issue": "200/2026",
+    "publication_date": "2026-10-28",
+    "pages": 6,
+    "sha256": "e8f1365890bf789b119713174e67aa1cd9a147bda870f8f4ecccb77c824ad1c2",
+    "source": "user_supplied_publisher_pdf",
+    "identity_pages": [
+      1,
+      3
+    ],
+    "full_pdf_or_full_text_committed": false
+  },
+  "publisher_reported_call": {
+    "underlying": "Analog Devices",
+    "wkn": "MN84GA",
+    "strike_usd": "550.00",
+    "maturity": "2027-03-19",
+    "issuer": null,
+    "isin": null,
+    "verification_scope": "Newsletter document confirmation; no independent issuer verification or current quote"
+  },
+  "additional_resolution_facts": [
+    {
+      "topic": "Empower Semiconductor",
+      "statement": "Report describes acquisition strengthening AI data-center power capabilities.",
+      "source_page": 1
+    },
+    {
+      "topic": "Alif Semiconductor",
+      "statement": "Report describes a planned acquisition for Edge AI and robotics; planned is not completed.",
+      "source_page": 1
+    }
+  ],
+  "limitations": [
+    "The original erroneous Lattice prediction remains wrong.",
+    "The full original anonymized teaser and original Top3 are not supplied by this later company-named report.",
+    "Do not put details learned from this resolution into historical blind inputs.",
+    "Publisher-reported figures and product terms are not independently verified enterprise/issuer data."
+  ],
+  "algorithm_lesson": "Prioritize specific evidence and countercandidates, distinguish planned/completed events; do not hardcode Analog Devices or retrofit unavailable original clues."
+}

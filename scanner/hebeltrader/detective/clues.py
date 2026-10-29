@@ -39,7 +39,7 @@ PROMOTIONAL_RETURN = re.compile(
     re.I,
 )
 PROMOTIONAL_RETURN_PREFIXED = re.compile(
-    rf"\b{PROMO_CUE}\b[^.!?]{{0,120}}"
+    rf"\b{PROMO_CUE}\b[^.!?]{{0,120}}?"
     rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}",
     re.I,
 )
