@@ -38,7 +38,17 @@ class TavilyUsageMonitor:
                 timeout=10,
                 follow_redirects=False,
             )
-            response.raise_for_status()
+        except (httpx.HTTPError, RuntimeError):
+            return {"status": "unavailable", "reason": "network_error"}
+        status = response.status_code
+        if status != 200:
+            reason = {
+                401: "authentication_failed",
+                403: "access_forbidden",
+                429: "rate_limited",
+            }.get(status, "provider_unavailable" if status >= 500 else "request_rejected")
+            return {"status": "unavailable", "reason": reason}
+        try:
             payload = response.json()
             account = payload["account"]
             key = payload["key"]
@@ -63,8 +73,8 @@ class TavilyUsageMonitor:
             }
             self._cached = (fingerprint, now + self.ttl_seconds, result)
             return result
-        except (KeyError, TypeError, ValueError, httpx.HTTPError, RuntimeError):
-            return {"status": "unavailable"}
+        except (KeyError, TypeError, ValueError, OverflowError):
+            return {"status": "unavailable", "reason": "invalid_response"}
 
 
 def summarize_openai_usage(audit_root: Path):

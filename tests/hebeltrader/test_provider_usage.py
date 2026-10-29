@@ -66,7 +66,7 @@ def test_tavily_usage_fails_closed_without_leaking_key():
 
     result = TavilyUsageMonitor(getter=get).snapshot("tvly-private")
 
-    assert result == {"status": "unavailable"}
+    assert result == {"status": "unavailable", "reason": "network_error"}
     assert "private" not in json.dumps(result)
 
 
@@ -79,7 +79,7 @@ def test_tavily_usage_rejects_malformed_numbers():
         )
     ).snapshot("key")
 
-    assert result == {"status": "unavailable"}
+    assert result == {"status": "unavailable", "reason": "invalid_response"}
 
 
 def test_tavily_usage_rejects_fractional_nonfinite_and_missing_values():
@@ -111,7 +111,25 @@ def test_tavily_usage_rejects_fractional_nonfinite_and_missing_values():
         result = TavilyUsageMonitor(
             getter=lambda *args, payload=payload, **kwargs: Response(payload)
         ).snapshot("key")
-        assert result == {"status": "unavailable"}
+        assert result == {"status": "unavailable", "reason": "invalid_response"}
+
+
+def test_tavily_usage_reports_safe_http_reason_without_response_body():
+    from scanner.hebeltrader.detective.provider_usage import TavilyUsageMonitor
+
+    for status, reason in [
+        (401, "authentication_failed"),
+        (403, "access_forbidden"),
+        (429, "rate_limited"),
+        (503, "provider_unavailable"),
+    ]:
+        result = TavilyUsageMonitor(
+            getter=lambda *args, status=status, **kwargs: Response(
+                {"detail": "tvly-private must never escape"}, status_code=status
+            )
+        ).snapshot("tvly-private")
+        assert result == {"status": "unavailable", "reason": reason}
+        assert "private" not in json.dumps(result)
 
 
 def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):

@@ -224,3 +224,5 @@ def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch
 
     assert "Verbleibende Anbieter-Credits" in response.text
     assert "OpenAI Billing-Dashboard" in response.text
+    assert "authentication_failed" in response.text
+    assert "invalid_response" in response.text
