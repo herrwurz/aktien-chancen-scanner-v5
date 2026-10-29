@@ -14,23 +14,32 @@ def stock_text(text):
     ).strip()
 
 
+SECTORS = (
+    (r"halbleiter|\bchip\w*|semiconductor", "semiconductor"),
+    (r"landmaschinen\w*|traktor\w*|agrartechnik|agricultural", "agricultural machinery"),
+    (r"versicherung\w*|versicherer|insurance", "insurance"),
+    (r"pharma\w*|biotech\w*", "pharmaceutical"),
+    (r"gesundheit\w*|medizin\w*|healthcare|medtech", "healthcare"),
+    (r"rüstung\w*|verteidigung\w*|defen[sc]e|waffen\w*", "defense"),
+    (r"strom\w*|energie\w*|versorger|utilit\w*|power grid", "power infrastructure"),
+    (r"software\w*", "software"),
+    (r"handels\w*|einzelhandel\w*|retail\w*", "retail"),
+    (r"bank\w*|finanz\w*", "financial services"),
+)
+DOMINANCE = (
+    r"unverzichtbar|kaum\s+(?:noch\s+)?eine\s+wahl|keine\s+alternative|alternativlos|monopol\w*|"
+    r"herrscher|marktbeherrsch\w*|dominier\w*|branchenführer|marktführer|schlüsselrolle|"
+    r"nadelöhr|einzigartig\w*"
+)
+
+
 def build_queries(text, named, fallback):
     clean = stock_text(text)
-    sector = (
-        "semiconductor"
-        if re.search(r"halbleiter|\bchip\w*|semiconductor", clean, re.I)
-        else "company"
-    )
-    if sector == "company":
-        for pattern, label in (
-            (r"landmaschinen\w*|traktor\w*|agrartechnik|agricultural", "agricultural machinery"),
-            (r"versicherung\w*|versicherer|insurance", "insurance"),
-            (r"pharma\w*|biotech\w*", "pharmaceutical"),
-            (r"software\w*", "software"),
-        ):
-            if re.search(pattern, clean, re.I):
-                sector = label
-                break
+    sector = "company"
+    for pattern, label in SECTORS:
+        if re.search(pattern, clean, re.I):
+            sector = label
+            break
     contexts = []
     for pattern, english in (
         (r"rechenzentr\w*|data\s*cent(?:er|re)", "AI data centers"),
@@ -58,6 +67,13 @@ def build_queries(text, named, fallback):
     ):
         if re.search(pattern, clean, re.I):
             queries.append(" ".join([sector, event] + contexts[:2]) + " investor relations")
+    if re.search(DOMINANCE, clean, re.I):
+        queries.append(
+            sector + " dominant supplier customers have no alternative market share monopoly"
+        )
+        queries.append(sector + " industry indispensable supplier sole source near monopoly")
+        if sector == "semiconductor":
+            queries.append("semiconductor equipment sole supplier market share earnings growth")
     if re.search(r"wiederkehrend\w*|recurring revenue|\bARR\b", clean, re.I):
         queries.append(sector + ' "recurring revenue" quarterly results')
     if len(contexts) >= 2:
@@ -87,7 +103,9 @@ def build_queries(text, named, fallback):
     safe_named = [name for name in named if name in clean]
     if safe_named:
         queries.append(" ".join('"' + n + '"' for n in safe_named[:3]) + " acquisition investment")
-    if clean:
-        queries.append(clean[:250] + " company investor relations")
     queries += fallback
-    return list(dict.fromkeys(q.strip() for q in queries if q.strip()))[:8]
+    queries = list(dict.fromkeys(q.strip() for q in queries if q.strip()))
+    # A raw German headline is a poor web query; keep it only when nothing better exists.
+    if clean and len(queries) < 2:
+        queries.append(clean[:250] + " company investor relations")
+    return queries[:10]
