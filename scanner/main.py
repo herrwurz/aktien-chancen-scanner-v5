@@ -9,6 +9,7 @@ import httpx
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -28,6 +29,18 @@ from scanner.hebeltrader.detective.workflow import run_case
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
+
+
+class ArchiveCaseRequest(BaseModel):
+    reason: str = Field(min_length=3, max_length=500)
+
+
+class PromoteReferenceRequest(BaseModel):
+    source: str = Field(min_length=3, max_length=500)
+
+
+class ProspectiveCaseRequest(BaseModel):
+    basis: str = Field(min_length=3, max_length=500)
 
 
 def evidence(evaluation):
@@ -231,9 +244,9 @@ def create_app(settings: Settings | None = None, engine=None):
             raise HTTPException(403, "Case journal authorization required")
 
     @app.get("/api/hebeltrader/cases")
-    def case_list(request: Request):
+    def case_list(request: Request, include_archived: bool = False):
         case_access(request)
-        return CaseJournal(settings.detective_public_root / "cases").cases()
+        return CaseJournal(settings.detective_public_root / "cases").cases(include_archived)
 
     @app.get("/api/hebeltrader/quality")
     def case_quality(request: Request):
@@ -247,6 +260,36 @@ def create_app(settings: Settings | None = None, engine=None):
             return CaseJournal(settings.detective_public_root / "cases").case(case_id)
         except ValueError:
             raise HTTPException(404, "Case unavailable or integrity check failed") from None
+
+    @app.post("/api/hebeltrader/cases/{case_id}/archive")
+    def case_archive(case_id: str, payload: ArchiveCaseRequest, request: Request):
+        case_access(request)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").archive(
+                case_id, payload.reason
+            )
+        except ValueError:
+            raise HTTPException(404, "Case unavailable or archive request invalid") from None
+
+    @app.post("/api/hebeltrader/cases/{case_id}/reference-promotion")
+    def case_reference_promotion(case_id: str, payload: PromoteReferenceRequest, request: Request):
+        case_access(request)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").promote_reference(
+                case_id, payload.source
+            )
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
+
+    @app.post("/api/hebeltrader/cases/{case_id}/prospective")
+    def case_mark_prospective(case_id: str, payload: ProspectiveCaseRequest, request: Request):
+        case_access(request)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").mark_prospective(
+                case_id, payload.basis
+            )
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
 
     @app.post("/api/hebeltrader/cases/{case_id}/resolution")
     def case_resolution(case_id: str, payload: ResolutionRequest, request: Request):

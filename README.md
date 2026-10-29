@@ -8,6 +8,9 @@ mit echten Ausgaben und wiederholtem Lauf geprüft; Aktienidentifikation bleibt 
 
 V3.1 ergänzt ein dauerhaftes Falljournal, spätere Auflösungen, historische Verfügbarkeit
 und öffentliche RSS-Entdeckung: [V3.1 Bedienung und Abnahme](docs/teaser-intelligence-v31.md).
+Veraltete Tests können append-only archiviert werden. Neue Fälle lassen sich vor der Auflösung
+als prospektive Blindtests markieren und nach belegter Auflösung ausdrücklich als prospektive
+Referenzen freigeben; die ursprüngliche Rangliste bleibt unverändert.
 
 Primäre Funktion ist die Identifikation unbekannter Aktien aus öffentlichen Teasern:
 [Bedienung und Grenzen](docs/hebeltrader-primary.md),

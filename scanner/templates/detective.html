@@ -60,6 +60,7 @@
   </form>
   <section><h2>Meine Fälle</h2>
   <button type="button" id="load-cases">Gespeicherte Fälle laden</button>
+  <button type="button" id="load-archived">Archivierte Fälle anzeigen</button>
   <p id="case-message" aria-live="polite"></p><ul id="cases"></ul></section>
   {% if request.scope.get("teaser_web") %}
   <section><h2>Historische Referenzfälle</h2>
@@ -317,13 +318,13 @@ if(referenceButton){
     finally{referenceButton.disabled=false;}
   });
 }
-document.querySelector('#load-cases').addEventListener('click',async()=>{
+const loadCases=async(includeArchived=false)=>{
   const message=document.querySelector('#case-message'), cases=document.querySelector('#cases');
   message.textContent='Fälle werden geladen …';
   const headers={}; const token=document.querySelector('#authorization').value;
   if(token)headers['X-Research-Authorization']=token;
   try{
-    const response=await fetch('/api/hebeltrader/cases',{headers});
+    const response=await fetch(`/api/hebeltrader/cases?include_archived=${includeArchived}`,{headers});
     if(!response.ok)throw new Error('Fälle konnten nicht geladen werden. Anmeldung prüfen.');
     const rows=await response.json(); cases.replaceChildren();
     message.textContent=rows.length?`${rows.length} gespeicherte Fälle`:'Noch keine gespeicherten Fälle.';
@@ -334,10 +335,40 @@ document.querySelector('#load-cases').addEventListener('click',async()=>{
         if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
         renderOverview({...report,journal_case_id:row.case_id});
         (report.candidates||[]).forEach(renderCandidate);
-      });item.append(button);cases.append(item);
+      });item.append(button);
+      if(!row.archived){
+        const archive=el('button','Diesen Testfall archivieren');archive.type='button';
+        archive.addEventListener('click',async()=>{
+          const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{
+            method:'POST',headers:{...headers,'content-type':'application/json'},
+            body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
+          if(response.ok)await loadCases(false);else message.textContent='Archivierung fehlgeschlagen.';
+        });item.append(archive);
+      }
+      if(!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
+        const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';
+        blind.addEventListener('click',async()=>{
+          const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{
+            method:'POST',headers:{...headers,'content-type':'application/json'},
+            body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
+          if(response.ok)await loadCases(includeArchived);else message.textContent='Blindtest-Markierung nicht möglich.';
+        });item.append(blind);
+      }
+      if(row.resolution&&!row.reference_status&&row.input?.evaluation_class==='prospective_blind'){
+        const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';
+        promote.addEventListener('click',async()=>{
+          const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{
+            method:'POST',headers:{...headers,'content-type':'application/json'},
+            body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
+          if(response.ok)await loadCases(includeArchived);else message.textContent='Referenzfreigabe nicht möglich.';
+        });item.append(promote);
+      }
+      cases.append(item);
     });
   }catch(error){message.textContent=error.message;}
-});
+};
+document.querySelector('#load-cases').addEventListener('click',()=>loadCases(false));
+document.querySelector('#load-archived').addEventListener('click',()=>loadCases(true));
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
   const submit=form.querySelector('button');submit.disabled=true;
   try{

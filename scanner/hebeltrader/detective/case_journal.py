@@ -172,6 +172,13 @@ class CaseJournal:
             "first_prediction": None,
             "latest_prediction": None,
             "resolution": None,
+            "archived": False,
+            "archive": None,
+            "reference_status": None,
+            "evaluation_class": rows[0]["payload"]["input"].get("evaluation_class", "unclassified"),
+            "previously_used_for_development": rows[0]["payload"]["input"].get(
+                "previously_used_for_development"
+            ),
             "analyses": 0,
             "opened_at": rows[0]["recorded_at"],
             "first_frozen_at": None,
@@ -193,10 +200,60 @@ class CaseJournal:
             if kind == "resolution":
                 state["resolution"] = dict(p, recorded_at=row["recorded_at"])
                 state["status"] = p["case_status"]
+            if kind == "archive":
+                state["archived"] = True
+                state["archive"] = dict(p, recorded_at=row["recorded_at"])
+            if kind == "reference_promotion":
+                state["reference_status"] = "prospective_reference"
+            if kind == "prospective_classification":
+                state["evaluation_class"] = "prospective_blind"
+                state["previously_used_for_development"] = False
         return state
 
-    def cases(self):
-        return [self.case(r["case_id"]) for r in self.events() if r["kind"] == "intake"]
+    def cases(self, include_archived=False):
+        rows = [self.case(r["case_id"]) for r in self.events() if r["kind"] == "intake"]
+        return rows if include_archived else [row for row in rows if not row["archived"]]
+
+    def archive(self, case_id, reason):
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("archive reason required")
+        with self._lock():
+            state = self.case(case_id)
+            if state["archived"]:
+                return state["archive"]
+            return self._append(case_id, "archive", {"reason": reason.strip()})["payload"]
+
+    def promote_reference(self, case_id, source):
+        if not isinstance(source, str) or not source.strip():
+            raise ValueError("reference source required")
+        with self._lock():
+            state = self.case(case_id)
+            if state["reference_status"]:
+                return {"reference_status": state["reference_status"]}
+            if state["resolution"] is None:
+                raise ValueError("resolved case required")
+            if state["evaluation_class"] != "prospective_blind":
+                raise ValueError("prospective blind case required")
+            self._append(
+                case_id,
+                "reference_promotion",
+                {"source": source.strip(), "reference_status": "prospective_reference"},
+            )
+            return {"reference_status": "prospective_reference"}
+
+    def mark_prospective(self, case_id, basis):
+        if not isinstance(basis, str) or not basis.strip():
+            raise ValueError("classification basis required")
+        with self._lock():
+            state = self.case(case_id)
+            if state["resolution"] is not None:
+                raise ValueError("resolved case cannot be reclassified")
+            if state["first_prediction"] is None:
+                raise ValueError("frozen prediction required")
+            if state["evaluation_class"] == "prospective_blind":
+                return {"evaluation_class": "prospective_blind"}
+            self._append(case_id, "prospective_classification", {"basis": basis.strip()})
+            return {"evaluation_class": "prospective_blind"}
 
     def begin(self, case_id):
         with self._lock():
@@ -268,7 +325,15 @@ class CaseJournal:
             existing = handle.read()
             added = 0
             for row in self.events():
-                if row["kind"] not in ("intake", "analysis", "resolution", "failure"):
+                if row["kind"] not in (
+                    "intake",
+                    "analysis",
+                    "resolution",
+                    "failure",
+                    "archive",
+                    "prospective_classification",
+                    "reference_promotion",
+                ):
                     continue
                 marker = f"<!-- TI-JOURNAL:{row['sha256']} -->"
                 if marker in existing:
@@ -321,8 +386,7 @@ class CaseJournal:
             if first is None:
                 continue
             resolution = case["resolution"]
-            meta = case["input"]
-            classification = meta.get("evaluation_class", "unclassified")
+            classification = case["evaluation_class"]
             independent = False
             preregistered = datetime.fromisoformat(case["opened_at"]) <= datetime.fromisoformat(
                 case["first_frozen_at"]
@@ -330,7 +394,7 @@ class CaseJournal:
             pending = (
                 preregistered
                 and classification == "prospective_blind"
-                and meta.get("previously_used_for_development") is False
+                and case["previously_used_for_development"] is False
                 and bool(first.get("teaser_sha256"))
                 and resolution is None
             )
@@ -345,7 +409,7 @@ class CaseJournal:
                         and confirmed.utcoffset() is not None
                         and confirmed > frozen
                         and confirmed <= datetime.fromisoformat(resolution["recorded_at"])
-                        and meta.get("previously_used_for_development") is False
+                        and case["previously_used_for_development"] is False
                         and resolution.get("original_sha256") == first.get("teaser_sha256")
                         and bool(first.get("teaser_sha256"))
                         and bool(resolution.get("source"))

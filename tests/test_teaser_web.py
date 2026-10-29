@@ -28,6 +28,26 @@ def test_web_journal_does_not_require_browser_research_token(tmp_path, monkeypat
     assert client.get("/api/hebeltrader/cases", auth=("admin", "private-password")).json() == []
 
 
+def test_web_archives_case_and_lists_it_only_when_requested(tmp_path, monkeypatch):
+    from scanner.hebeltrader.detective.case_journal import CaseJournal
+
+    client = web(tmp_path, monkeypatch)
+    root = tmp_path / "state" / "detective" / "cases"
+    case_id = CaseJournal(root).intake({"teaser_text": "obsolete test"})
+    response = client.post(
+        f"/api/hebeltrader/cases/{case_id}/archive",
+        auth=("admin", "private-password"),
+        json={"reason": "obsolete operator test"},
+    )
+    assert response.status_code == 200
+    assert client.get("/api/hebeltrader/cases", auth=("admin", "private-password")).json() == []
+    archived = client.get(
+        "/api/hebeltrader/cases?include_archived=true", auth=("admin", "private-password")
+    ).json()
+    assert archived[0]["case_id"] == case_id
+    assert archived[0]["archived"] is True
+
+
 def test_web_rejects_cross_origin_writes(tmp_path, monkeypatch):
     client = web(tmp_path, monkeypatch)
     response = client.post(

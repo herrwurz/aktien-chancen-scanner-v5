@@ -1,5 +1,16 @@
 # HEBELTRADER-Detektiv V3
 
+## Falllebenszyklus in der Weboberfläche
+
+Gespeicherte Testfälle werden nicht physisch gelöscht. **Archivieren** hängt ein signiertes
+Journalereignis an, blendet den Fall aus der aktiven Liste aus und schließt ihn aus
+Qualitätskennzahlen aus. Über „Archivierte Fälle anzeigen“ bleibt er prüfbar.
+
+Ein neuer Teaser kann nach eingefrorener Erstprognose und vor Kenntnis der Lösung als
+prospektiver Blindtest markiert werden. Erst nach einer belegten späteren Auflösung darf er als
+prospektiver Referenzfall freigegeben werden. Die 18 rekonstruierten Entwicklungsreferenzen
+bleiben davon getrennt; gekaufte PDFs bleiben im privaten persistenten Speicher.
+
 Der Detektiv untersucht unbekannte Börsenteaser aus Text, PDF oder Bild. Er durchsucht den zum
 Publikationszeitpunkt sichtbaren lokalen Research-Index bzw. ein kuratiertes EU/DACH-Universum,
 prüft bis zu 50 Kandidaten gegen archivierte Evidenz und gibt höchstens drei Kandidaten aus. Der

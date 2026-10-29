@@ -202,3 +202,55 @@ def test_later_solution_can_resolve_empty_first_prediction_without_claiming_hit(
     assert result["prediction_outcome"] == "not_identified"
     assert result["correct_rank"] is None
     assert j.quality()["all"]["top1_hits"] == 0
+
+
+def test_archive_hides_case_without_rewriting_journal_and_is_idempotent(tmp_path):
+    j = CaseJournal(tmp_path / "j")
+    case = j.intake({"teaser_text": "obsolete test"})
+    head_before = j.verify()["head_sha256"]
+    j.archive(case, "obsolete operator test")
+    j.archive(case, "obsolete operator test")
+    assert j.cases() == []
+    assert j.cases(include_archived=True)[0]["archived"] is True
+    assert j.verify()["head_sha256"] != head_before
+    assert len([e for e in j.events() if e["kind"] == "archive"]) == 1
+    register = tmp_path / "register.md"
+    j.export_register(register)
+    assert "archive" in register.read_text()
+
+
+def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
+    j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
+    case = j.intake(
+        {
+            "teaser_text": "new blind case",
+            "evaluation_class": "prospective_blind",
+            "previously_used_for_development": False,
+        }
+    )
+    j.record_analysis(case, frozen(tmp_path, "blind", ["ASML", "TSM"]))
+    with pytest.raises(ValueError, match="resolved"):
+        j.promote_reference(case, "purchased report")
+    j.resolve(
+        case,
+        {
+            "asset_id": "ASML",
+            "name": "ASML Holding",
+            "source": "purchased report",
+            "basis": "user",
+            "error_analysis": "Compared with frozen top three",
+        },
+    )
+    j.promote_reference(case, "operator verified purchased report")
+    j.promote_reference(case, "operator verified purchased report")
+    state = j.case(case)
+    assert state["reference_status"] == "prospective_reference"
+    assert len([e for e in j.events() if e["kind"] == "reference_promotion"]) == 1
+
+
+def test_existing_unresolved_case_can_be_marked_prospective_before_resolution(tmp_path):
+    j = CaseJournal(tmp_path / "j")
+    case = j.intake({"teaser_text": "live blind teaser"})
+    j.record_analysis(case, frozen(tmp_path, "live", ["ASML"]))
+    j.mark_prospective(case, "operator confirms solution was not known")
+    assert j.case(case)["evaluation_class"] == "prospective_blind"
