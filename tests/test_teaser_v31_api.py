@@ -64,3 +64,29 @@ def test_empty_case_journal_token_does_not_authorize_missing_header(tmp_path):
     with TestClient(create_app(settings, engine)) as client:
         assert client.get("/api/hebeltrader/cases").status_code == 503
     engine.dispose()
+
+
+def test_solution_pdf_prefills_resolution_and_requires_token(tmp_path):
+    import base64
+    import glob
+
+    pdfs = glob.glob("tests/fixtures/**/*.pdf", recursive=True)
+    assert pdfs
+    body = {"pdf_base64": base64.b64encode(open(pdfs[0], "rb").read()).decode()}
+    engine = create_engine(
+        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    Base.metadata.create_all(engine)
+    settings = Settings(
+        _env_file=None, detective_public_root=tmp_path, detective_live_api_token="local-test-only"
+    )
+    with TestClient(create_app(settings, engine)) as client:
+        assert client.post("/api/hebeltrader/cases/solution-pdf", json=body).status_code == 403
+        headers = {"X-Research-Authorization": "local-test-only"}
+        ok = client.post("/api/hebeltrader/cases/solution-pdf", headers=headers, json=body)
+        assert ok.status_code == 200
+        assert len(ok.json()["pdf_sha256"]) == 64
+        bad = client.post(
+            "/api/hebeltrader/cases/solution-pdf", headers=headers, json={"pdf_base64": "!!"}
+        )
+        assert bad.status_code == 422

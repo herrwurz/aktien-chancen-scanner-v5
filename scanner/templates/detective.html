@@ -90,6 +90,9 @@
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
       Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
     <form id="resolution-form">
+      <label for="solution-pdf">Lösungs-PDF (Hebeltrader-Ausgabe, füllt Felder vor)</label>
+      <input id="solution-pdf" type="file" accept="application/pdf">
+      <p id="solution-pdf-status" aria-live="polite"></p>
       <label for="case-id">Fall-ID</label><input id="case-id" required>
       <label for="resolved-id">Aktien-ID (aus Kandidatenbericht, sonst verifizierte Identität)</label><input id="resolved-id" required>
       <label for="resolved-name">Aufgelöster Aktienname</label><input id="resolved-name" required>
@@ -509,6 +512,21 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   result.append(comparison);
   }catch(error){const message=error?.message||'Unbekannter Verbindungsfehler';result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);}
   finally{submit.disabled=false;submit.textContent=originalLabel;}
+});
+document.querySelector('#solution-pdf').addEventListener('change',async event=>{
+  const file=event.target.files[0],status=document.querySelector('#solution-pdf-status');
+  if(!file)return;status.textContent='PDF wird gelesen …';
+  try{
+    const response=await fetch('/api/hebeltrader/cases/solution-pdf',{method:'POST',
+      headers:{'content-type':'application/json','X-Research-Authorization':document.querySelector('#authorization').value},
+      body:JSON.stringify({pdf_base64:await asBase64(file)})});
+    const data=await response.json();
+    if(!response.ok){status.textContent=data.detail;return}
+    const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v};
+    set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
+    set('resolved-source',`Hebeltrader-Ausgabe ${data.issue} (PDF sha256 ${data.pdf_sha256.slice(0,12)})`);
+    status.textContent=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – bitte prüfen und Aktien-ID ergänzen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
+  }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
 });
 document.querySelector('#resolution-form').addEventListener('submit',async event=>{
   event.preventDefault();const status=document.querySelector('#resolution-result');
