@@ -101,6 +101,7 @@ const loadApiCosts=async()=>{
     document.querySelector('#remaining-cost').textContent=euro(costs.remaining_cents);
     document.querySelector('#api-cost-meter').style.width=`${Math.min(costs.usage_percent,100)}%`;
     const tavily=data.provider_credits?.tavily||{};
+    const tavilySearchUsage=tavily.search_usage==null?'unbekannt':tavily.search_usage;
     const tavilyErrors={authentication_failed:'Authentifizierung fehlgeschlagen – Tavily-Schlüssel prüfen.',
       access_forbidden:'Der Tavily-Schlüssel darf den Usage-Endpunkt nicht lesen.',
       rate_limited:'Tavily-Usage-Abfrage ist vorübergehend rate-limitiert.',
@@ -109,7 +110,7 @@ const loadApiCosts=async()=>{
       provider_unavailable:'Der Tavily-Usage-Dienst ist vorübergehend nicht verfügbar.',
       request_rejected:'Tavily hat die Usage-Abfrage abgelehnt.'};
     document.querySelector('#tavily-credits').textContent=tavily.status==='available'
-      ? `Tavily ${tavily.plan}: ${tavily.plan_remaining} von ${tavily.plan_limit} Plan-Credits verfügbar · ${tavily.search_usage} Such-Credits über diesen Schlüssel verbraucht.`
+      ? `Tavily ${tavily.plan}: ${tavily.plan_remaining} von ${tavily.plan_limit} Plan-Credits verfügbar · ${tavilySearchUsage} Such-Credits über diesen Schlüssel verbraucht.`
       : tavily.status==='not_configured'?'Tavily: kein API-Schlüssel konfiguriert.':(tavilyErrors[tavily.reason]||'Tavily-Kontostand derzeit nicht abrufbar.');
     const openai=data.provider_credits?.openai||{};
     const usd=Number(openai.estimated_usd||0).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});

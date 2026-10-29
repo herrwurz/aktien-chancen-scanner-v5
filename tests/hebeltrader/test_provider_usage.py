@@ -93,25 +93,65 @@ def test_tavily_usage_rejects_fractional_nonfinite_and_missing_values():
         "paygo_usage": 0,
         "paygo_limit": 0,
     }
-    payloads = [
+    invalid_payloads = [
         {"key": valid_key, "account": {**valid_account, "plan_usage": 1.9}},
         {"key": valid_key, "account": {**valid_account, "plan_usage": float("inf")}},
-        {
-            "key": valid_key,
-            "account": {k: v for k, v in valid_account.items() if k != "paygo_limit"},
-        },
-        {
-            "key": {k: v for k, v in valid_key.items() if k != "search_usage"},
-            "account": valid_account,
-        },
         {"key": valid_key, "account": {**valid_account, "current_plan": "key"}},
     ]
 
-    for payload in payloads:
+    for payload in invalid_payloads:
         result = TavilyUsageMonitor(
             getter=lambda *args, payload=payload, **kwargs: Response(payload)
         ).snapshot("key")
         assert result == {"status": "unavailable", "reason": "invalid_response"}
+
+
+def test_tavily_usage_preserves_missing_optional_values_as_unknown():
+    from scanner.hebeltrader.detective.provider_usage import TavilyUsageMonitor
+
+    result = TavilyUsageMonitor(
+        getter=lambda *args, **kwargs: Response(
+            {
+                "account": {
+                    "current_plan": "Researcher",
+                    "plan_usage": 25,
+                    "plan_limit": 1000,
+                },
+            }
+        )
+    ).snapshot("key")
+
+    assert result["status"] == "available"
+    assert result["plan_remaining"] == 975
+    assert result["search_usage"] is None
+    assert result["key_usage"] is None
+    assert result["key_limit"] is None
+    assert result["paygo_usage"] is None
+    assert result["paygo_limit"] is None
+
+
+def test_tavily_usage_accepts_documented_nested_objects():
+    from scanner.hebeltrader.detective.provider_usage import TavilyUsageMonitor
+
+    result = TavilyUsageMonitor(
+        getter=lambda *args, **kwargs: Response(
+            {
+                "key": {"key": {"usage": 7, "limit": 1000, "search_usage": 7}},
+                "account": {
+                    "account": {
+                        "current_plan": "Researcher",
+                        "plan_usage": 7,
+                        "plan_limit": 1000,
+                        "paygo_usage": 0,
+                        "paygo_limit": 0,
+                    }
+                },
+            }
+        )
+    ).snapshot("key")
+
+    assert result["status"] == "available"
+    assert result["plan_remaining"] == 993
 
 
 def test_tavily_usage_reports_safe_http_reason_without_response_body():

@@ -24,6 +24,11 @@ class TavilyUsageMonitor:
             raise ValueError("invalid usage value")
         return value
 
+    @classmethod
+    def _optional_count(cls, values, name):
+        value = values.get(name)
+        return None if value is None else cls._count(value)
+
     def snapshot(self, api_key):
         if not api_key:
             return {"status": "not_configured"}
@@ -51,9 +56,13 @@ class TavilyUsageMonitor:
         try:
             payload = response.json()
             account = payload["account"]
-            key = payload["key"]
+            key = payload.get("key", {})
             if not isinstance(account, dict) or not isinstance(key, dict):
                 raise ValueError("invalid usage response")
+            if isinstance(account.get("account"), dict):
+                account = account["account"]
+            if isinstance(key.get("key"), dict):
+                key = key["key"]
             plan = account["current_plan"]
             if not isinstance(plan, str) or not plan.strip() or api_key in plan:
                 raise ValueError("invalid usage plan")
@@ -65,11 +74,11 @@ class TavilyUsageMonitor:
                 "plan_usage": plan_usage,
                 "plan_limit": plan_limit,
                 "plan_remaining": max(plan_limit - plan_usage, 0),
-                "key_usage": self._count(key["usage"]),
-                "key_limit": self._count(key["limit"]),
-                "search_usage": self._count(key["search_usage"]),
-                "paygo_usage": self._count(account["paygo_usage"]),
-                "paygo_limit": self._count(account["paygo_limit"]),
+                "key_usage": self._optional_count(key, "usage"),
+                "key_limit": self._optional_count(key, "limit"),
+                "search_usage": self._optional_count(key, "search_usage"),
+                "paygo_usage": self._optional_count(account, "paygo_usage"),
+                "paygo_limit": self._optional_count(account, "paygo_limit"),
             }
             self._cached = (fingerprint, now + self.ttl_seconds, result)
             return result
