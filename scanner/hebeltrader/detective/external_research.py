@@ -12,6 +12,7 @@ import httpx
 
 from .clues import EXPLICIT_WKN
 from .public_web import PublicWebResearch
+from .temporal import timestamp
 
 
 def _literal(quote, text):
@@ -76,7 +77,7 @@ class ResearchApis:
         if monotonic() - self.started >= 180:
             raise ValueError("External research duration limit reached")
 
-    def _call(self, provider, payload):
+    def _call(self, provider, payload, *, endpoint=None):
         self.check_deadline()
         if not self.approved:
             raise ValueError("External API cost approval is required")
@@ -84,7 +85,10 @@ class ResearchApis:
         if not key:
             raise ValueError(f"{provider} API credential is missing")
         count = self.search_calls if provider == "search" else self.ai_calls
-        if count >= (16 if provider == "search" else 12):
+        # Search and Extract share Tavily's credential and accounting. The live investigation
+        # can issue up to 14 discovery/peer queries and then needs room to recover blocked
+        # documents through Extract, while the global 40-request and monthly budget gates remain.
+        if count >= (32 if provider == "search" else 12):
             raise ValueError(f"{provider} per-analysis API limit reached")
         encoded = json.dumps(payload, ensure_ascii=False).encode()
         if len(encoded) > 40000:
@@ -94,7 +98,7 @@ class ResearchApis:
             self.search_calls += 1
         else:
             self.ai_calls += 1
-        url = (
+        url = endpoint or (
             "https://api.tavily.com/search"
             if provider == "search"
             else "https://api.openai.com/v1/chat/completions"
@@ -168,17 +172,52 @@ class ResearchApis:
                 "max_results": min(8, max(1, limit)),
                 "include_answer": False,
                 "include_raw_content": False,
+                "include_published_date": True,
                 "auto_parameters": False,
             },
         )
         rows = body.get("results")
         if not isinstance(rows, list):
             raise ValueError("Invalid search response results")
-        return [
-            {"url": row["url"], "title": row.get("title", "")}
-            for row in rows[:8]
-            if isinstance(row, dict) and isinstance(row.get("url"), str)
-        ]
+        hits = []
+        for row in rows[:8]:
+            if not isinstance(row, dict) or not isinstance(row.get("url"), str):
+                continue
+            hit = {"url": row["url"], "title": str(row.get("title", ""))[:500]}
+            content = row.get("content")
+            if isinstance(content, str) and content.strip():
+                hit["content"] = content.strip()[:20_000]
+            score = row.get("score")
+            if isinstance(score, (int, float)) and not isinstance(score, bool) and 0 <= score <= 1:
+                hit["score"] = score
+            published = timestamp(row.get("published_date"))
+            if published:
+                hit["published_at"] = published.isoformat()
+            hits.append(hit)
+        return hits
+
+    def extract(self, url):
+        body = self._call(
+            "search",
+            {
+                "urls": [url],
+                "extract_depth": "basic",
+                "format": "text",
+                "include_images": False,
+                "include_usage": True,
+            },
+            endpoint="https://api.tavily.com/extract",
+        )
+        rows = body.get("results")
+        if not isinstance(rows, list):
+            raise ValueError("Invalid extract response results")
+        for row in rows:
+            if not isinstance(row, dict) or row.get("url") != url:
+                continue
+            content = row.get("raw_content")
+            if isinstance(content, str) and content.strip():
+                return {"url": url, "content": content.strip()[:20_000]}
+        raise ValueError("Tavily extract unavailable")
 
     def _json(self, task, data):
         instructions = (
@@ -314,6 +353,7 @@ class ApiPublicResearch(PublicWebResearch):
         self.apis = apis
         self.phase = "input"
         self.phase_fetches = {"discovery": 0, "peers": 0, "falsification": 0}
+        self.search_hits = {}
 
     def set_phase(self, phase):
         self.phase = phase
@@ -331,6 +371,7 @@ class ApiPublicResearch(PublicWebResearch):
         for hit in hits:
             try:
                 self._validate(hit["url"])
+                self.search_hits[hit["url"]] = hit
                 valid.append(hit)
             except ValueError:
                 continue
@@ -342,7 +383,39 @@ class ApiPublicResearch(PublicWebResearch):
             raise ValueError("Research phase document budget reached")
         if self.phase != "input":
             self.phase_fetches[self.phase] += 1
-        doc = super().fetch(url)  # Robots, paywalls, SSRF and raw archive stay mandatory.
+        try:
+            doc = super().fetch(url)  # Preferred direct public archive.
+        except (ValueError, httpx.HTTPError) as direct_error:
+            hit = self.search_hits.get(url, {})
+            try:
+                extracted = self.apis.extract(url)
+                text = extracted["content"]
+                source_class = "B"
+                source_kind = "tavily_extract"
+            except (ValueError, httpx.HTTPError):
+                text = hit.get("content")
+                if not isinstance(text, str) or not text.strip():
+                    raise direct_error from None
+                source_class = "C"
+                source_kind = "search_snippet"
+            raw = text.encode()
+            archived = self.run_dir / ("provider-" + hashlib.sha256(raw).hexdigest() + ".txt")
+            archived.write_bytes(raw)
+            doc = {
+                "url": url,
+                "title": hit.get("title", ""),
+                "text": text,
+                "published_at": hit.get("published_at"),
+                "source_available_at": None,
+                "availability_basis": "provider_observed_at_retrieval",
+                "content_revision_at": None,
+                "retrieved_at": self.clock().isoformat(),
+                "raw_sha256": hashlib.sha256(raw).hexdigest(),
+                "raw_file": str(archived),
+                "source_kind": source_kind,
+                "source_class": source_class,
+                "provider_score": hit.get("score"),
+            }
         try:
             return self.apis.annotate(doc)
         except (ValueError, httpx.HTTPError) as exc:

@@ -352,3 +352,7 @@ Der [Betriebs-, Quellen- und Abnahmebericht](docs/research-v23.md) beschreibt SE
 GLEIF-Identitäten, Point-in-time-Grenzen und den realen Blindteaser-Versuch. Die Anwendung ist
 wegen begrenzter Branchen- und internationaler Nachrichtenevidenz noch nicht allgemein für
 unbekannte Teaser einsetzbar und liefert bei Mehrdeutigkeit `unresolved`.
+
+Die V3.1-Webrecherche erhält blockierte Quellen über Tavily Extract beziehungsweise begrenzte,
+archivierte Suchtreffer. Sie zeigt deren Quellenklasse und zeitliche Verwendbarkeit, gewichtet
+spezifische Belege stärker und weist punktgleiche Spitzenkandidaten als Gleichstand aus.

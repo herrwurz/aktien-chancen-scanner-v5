@@ -76,6 +76,20 @@ Im Offline- und API-Startpfad gibt es keine Netzwerkanfragen. Live-Recherche ble
 zugangsgeschützt und durch Requests sowie Laufzeit begrenzt. V3 benötigt keinen kostenpflichtigen
 Dienst.
 
+Die Live-Recherche bewahrt die Herkunft jedes Belegs in vier Klassen: **A** ist direkt geladene
+Emittenten- oder Regulatorik-Evidenz, **B** ein über Tavily Extract abgerufener Quelltext, **C**
+ein begrenzter Tavily-Suchtreffer und **D** eine sonstige Sekundärquelle. Wenn eine öffentliche
+Seite Direktabrufe blockiert, versucht der Scanner zuerst Extract und verwendet erst danach den
+archivierten Suchtreffer. Klasse B und C werden nie zu Primärbelegen hochgestuft; URL,
+Abrufzeit, Hash und zeitliche Unsicherheit bleiben im Bericht erhalten.
+
+Bei einem aktuellen Teaser ohne Publikationszeit dürfen Klasse B und C eine ausdrücklich als
+`current_hypothesis_only` markierte Rangfolge stützen. Das ist keine historische Bestätigung und
+ist in `historical_blind` unzulässig. Konkrete Alleinstellungsmerkmale und Unternehmensereignisse
+wiegen im Evidenzwert stärker als allgemeine Gewinn- oder Chartformulierungen. Haben führende
+Kandidaten denselben Wert, lautet der Status `ambiguous_tie`; die Oberfläche behauptet dann
+keinen eindeutigen Rang 1.
+
 ## Blindtests
 
 Scanner und Evaluator sind getrennte Programme. Für Blindläufe startet das Skript einen

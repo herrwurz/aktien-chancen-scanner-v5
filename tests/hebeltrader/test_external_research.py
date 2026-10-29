@@ -40,7 +40,7 @@ def test_clients_require_approval_before_credentials_or_network(tmp_path):
     assert api.budget.summary()["reserved_cents"] == 0
 
 
-def test_search_is_url_discovery_only_and_never_uses_generated_answer(tmp_path):
+def test_search_archives_bounded_source_snippet_and_never_uses_generated_answer(tmp_path):
     from scanner.hebeltrader.detective.api_budget import ApiBudget
     from scanner.hebeltrader.detective.external_research import ResearchApis
 
@@ -62,7 +62,8 @@ def test_search_is_url_discovery_only_and_never_uses_generated_answer(tmp_path):
                     {
                         "url": "https://company.example/release",
                         "title": "A release",
-                        "content": "Not evidence",
+                        "content": "Company Corp has the only commercially available machine.",
+                        "score": 0.91,
                     }
                 ],
             },
@@ -77,9 +78,74 @@ def test_search_is_url_discovery_only_and_never_uses_generated_answer(tmp_path):
         client=httpx.Client(transport=httpx.MockTransport(handler)),
     )
     assert api.search("oilfield cooling") == [
-        {"url": "https://company.example/release", "title": "A release"}
+        {
+            "url": "https://company.example/release",
+            "title": "A release",
+            "content": "Company Corp has the only commercially available machine.",
+            "score": 0.91,
+        }
     ]
     assert "private-search" not in "".join(p.read_text() for p in tmp_path.glob("api-*.json"))
+
+
+def test_tavily_extract_returns_bounded_content(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    def handler(request):
+        assert request.url == "https://api.tavily.com/extract"
+        return httpx.Response(
+            200,
+            json={
+                "results": [
+                    {
+                        "url": "https://issuer.example/results",
+                        "raw_content": "Issuer Corp is the exclusive supplier. " * 1000,
+                    }
+                ],
+                "failed_results": [],
+            },
+        )
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        search_key="private-search",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+    result = api.extract("https://issuer.example/results")
+    assert result["url"] == "https://issuer.example/results"
+    assert 100 < len(result["content"]) <= 20_000
+
+
+def test_search_discards_unparseable_provider_publication_date(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        search_key="private-search",
+        client=httpx.Client(
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(
+                    200,
+                    json={
+                        "results": [
+                            {
+                                "url": "https://issuer.example/results",
+                                "published_date": "sometime last week",
+                            }
+                        ]
+                    },
+                )
+            )
+        ),
+    )
+
+    assert "published_at" not in api.search("issuer results")[0]
 
 
 def test_source_interpretation_rejects_invented_quotes_and_tickers(tmp_path):

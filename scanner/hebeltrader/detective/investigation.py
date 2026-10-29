@@ -24,6 +24,66 @@ from .temporal import assess_document, timestamp
 from .verification import verify_candidates
 
 
+def clue_specificity(text):
+    value = str(text or "").casefold()
+    if re.search(
+        r"kaum (?:noch )?eine wahl|keine alternative|einzig(?:e|er|es)|"
+        r"monopol|unverzichtbar|exclusive|only commercially|sole supplier",
+        value,
+    ):
+        return 12
+    if re.search(r"übernahm|übernahme|acquisition|großauftrag|partnerschaft|zulassung", value):
+        return 8
+    if re.search(r"bruttomarge|cashflow|umsatz|gewinn|marge|revenue|earnings", value):
+        return 3
+    if re.search(r"chart|kursziel|rendite|ausbruch|rally", value):
+        return 0
+    return 2
+
+
+def apply_tie_labels(ranked):
+    tied = bool(len(ranked) > 1 and ranked[0]["evidence_score"] == ranked[1]["evidence_score"])
+    if tied:
+        for row in ranked:
+            if row["evidence_score"] == ranked[0]["evidence_score"]:
+                row["rank_label"] = "Gleichstand Rang 1"
+    return tied
+
+
+def source_class(document):
+    explicit = document.get("source_class")
+    if explicit in {"A", "B", "C", "D"}:
+        return explicit
+    return {
+        "issuer": "A",
+        "regulatory": "A",
+        "product_document": "A",
+        "tavily_extract": "B",
+        "search_snippet": "C",
+    }.get(document.get("source_kind"), "D")
+
+
+def finding_timing(document, cutoff, *, current_hypothesis):
+    assessment = assess_document(document, cutoff)
+    if assessment["eligibility"] == "eligible":
+        return {"temporal_eligibility": "eligible", "usable_for_ranking": True}
+    if (
+        current_hypothesis
+        and assessment["eligibility"] == "uncertain"
+        and source_class(document) in {"B", "C"}
+        and timestamp(document.get("retrieved_at"))
+        and timestamp(document.get("retrieved_at")) <= cutoff
+    ):
+        return {
+            "temporal_eligibility": "current_hypothesis_only",
+            "usable_for_ranking": True,
+        }
+    return {
+        "temporal_eligibility": assessment["eligibility"],
+        "usable_for_ranking": False,
+    }
+
+
 class InvestigationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     teaser_text: str = Field(default="", max_length=20000)
@@ -446,20 +506,20 @@ class Investigator:
                         )
                         if interpretation:
                             for finding in interpretation["findings"]:
+                                timing = finding_timing(
+                                    doc,
+                                    cutoff,
+                                    current_hypothesis=request.publication_at is None,
+                                )
                                 cited.append(
                                     dict(
                                         finding,
                                         url=doc["url"],
                                         source_kind=doc.get("source_kind"),
+                                        source_class=source_class(doc),
                                         published_at=doc.get("published_at"),
                                         retrieved_at=doc.get("retrieved_at"),
-                                        temporal_eligibility=assess_document(doc, cutoff)[
-                                            "eligibility"
-                                        ],
-                                        usable_for_ranking=(
-                                            assess_document(doc, cutoff)["eligibility"]
-                                            == "eligible"
-                                        ),
+                                        **timing,
                                         verification="ai_interpretation_requires_manual_review",
                                     )
                                 )
@@ -486,7 +546,16 @@ class Investigator:
                 score = sum(50 if by_clue[c].category == "fact_claims" else 35 for c in specific)
                 score += min(10, row.evidence_score // 10)
                 score -= 100 * len(row.hard_contradictions)
-                score += max(-9, min(9, 2 * len(supported - disputed) - 3 * len(disputed)))
+                score += sum(
+                    clue_specificity(by_clue[clue_id].quote)
+                    for clue_id in supported - disputed
+                    if clue_id in by_clue
+                )
+                score -= sum(
+                    clue_specificity(by_clue[clue_id].quote)
+                    for clue_id in disputed
+                    if clue_id in by_clue
+                )
                 result.append(
                     {
                         "asset_id": row.asset_id,
@@ -565,6 +634,7 @@ class Investigator:
                 queries=falsification_queries,
             )
             ranked = compare()
+        top_tie = apply_tie_labels(ranked)
         counter_count = max(
             0,
             sum(row["comparison_evidence_available"] for row in ranked)
@@ -648,6 +718,8 @@ class Investigator:
             "candidates": ranked[:3],
             "checked_candidates": ranked,
             "countercandidate_count": counter_count,
+            "ranking_tie": top_tie,
+            "ranking_status": "ambiguous_tie" if top_tie else "ranked",
             "criteria": [clue.model_dump(mode="json") for clue in clues],
             "semantic_research": {
                 "enabled": bool(apis and apis.ai_key and not offline),
@@ -699,7 +771,9 @@ class Investigator:
         }
         source_blocked = not offline and not ranked and bool(source_errors)
         report["decision"] = {
-            "status": "research_unavailable"
+            "status": "ambiguous_tie"
+            if top_tie and ranked
+            else "research_unavailable"
             if source_blocked
             else "likely_identified"
             if identified
@@ -714,7 +788,9 @@ class Investigator:
                 for r in ranked[:3]
             )
             else "insufficient_evidence",
-            "label": "Recherche derzeit nicht verfügbar"
+            "label": "Keine eindeutige Rangfolge"
+            if top_tie and ranked
+            else "Recherche derzeit nicht verfügbar"
             if source_blocked
             else "Wahrscheinlich identifiziert"
             if identified

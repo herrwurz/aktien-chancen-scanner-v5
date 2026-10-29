@@ -192,6 +192,58 @@ def test_historical_blind_refuses_live_search_and_late_archive(tmp_path):
     assert report["identification"]["status"] == "not_identified"
 
 
+def test_distinctive_exclusivity_clue_outweighs_generic_growth_clue():
+    from scanner.hebeltrader.detective.investigation import clue_specificity
+
+    assert clue_specificity("Kunden haben kaum eine Wahl; einzige verfügbare Technologie") > (
+        clue_specificity("Gewinne wachsen stark") * 2
+    )
+
+
+def test_equal_candidate_scores_are_labelled_as_tie():
+    from scanner.hebeltrader.detective.investigation import apply_tie_labels
+
+    rows = [{"evidence_score": 0}, {"evidence_score": 0}, {"evidence_score": -1}]
+    assert apply_tie_labels(rows) is True
+    assert [row.get("rank_label") for row in rows] == [
+        "Gleichstand Rang 1",
+        "Gleichstand Rang 1",
+        None,
+    ]
+
+
+def test_current_hypothesis_can_rank_provider_evidence_without_claiming_historical_eligibility():
+    from scanner.hebeltrader.detective.investigation import finding_timing
+
+    document = {
+        "url": "https://issuer.example/results",
+        "source_class": "B",
+        "source_kind": "tavily_extract",
+        "published_at": None,
+        "retrieved_at": NOW.isoformat(),
+    }
+
+    timing = finding_timing(document, NOW, current_hypothesis=True)
+    assert timing == {
+        "temporal_eligibility": "current_hypothesis_only",
+        "usable_for_ranking": True,
+    }
+    assert finding_timing(document, NOW, current_hypothesis=False) == {
+        "temporal_eligibility": "uncertain",
+        "usable_for_ranking": False,
+    }
+
+
+def test_source_classes_distinguish_original_extract_and_search_snippet():
+    from scanner.hebeltrader.detective.investigation import source_class
+
+    assert source_class({"source_kind": "issuer"}) == "A"
+    assert source_class({"source_kind": "regulatory"}) == "A"
+    assert source_class({"source_kind": "tavily_extract"}) == "B"
+    assert source_class({"source_kind": "search_snippet"}) == "C"
+    assert source_class({"source_kind": "news"}) == "D"
+
+
 def test_other_company_financials_never_confirm_page_owners_financials(tmp_path):
     docs = packet()
     docs[-1]["text"] = "Other Corporation Q3 2026: Umsatz 20 Prozent. Gewinn 30 Prozent."

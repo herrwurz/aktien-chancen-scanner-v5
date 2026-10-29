@@ -153,6 +153,7 @@ const renderOverview=data=>{
   const id=data.identification||{};
   box.append(el('h2','Ergebnis'));
   box.append(el('p',(data.decision||{}).label||id.label||`Status: ${id.status||'unbekannt'}`));
+  if(data.ranking_tie)box.append(el('p','Die führenden Kandidaten haben denselben Evidenzwert. Es gibt derzeit keinen eindeutigen Rang 1.'));
   box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'unbekannt'} · ${data.case_status||''}`));
   if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
   box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
@@ -230,7 +231,7 @@ const renderOverview=data=>{
 const renderCandidate=(c,index)=>{
   const article=el('article');article.className='candidate';
   const identity=c.identity||c;
-  article.append(el('h3',`${index+1}. ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
+  article.append(el('h3',`${c.rank_label||`${index+1}.`} ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
   const wknNote=identity.wkn
     ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
     : 'WKN unbekannt';
@@ -263,9 +264,10 @@ const renderCandidate=(c,index)=>{
   if((c.cited_findings||[]).length){
     article.append(el('h4','KI-Auswertung mit Belegstellen – vorläufig, manuell prüfen'));
     c.cited_findings.forEach(finding=>{
-      article.append(el('p',`${finding.status==='supported'?'Stützt Hinweis':'Gegenargument'} · ${finding.url}`));
+      article.append(el('p',`${finding.status==='supported'?'Stützt Hinweis':'Gegenargument'} · Quellenklasse ${finding.source_class||'unbekannt'} · ${finding.url}`));
       article.append(el('blockquote',finding.quote));
       if(!finding.usable_for_ranking)article.append(el('p','Zeitliche Verfügbarkeit nicht belegt: nicht für Rangfolge oder Gegenkandidatenzahl verwendet.'));
+      if(finding.temporal_eligibility==='current_hypothesis_only')article.append(el('p','Nur für die aktuelle Hypothesenbildung verwendet; keine historische Verfügbarkeit belegt.'));
       article.append(el('p',`Zeitprüfung: ${finding.temporal_eligibility}; Quelle publiziert: ${finding.published_at||'unbekannt'}; abgerufen: ${finding.retrieved_at||'unbekannt'}`));
     });
   }
