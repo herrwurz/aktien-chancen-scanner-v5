@@ -1,0 +1,74 @@
+name: Deploy teaser to Coolify
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/teaser-search-ai]
+
+permissions:
+  actions: read
+  checks: read
+  contents: read
+
+concurrency:
+  group: teaser-coolify-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require successful test checks for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 36); do
+            checks="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${COMMIT_SHA}/check-runs")"
+            count="$(jq '[.check_runs[] | select(.name == "test")] | length' <<<"$checks")"
+            pending="$(jq '[.check_runs[] | select(.name == "test" and .status != "completed")] | length' <<<"$checks")"
+            failures="$(jq '[.check_runs[] | select(.name == "test" and .status == "completed" and .conclusion != "success")] | length' <<<"$checks")"
+            if [ "$failures" -ne 0 ]; then
+              echo "Deployment blocked: a test check failed."
+              exit 1
+            fi
+            if [ "$count" -ge 1 ] && [ "$pending" -eq 0 ]; then
+              exit 0
+            fi
+            echo "Waiting for test checks ($attempt/36)."
+            sleep 10
+          done
+          echo "Deployment blocked: successful test checks did not finish in time."
+          exit 1
+
+      - name: Trigger the application deployment
+        env:
+          COOLIFY_API_URL: ${{ secrets.COOLIFY_API_URL }}
+          COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          COOLIFY_APP_UUID: ${{ secrets.COOLIFY_APP_UUID }}
+        run: |
+          set -euo pipefail
+          if [[ "$COOLIFY_API_URL" != https://* ]] || [ -z "$COOLIFY_API_TOKEN" ] || [ -z "$COOLIFY_APP_UUID" ]; then
+            echo "Deployment blocked: Coolify secrets are missing or invalid."
+            exit 1
+          fi
+          payload="$(jq -n --arg uuid "$COOLIFY_APP_UUID" '{uuid:$uuid,force:false}')"
+          curl --fail-with-body --silent --show-error \
+            --request POST "${COOLIFY_API_URL%/}/deploy" \
+            --header "Authorization: Bearer ${COOLIFY_API_TOKEN}" \
+            --header "Accept: application/json" \
+            --header "Content-Type: application/json" \
+            --data "$payload" >/tmp/coolify-deploy.json
+          jq '{message, deployment_uuid: (.deployment_uuid // .deployments[0].deployment_uuid // null)}' /tmp/coolify-deploy.json
+
+      - name: Confirm public endpoints remain reachable
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error https://coolify.hofreither.at/api/v1/health
+          status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://teaser.hofreither.at/)"
+          if [ "$status" != "401" ] && [ "$status" != "200" ]; then
+            echo "Unexpected teaser endpoint status: $status"
+            exit 1
+          fi

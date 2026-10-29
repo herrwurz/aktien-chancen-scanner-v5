@@ -1,16 +1,29 @@
-# Multi-Asset Chancen-Scanner V6
+# HEBELTRADER-Teaser-Detektiv und separater Marktscanner
 
-Die Nutzung und reale read-only Abnahme des HEBELTRADER-Detektivs V3 ist in
-[`docs/hebeltrader-detective-v3.md`](docs/hebeltrader-detective-v3.md) beschrieben.
+Neue [eingefrorene Erstprognose zu HEBELTRADER 198/26](docs/hebeltrader-19826-initial.md):
+assistentengestützte Quellenrecherche; die spätere PDF-Auflösung bestätigt SLB auf Rang 1.
 
-Der HEBELTRADER-Detektiv-MVP verarbeitet Teasertext oder Screenshots lokal und erstellt eine
-begründete, unbestätigte Kandidatenrangliste. Architektur, Grenzen, Offline-CLI und Hetzner-Test:
-[HEBELTRADER-Detektiv MVP](docs/architecture-hebeltrader-detective-mvp.md). Die Identifikation ist
-keine Kaufempfehlung; Produktkandidaten werden ohne offizielle Belege nicht bestätigt.
-Der mitgelieferte Kandidaten-/Nachrichtenadapter enthält nur sechs synthetische, datierte
-Offline-Fixtures und besitzt keine allgemeine Marktabdeckung. Ohne eine lizenzrechtlich zulässige,
-zeitpunktgenaue externe Unternehmens- und Nachrichtenquelle ist ein allgemeiner Detektivbetrieb
-technisch blockiert; unbekannte Titel führen deshalb zur Enthaltung statt zu einem Scheintreffer.
+[Automatische Erfassung öffentlicher HEBELTRADER-Ausgaben](docs/hebeltrader-catalog-monitor.md):
+mit echten Ausgaben und wiederholtem Lauf geprüft; Aktienidentifikation bleibt separat offen.
+
+V3.1 ergänzt ein dauerhaftes Falljournal, spätere Auflösungen, historische Verfügbarkeit
+und öffentliche RSS-Entdeckung: [V3.1 Bedienung und Abnahme](docs/teaser-intelligence-v31.md).
+Veraltete Tests können append-only archiviert werden. Neue Fälle lassen sich vor der Auflösung
+als prospektive Blindtests markieren und nach belegter Auflösung ausdrücklich als prospektive
+Referenzen freigeben; die ursprüngliche Rangliste bleibt unverändert.
+
+Primäre Funktion ist die Identifikation unbekannter Aktien aus öffentlichen Teasern:
+[Bedienung und Grenzen](docs/hebeltrader-primary.md),
+[Abnahmebericht](docs/hebeltrader-primary-acceptance.md). Der Startbildschirm zeigt den
+Detektiv; der allgemeine Marktscanner bleibt unter `/market-scanner` erreichbar.
+
+Der neue Recherchepfad nutzt Originalseiten, dieselbe Hinweismatrix für alle Kandidaten,
+aktive Gegenrecherche und eine eingefrorene Top-3-Rangliste. Unzureichende Belege führen
+zu **nicht identifiziert**. Unabhängige Identifikationsqualität ist noch nicht nachgewiesen.
+
+Die bisherigen [V3-Diagnosewerkzeuge](docs/hebeltrader-detective-v3.md) und der
+[Offline-MVP](docs/architecture-hebeltrader-detective-mvp.md) bleiben erhalten; deren sechs
+synthetische Adapterunternehmen werden im neuen Primärworkflow nicht verwendet.
 
 Der aktuelle HS5RMP-Derivatepilot ist in
 [Scanner V6 V1.8](docs/hebeltrader-hs5rmp-backtest-v18.md) dokumentiert. Ohne autorisierte,
@@ -339,3 +352,7 @@ Der [Betriebs-, Quellen- und Abnahmebericht](docs/research-v23.md) beschreibt SE
 GLEIF-Identitäten, Point-in-time-Grenzen und den realen Blindteaser-Versuch. Die Anwendung ist
 wegen begrenzter Branchen- und internationaler Nachrichtenevidenz noch nicht allgemein für
 unbekannte Teaser einsetzbar und liefert bei Mehrdeutigkeit `unresolved`.
+
+Die V3.1-Webrecherche erhält blockierte Quellen über Tavily Extract beziehungsweise begrenzte,
+archivierte Suchtreffer. Sie zeigt deren Quellenklasse und zeitliche Verwendbarkeit, gewichtet
+spezifische Belege stärker und weist punktgleiche Spitzenkandidaten als Gleichstand aus.

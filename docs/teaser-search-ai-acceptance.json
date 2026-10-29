@@ -1,0 +1,31 @@
+{
+  "status": "LIVE_ACCEPTANCE_OPEN",
+  "implementation": "Tavily discovery and cited OpenAI source interpretation connected to existing private web route",
+  "validation": {
+    "local_tests_passed": 797,
+    "local_tests_skipped": 8,
+    "api_contract_and_safety_tests": 15,
+    "ruff": "passed",
+    "javascript_syntax": "passed",
+    "docker_build": "passed",
+    "docker_api_smoke": "not_completed_due_interrupted_tool_calls"
+  },
+  "real_provider_calls": 0,
+  "independent_blind_tests": 0,
+  "automatic_slb_identification_proven": false,
+  "open_requirements": [
+    "Operator Tavily key reported configured in Coolify; not read or verified by Codex.",
+    "Own OpenAI API key and verified model access.",
+    "Explicit API cost approval and provider-side prepaid/credit settings within EUR20 monthly.",
+    "Operator deployment and real end-to-end acceptance."
+  ],
+  "safety": {
+    "default_enabled": false,
+    "ai_findings_provisional": true,
+    "literal_citations_required": true,
+    "ai_identity_blocks_auto_confirmation": true,
+    "temporal_eligibility_required_for_ranking": true,
+    "max_monthly_reservation_cents": 2000,
+    "reservation_is_provider_invoice": false
+  }
+}

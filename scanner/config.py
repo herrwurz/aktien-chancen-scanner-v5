@@ -41,6 +41,25 @@ class Settings(BaseSettings):
     detective_llm_api_token: SecretStr | None = None
     detective_hypothesis_news: bool = True
     detective_openfigi_identities: Path | None = None
+    detective_public_root: Path = Path("data/hebeltrader-detective")
+    detective_public_allow_network: bool = False
+    detective_public_max_requests: int = Field(default=40, ge=1, le=100)
+    detective_search_provider: Literal["public", "tavily"] = "public"
+    detective_search_api_key: SecretStr | None = None
+    detective_source_ai_enabled: bool = False
+    detective_source_ai_api_key: SecretStr | None = None
+    detective_extraction_model: Literal["gpt-4.1-mini-2025-04-14", "gpt-4.1-2025-04-14"] = (
+        "gpt-4.1-mini-2025-04-14"
+    )
+    detective_reasoning_model: Literal["gpt-4.1-mini-2025-04-14", "gpt-4.1-2025-04-14"] = (
+        "gpt-4.1-2025-04-14"
+    )
+    detective_external_api_approved: bool = False
+    detective_api_monthly_budget_eur: int = Field(default=20, ge=1, le=20)
+    detective_primary_domains: Path | None = None
+    detective_product_issuers: Path | None = None
+    detective_discovery_feeds: list[str] = ["https://www.deraktionaer.de/aktionaer-news.rss"]
+    detective_case_register: Path | None = None
     sec_user_agent: str | None = None
 
     @field_validator("symbols")

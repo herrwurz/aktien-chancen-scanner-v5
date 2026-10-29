@@ -1,5 +1,16 @@
 # HEBELTRADER-Detektiv V3
 
+## Falllebenszyklus in der Weboberfläche
+
+Gespeicherte Testfälle werden nicht physisch gelöscht. **Archivieren** hängt ein signiertes
+Journalereignis an, blendet den Fall aus der aktiven Liste aus und schließt ihn aus
+Qualitätskennzahlen aus. Über „Archivierte Fälle anzeigen“ bleibt er prüfbar.
+
+Ein neuer Teaser kann nach eingefrorener Erstprognose und vor Kenntnis der Lösung als
+prospektiver Blindtest markiert werden. Erst nach einer belegten späteren Auflösung darf er als
+prospektiver Referenzfall freigegeben werden. Die 18 rekonstruierten Entwicklungsreferenzen
+bleiben davon getrennt; gekaufte PDFs bleiben im privaten persistenten Speicher.
+
 Der Detektiv untersucht unbekannte Börsenteaser aus Text, PDF oder Bild. Er durchsucht den zum
 Publikationszeitpunkt sichtbaren lokalen Research-Index bzw. ein kuratiertes EU/DACH-Universum,
 prüft bis zu 50 Kandidaten gegen archivierte Evidenz und gibt höchstens drei Kandidaten aus. Der
@@ -64,6 +75,22 @@ Europas bleiben unvollständig.
 Im Offline- und API-Startpfad gibt es keine Netzwerkanfragen. Live-Recherche bleibt explizit,
 zugangsgeschützt und durch Requests sowie Laufzeit begrenzt. V3 benötigt keinen kostenpflichtigen
 Dienst.
+
+Die Live-Recherche bewahrt die Herkunft jedes Belegs in vier Klassen: **A** ist direkt geladene
+Emittenten- oder Regulatorik-Evidenz, **B** der über Tavily Extract abgerufene Text einer
+freigegebenen Primärdomain, **C** ein begrenzter Tavily-Suchtreffer und **D** eine sonstige
+Sekundärquelle einschließlich extrahierter Presseartikel. Wenn öffentliche Seiten Direktabrufe
+blockieren, bündelt der Scanner gemeinsam verarbeitete URLs in einem Extract-Aufruf und
+verwendet erst danach archivierte Suchtreffer. Klasse B und C werden nie zu direkt abgerufener
+Klasse-A-Evidenz hochgestuft; URL, Abrufzeit, Hash, Textauszug und zeitliche Unsicherheit bleiben
+auch bei fehlgeschlagener KI-Zuordnung im Bericht erhalten.
+
+Bei einem aktuellen Teaser ohne Publikationszeit dürfen Klasse B und C eine ausdrücklich als
+`current_hypothesis_only` markierte Rangfolge stützen. Das ist keine historische Bestätigung und
+ist in `historical_blind` unzulässig. Konkrete Alleinstellungsmerkmale und Unternehmensereignisse
+wiegen im Evidenzwert stärker als allgemeine Gewinn- oder Chartformulierungen. Haben führende
+Kandidaten denselben Wert, lautet der Status `ambiguous_tie`; die Oberfläche behauptet dann
+keinen eindeutigen Rang 1.
 
 ## Blindtests
 

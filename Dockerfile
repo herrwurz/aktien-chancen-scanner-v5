@@ -25,4 +25,4 @@ COPY --chown=10001:10001 migrations ./migrations
 RUN chmod -R a+rX /app
 USER scanner
 EXPOSE 8000
-CMD ["uvicorn", "scanner.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "scanner.http_entrypoint"]

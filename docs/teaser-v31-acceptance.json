@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "version": "3.1",
+  "date": "2026-10-28",
+  "status": "ABNAHME_OFFEN",
+  "dependency_pr": 28,
+  "base_commit": "212cc202341bc29e07c90dcefd4222a695a0aaf2",
+  "historical_cases": {
+    "count": 18,
+    "reported_correct": 10,
+    "reported_wrong": 7,
+    "unresolved": 1,
+    "independent_benchmark": false,
+    "complete_originals_available": 0,
+    "original_top3_available": 0,
+    "known_title_excerpts_checked": 2,
+    "jpm_original": "missing",
+    "original_registry_prefix_preserved": true
+  },
+  "public_feed": {
+    "scope": "real_public_feed_reachability_not_blind_accuracy",
+    "status": "ok",
+    "entries": 10,
+    "titles": [
+      {
+        "title": "Fed-Zinsentscheid: Pause heute, Zinserhöhung am 9. Dezember? ",
+        "url": "https://www.deraktionaer.de/artikel/maerkte-forex-zinsen/fed-zinsentscheid-pause-heute-zinserhoehung-am-9-dezember--20426822.html?feed=directrssfeed"
+      },
+      {
+        "title": "Doppelter Verzehnfacher: Beste Aktie, Top-Krytowährung",
+        "url": "https://www.deraktionaer.de/artikel/aktien/doppelter-verzehnfacher-beste-aktie-top-krytowaehrung-20426830.html?feed=directrssfeed"
+      },
+      {
+        "title": "Dividendengarant Astrazeneca: Das ist eine Überraschung!",
+        "url": "https://www.deraktionaer.de/artikel/pharma-biotech/krebsimpfstoffe-als-neuer-wachstumstreiber-astrazeneca-nimmt-moderna-und-merck-ins-visier-20426820.html?feed=directrssfeed"
+      },
+      {
+        "title": "Vertiv fegt die Prognosen vom Tisch – KI-Aktie geht steil",
+        "url": "https://www.deraktionaer.de/artikel/medien-it-technologie/vertiv-20426794.html?feed=directrssfeed"
+      },
+      {
+        "title": "WM: Dauerläufer patzt – ein Quartal für die Tonne?",
+        "url": "https://www.deraktionaer.de/artikel/aktien/wm-dauerlaeufer-patzt-ein-quartal-fuer-die-tonne-20426853.html?feed=directrssfeed"
+      },
+      {
+        "title": "Shanghai im Luxusfieber: Droht LVMH und Co jetzt der Preiskampf?",
+        "url": "https://www.deraktionaer.de/artikel/commerce-brands-unicorns/shanghai-im-luxusfieber-droht-lvmh-und-co-jetzt-der-preiskampf-20426733.html?feed=directrssfeed"
+      },
+      {
+        "title": "Enphase mit düsterem Ausblick – Solar-Aktie crasht",
+        "url": "https://www.deraktionaer.de/artikel/mobilitaet-oel-energie/enphase-mit-duesteren-zahlen-solar-aktie-crasht-20426900.html?feed=directrssfeed"
+      },
+      {
+        "title": "Siemens Energy: Erhält die Aktie Rückenwind von GE Vernova?",
+        "url": "https://www.deraktionaer.de/artikel/aktien/siemens-energy-erhaelt-die-aktie-rueckenwind-von-ge-vernova-20426912.html?feed=directrssfeed"
+      },
+      {
+        "title": "Biogen schlägt Prognosen: Aktie auf 2-Jahreshoch – und nun?",
+        "url": "https://www.deraktionaer.de/artikel/gold-rohstoffe/biogen-ueberrascht-aktie-auf-2-jahreshoch-und-nun-20426945.html?feed=directrssfeed"
+      },
+      {
+        "title": "Boston Scientific: Dritte Gewinnwarnung in diesem Jahr – Aktie fällt ins Bodenlose",
+        "url": "https://www.deraktionaer.de/artikel/pharma-biotech/biogen-20426885.html?feed=directrssfeed"
+      }
+    ],
+    "attempts": [
+      {
+        "url": "https://www.deraktionaer.de/robots.txt",
+        "request_started_at": "2026-10-28T13:15:00.699182+00:00",
+        "retrieved_at": "2026-10-28T13:15:01.847589+00:00",
+        "status": 200,
+        "raw_sha256": "495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839",
+        "raw_file": "/workspace/teaser-intelligence-v31/reports/v31-live-feed/public-web-4d5c47880ee34e4cb21b2c73a8c9d91f/001-495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/aktionaer-news.rss",
+        "request_started_at": "2026-10-28T13:15:01.889486+00:00",
+        "retrieved_at": "2026-10-28T13:15:02.646343+00:00",
+        "status": 200,
+        "raw_sha256": "9975796f9f0adb9e44bf6839f6185947e52940e7d4896c63c7cd6580379cb908",
+        "raw_file": "/workspace/teaser-intelligence-v31/reports/v31-live-feed/public-web-4d5c47880ee34e4cb21b2c73a8c9d91f/002-9975796f9f0adb9e44bf6839f6185947e52940e7d4896c63c7cd6580379cb908.raw"
+      }
+    ],
+    "archive": "/workspace/teaser-intelligence-v31/reports/v31-live-feed/public-web-4d5c47880ee34e4cb21b2c73a8c9d91f"
+  },
+  "real_teaser": {
+    "classification": "real_public_rss_teaser_other_newsletter_retrospective_ungraded",
+    "input": {
+      "teaser_text": "   Die Korrektur bei KI-Aktien und im Kryptosektor scheint überwunden. Bevor die Kurse zu schnell wieder steigen, was durchaus sehr wahrscheinlich ist, können jetzt noch die tiefen Kurse zum einstige genutzt werden. Bei einer Aktie und einer Kryptowährunf ist vom aktuellen Niveau aus sogar eine Verzehnfachung möglich.  ",
+      "teaser_url": null,
+      "original_source_url": "https://www.deraktionaer.de/artikel/aktien/doppelter-verzehnfacher-beste-aktie-top-krytowaehrung-20426830.html?feed=directrssfeed",
+      "source_retrieved_at": "2026-10-28T13:15:02.646343Z",
+      "headline": "Doppelter Verzehnfacher: Beste Aktie, Top-Krytowährung",
+      "publisher": "DER AKTIONÄR",
+      "author": "Alfred Maydorn",
+      "issue": "",
+      "evaluation_class": "retrospective",
+      "previously_used_for_development": null,
+      "publication_at": "2026-10-28T11:28:00Z",
+      "advertised_return": null,
+      "screenshot_base64": null,
+      "screenshot_media_type": null,
+      "pdf_base64": null,
+      "pdf_media_type": null
+    },
+    "case_id": "TI-282b503c1ac7bf3c491f",
+    "analysis_at": "2026-10-28T13:22:03.123723+00:00",
+    "source_quality": {
+      "primary_documents": 0,
+      "documents": 6,
+      "scope": "global_public_search_not_complete_world_market"
+    },
+    "countercandidate_count": 0,
+    "candidates": [],
+    "decision": {
+      "status": "insufficient_evidence",
+      "label": "Nicht ausreichend identifizierbar"
+    },
+    "limitations": [
+      "fewer_than_five_countercandidates",
+      "research_source_gaps",
+      "insufficient_specific_primary_evidence"
+    ],
+    "source_timing": [
+      {
+        "url": "https://www.deraktionaer.de/artikel/aktien/doppelter-verzehnfacher-beste-aktie-top-krytowaehrung-20426830.html?feed=directrssfeed",
+        "event_at": null,
+        "published_at": "2026-10-28T12:28:00+00:00",
+        "source_available_at": null,
+        "retrieved_at": "2026-10-28T13:22:00.656947+00:00",
+        "content_revision_at": null,
+        "availability_status": "uncertain",
+        "availability_basis": "unknown",
+        "availability_evidence": null,
+        "eligibility": "after_cutoff"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/medien-it-technologie/vertiv-20426794.html?feed=directrssfeed",
+        "event_at": null,
+        "published_at": "2026-10-28T12:33:00+00:00",
+        "source_available_at": null,
+        "retrieved_at": "2026-10-28T13:22:01.195785+00:00",
+        "content_revision_at": null,
+        "availability_status": "uncertain",
+        "availability_basis": "unknown",
+        "availability_evidence": null,
+        "eligibility": "after_cutoff"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/mobilitaet-oel-energie/enphase-mit-duesteren-zahlen-solar-aktie-crasht-20426900.html?feed=directrssfeed",
+        "event_at": null,
+        "published_at": "2026-10-28T13:43:00+00:00",
+        "source_available_at": null,
+        "retrieved_at": "2026-10-28T13:22:01.944275+00:00",
+        "content_revision_at": null,
+        "availability_status": "uncertain",
+        "availability_basis": "unknown",
+        "availability_evidence": null,
+        "eligibility": "after_cutoff"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/aktien/siemens-energy-erhaelt-die-aktie-rueckenwind-von-ge-vernova-20426912.html?feed=directrssfeed",
+        "event_at": null,
+        "published_at": "2026-10-28T13:57:00+00:00",
+        "source_available_at": null,
+        "retrieved_at": "2026-10-28T13:22:02.156459+00:00",
+        "content_revision_at": null,
+        "availability_status": "uncertain",
+        "availability_basis": "unknown",
+        "availability_evidence": null,
+        "eligibility": "after_cutoff"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/gold-rohstoffe/biogen-ueberrascht-aktie-auf-2-jahreshoch-und-nun-20426945.html?feed=directrssfeed",
+        "event_at": null,
+        "published_at": "2026-10-28T13:59:00+00:00",
+        "source_available_at": null,
+        "retrieved_at": "2026-10-28T13:22:02.394984+00:00",
+        "content_revision_at": null,
+        "availability_status": "uncertain",
+        "availability_basis": "unknown",
+        "availability_evidence": null,
+        "eligibility": "after_cutoff"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/pharma-biotech/biogen-20426885.html?feed=directrssfeed",
+        "event_at": null,
+        "published_at": "2026-10-28T14:10:00+00:00",
+        "source_available_at": null,
+        "retrieved_at": "2026-10-28T13:22:02.614001+00:00",
+        "content_revision_at": null,
+        "availability_status": "uncertain",
+        "availability_basis": "unknown",
+        "availability_evidence": null,
+        "eligibility": "after_cutoff"
+      }
+    ],
+    "source_gaps": [
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      }
+    ],
+    "research_errors": [
+      {
+        "url": "https://www.deraktionaer.de/artikel/commerce-brands-unicorns/shanghai-im-luxusfieber-droht-lvmh-und-co-jetzt-der-preiskampf-20426733.html?feed=directrssfeed",
+        "error": "paywall metadata denies public extraction"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/aktien/anleger-aufgepasst-darum-setzen-siemens-energy-und-ge-vernova-diese-kupfer-aktie-unter-strom-20426947.html?feed=directrssfeed",
+        "error": "paywall metadata denies public extraction"
+      }
+    ],
+    "attempts": [
+      {
+        "url": "https://www.bing.com/robots.txt",
+        "request_started_at": "2026-10-28T13:21:55.018209+00:00",
+        "retrieved_at": "2026-10-28T13:21:55.446269+00:00",
+        "status": 200,
+        "raw_sha256": "40d2da70c3b443225d5b01cc7b05117944980347637cc95ab285c6e4f5548235",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/001-40d2da70c3b443225d5b01cc7b05117944980347637cc95ab285c6e4f5548235.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/robots.txt",
+        "request_started_at": "2026-10-28T13:21:55.677211+00:00",
+        "retrieved_at": "2026-10-28T13:21:56.706187+00:00",
+        "status": 200,
+        "raw_sha256": "495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/002-495bf4f5d3e6761f473a5f914748a421c83a6ecc1db9079959c5f38b4aa56839.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/aktionaer-news.rss",
+        "request_started_at": "2026-10-28T13:21:56.994673+00:00",
+        "retrieved_at": "2026-10-28T13:21:57.430257+00:00",
+        "status": 200,
+        "raw_sha256": "5cc30aa8f17f7e9dad2de1ccfe43ff0857778bcfbbff8c6d14b06f4a20db3a71",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/003-5cc30aa8f17f7e9dad2de1ccfe43ff0857778bcfbbff8c6d14b06f4a20db3a71.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/aktien/doppelter-verzehnfacher-beste-aktie-top-krytowaehrung-20426830.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:21:59.789460+00:00",
+        "retrieved_at": "2026-10-28T13:22:00.656947+00:00",
+        "status": 200,
+        "raw_sha256": "899789ff9043e004e1d923b955023c50c41513a0662809f8d89ecb574ac31117",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/004-899789ff9043e004e1d923b955023c50c41513a0662809f8d89ecb574ac31117.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/medien-it-technologie/vertiv-20426794.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:00.701002+00:00",
+        "retrieved_at": "2026-10-28T13:22:01.195785+00:00",
+        "status": 200,
+        "raw_sha256": "aa7010942d9528c27b76938acae7fcc2a1e5a1e5d60974a4fbb54557e00e42ec",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/005-aa7010942d9528c27b76938acae7fcc2a1e5a1e5d60974a4fbb54557e00e42ec.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/commerce-brands-unicorns/shanghai-im-luxusfieber-droht-lvmh-und-co-jetzt-der-preiskampf-20426733.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:01.522762+00:00",
+        "retrieved_at": "2026-10-28T13:22:01.708812+00:00",
+        "status": 200,
+        "raw_sha256": "a4c34e485c0b064f70e9cf9ff565d01be3c22fcafbe123fa3afd3695abcd05b2",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/006-a4c34e485c0b064f70e9cf9ff565d01be3c22fcafbe123fa3afd3695abcd05b2.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/mobilitaet-oel-energie/enphase-mit-duesteren-zahlen-solar-aktie-crasht-20426900.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:01.757470+00:00",
+        "retrieved_at": "2026-10-28T13:22:01.944275+00:00",
+        "status": 200,
+        "raw_sha256": "780708aea12eb807ee3c9e821d723b81c641cebb14ae4d0a31e7486a43546c08",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/007-780708aea12eb807ee3c9e821d723b81c641cebb14ae4d0a31e7486a43546c08.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/aktien/siemens-energy-erhaelt-die-aktie-rueckenwind-von-ge-vernova-20426912.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:01.985259+00:00",
+        "retrieved_at": "2026-10-28T13:22:02.156459+00:00",
+        "status": 200,
+        "raw_sha256": "34378bfa12621310c1bcf3cc1e4aeabf0635f4d316ab1fecdcd680ea9581f118",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/008-34378bfa12621310c1bcf3cc1e4aeabf0635f4d316ab1fecdcd680ea9581f118.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/gold-rohstoffe/biogen-ueberrascht-aktie-auf-2-jahreshoch-und-nun-20426945.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:02.185115+00:00",
+        "retrieved_at": "2026-10-28T13:22:02.394984+00:00",
+        "status": 200,
+        "raw_sha256": "074f811672f3a5533e12fad51732ba96fd750dab6e4157858d690671cbafdbe9",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/009-074f811672f3a5533e12fad51732ba96fd750dab6e4157858d690671cbafdbe9.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/pharma-biotech/biogen-20426885.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:02.441578+00:00",
+        "retrieved_at": "2026-10-28T13:22:02.614001+00:00",
+        "status": 200,
+        "raw_sha256": "01af579d06b4f8d04c6537f0fdf57fd158650947a38e8719e156d243e5174b5f",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/010-01af579d06b4f8d04c6537f0fdf57fd158650947a38e8719e156d243e5174b5f.raw"
+      },
+      {
+        "url": "https://www.deraktionaer.de/artikel/aktien/anleger-aufgepasst-darum-setzen-siemens-energy-und-ge-vernova-diese-kupfer-aktie-unter-strom-20426947.html?feed=directrssfeed",
+        "request_started_at": "2026-10-28T13:22:02.908695+00:00",
+        "retrieved_at": "2026-10-28T13:22:03.112626+00:00",
+        "status": 200,
+        "raw_sha256": "e54aba79511f9383f438af07a8cb1d3f987ed7dc215f9e431c519faa1dc01ab0",
+        "raw_file": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6/011-e54aba79511f9383f438af07a8cb1d3f987ed7dc215f9e431c519faa1dc01ab0.raw"
+      }
+    ],
+    "ranking_sha256": "ba86a2ddccb06b96b78a97e28ef3ec14e98c21201b2b79ff162850230c94cc31",
+    "journal": {
+      "valid": true,
+      "events": 3,
+      "head_sha256": "43adea96df6b0b1ea8e643ca9dd796e52f3200be1ad5a0df783e7ddfa643b95d"
+    }
+  },
+  "actual_quality": {
+    "journal": {
+      "valid": true,
+      "events": 3,
+      "head_sha256": "43adea96df6b0b1ea8e643ca9dd796e52f3200be1ad5a0df783e7ddfa643b95d"
+    },
+    "cases": [
+      {
+        "case_id": "TI-282b503c1ac7bf3c491f",
+        "evaluation_class": "retrospective",
+        "opened_at": "2026-10-28T13:21:49.993600+00:00",
+        "original_top3": [],
+        "resolved": false,
+        "correct_rank": null,
+        "top1_hit": false,
+        "top3_hit": false,
+        "false_identification": false,
+        "analysis_seconds": 13.128,
+        "source_quality": {
+          "documents": 6,
+          "primary_documents": 0,
+          "scope": "global_public_search_not_complete_world_market"
+        },
+        "countercandidate_count": 0,
+        "resolution": null
+      }
+    ],
+    "all": {
+      "total": 1,
+      "resolved_denominator": 0,
+      "unresolved": 1,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "false_identifications": 0,
+      "top1_rate": null,
+      "top3_rate": null,
+      "unresolved_fraction": 1.0,
+      "average_research_seconds": 13.128,
+      "rate_basis": "no_validated_independent_denominator",
+      "source_documents": 6,
+      "primary_documents": 0
+    },
+    "independent": {
+      "total": 0,
+      "resolved_denominator": 0,
+      "unresolved": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "false_identifications": 0,
+      "top1_rate": null,
+      "top3_rate": null,
+      "unresolved_fraction": null,
+      "average_research_seconds": null,
+      "rate_basis": "no_validated_independent_denominator",
+      "source_documents": 0,
+      "primary_documents": 0
+    },
+    "development_regression": {
+      "total": 0,
+      "resolved_denominator": 0,
+      "unresolved": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "false_identifications": 0,
+      "top1_rate": null,
+      "top3_rate": null,
+      "unresolved_fraction": null,
+      "average_research_seconds": null,
+      "rate_basis": "no_validated_independent_denominator",
+      "source_documents": 0,
+      "primary_documents": 0
+    },
+    "quality_over_time": [
+      {
+        "case_id": "TI-282b503c1ac7bf3c491f",
+        "opened_at": "2026-10-28T13:21:49.993600+00:00",
+        "evaluation_class": "retrospective",
+        "resolved": false,
+        "correct_rank": null
+      }
+    ],
+    "warning": "Counts use unchanged first rankings. Prospective independence requires operator provenance; hashes are not external signatures."
+  },
+  "independent_real_blind_tests_graded": 0,
+  "new_verified_identifications": 0,
+  "verified_original_calls": 0,
+  "automatic_watch": {
+    "scanned_at": "2026-10-28T13:33:06.523143+00:00",
+    "new_teasers": 0,
+    "improved_identifications": 0,
+    "analyzed": 0,
+    "duplicate_or_unchanged": 0,
+    "errors": [],
+    "notification_delivery": "local_outbox_only",
+    "source_gaps": [
+      {
+        "source": "bing_rss",
+        "error": "robots denied or unavailable"
+      }
+    ]
+  },
+  "verification": {
+    "pytest_summary": "745 passed, 8 skipped, 1 warning in 13.86s",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "docker_build": "passed",
+    "docker_offline_read_only_smoke": {
+      "case_id": "TI-12b0f6f946d8ab533a55",
+      "decision": {
+        "status": "insufficient_evidence",
+        "label": "Nicht ausreichend identifizierbar"
+      },
+      "journal": {
+        "valid": true,
+        "events": 3,
+        "head_sha256": "c2d2b9a56318bf4f757f759e96d16704853cb05fd0e852a2b20d524c53d3d24b"
+      },
+      "network": "none",
+      "solutions_or_case_history_mounted": false
+    }
+  },
+  "artifacts": {
+    "raw_archive": "/workspace/teaser-intelligence-v31/data/v31-real-teaser/sources/public-web-b4ba66d6635545fc8867338a767b2ec6",
+    "raw_article_html_committed": false,
+    "persistent_real_case_root": "data/v31-real-teaser",
+    "machine_history_inventory": "docs/teaser-v31-history-inventory.json"
+  },
+  "budget": {
+    "new_paid_services": false,
+    "runtime_ai_provider_added": false,
+    "new_credentials_required_for_offline": false
+  },
+  "limitations": [
+    "No completed real independent HEBELTRADER blind case.",
+    "RSS discovery is not global company-search coverage.",
+    "No primary company evidence or eligible alternatives in real case.",
+    "Operator-supplied historical archive provenance is not externally signature-verified.",
+    "API central register export requires writable explicit path; local case history persists."
+  ],
+  "hetzner_used": false,
+  "deployed": false,
+  "merged": false,
+  "orders_executed": false,
+  "recommendation": "draft_review_only_until_real_identification_acceptance"
+}

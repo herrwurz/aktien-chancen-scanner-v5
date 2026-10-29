@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>HEBELTRADER-Detektiv</title>
+  <title>V3.1 – Teaser Intelligence Scanner</title>
   <style>
     body{font:16px system-ui;margin:auto;max-width:900px;padding:1rem;background:#f5f7fa;color:#16202a}
     main,article{background:white;border-radius:12px;padding:1rem;margin:1rem 0;box-shadow:0 2px 10px #0001}
@@ -12,32 +12,141 @@
     .warning{border-left:4px solid #d97706;padding:.75rem;background:#fffbeb}
     .meta,.candidate{border-top:1px solid #ddd;padding-top:.75rem;margin-top:.75rem}
     .muted{color:#4b5563;font-size:.95rem}ul{margin:.4rem 0 .8rem 1.2rem;padding:0}
-    code{overflow-wrap:anywhere}@media(max-width:600px){body{padding:.5rem}}
+    .meter{height:.8rem;background:#e5e7eb;border-radius:999px;overflow:hidden}.meter span{display:block;height:100%;background:#0f766e}
+    .cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}.cost-grid p{background:#f8fafc;padding:.75rem;border-radius:8px;margin:0}
+    code{overflow-wrap:anywhere}
+    select{box-sizing:border-box;width:100%;padding:.75rem;margin-top:.4rem;background:white}
+    .analysis-status{display:none;border:3px solid #b91c1c;border-radius:10px;padding:1rem;margin:.75rem 0;font-weight:800}
+    .analysis-status.running{display:block;background:#fee2e2;color:#991b1b;font-size:1.15rem}
+    .analysis-status.error{display:block;background:#fff1f2;color:#9f1239}
+    .analysis-status.success{display:block;border-color:#15803d;background:#f0fdf4;color:#166534}
+    .resolution-callout{border:3px solid #c2410c;background:#fff7ed;padding:1rem;border-radius:12px;margin:1rem 0}
+    .resolution-callout h2{margin-top:0}.resolution-callout button,.open-resolution{background:#c2410c}
+    .case-controls{display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:end}
+    .case-controls label{margin:0}.inline-check{display:flex;align-items:center;gap:.5rem;margin:.75rem 0;font-weight:650}
+    .inline-check input{width:auto;margin:0}.case-actions{display:grid;gap:.5rem;margin-top:.75rem}
+    @media(max-width:600px){body{padding:.5rem}.case-controls{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body><main>
   <h1>HEBELTRADER analysieren</h1>
+  <p>Unbekannte Aktien anhand konkreter Unternehmensbelege identifizieren.</p>
+  <p><a href="/market-scanner">Separater Markt-Scanner</a></p>
   <p class="warning">Die Rangliste ist eine Identifikationshilfe und keine Kaufempfehlung. Treffer
   und Optionsscheindaten müssen anhand zeitgerechter Originalquellen geprüft werden.</p>
+  {% if request.scope.get("teaser_web") %}<section id="api-cost-monitor">
+    <h2>API-Kostenüberwachung</h2>
+    <p id="api-cost-status">Kostenstand wird geladen …</p>
+    <div class="meter" aria-label="Monatsbudget"><span id="api-cost-meter" style="width:0%"></span></div>
+    <div class="cost-grid">
+      <p><strong>Tavily</strong><br><span id="tavily-cost">–</span></p>
+      <p><strong>OpenAI</strong><br><span id="openai-cost">–</span></p>
+      <p><strong>Verfügbar</strong><br><span id="remaining-cost">–</span></p>
+    </div>
+    <p class="muted">Interner Sicherheitszähler: höchstens 0,01 € je API-Aufruf, keine Rechnung der Anbieter. Tavily-Credits und OpenAI-Tokenkosten stehen darunter; fehlgeschlagene Aufrufe werden im Sicherheitszähler mitgezählt.</p>
+    <h3>Verbleibende Anbieter-Credits</h3>
+    <p id="tavily-credits">Tavily-Kontostand wird geladen …</p>
+    <p id="openai-usage">OpenAI-Verbrauch wird geladen …</p>
+    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche. OpenAI GPT-4.1 mini = 0,40/1,60 USD und GPT-4.1 = 2,00/8,00 USD je Mio. Eingabe-/Ausgabetokens. Unbekannte Modellpreise werden nicht geschätzt. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1" target="_blank" rel="noopener noreferrer">OpenAI-Tarife</a>.</p>
+    <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>.</p>
+    <button type="button" id="refresh-api-costs">Kostenstand aktualisieren</button>
+  </section>{% endif %}
   <form id="form">
     <label for="text">Teasertext</label><textarea id="text" maxlength="20000"></textarea>
-    <label for="mode">Analysemodus</label>
-    <select id="mode">
-      <option value="hypothesis" selected>Hypothesen Top-3 (manuell prüfen)</option>
-      <option value="strict">Streng (likely_candidate)</option>
-    </select>
+    <label for="url">Öffentliche Teaser-URL (optional)</label><input id="url" type="url">
+    <label for="headline">Überschrift (optional)</label><input id="headline" maxlength="500">
+    <label for="publisher">Herausgeber (optional)</label><input id="publisher" maxlength="200">
+    <label for="author">Autor (optional)</label><input id="author" maxlength="200">
+    <label for="issue">Ausgabennummer (optional)</label><input id="issue" maxlength="100">
+    <label for="advertised">Beworbene Rendite (optional, keine Prognose)</label><input id="advertised" maxlength="100">
+    <div{% if request.scope.get("teaser_web") %} hidden{% endif %}><label for="authorization">Recherchefreigabe (bei geschütztem Webzugriff)</label>
+    <input id="authorization" type="password" autocomplete="off"></div>
     <label for="published">Veröffentlichungszeit (historische Blindanalyse)</label>
     <input id="published" type="datetime-local">
-    <p class="muted">Mit Zeitstempel prüft der Detektiv nur Evidenz, die damals bereits verfügbar war
-      (`historical_blind`). Im Hypothesenmodus ohne Zeitstempel wird die Analysezeit genutzt
-      (nicht historical_blind). Im strengen Modus fehlt dann `missing_publication_time`.</p>
+    <p class="muted">Unbekannte Zeiten bleiben unbekannt. Öffentliches Recherchematerial
+      wird archiviert; bezahlte Inhalte und Zugänge werden nicht umgangen.</p>
     <label for="image">Screenshot oder PDF (Bilder maximal 2 MiB; PDF maximal 20 MiB/40 Seiten)</label>
     <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
     <button>Hinweise analysieren</button>
+    <p id="analysis-status" class="analysis-status" aria-live="assertive"></p>
   </form>
   <section id="result" aria-live="polite"></section>
+  <section><h2>Meine Fälle</h2>
+    <div class="case-controls"><label for="case-select">Fall auswählen
+      <select id="case-select"><option value="">Fälle laden …</option></select></label>
+      <button type="button" id="load-cases">Aktualisieren</button></div>
+    <label class="inline-check"><input type="checkbox" id="include-archived"> Archivierte Fälle einbeziehen</label>
+    <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
+  </section>
+  <section><h2>Prospektive Referenzfälle</h2><ul id="prospective-references"><li>Noch keine freigegebenen Fälle.</li></ul></section>
+  {% if request.scope.get("teaser_web") %}
+  <section><h2>Historische Referenzfälle</h2>
+    <p>Rekonstruierte Gesprächshistorie: keine neue Scanner-Trefferquote.
+    Auflösungen werden nicht als Hinweise für neue Teaser übernommen.</p>
+    <button id="import-references" type="button">18 Referenzfälle laden</button>
+    <p id="reference-status" aria-live="polite"></p><div id="references"></div>
+  </section>{% endif %}
+  <section id="resolution-panel" class="resolution-callout"><h2>Originalauflösung eintragen</h2>
+    <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
+      Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
+    <form id="resolution-form">
+      <label for="case-id">Fall-ID</label><input id="case-id" required>
+      <label for="resolved-id">Aktien-ID (aus Kandidatenbericht, sonst verifizierte Identität)</label><input id="resolved-id" required>
+      <label for="resolved-name">Aufgelöster Aktienname</label><input id="resolved-name" required>
+      <label for="resolved-wkn">Beworbene Call-WKN (optional)</label><input id="resolved-wkn" pattern="[A-Z0-9]{6}">
+      <label for="resolved-source">Quelle der Nutzerauflösung</label><input id="resolved-source" required>
+      <label for="resolved-error">Fehleranalyse / Gründe der Bestätigung</label><textarea id="resolved-error" required></textarea>
+      <label for="resolved-change">Erforderliche Algorithmusänderung (optional)</label><input id="resolved-change">
+      <button>Auflösung als neuen Journaleintrag speichern</button>
+    </form><p id="resolution-result" aria-live="polite"></p>
+  </section>
+  <section><h2>Neue öffentliche Teaser und verbesserte Zuordnungen</h2>
+    <ul id="updates"><li>Noch keine gespeicherten Meldungen.</li></ul></section>
 </main><script>
 const form=document.querySelector('#form'), result=document.querySelector('#result');
+let resolutionOriginalSha=null,activeResolutionRow=null;
+const costButton=document.querySelector('#refresh-api-costs');
+const euro=cents=>(Number(cents||0)/100).toLocaleString('de-AT',{style:'currency',currency:'EUR'});
+const loadApiCosts=async()=>{
+  if(!costButton)return;
+  const status=document.querySelector('#api-cost-status');
+  try{
+    const response=await fetch('/api/hebeltrader/runtime');
+    if(!response.ok)throw new Error();
+    const data=await response.json(), costs=data.api_costs;
+    status.textContent=`Interne Sicherheitsgrenze ${costs.month}: ${euro(costs.reserved_cents)} von ${euro(costs.budget_cents)} vorgemerkt (${costs.usage_percent} %). Keine Anbieterrechnung.`;
+    document.querySelector('#tavily-cost').textContent=`${costs.providers.tavily.calls} Aufrufe · ${euro(costs.providers.tavily.reserved_cents)}`;
+    document.querySelector('#openai-cost').textContent=`${costs.providers.openai.calls} Aufrufe · ${euro(costs.providers.openai.reserved_cents)}`;
+    document.querySelector('#remaining-cost').textContent=euro(costs.remaining_cents);
+    document.querySelector('#api-cost-meter').style.width=`${Math.min(costs.usage_percent,100)}%`;
+    const tavily=data.provider_credits?.tavily||{};
+    const tavilySearchUsage=tavily.search_usage==null?'unbekannt':tavily.search_usage;
+    const tavilyErrors={authentication_failed:'Authentifizierung fehlgeschlagen – Tavily-Schlüssel prüfen.',
+      access_forbidden:'Der Tavily-Schlüssel darf den Usage-Endpunkt nicht lesen.',
+      rate_limited:'Tavily-Usage-Abfrage ist vorübergehend rate-limitiert.',
+      network_error:'Tavily ist vom Server derzeit nicht erreichbar.',
+      invalid_response:'Tavily lieferte ein unbekanntes Usage-Format.',
+      provider_unavailable:'Der Tavily-Usage-Dienst ist vorübergehend nicht verfügbar.',
+      request_rejected:'Tavily hat die Usage-Abfrage abgelehnt.'};
+    document.querySelector('#tavily-credits').textContent=tavily.status==='available'
+      ? `Tavily ${tavily.plan}: ${tavily.plan_remaining} von ${tavily.plan_limit} Plan-Credits verfügbar · ${tavilySearchUsage} Such-Credits über diesen Schlüssel verbraucht.`
+      : tavily.status==='not_configured'?'Tavily: kein API-Schlüssel konfiguriert.':(tavilyErrors[tavily.reason]||'Tavily-Kontostand derzeit nicht abrufbar.');
+    const openai=data.provider_credits?.openai||{};
+    const usd=openai.estimated_usd==null?'Gesamtkosten nicht vollständig bestimmbar':Number(openai.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});
+    const modelUsage=(openai.models||[]).map(row=>`${row.model}: ${row.input_tokens}/${row.output_tokens} Tokens · ${row.estimated_usd==null?'Preis unbekannt':Number(row.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6})}`).join(' | ');
+    document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · ${openai.estimated_usd==null?usd:`lokal geschätzt ${usd}`}. ${modelUsage} Verbleibendes Guthaben nur im Billing-Dashboard.`;
+  }catch(error){status.textContent='Kostenstand derzeit nicht verfügbar.';}
+};
+if(costButton){costButton.addEventListener('click',loadApiCosts);loadApiCosts();}
+fetch('/api/hebeltrader/updates').then(response=>response.ok?response.json():[]).then(rows=>{
+  if(!rows.length)return;
+  const list=document.querySelector('#updates');list.replaceChildren();
+  rows.forEach(row=>{const item=document.createElement('li');
+    const report=row.payload||{};
+    item.textContent=`${row.created_at} · ${row.kind==='new_teaser'?'Neuer Teaser':'Verbesserte Zuordnung'} · ${report.headline||report.case_id||'Teaser'} · ${(report.identification||{}).label||'Manuell prüfen'}`;
+    list.append(item);
+  });
+}).catch(()=>{});
 const asBase64=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;
   r.onload=()=>resolve(r.result.split(',')[1]);r.readAsDataURL(file)});
 const el=(tag,text)=>{const node=document.createElement(tag);if(text!=null)node.textContent=text;return node};
@@ -59,7 +168,63 @@ const renderOverview=data=>{
   const box=el('article');box.className='meta';
   const id=data.identification||{};
   box.append(el('h2','Ergebnis'));
-  box.append(el('p',`Analyse: ${data.analysis_mode||'hypothesis'} · Status: ${id.status||'unbekannt'}`));
+  box.append(el('p',(data.decision||{}).label||id.label||`Status: ${id.status||'unbekannt'}`));
+  if(data.ranking_tie)box.append(el('p','Die führenden Kandidaten haben denselben Evidenzwert. Es gibt derzeit keinen eindeutigen Rang 1.'));
+  box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'unbekannt'} · ${data.case_status||''}`));
+  if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
+  box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
+  if(data.peer_comparison){
+    const peers=data.peer_comparison;
+    box.append(el('p',`Wettbewerberrecherche: ${peers.queries.length} Suchanfragen · ${peers.candidates_after_discovery} Kandidaten danach`));
+    if(peers.status==='not_performed_offline')box.append(el('p','Offline-Analyse: keine aktive Wettbewerbersuche.'));
+    if(peers.status==='searched_with_source_gaps')box.append(el('p','Wettbewerbersuche mit Quellenlücken.'));
+    if(peers.queries.length){
+      const detail=el('details');detail.append(el('summary','Suchanfragen zu Wettbewerbern'));
+      detail.append(list(peers.queries));box.append(detail);
+    }
+  }
+  if(data.falsification){
+    const states={not_performed_offline:'Nicht ausgeführt: Offline-Analyse',
+      not_performed_no_candidates:'Nicht möglich: Recherche lieferte keine Kandidaten',
+      performed:'Ausgeführt',performed_with_source_gaps:'Ausgeführt mit Quellenlücken'};
+    box.append(el('p',`Gegenprüfung: ${states[data.falsification.status]||data.falsification.status}`));
+  }
+  if(data.semantic_research?.enabled){
+    const models=data.semantic_research.models||{};
+    box.append(el('p',`KI-Quellenauswertung: ${data.semantic_research.validated_teaser_clues} belegte Eingabehinweise · ${data.semantic_research.search_api_calls} Such-API-Aufrufe · ${data.semantic_research.ai_api_calls} KI-Aufrufe. Extraktion: ${models.extraction||'unbekannt'} · Schlussprüfung: ${models.reasoning||'unbekannt'}. Befunde bleiben vorläufig.`));
+  }
+  if(data.reasoning_review?.status==='advisory'){
+    const review=data.reasoning_review;
+    box.append(el('h3','Abschließende KI-Gegenprüfung'));
+    box.append(el('p',`${review.model}: ${review.reason||'Kein Kandidat ausreichend unterscheidbar.'}`));
+    if(review.counterarguments?.length)box.append(list(review.counterarguments));
+    box.append(el('p','Diese Gegenprüfung verändert die deterministische Rangfolge nicht.'));
+  }
+  if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode==='public_web'?'Öffentliche Online-Recherche':data.research_mode}`));
+  if(data.research_diagnostics){
+    const diagnostic=data.research_diagnostics;
+    box.append(el('p',`Abgerufene Dokumente: ${diagnostic.documents} · mit Unternehmenszuordnung: ${diagnostic.documents_with_company_identity}`));
+    if(diagnostic.source_errors.length){
+      const detail=el('details');detail.append(el('summary','Quellenprobleme anzeigen'));
+      const lines=diagnostic.source_errors.map(row=>`${row.source||row.url||row.query||'Recherche'}: ${row.error}`);
+      detail.append(list([...new Set(lines)]));box.append(detail);
+    }
+  }
+  if((data.researched_sources||[]).length){
+    const detail=el('details');detail.append(el('summary','Recherchierte Quellen anzeigen'));
+    (data.researched_sources||[]).forEach(source=>{
+      detail.append(el('p',`Klasse ${source.source_class||'unbekannt'} · ${source.title||source.url}`));
+      detail.append(el('p',source.url||''));
+      if(source.text_excerpt)detail.append(el('blockquote',source.text_excerpt));
+    });
+    box.append(detail);
+  }
+  const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';
+  exportButton.addEventListener('click',()=>{
+    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const link=el('a');link.href=url;link.download=`teaser-${data.case_id||'analyse'}.json`;
+    link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });box.append(exportButton);
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
   else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
   if(id.status==='hypothesis_top3')box.append(el('p',
@@ -85,7 +250,7 @@ const renderOverview=data=>{
     return matched==null?`${key}: ${channelCounts[key]}`:`${key}: ${channelCounts[key]} (vor Cutoff ${matched})`;
   });
   if(channelLines.length){box.append(el('h3','Kanäle'));box.append(list(channelLines));}
-  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[])];
+  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[]),...(data.limitations||[])];
   const inputWarnings=[];
   (data.input_sources||[]).forEach(source=>{
     if(source.type==='screenshot_ocr')inputWarnings.push(`OCR (${source.engine||'lokal'}): visuelle Prüfung nötig`);
@@ -101,7 +266,7 @@ const renderOverview=data=>{
 const renderCandidate=(c,index)=>{
   const article=el('article');article.className='candidate';
   const identity=c.identity||c;
-  article.append(el('h3',`${index+1}. ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
+  article.append(el('h3',`${c.rank_label||`${index+1}.`} ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
   const wknNote=identity.wkn
     ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
     : 'WKN unbekannt';
@@ -128,36 +293,236 @@ const renderCandidate=(c,index)=>{
     article.append(el('h4','Evidenzmatrix'));
     article.append(list(c.evidence_matrix.map(cell=>{
       const reason=cell.reason?` (${cell.reason})`:'';
-      return `${cell.clue_id}: ${cell.status}${reason}`;
+      return `${cell.quote||cell.clue_id}: ${cell.status}${reason}`;
     })));
   }
-  const sources=c.eligible_evidence||[];
-  if(sources.length){
-    article.append(el('h4','Primärbelege'));
-    article.append(list(sources.map(sourceLine)));
+  if((c.cited_findings||[]).length){
+    article.append(el('h4','KI-Auswertung mit Belegstellen – vorläufig, manuell prüfen'));
+    c.cited_findings.forEach(finding=>{
+      article.append(el('p',`${finding.status==='supported'?'Stützt Hinweis':'Gegenargument'} · Quellenklasse ${finding.source_class||'unbekannt'} · ${finding.url}`));
+      article.append(el('blockquote',finding.quote));
+      if(!finding.usable_for_ranking)article.append(el('p','Zeitliche Verfügbarkeit nicht belegt: nicht für Rangfolge oder Gegenkandidatenzahl verwendet.'));
+      if(finding.temporal_eligibility==='current_hypothesis_only')article.append(el('p','Nur für die aktuelle Hypothesenbildung verwendet; keine historische Verfügbarkeit belegt.'));
+      article.append(el('p',`Zeitprüfung: ${finding.temporal_eligibility}; Quelle publiziert: ${finding.published_at||'unbekannt'}; abgerufen: ${finding.retrieved_at||'unbekannt'}`));
+    });
   }
+  const sources=c.sources||c.eligible_evidence||[];
+  const primary=sources.filter(source=>['issuer','regulatory','product_document'].includes(source.source_kind));
+  const other=sources.filter(source=>!primary.includes(source));
+  if(primary.length){article.append(el('h4','Primärbelege'));article.append(list(primary.map(sourceLine)));}
+  if(other.length){article.append(el('h4','Weitere Quellen'));article.append(list(other.map(sourceLine)));}
+  sources.forEach(source=>{
+    const quotes=Object.values((source.facts||{}).support_quotes||{});
+    quotes.forEach(quote=>article.append(el('blockquote',quote)));
+  });
+  if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
   article.append(el('p','Bestätigung: manuell erforderlich'));
   result.append(article);
 };
+const referenceButton=document.querySelector('#import-references');
+const referenceOutcomes={correct:'Richtig',wrong:'Falsch',unresolved:'Ungelöst'};
+const renderReferences=data=>{
+  const root=document.querySelector('#references');root.replaceChildren();
+  const summary=data.summary;
+  document.querySelector('#reference-status').textContent=
+    `${data.cases.length} historische Fälle: ${summary.correct} richtig, ${summary.wrong} falsch, ${summary.unresolved} ungelöst. Kein unabhängiger Benchmark.`;
+  [...data.cases].sort((a,b)=>a.reference_number-b.reference_number).forEach(row=>{
+    const card=el('details');card.className='candidate';
+    card.append(el('summary',`${row.reference_number}. ${row.headline} · ${referenceOutcomes[row.outcome]}`));
+    card.append(el('p',`Fall-ID: ${row.case_id} · Ausgabe: ${row.publication_issue||'unbekannt'} · Datum: ${row.publication_date||'unbekannt'}`));
+    card.append(el('p',`Ursprünglicher Tipp: ${row.first_prediction||'unbekannt'}`));
+    card.append(el('p',`Spätere Auflösung: ${row.actual_company||'Nicht gesichert'}${row.actual_ticker?' ('+row.actual_ticker+')':''}`));
+    card.append(el('p',`Gemeldete Call-WKN: ${row.derivative_wkn||'unbekannt'} · Produktdaten nicht gesondert verifiziert`));
+    if(row.failure_analysis)card.append(el('p',`Fehleranalyse: ${row.failure_analysis}`));
+    card.append(el('h3','Originaltext'));
+    card.append(el('p',row.teaser_text||'Vollständiger Originalteaser fehlt; nur Überschrift vorhanden.'));
+    if((row.key_clues||[]).length){card.append(el('h3','Dokumentierte Hinweise'));card.append(list(row.key_clues));}
+    root.append(card);
+  });
+  referenceButton.textContent='Referenzbestand erneut prüfen';
+};
+if(referenceButton){
+  fetch('/api/hebeltrader/references').then(async response=>{
+    if(response.ok)renderReferences(await response.json());
+    else document.querySelector('#reference-status').textContent=response.status===404?
+      'Noch nicht geladen. Einmal auf „18 Referenzfälle laden“ drücken.':'Referenzbestand derzeit nicht verfügbar.';
+  }).catch(()=>{document.querySelector('#reference-status').textContent='Verbindung zum Referenzbestand fehlgeschlagen.';});
+  referenceButton.addEventListener('click',async()=>{
+    referenceButton.disabled=true;
+    document.querySelector('#reference-status').textContent='Referenzbestand wird geladen und geprüft …';
+    try{
+      const response=await fetch('/api/hebeltrader/references/import',{method:'POST'});
+      if(!response.ok)throw new Error('Import fehlgeschlagen. Bitte erneut versuchen.');
+      renderReferences(await response.json());
+    }catch(error){document.querySelector('#reference-status').textContent=error.message;}
+    finally{referenceButton.disabled=false;}
+  });
+}
+let loadedCases=[];
+const openResolution=(row,candidate=null)=>{
+  const report=row?.latest_prediction||row?.first_prediction||row||{};
+  document.querySelector('#case-id').value=row?.case_id||report.journal_case_id||report.case_id||'';
+  const identity=candidate?.identity||candidate||{};
+  if(identity.asset_id||candidate?.asset_id)document.querySelector('#resolved-id').value=identity.asset_id||candidate.asset_id;
+  if(identity.name)document.querySelector('#resolved-name').value=identity.name;
+  resolutionOriginalSha=report.teaser_sha256||null;
+  document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelector('#resolved-name').focus();
+};
+const makeResolutionButton=(row,candidate=null)=>{
+  const button=el('button','Originalauflösung eintragen');
+  button.type='button';button.className='open-resolution';
+  button.addEventListener('click',()=>openResolution(row,candidate));return button;
+};
+const showCaseActionError=async(response,fallback)=>{
+  const detail=await readResponseError(response);
+  document.querySelector('#case-message').textContent=`${fallback} (${detail})`;
+};
+const selectCase=caseId=>{
+  const root=document.querySelector('#active-case');root.replaceChildren();
+  const row=loadedCases.find(item=>item.case_id===caseId);if(!row)return;
+  const heading=(row.input||{}).headline||row.case_id;
+  root.append(el('h3',heading));root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`));
+  const report=row.latest_prediction||row.first_prediction;
+  activeResolutionRow=row;
+  const actions=el('div');actions.className='case-actions';actions.append(makeResolutionButton(row));
+  const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
+    result.replaceChildren();
+    if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
+    resolutionOriginalSha=report.teaser_sha256||null;renderOverview({...report,journal_case_id:row.case_id});
+    (report.candidates||[]).forEach(renderCandidate);result.prepend(makeResolutionButton(row));
+    result.scrollIntoView({behavior:'smooth',block:'start'});
+  });actions.prepend(show);
+  const token=document.querySelector('#authorization').value;const headers={};if(token)headers['X-Research-Authorization']=token;
+  if(!row.archived){
+    const archive=el('button','Testfall archivieren');archive.type='button';archive.addEventListener('click',async()=>{
+      if(!confirm(`Fall ${row.case_id} wirklich archivieren?`))return;
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
+      if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
+      else await showCaseActionError(response,'Archivierung fehlgeschlagen');
+    });actions.append(archive);
+  }else{
+    const restore=el('button','Fall wiederherstellen');restore.type='button';restore.addEventListener('click',async()=>{
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/restore`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber wiederhergestellt'})});
+      if(response.ok)await loadCases(true);else await showCaseActionError(response,'Wiederherstellung fehlgeschlagen');
+    });actions.append(restore);
+  }
+  if(!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
+    const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
+      if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
+      else await showCaseActionError(response,'Blindtest-Markierung nicht möglich');
+    });actions.append(blind);
+  }
+  if(row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
+    const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';promote.addEventListener('click',async()=>{
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
+      if(response.ok){await loadCases(document.querySelector('#include-archived').checked);await loadProspectiveReferences();}
+      else await showCaseActionError(response,'Referenzfreigabe nicht möglich');
+    });actions.append(promote);
+  }
+  root.append(actions);
+};
+const loadCases=async(includeArchived=false)=>{
+  const message=document.querySelector('#case-message'),select=document.querySelector('#case-select');
+  message.textContent='Fälle werden geladen …';
+  const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;
+  try{
+    const response=await fetch(`/api/hebeltrader/cases?include_archived=${includeArchived}`,{headers});
+    if(!response.ok)throw new Error('Fälle konnten nicht geladen werden. Anmeldung prüfen.');
+    loadedCases=(await response.json()).reverse();select.replaceChildren();
+    select.append(new Option(loadedCases.length?'Fall auswählen …':'Keine gespeicherten Fälle',''));
+    loadedCases.forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${row.archived?' · archiviert':''}`,row.case_id)));
+    message.textContent=loadedCases.length?`${loadedCases.length} gespeicherte Fälle`:'Noch keine gespeicherten Fälle.';
+    document.querySelector('#active-case').replaceChildren();
+  }catch(error){message.textContent=error.message;}
+};
+const loadProspectiveReferences=async()=>{
+  const root=document.querySelector('#prospective-references');
+  try{const response=await fetch('/api/hebeltrader/prospective-references');if(!response.ok)return;
+    const rows=await response.json();root.replaceChildren();
+    if(!rows.length){root.append(el('li','Noch keine freigegebenen Fälle.'));return;}
+    rows.forEach(row=>root.append(el('li',`Fall ${row.reference_number}: ${(row.input||{}).headline||row.case_id} · ${row.status}`)));
+  }catch(error){}
+};
+loadProspectiveReferences();
+document.querySelector('#load-cases').addEventListener('click',()=>loadCases(document.querySelector('#include-archived').checked));
+document.querySelector('#include-archived').addEventListener('change',event=>loadCases(event.target.checked));
+document.querySelector('#case-select').addEventListener('change',event=>selectCase(event.target.value));
+loadCases(false);
+const setAnalysisStatus=(state,message)=>{
+  const status=document.querySelector('#analysis-status');
+  status.className=`analysis-status ${state||''}`.trim();status.textContent=message||'';
+};
+const readResponseError=async response=>{
+  let detail='';
+  try{const payload=await response.clone().json();detail=typeof payload.detail==='string'?payload.detail:JSON.stringify(payload.detail||payload);}
+  catch(error){try{detail=await response.text();}catch(ignored){detail='';}}
+  return `HTTP ${response.status}${detail?`: ${detail}`:''}`;
+};
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
+  const submit=form.querySelector('button');
+  const originalLabel=submit.textContent;submit.disabled=true;submit.textContent='Analyse läuft …';
+  setAnalysisStatus('running','ANALYSE LÄUFT – Quellen und Gegenkandidaten werden geprüft. Das kann einige Minuten dauern.');
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+  try{
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
   const body={teaser_text:document.querySelector('#text').value,
-    analysis_mode:document.querySelector('#mode').value,
+    teaser_url:document.querySelector('#url').value||null,
+    headline:document.querySelector('#headline').value,
+    publisher:document.querySelector('#publisher').value,
+    author:document.querySelector('#author').value,
+    issue:document.querySelector('#issue').value,
+    advertised_return:document.querySelector('#advertised').value||null,
     publication_at:published?new Date(published).toISOString():null};
   if(file&&file.type==='application/pdf'){body.pdf_base64=await asBase64(file);
     body.pdf_media_type=file.type}else if(file){body.screenshot_base64=await asBase64(file);
     body.screenshot_media_type=file.type}
-  const response=await fetch('/api/hebeltrader/detective/analyze',{method:'POST',
-    headers:{'content-type':'application/json'},body:JSON.stringify(body)});
-  const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';return}
+  const headers={'content-type':'application/json'};
+  const authorization=document.querySelector('#authorization').value;
+  if(authorization)headers['X-Research-Authorization']=authorization;
+  const response=await fetch('/api/hebeltrader/investigate',{method:'POST',headers,body:JSON.stringify(body)});
+  if(!response.ok){const message=await readResponseError(response);result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);return}
+  const data=await response.json();
+  activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data};
+  await loadApiCosts();
   result.replaceChildren();
   renderOverview(data);
   result.append(el('h2','Kandidaten'));
+  setAnalysisStatus('success','Analyse abgeschlossen. Das Ergebnis steht direkt unter dem Formular.');
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+  result.prepend(makeResolutionButton({case_id:data.journal_case_id||data.case_id,latest_prediction:data}));
   if(!data.candidates.length){
     result.append(el('p','Keine belastbaren Kandidaten. Siehe Failure-Code und Abdeckung oben.'));
     return;
   }
   data.candidates.forEach((candidate,index)=>renderCandidate(candidate,index));
+  const comparison=el('details');
+  comparison.append(el('summary',`Alle geprüften Unternehmen (${(data.checked_candidates||[]).length})`));
+  (data.checked_candidates||[]).forEach(candidate=>{
+    comparison.append(el('h3',candidate.identity.name));
+    comparison.append(el('p',`Aktien-ID: ${candidate.asset_id}`));
+    comparison.append(list((candidate.evidence_matrix||[]).map(cell=>
+      `${cell.quote||cell.clue_id}: ${cell.status}`)));
+  });
+  result.append(comparison);
+  }catch(error){const message=error?.message||'Unbekannter Verbindungsfehler';result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);}
+  finally{submit.disabled=false;submit.textContent=originalLabel;}
+});
+document.querySelector('#resolution-form').addEventListener('submit',async event=>{
+  event.preventDefault();const status=document.querySelector('#resolution-result');
+  const value=id=>document.querySelector('#'+id).value;
+  const body={asset_id:value('resolved-id'),name:value('resolved-name'),basis:'user',
+    source:value('resolved-source'),error_analysis:value('resolved-error'),
+    algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null,
+    confirmed_at:new Date().toISOString(),original_sha256:resolutionOriginalSha};
+  try{
+    const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(value('case-id'))}/resolution`,{
+      method:'POST',headers:{'content-type':'application/json','X-Research-Authorization':value('authorization')},
+      body:JSON.stringify(body)});
+    const data=await response.json();
+    status.textContent=response.ok?`Gespeichert: ${data.case_status}; Original-Call: ${data.original_call_status}; Produktdaten: ${data.product_verification}`:data.detail;
+  }catch(error){status.textContent='Auflösung konnte nicht gespeichert werden.';}
 });
 </script></body></html>

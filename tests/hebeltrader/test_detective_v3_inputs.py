@@ -200,3 +200,16 @@ def test_cli_accepts_pdf_through_same_request_contract(tmp_path, monkeypatch):
     assert captured["request"].schema_version == 3
     assert base64.b64decode(captured["request"].pdf_base64) == source.read_bytes()
     assert captured["request"].pdf_media_type == "application/pdf"
+
+
+def test_long_call_sentence_preserves_complete_promotional_return():
+    from scanner.hebeltrader.detective.clues import extract_atomic_clues
+
+    text = (
+        "Wer hier den Hebel ansetzt, hat ein Motiv: Der Call-Optionsschein könnte "
+        "bei Erreichen des ersten Kursziels um bis zu 421 Prozent zulegen."
+    )
+    rows = extract_atomic_clues(text, [])
+    values = [row.value for row in rows if row.instrument_scope == "promotional"]
+    assert values == ["421"]
+    assert not any(row.category == "financial_metric" for row in rows)

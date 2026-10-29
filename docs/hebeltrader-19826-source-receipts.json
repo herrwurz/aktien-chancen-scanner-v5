@@ -1,0 +1,41 @@
+{
+  "archived_at": "2026-10-28T14:05:15.755156+00:00",
+  "scope": "actual_http_request_and_completion_times_not_historical_availability_proof",
+  "receipts": [
+    {
+      "url": "https://www.boersenmedien.de/robots.txt",
+      "request_started_at": "2026-10-28T13:57:51.528424+00:00",
+      "retrieved_at": "2026-10-28T13:57:52.880968+00:00",
+      "status": 200,
+      "raw_sha256": "a827e76bf90875725fd9595659a0bdc83c90f5951466913d2c2e4d3d2c60ec60"
+    },
+    {
+      "url": "https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-19826-5097.html",
+      "request_started_at": "2026-10-28T13:57:53.083892+00:00",
+      "retrieved_at": "2026-10-28T13:57:53.726403+00:00",
+      "status": 200,
+      "raw_sha256": "e7d96d32647d859a13b1d3e767209a87dbb8130b2d4d35d9fb220379982101f3"
+    },
+    {
+      "url": "https://investorcenter.slb.com/robots.txt",
+      "request_started_at": "2026-10-28T14:00:42.488920+00:00",
+      "retrieved_at": "2026-10-28T14:00:43.199097+00:00",
+      "status": 200,
+      "raw_sha256": "3e5e1fda588b1d191a1f83325b131004b4ac8269dba8125b43567a89a6e3cb9f"
+    },
+    {
+      "url": "https://investorcenter.slb.com/news-releases/news-release-details/slb-announces-third-quarter-2026-results",
+      "request_started_at": "2026-10-28T14:00:43.291523+00:00",
+      "retrieved_at": "2026-10-28T14:00:44.185197+00:00",
+      "status": 200,
+      "raw_sha256": "38454c71da8d4f9793fc434990b0c130fc1c41801a6a6e5fa171022abe2942cd"
+    },
+    {
+      "url": "https://investorcenter.slb.com/news-releases/news-release-details/slb-acquire-kelvion-expanding-its-role-across-data-center",
+      "request_started_at": "2026-10-28T14:00:44.337908+00:00",
+      "retrieved_at": "2026-10-28T14:00:45.224129+00:00",
+      "status": 200,
+      "raw_sha256": "aa602d26c168b6246679f2a615e381d4cfd7f6916f11dbb37170d38ed03a2876"
+    }
+  ]
+}

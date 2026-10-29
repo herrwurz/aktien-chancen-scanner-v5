@@ -14,7 +14,13 @@ from .schemas import AtomicClue
 
 PRIMARY_KINDS = {"issuer", "regulatory", "product_document"}
 SUPPORTED_FACT_GROUPS = {"sectors", "countries", "events", "fact_claims"}
-HARD_CONTRADICTION_GROUPS = {"countries", "sectors", "financial_metric", "identifier"}
+HARD_CONTRADICTION_GROUPS = {
+    "countries",
+    "sectors",
+    "financial_metric",
+    "identifier",
+    "fact_claims",
+}
 CONFIRMED_CLUE_WEIGHT = 12
 CATEGORY_BREADTH_WEIGHT = 8
 INDEPENDENT_CLUSTER_WEIGHT = 12
@@ -208,6 +214,20 @@ def _cell(clue, records, source_to_cluster, identity, as_of):
             matched = any(country_matches(target, item) for item in values)
         if matched:
             supporting.append(source_to_cluster[record.source_id])
+    denials = [
+        source_to_cluster[record.source_id]
+        for record in records
+        if clue.category == "fact_claims"
+        and record.source_kind in PRIMARY_KINDS
+        and target in record.facts.get("contradicted_fact_claims", [])
+    ]
+    if denials:
+        return EvidenceCell(
+            clue_id=clue.clue_id,
+            status="contradicted",
+            evidence_cluster_ids=sorted(set(denials)),
+            reason="explicit_primary_counterevidence",
+        )
     if supporting:
         return EvidenceCell(
             clue_id=clue.clue_id,
