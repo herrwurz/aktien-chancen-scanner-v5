@@ -2,6 +2,8 @@ name: Deploy teaser to Coolify
 
 on:
   workflow_dispatch:
+  push:
+    branches: [feat/teaser-search-ai]
 
 permissions:
   actions: read
@@ -14,6 +16,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy]')
     runs-on: ubuntu-latest
     steps:
       - name: Require successful test checks for this commit
@@ -22,13 +25,23 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          checks="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${COMMIT_SHA}/check-runs")"
-          count="$(jq '[.check_runs[] | select(.name == "test")] | length' <<<"$checks")"
-          failures="$(jq '[.check_runs[] | select(.name == "test" and .conclusion != "success")] | length' <<<"$checks")"
-          if [ "$count" -lt 1 ] || [ "$failures" -ne 0 ]; then
-            echo "Deployment blocked: test checks are missing, pending, or unsuccessful."
-            exit 1
-          fi
+          for attempt in $(seq 1 36); do
+            checks="$(gh api "/repos/${GITHUB_REPOSITORY}/commits/${COMMIT_SHA}/check-runs")"
+            count="$(jq '[.check_runs[] | select(.name == "test")] | length' <<<"$checks")"
+            pending="$(jq '[.check_runs[] | select(.name == "test" and .status != "completed")] | length' <<<"$checks")"
+            failures="$(jq '[.check_runs[] | select(.name == "test" and .status == "completed" and .conclusion != "success")] | length' <<<"$checks")"
+            if [ "$failures" -ne 0 ]; then
+              echo "Deployment blocked: a test check failed."
+              exit 1
+            fi
+            if [ "$count" -ge 1 ] && [ "$pending" -eq 0 ]; then
+              exit 0
+            fi
+            echo "Waiting for test checks ($attempt/36)."
+            sleep 10
+          done
+          echo "Deployment blocked: successful test checks did not finish in time."
+          exit 1
 
       - name: Trigger the application deployment
         env:
