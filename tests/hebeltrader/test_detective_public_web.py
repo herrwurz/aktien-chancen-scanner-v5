@@ -32,6 +32,17 @@ def test_no_identity_or_invented_date():
     assert doc["source_kind"] != "issuer"
 
 
+def test_top_level_news_publisher_is_not_treated_as_stock_identity():
+    raw = b"""<script type="application/ld+json">
+    {"@type":"Organization","name":"EarningsLens"}
+    </script><p>Semiconductor sector overview</p>"""
+
+    doc = parse_page(raw, "https://www.earningslens.ai/sector/semiconductors", retrieved_at=NOW)
+
+    assert doc["source_kind"] == "news"
+    assert "company_name" not in doc
+
+
 def test_network_disabled_and_private_urls(tmp_path):
     r = PublicWebResearch(tmp_path)
     with pytest.raises(ValueError):

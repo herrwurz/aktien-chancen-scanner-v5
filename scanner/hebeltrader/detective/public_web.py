@@ -127,11 +127,11 @@ def parse_page(raw, url, *, retrieved_at=None, raw_file="", primary_domains=None
             "PressRelease",
         ):
             published = published or _date(obj.get("datePublished"))
-        walk(
-            obj,
-            isinstance(obj, dict)
-            and obj.get("@type") in ("Organization", "Corporation", "PublicCompany"),
-        )
+        # A top-level Organization card on an unapproved news/tool site normally
+        # identifies the publisher, not the company discussed by the document.
+        # Candidate identity must come from explicit about/mainEntity metadata,
+        # an approved issuer domain, or later citation-bound AI interpretation.
+        walk(obj, bool(name))
     retrieved = retrieved_at or datetime.now(UTC)
     if retrieved.tzinfo is None:
         raise ValueError("retrieved_at must be timezone aware")
