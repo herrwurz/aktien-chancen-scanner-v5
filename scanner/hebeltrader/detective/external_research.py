@@ -172,7 +172,9 @@ class ResearchApis:
                         f"{provider} API returned HTTP {response.status_code}: {safe_code}"
                     )
                 raise ValueError(f"{provider} API returned HTTP {response.status_code}")
-            if len(response.content) > 2_000_000:
+            # Batched Extract responses carry full page text and are trimmed to 20k chars each.
+            limit = 8_000_000 if endpoint and endpoint.endswith("/extract") else 2_000_000
+            if len(response.content) > limit:
                 raise ValueError("API response size limit exceeded")
             body = response.json()
             if not isinstance(body, dict):
