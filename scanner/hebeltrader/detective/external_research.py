@@ -115,6 +115,25 @@ class ResearchApis:
             )
             audit["http_status"] = response.status_code
             if response.status_code != 200:
+                safe_code = None
+                if provider == "ai" and len(response.content) <= 65_536:
+                    try:
+                        error = response.json().get("error", {})
+                        candidates = (error.get("code"), error.get("type"))
+                        allowed = {
+                            "insufficient_quota",
+                            "rate_limit_exceeded",
+                            "billing_hard_limit_reached",
+                            "usage_limit_reached",
+                        }
+                        safe_code = next((value for value in candidates if value in allowed), None)
+                    except (AttributeError, TypeError, ValueError):
+                        pass
+                if safe_code:
+                    audit["provider_error_code"] = safe_code
+                    raise ValueError(
+                        f"{provider} API returned HTTP {response.status_code}: {safe_code}"
+                    )
                 raise ValueError(f"{provider} API returned HTTP {response.status_code}")
             if len(response.content) > 2_000_000:
                 raise ValueError("API response size limit exceeded")

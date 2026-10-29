@@ -300,6 +300,41 @@ def test_provider_error_never_archives_api_credential_or_error_body(tmp_path):
     assert api.budget.summary()["reserved_cents"] == 5
 
 
+def test_openai_429_exposes_only_whitelisted_safe_error_code(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    client = httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                429,
+                json={
+                    "error": {
+                        "code": "insufficient_quota",
+                        "type": "insufficient_quota",
+                        "message": "private-ai-key and account details must not escape",
+                    }
+                },
+            )
+        )
+    )
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        ai_key="private-ai-key",
+        client=client,
+    )
+
+    with pytest.raises(ValueError, match="insufficient_quota"):
+        api._json("Return an object.", {"teaser": "example"})
+
+    archived = "".join(p.read_text() for p in tmp_path.glob("api-*.json"))
+    assert '"provider_error_code": "insufficient_quota"' in archived
+    assert "private-ai-key" not in archived
+    assert "account details" not in archived
+
+
 def test_persisted_budget_exhaustion_prevents_any_further_provider_call(tmp_path):
     from scanner.hebeltrader.detective.api_budget import ApiBudget
     from scanner.hebeltrader.detective.external_research import ResearchApis
