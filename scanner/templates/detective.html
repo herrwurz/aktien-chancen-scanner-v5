@@ -184,6 +184,15 @@ const renderOverview=data=>{
       detail.append(list([...new Set(lines)]));box.append(detail);
     }
   }
+  if((data.researched_sources||[]).length){
+    const detail=el('details');detail.append(el('summary','Recherchierte Quellen anzeigen'));
+    (data.researched_sources||[]).forEach(source=>{
+      detail.append(el('p',`Klasse ${source.source_class||'unbekannt'} · ${source.title||source.url}`));
+      detail.append(el('p',source.url||''));
+      if(source.text_excerpt)detail.append(el('blockquote',source.text_excerpt));
+    });
+    box.append(detail);
+  }
   const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';
   exportButton.addEventListener('click',()=>{
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));

@@ -77,11 +77,13 @@ zugangsgeschützt und durch Requests sowie Laufzeit begrenzt. V3 benötigt keine
 Dienst.
 
 Die Live-Recherche bewahrt die Herkunft jedes Belegs in vier Klassen: **A** ist direkt geladene
-Emittenten- oder Regulatorik-Evidenz, **B** ein über Tavily Extract abgerufener Quelltext, **C**
-ein begrenzter Tavily-Suchtreffer und **D** eine sonstige Sekundärquelle. Wenn eine öffentliche
-Seite Direktabrufe blockiert, versucht der Scanner zuerst Extract und verwendet erst danach den
-archivierten Suchtreffer. Klasse B und C werden nie zu Primärbelegen hochgestuft; URL,
-Abrufzeit, Hash und zeitliche Unsicherheit bleiben im Bericht erhalten.
+Emittenten- oder Regulatorik-Evidenz, **B** der über Tavily Extract abgerufene Text einer
+freigegebenen Primärdomain, **C** ein begrenzter Tavily-Suchtreffer und **D** eine sonstige
+Sekundärquelle einschließlich extrahierter Presseartikel. Wenn öffentliche Seiten Direktabrufe
+blockieren, bündelt der Scanner gemeinsam verarbeitete URLs in einem Extract-Aufruf und
+verwendet erst danach archivierte Suchtreffer. Klasse B und C werden nie zu direkt abgerufener
+Klasse-A-Evidenz hochgestuft; URL, Abrufzeit, Hash, Textauszug und zeitliche Unsicherheit bleiben
+auch bei fehlgeschlagener KI-Zuordnung im Bericht erhalten.
 
 Bei einem aktuellen Teaser ohne Publikationszeit dürfen Klasse B und C eine ausdrücklich als
 `current_hypothesis_only` markierte Rangfolge stützen. Das ist keine historische Bestätigung und

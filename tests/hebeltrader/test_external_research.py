@@ -119,6 +119,46 @@ def test_tavily_extract_returns_bounded_content(tmp_path):
     assert 100 < len(result["content"]) <= 20_000
 
 
+def test_tavily_extract_batches_urls_in_one_provider_call(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    calls = []
+
+    def handler(request):
+        calls.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "results": [
+                    {"url": url, "raw_content": f"Evidence from {url}"} for url in calls[0]["urls"]
+                ]
+            },
+        )
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        search_key="private-search",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+    urls = ["https://a.example/results", "https://b.example/results"]
+
+    assert set(api.extract_many(urls)) == set(urls)
+    assert len(calls) == 1
+    assert calls[0]["urls"] == urls
+
+
+def test_extract_source_class_requires_approved_primary_domain():
+    from scanner.hebeltrader.detective.external_research import provider_source_class
+
+    approved = {"issuer.example": "Issuer"}
+    assert provider_source_class("https://issuer.example/results", approved, extracted=True) == "B"
+    assert provider_source_class("https://news.example/story", approved, extracted=True) == "D"
+    assert provider_source_class("https://issuer.example/results", approved, extracted=False) == "C"
+
+
 def test_search_discards_unparseable_provider_publication_date(tmp_path):
     from scanner.hebeltrader.detective.api_budget import ApiBudget
     from scanner.hebeltrader.detective.external_research import ResearchApis
@@ -291,6 +331,17 @@ def test_api_backed_pipeline_produces_cited_top3_without_primary_promotion(tmp_p
     assert report["decision"]["status"] == "plausible_hypothesis"
     assert report["source_quality"]["primary_documents"] == 0
     assert all(not c["confirmed_specific_clues"] for c in report["candidates"])
+    assert report["researched_sources"]
+    assert {
+        "url",
+        "title",
+        "source_class",
+        "source_kind",
+        "raw_sha256",
+        "retrieved_at",
+        "provider_score",
+        "text_excerpt",
+    } <= set(report["researched_sources"][0])
 
 
 def test_planner_never_receives_product_wkn_and_discards_unquoted_clues(tmp_path):

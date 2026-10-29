@@ -6,6 +6,7 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 from time import monotonic
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 import httpx
@@ -17,6 +18,14 @@ from .temporal import timestamp
 
 def _literal(quote, text):
     return isinstance(quote, str) and 8 <= len(quote) <= 1500 and quote in text
+
+
+def provider_source_class(url, primary_domains, *, extracted):
+    if not extracted:
+        return "C"
+    host = (urlsplit(url).hostname or "").lower()
+    primary = host in primary_domains or host == "sec.gov" or host.endswith(".sec.gov")
+    return "B" if primary else "D"
 
 
 def validate_interpretation(document, clues, parsed):
@@ -196,11 +205,14 @@ class ResearchApis:
             hits.append(hit)
         return hits
 
-    def extract(self, url):
+    def extract_many(self, urls):
+        urls = list(dict.fromkeys(urls))[:20]
+        if not urls:
+            return {}
         body = self._call(
             "search",
             {
-                "urls": [url],
+                "urls": urls,
                 "extract_depth": "basic",
                 "format": "text",
                 "include_images": False,
@@ -211,12 +223,20 @@ class ResearchApis:
         rows = body.get("results")
         if not isinstance(rows, list):
             raise ValueError("Invalid extract response results")
+        extracted = {}
         for row in rows:
-            if not isinstance(row, dict) or row.get("url") != url:
+            url = row.get("url") if isinstance(row, dict) else None
+            if url not in urls:
                 continue
             content = row.get("raw_content")
             if isinstance(content, str) and content.strip():
-                return {"url": url, "content": content.strip()[:20_000]}
+                extracted[url] = content.strip()[:20_000]
+        return extracted
+
+    def extract(self, url):
+        extracted = self.extract_many([url])
+        if url in extracted:
+            return {"url": url, "content": extracted[url]}
         raise ValueError("Tavily extract unavailable")
 
     def _json(self, task, data):
@@ -378,49 +398,66 @@ class ApiPublicResearch(PublicWebResearch):
         return valid
 
     def fetch(self, url):
+        documents, errors = self.fetch_many([url])
+        if documents:
+            return documents[0]
+        raise ValueError(errors[0]["error"] if errors else "source unavailable")
+
+    def _provider_document(self, url, text, *, extracted):
+        hit = self.search_hits.get(url, {})
+        raw = text.encode()
+        archived = self.run_dir / ("provider-" + hashlib.sha256(raw).hexdigest() + ".txt")
+        archived.write_bytes(raw)
+        return {
+            "url": url,
+            "title": hit.get("title", ""),
+            "text": text,
+            "published_at": hit.get("published_at"),
+            "source_available_at": None,
+            "availability_basis": "provider_observed_at_retrieval",
+            "content_revision_at": None,
+            "retrieved_at": self.clock().isoformat(),
+            "raw_sha256": hashlib.sha256(raw).hexdigest(),
+            "raw_file": str(archived),
+            "source_kind": "tavily_extract" if extracted else "search_snippet",
+            "source_class": provider_source_class(url, self.primary_domains, extracted=extracted),
+            "provider_score": hit.get("score"),
+        }
+
+    def fetch_many(self, urls):
         self.apis.check_deadline()
-        if not self.can_fetch_new_document():
-            raise ValueError("Research phase document budget reached")
-        if self.phase != "input":
-            self.phase_fetches[self.phase] += 1
-        try:
-            doc = super().fetch(url)  # Preferred direct public archive.
-        except (ValueError, httpx.HTTPError) as direct_error:
-            hit = self.search_hits.get(url, {})
+        documents, blocked, failures = [], [], []
+        for url in list(dict.fromkeys(urls)):
+            if not self.can_fetch_new_document():
+                break
+            if self.phase != "input":
+                self.phase_fetches[self.phase] += 1
             try:
-                extracted = self.apis.extract(url)
-                text = extracted["content"]
-                source_class = "B"
-                source_kind = "tavily_extract"
-            except (ValueError, httpx.HTTPError):
-                text = hit.get("content")
-                if not isinstance(text, str) or not text.strip():
-                    raise direct_error from None
-                source_class = "C"
-                source_kind = "search_snippet"
-            raw = text.encode()
-            archived = self.run_dir / ("provider-" + hashlib.sha256(raw).hexdigest() + ".txt")
-            archived.write_bytes(raw)
-            doc = {
-                "url": url,
-                "title": hit.get("title", ""),
-                "text": text,
-                "published_at": hit.get("published_at"),
-                "source_available_at": None,
-                "availability_basis": "provider_observed_at_retrieval",
-                "content_revision_at": None,
-                "retrieved_at": self.clock().isoformat(),
-                "raw_sha256": hashlib.sha256(raw).hexdigest(),
-                "raw_file": str(archived),
-                "source_kind": source_kind,
-                "source_class": source_class,
-                "provider_score": hit.get("score"),
-            }
+                documents.append(PublicWebResearch.fetch(self, url))
+            except (ValueError, httpx.HTTPError) as exc:
+                blocked.append((url, str(exc)[:120]))
         try:
-            return self.apis.annotate(doc)
+            extracted = self.apis.extract_many([url for url, _ in blocked]) if blocked else {}
         except (ValueError, httpx.HTTPError) as exc:
-            self.discovery_errors.append({"source": "source_ai", "error": str(exc)[:120]})
-            return doc
+            extracted = {}
+            self.discovery_errors.append({"source": "tavily_extract", "error": str(exc)[:120]})
+        for url, direct_error in blocked:
+            text = extracted.get(url)
+            was_extracted = isinstance(text, str) and bool(text.strip())
+            if not was_extracted:
+                text = self.search_hits.get(url, {}).get("content")
+            if not isinstance(text, str) or not text.strip():
+                failures.append({"url": url, "error": direct_error})
+                continue
+            documents.append(self._provider_document(url, text, extracted=was_extracted))
+        annotated = []
+        for doc in documents:
+            try:
+                annotated.append(self.apis.annotate(doc))
+            except (ValueError, httpx.HTTPError) as exc:
+                self.discovery_errors.append({"source": "source_ai", "error": str(exc)[:120]})
+                annotated.append(doc)
+        return annotated, failures
 
 
 class ApiConfigurationError(ValueError):

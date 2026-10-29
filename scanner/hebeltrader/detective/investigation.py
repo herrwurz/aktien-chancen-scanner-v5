@@ -387,9 +387,19 @@ class Investigator:
         def research(query):
             loaded = 0
             try:
-                for hit in self.web.search(query, limit=10):
-                    if any(doc["url"] == hit["url"] for doc in fetched):
-                        continue
+                hits = [
+                    hit
+                    for hit in self.web.search(query, limit=10)
+                    if not any(doc["url"] == hit["url"] for doc in fetched)
+                ]
+                fetch_many = getattr(self.web, "fetch_many", None)
+                if fetch_many:
+                    limit = 1 if getattr(self.web, "phase", None) == "discovery" else len(hits)
+                    documents_batch, batch_errors = fetch_many([hit["url"] for hit in hits[:limit]])
+                    fetched.extend(documents_batch)
+                    errors.extend(batch_errors)
+                    return
+                for hit in hits:
                     if not getattr(self.web, "can_fetch_new_document", lambda: True)():
                         break
                     try:
@@ -730,6 +740,20 @@ class Investigator:
                 "budget": apis.budget.summary() if apis is not None else None,
             },
             "source_timing": [assess_document(doc, cutoff) for doc in fetched],
+            "researched_sources": [
+                {
+                    "url": doc.get("url"),
+                    "title": doc.get("title", ""),
+                    "source_class": source_class(doc),
+                    "source_kind": doc.get("source_kind"),
+                    "raw_sha256": doc.get("raw_sha256"),
+                    "retrieved_at": doc.get("retrieved_at"),
+                    "published_at": doc.get("published_at"),
+                    "provider_score": doc.get("provider_score"),
+                    "text_excerpt": str(doc.get("text", ""))[:500],
+                }
+                for doc in fetched
+            ],
             "falsification": falsification,
             "peer_comparison": peer_comparison,
             "search_queries": queries,
