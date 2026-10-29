@@ -62,6 +62,7 @@
   <button type="button" id="load-cases">Gespeicherte Fälle laden</button>
   <button type="button" id="load-archived">Archivierte Fälle anzeigen</button>
   <p id="case-message" aria-live="polite"></p><ul id="cases"></ul></section>
+  <section><h2>Prospektive Referenzfälle</h2><ul id="prospective-references"><li>Noch keine freigegebenen Fälle.</li></ul></section>
   {% if request.scope.get("teaser_web") %}
   <section><h2>Historische Referenzfälle</h2>
     <p>Rekonstruierte Gesprächshistorie: keine neue Scanner-Trefferquote.
@@ -88,6 +89,7 @@
     <ul id="updates"><li>Noch keine gespeicherten Meldungen.</li></ul></section>
 </main><script>
 const form=document.querySelector('#form'), result=document.querySelector('#result');
+let resolutionOriginalSha=null;
 const costButton=document.querySelector('#refresh-api-costs');
 const euro=cents=>(Number(cents||0)/100).toLocaleString('de-AT',{style:'currency',currency:'EUR'});
 const loadApiCosts=async()=>{
@@ -333,17 +335,25 @@ const loadCases=async(includeArchived=false)=>{
       button.type='button';button.addEventListener('click',()=>{
         result.replaceChildren();const report=row.latest_prediction||row.first_prediction;
         if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
+        resolutionOriginalSha=report.teaser_sha256||null;
         renderOverview({...report,journal_case_id:row.case_id});
         (report.candidates||[]).forEach(renderCandidate);
       });item.append(button);
       if(!row.archived){
         const archive=el('button','Diesen Testfall archivieren');archive.type='button';
-        archive.addEventListener('click',async()=>{
+        archive.addEventListener('click',async()=>{if(!confirm(`Fall ${row.case_id} wirklich archivieren?`))return;
           const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{
             method:'POST',headers:{...headers,'content-type':'application/json'},
             body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
           if(response.ok)await loadCases(false);else message.textContent='Archivierung fehlgeschlagen.';
         });item.append(archive);
+      }else{
+        const restore=el('button','Fall wiederherstellen');restore.type='button';
+        restore.addEventListener('click',async()=>{
+          const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/restore`,{
+            method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber wiederhergestellt'})});
+          if(response.ok)await loadCases(true);else message.textContent='Wiederherstellung fehlgeschlagen.';
+        });item.append(restore);
       }
       if(!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
         const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';
@@ -354,19 +364,28 @@ const loadCases=async(includeArchived=false)=>{
           if(response.ok)await loadCases(includeArchived);else message.textContent='Blindtest-Markierung nicht möglich.';
         });item.append(blind);
       }
-      if(row.resolution&&!row.reference_status&&row.input?.evaluation_class==='prospective_blind'){
+      if(row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
         const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';
         promote.addEventListener('click',async()=>{
           const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{
             method:'POST',headers:{...headers,'content-type':'application/json'},
             body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
-          if(response.ok)await loadCases(includeArchived);else message.textContent='Referenzfreigabe nicht möglich.';
+          if(response.ok){await loadCases(includeArchived);await loadProspectiveReferences();}else message.textContent='Referenzfreigabe nicht möglich.';
         });item.append(promote);
       }
       cases.append(item);
     });
   }catch(error){message.textContent=error.message;}
 };
+const loadProspectiveReferences=async()=>{
+  const root=document.querySelector('#prospective-references');
+  try{const response=await fetch('/api/hebeltrader/prospective-references');if(!response.ok)return;
+    const rows=await response.json();root.replaceChildren();
+    if(!rows.length){root.append(el('li','Noch keine freigegebenen Fälle.'));return;}
+    rows.forEach(row=>root.append(el('li',`Fall ${row.reference_number}: ${(row.input||{}).headline||row.case_id} · ${row.status}`)));
+  }catch(error){}
+};
+loadProspectiveReferences();
 document.querySelector('#load-cases').addEventListener('click',()=>loadCases(false));
 document.querySelector('#load-archived').addEventListener('click',()=>loadCases(true));
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
@@ -416,7 +435,8 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
   const value=id=>document.querySelector('#'+id).value;
   const body={asset_id:value('resolved-id'),name:value('resolved-name'),basis:'user',
     source:value('resolved-source'),error_analysis:value('resolved-error'),
-    algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null};
+    algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null,
+    confirmed_at:new Date().toISOString(),original_sha256:resolutionOriginalSha};
   try{
     const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(value('case-id'))}/resolution`,{
       method:'POST',headers:{'content-type':'application/json','X-Research-Authorization':value('authorization')},

@@ -217,6 +217,8 @@ def test_archive_hides_case_without_rewriting_journal_and_is_idempotent(tmp_path
     register = tmp_path / "register.md"
     j.export_register(register)
     assert "archive" in register.read_text()
+    j.restore(case, "operator restored case")
+    assert j.cases()[0]["archived"] is False
 
 
 def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
@@ -246,6 +248,9 @@ def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
     state = j.case(case)
     assert state["reference_status"] == "prospective_reference"
     assert len([e for e in j.events() if e["kind"] == "reference_promotion"]) == 1
+    references = j.references()
+    assert references[0]["reference_number"] == 19
+    assert references[0]["case_id"] == case
 
 
 def test_existing_unresolved_case_can_be_marked_prospective_before_resolution(tmp_path):

@@ -203,6 +203,9 @@ class CaseJournal:
             if kind == "archive":
                 state["archived"] = True
                 state["archive"] = dict(p, recorded_at=row["recorded_at"])
+            if kind == "restore":
+                state["archived"] = False
+                state["archive"] = None
             if kind == "reference_promotion":
                 state["reference_status"] = "prospective_reference"
             if kind == "prospective_classification":
@@ -222,6 +225,20 @@ class CaseJournal:
             if state["archived"]:
                 return state["archive"]
             return self._append(case_id, "archive", {"reason": reason.strip()})["payload"]
+
+    def restore(self, case_id, reason):
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("restore reason required")
+        with self._lock():
+            state = self.case(case_id)
+            if not state["archived"]:
+                return {"archived": False}
+            self._append(case_id, "restore", {"reason": reason.strip()})
+            return {"archived": False}
+
+    def references(self):
+        promoted = [row for row in self.cases(True) if row["reference_status"]]
+        return [dict(row, reference_number=19 + index) for index, row in enumerate(promoted)]
 
     def promote_reference(self, case_id, source):
         if not isinstance(source, str) or not source.strip():
@@ -331,6 +348,7 @@ class CaseJournal:
                     "resolution",
                     "failure",
                     "archive",
+                    "restore",
                     "prospective_classification",
                     "reference_promotion",
                 ):

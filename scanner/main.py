@@ -271,6 +271,21 @@ def create_app(settings: Settings | None = None, engine=None):
         except ValueError:
             raise HTTPException(404, "Case unavailable or archive request invalid") from None
 
+    @app.post("/api/hebeltrader/cases/{case_id}/restore")
+    def case_restore(case_id: str, payload: ArchiveCaseRequest, request: Request):
+        case_access(request)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").restore(
+                case_id, payload.reason
+            )
+        except ValueError:
+            raise HTTPException(404, "Case unavailable or restore request invalid") from None
+
+    @app.get("/api/hebeltrader/prospective-references")
+    def prospective_references(request: Request):
+        case_access(request)
+        return CaseJournal(settings.detective_public_root / "cases").references()
+
     @app.post("/api/hebeltrader/cases/{case_id}/reference-promotion")
     def case_reference_promotion(case_id: str, payload: PromoteReferenceRequest, request: Request):
         case_access(request)
