@@ -104,7 +104,7 @@
     <ul id="updates"><li>Noch keine gespeicherten Meldungen.</li></ul></section>
 </main><script>
 const form=document.querySelector('#form'), result=document.querySelector('#result');
-let resolutionOriginalSha=null;
+let resolutionOriginalSha=null,activeResolutionRow=null;
 const costButton=document.querySelector('#refresh-api-costs');
 const euro=cents=>(Number(cents||0)/100).toLocaleString('de-AT',{style:'currency',currency:'EUR'});
 const loadApiCosts=async()=>{
@@ -315,6 +315,7 @@ const renderCandidate=(c,index)=>{
     const quotes=Object.values((source.facts||{}).support_quotes||{});
     quotes.forEach(quote=>article.append(el('blockquote',quote)));
   });
+  if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
   article.append(el('p','Bestätigung: manuell erforderlich'));
   result.append(article);
 };
@@ -373,12 +374,17 @@ const makeResolutionButton=(row,candidate=null)=>{
   button.type='button';button.className='open-resolution';
   button.addEventListener('click',()=>openResolution(row,candidate));return button;
 };
+const showCaseActionError=async(response,fallback)=>{
+  const detail=await readResponseError(response);
+  document.querySelector('#case-message').textContent=`${fallback} (${detail})`;
+};
 const selectCase=caseId=>{
   const root=document.querySelector('#active-case');root.replaceChildren();
   const row=loadedCases.find(item=>item.case_id===caseId);if(!row)return;
   const heading=(row.input||{}).headline||row.case_id;
   root.append(el('h3',heading));root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`));
   const report=row.latest_prediction||row.first_prediction;
+  activeResolutionRow=row;
   const actions=el('div');actions.className='case-actions';actions.append(makeResolutionButton(row));
   const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
     result.replaceChildren();
@@ -392,24 +398,27 @@ const selectCase=caseId=>{
     const archive=el('button','Testfall archivieren');archive.type='button';archive.addEventListener('click',async()=>{
       if(!confirm(`Fall ${row.case_id} wirklich archivieren?`))return;
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
-      if(response.ok)await loadCases(false);
+      if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
+      else await showCaseActionError(response,'Archivierung fehlgeschlagen');
     });actions.append(archive);
   }else{
     const restore=el('button','Fall wiederherstellen');restore.type='button';restore.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/restore`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber wiederhergestellt'})});
-      if(response.ok)await loadCases(true);
+      if(response.ok)await loadCases(true);else await showCaseActionError(response,'Wiederherstellung fehlgeschlagen');
     });actions.append(restore);
   }
   if(!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
     const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
       if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
+      else await showCaseActionError(response,'Blindtest-Markierung nicht möglich');
     });actions.append(blind);
   }
   if(row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
     const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';promote.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
       if(response.ok){await loadCases(document.querySelector('#include-archived').checked);await loadProspectiveReferences();}
+      else await showCaseActionError(response,'Referenzfreigabe nicht möglich');
     });actions.append(promote);
   }
   root.append(actions);
@@ -452,7 +461,7 @@ const readResponseError=async response=>{
   return `HTTP ${response.status}${detail?`: ${detail}`:''}`;
 };
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
-  const submit=form.querySelector('button'),status=document.querySelector('#analysis-status');
+  const submit=form.querySelector('button');
   const originalLabel=submit.textContent;submit.disabled=true;submit.textContent='Analyse läuft …';
   setAnalysisStatus('running','ANALYSE LÄUFT – Quellen und Gegenkandidaten werden geprüft. Das kann einige Minuten dauern.');
   result.scrollIntoView({behavior:'smooth',block:'start'});
@@ -476,6 +485,7 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const response=await fetch('/api/hebeltrader/investigate',{method:'POST',headers,body:JSON.stringify(body)});
   if(!response.ok){const message=await readResponseError(response);result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);return}
   const data=await response.json();
+  activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data};
   await loadApiCosts();
   result.replaceChildren();
   renderOverview(data);

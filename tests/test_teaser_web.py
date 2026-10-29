@@ -286,3 +286,22 @@ def test_analysis_status_has_visible_states_and_safe_error_details():
     assert "setAnalysisStatus" in html
     assert "readResponseError" in html
     assert "HTTP ${response.status}" in html
+
+
+def test_candidate_resolution_shortcut_prefills_candidate_identity():
+    html = Path("scanner/templates/detective.html").read_text()
+
+    assert "makeResolutionButton(activeResolutionRow,c)" in html
+    assert "identity.asset_id||candidate?.asset_id" in html
+    assert "if(identity.name)" in html
+
+
+def test_case_actions_report_failures_and_preserve_archive_filter():
+    html = Path("scanner/templates/detective.html").read_text()
+
+    assert "showCaseActionError" in html
+    assert "Archivierung fehlgeschlagen" in html
+    assert "Wiederherstellung fehlgeschlagen" in html
+    assert "Blindtest-Markierung nicht möglich" in html
+    assert "Referenzfreigabe nicht möglich" in html
+    assert "loadCases(document.querySelector('#include-archived').checked)" in html
