@@ -676,9 +676,13 @@ class Investigator:
         if not offline and ranked:
             falsification["top3_before"] = [r["asset_id"] for r in ranked[:3]]
             falsification_queries = [
-                f'"{row["identity"]["name"]}" '
-                + " ".join(_entities(text)[:2])
-                + " denied cancelled acquisition earnings guidance competitor"
+                " ".join(
+                    [
+                        f'"{row["identity"]["name"]}"',
+                        *_entities(text)[:2],
+                        "denied cancelled acquisition earnings guidance competitor",
+                    ]
+                )
                 for row in ranked[:3]
             ]
             for query in falsification_queries:
