@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class ResolutionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    asset_id: str = Field(min_length=1, max_length=300)
+    asset_id: str | None = Field(default=None, min_length=1, max_length=300)
     name: str = Field(min_length=1, max_length=300)
     source: str = Field(min_length=1, max_length=2000)
     basis: Literal["user", "primary_source"] = "user"

@@ -1,3 +1,6 @@
+import base64
+import binascii
+import hashlib
 import hmac
 import json
 import sqlite3
@@ -22,10 +25,15 @@ from scanner.hebeltrader.detective.external_research import (
     build_public_research,
 )
 from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
-from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
+from scanner.hebeltrader.detective.investigation import (
+    InvestigationRequest,
+    Investigator,
+    canonical_company,
+)
 from scanner.hebeltrader.detective.resolution import ResolutionRequest
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.hebeltrader.detective.workflow import run_case
+from scanner.hebeltrader.parser import extract_pdf
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
@@ -91,6 +99,10 @@ def filtered(statement, values):
         if values[key] is not None:
             statement = statement.where(getattr(MarketCandle, key) == values[key])
     return statement.limit(values["limit"]).offset(values["offset"])
+
+
+class SolutionPdfRequest(BaseModel):
+    pdf_base64: str = Field(min_length=1, max_length=28_000_000)
 
 
 def create_app(settings: Settings | None = None, engine=None):
@@ -243,6 +255,27 @@ def create_app(settings: Settings | None = None, engine=None):
         ):
             raise HTTPException(403, "Case journal authorization required")
 
+    @app.post("/api/hebeltrader/cases/solution-pdf")
+    def case_solution_pdf(payload: SolutionPdfRequest, request: Request):
+        case_access(request)
+        try:
+            data = base64.b64decode(payload.pdf_base64, validate=True)
+            extraction = extract_pdf(data)
+        except (binascii.Error, ValueError):
+            raise HTTPException(422, "Solution PDF could not be read") from None
+        recommendation = extraction.recommendations[0].values if extraction.recommendations else {}
+        issue = (
+            f"{extraction.issue_number}/{extraction.issue_year}" if extraction.issue_number else ""
+        )
+        return {
+            "name": recommendation.get("stock_name"),
+            "stock_wkn": recommendation.get("stock_wkn"),
+            "call_wkn": recommendation.get("derivative_wkn"),
+            "issue": issue,
+            "pdf_sha256": hashlib.sha256(data).hexdigest(),
+            "flags": [flag.get("code") for flag in extraction.flags],
+        }
+
     @app.get("/api/hebeltrader/cases")
     def case_list(request: Request, include_archived: bool = False):
         case_access(request)
@@ -311,7 +344,14 @@ def create_app(settings: Settings | None = None, engine=None):
         case_access(request)
         journal = CaseJournal(settings.detective_public_root / "cases")
         try:
-            result = journal.resolve(case_id, payload.model_dump(exclude_none=True))
+            resolution = payload.model_dump(exclude_none=True)
+            if "asset_id" not in resolution:
+                # Same keying as discovered candidates, so a typed name still matches rank.
+                resolution["asset_id"] = (
+                    "company:"
+                    + hashlib.sha256(canonical_company(payload.name).encode()).hexdigest()
+                )
+            result = journal.resolve(case_id, resolution)
             journal.export_register(settings.detective_public_root / "case-register.md")
             if settings.detective_case_register:
                 journal.export_register(settings.detective_case_register)
