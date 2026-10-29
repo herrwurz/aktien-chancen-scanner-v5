@@ -254,6 +254,49 @@ def test_planner_never_receives_product_wkn_and_discards_unquoted_clues(tmp_path
     assert plan["queries"] == ["oilfield cooling systems"]
 
 
+def test_planner_turns_unverified_company_hypotheses_into_verification_queries(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    def handler(request):
+        reply = {
+            "clues": [
+                {
+                    "quote": "Kunden kaum noch eine Wahl haben",
+                    "description": "Customers have no practical alternative",
+                },
+                {
+                    "quote": "Gewinne wachsen im Eiltempo",
+                    "description": "Rapid earnings growth",
+                },
+            ],
+            "candidate_hypotheses": [
+                {"company_name": "Example Holdings", "reason": "Possible industry gatekeeper"},
+                {"company_name": "MN84GA", "reason": "product code, not a company"},
+            ],
+            "queries": ["industry gatekeeper rapid earnings growth public company"],
+        }
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(reply)}}]})
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        ai_key="private-ai",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+    plan = api.plan(
+        "Ein Unternehmen, bei dem Kunden kaum noch eine Wahl haben. "
+        "Die Gewinne wachsen im Eiltempo."
+    )
+
+    assert plan["candidate_hypotheses"] == ["Example Holdings"]
+    assert any(
+        '"Example Holdings"' in query and "investor relations" in query for query in plan["queries"]
+    )
+    assert all("MN84GA" not in query for query in plan["queries"])
+
+
 def test_factory_refuses_missing_approval_and_then_missing_credentials(tmp_path):
     from scanner.config import Settings
     from scanner.hebeltrader.detective.external_research import build_public_research
@@ -455,6 +498,47 @@ def test_ai_identity_alone_cannot_enable_automatic_identification(tmp_path):
     )
     assert report["identification"]["status"] == "not_identified"
     assert "ai_interpretation_requires_manual_verification" in report["limitations"]
+
+
+def test_ai_named_entity_without_ticker_or_clue_finding_is_not_a_stock_candidate(tmp_path):
+    from datetime import UTC, datetime
+
+    from test_primary_investigation import PublicFixture
+
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+    from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
+
+    now = datetime(2026, 10, 29, 12, tzinfo=UTC)
+    api = ResearchApis(
+        root=tmp_path / "api",
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=False,
+        ai_key="test",
+    )
+    api.plan = lambda text: {"clues": [], "candidate_hypotheses": [], "queries": []}
+    doc = {
+        "url": "https://example.com/article",
+        "company_name": "Research Platform GmbH",
+        "text": "Research Platform GmbH publishes a generic market article.",
+        "source_kind": "news",
+        "published_at": "2026-10-28T12:00:00Z",
+        "retrieved_at": now.isoformat(),
+        "ai_interpretation": {
+            "company_name": "Research Platform GmbH",
+            "identity_quote": "Research Platform GmbH publishes a generic market article.",
+            "ticker": None,
+            "findings": [],
+        },
+    }
+    web = PublicFixture([doc])
+    web.apis = api
+
+    report = Investigator(tmp_path / "run", web=web, clock=lambda: now).analyze(
+        InvestigationRequest(teaser_text="Ein unbekannter Branchenführer")
+    )
+
+    assert report["checked_candidates"] == []
 
 
 def test_phase_budget_preserves_documents_for_peer_and_falsification_steps(tmp_path):

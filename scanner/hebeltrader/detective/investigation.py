@@ -365,6 +365,16 @@ class Investigator:
                 name = doc.get("company_name")
                 if not name:
                     continue
+                interpretation = doc.get("ai_interpretation")
+                if (
+                    isinstance(interpretation, dict)
+                    and not interpretation.get("ticker")
+                    and not interpretation.get("findings")
+                ):
+                    # A named publisher, research platform, or article author is not enough to
+                    # establish a listed-stock candidate. Keep only identities tied to a quoted
+                    # teaser clue or an explicitly quoted ticker.
+                    continue
                 canonical_name = re.sub(
                     r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag)\b",
                     "",

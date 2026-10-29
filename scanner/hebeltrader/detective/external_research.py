@@ -213,9 +213,15 @@ class ResearchApis:
         clean = re.sub(product_code, "[product identifier removed]", clean)
         result = self._json(
             "Extract up to 8 specific business/event clues "
-            "and up to 8 short global search queries. "
+            "and up to 6 short global search queries. Also propose up to 5 unverified "
+            "listed-company hypotheses when the wording gives a defensible business-model or "
+            "event match. Hypotheses are search seeds only, never evidence. Prefer exact "
+            "combinations of two or more distinctive clues; reject generic stock, chart, "
+            "growth and return searches. "
             'Schema: {"clues":[{"quote":"exact input substring",'
-            '"description":"specific factual clue"}],"queries":["search query"]}. '
+            '"description":"specific factual clue"}],"candidate_hypotheses":['
+            '{"company_name":"listed company name","reason":"short clue-based reason"}],'
+            '"queries":["search query"]}. '
             "Cover all distinctive combinations, counterparties, earnings and business models. "
             "Separate advertising and chart descriptions; "
             "never use derivative returns as stock clues.",
@@ -241,6 +247,20 @@ class ResearchApis:
                 }
             )
         self.clues = list({c["clue_id"]: c for c in clues}.values())
+        hypothesis_rows = result.get("candidate_hypotheses")
+        hypotheses = []
+        for row in hypothesis_rows[:5] if isinstance(hypothesis_rows, list) else []:
+            if not isinstance(row, dict):
+                continue
+            name = row.get("company_name")
+            if (
+                isinstance(name, str)
+                and 2 <= len(name.strip()) <= 120
+                and not re.search(product_code, name.upper())
+                and not re.search(r"\b(?:WKN|ISIN|CALL|OPTIONSSCHEIN)\b", name, re.I)
+            ):
+                hypotheses.append(name.strip())
+        hypotheses = list(dict.fromkeys(hypotheses))
         query_rows = result.get("queries")
         queries = [
             q.strip()
@@ -250,7 +270,15 @@ class ResearchApis:
             and not re.search(r"\bWKN\b|optionsschein|\bISIN\b", q, re.I)
             and not re.search(product_code, q)
         ]
-        return {"clues": self.clues, "queries": list(dict.fromkeys(queries))}
+        clue_terms = " ".join(c["description"] for c in self.clues[:2])[:180]
+        verification_queries = [
+            f'"{name}" {clue_terms} investor relations'.strip() for name in hypotheses
+        ]
+        return {
+            "clues": self.clues,
+            "candidate_hypotheses": hypotheses,
+            "queries": list(dict.fromkeys([*verification_queries, *queries]))[:8],
+        }
 
     def annotate(self, document):
         if not self.ai_key or not self.clues:
