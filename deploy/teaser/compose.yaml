@@ -17,7 +17,7 @@ services:
       TEASER_USERNAME: ${TEASER_USERNAME:-admin}
       TEASER_STATE_DIR: /data
       DETECTIVE_PUBLIC_ALLOW_NETWORK: 'true'
-      DETECTIVE_PUBLIC_MAX_REQUESTS: '40'
+      DETECTIVE_PUBLIC_MAX_REQUESTS: '70'
     secrets: [password, token]
     volumes: [./state:/data]
     logging:
