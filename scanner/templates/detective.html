@@ -93,13 +93,16 @@
       <label for="solution-pdf">Lösungs-PDF (Hebeltrader-Ausgabe, füllt Felder vor)</label>
       <input id="solution-pdf" type="file" accept="application/pdf">
       <p id="solution-pdf-status" aria-live="polite"></p>
-      <label for="case-id">Fall-ID</label><input id="case-id" required>
-      <label for="resolved-id">Aktien-ID (aus Kandidatenbericht, sonst verifizierte Identität)</label><input id="resolved-id" required>
+      <label for="case-id">Fall</label><select id="case-id" required><option value="">Fall auswählen …</option></select>
+      <label for="resolved-candidate">Aufgelöste Aktie (Kandidat des Berichts oder anderes Unternehmen)</label>
+      <select id="resolved-candidate"><option value="">Anderes Unternehmen (Namen eintragen)</option></select>
+      <input id="resolved-id" type="hidden">
       <label for="resolved-name">Aufgelöster Aktienname</label><input id="resolved-name" required>
       <label for="resolved-wkn">Beworbene Call-WKN (optional)</label><input id="resolved-wkn" pattern="[A-Z0-9]{6}">
       <label for="resolved-source">Quelle der Nutzerauflösung</label><input id="resolved-source" required>
       <label for="resolved-error">Fehleranalyse / Gründe der Bestätigung</label><textarea id="resolved-error" required></textarea>
       <label for="resolved-change">Erforderliche Algorithmusänderung (optional)</label><input id="resolved-change">
+      <label><input id="resolved-reference" type="checkbox" checked> Als Referenzlösung speichern (Lösung war bei der Erstprognose unbekannt)</label>
       <button>Auflösung als neuen Journaleintrag speichern</button>
     </form><p id="resolution-result" aria-live="polite"></p>
   </section>
@@ -362,9 +365,26 @@ if(referenceButton){
   });
 }
 let loadedCases=[];
+const fillResolutionCases=()=>{
+  const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
+  loadedCases.filter(row=>!row.resolution).forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}`,row.case_id)));
+  select.value=current;
+};
+const fillResolutionCandidates=()=>{
+  const row=loadedCases.find(item=>item.case_id===document.querySelector('#case-id').value);
+  const select=document.querySelector('#resolved-candidate');
+  select.replaceChildren(new Option('Anderes Unternehmen (Namen eintragen)',''));
+  const report=row?.first_prediction||{};
+  (report.candidates||[]).slice(0,10).forEach((c,i)=>{const id=c.identity||c;
+    const option=new Option(`${i+1}. ${id.name||c.name||id.asset_id}`,id.asset_id||c.asset_id||'');
+    option.dataset.name=id.name||c.name||'';select.append(option);});
+};
 const openResolution=(row,candidate=null)=>{
   const report=row?.latest_prediction||row?.first_prediction||row||{};
-  document.querySelector('#case-id').value=row?.case_id||report.journal_case_id||report.case_id||'';
+  const caseId=row?.case_id||report.journal_case_id||report.case_id||'';
+  const caseSelect=document.querySelector('#case-id');
+  if(caseId&&![...caseSelect.options].some(o=>o.value===caseId))caseSelect.append(new Option(caseId,caseId));
+  caseSelect.value=caseId;fillResolutionCandidates();
   const identity=candidate?.identity||candidate||{};
   if(identity.asset_id||candidate?.asset_id)document.querySelector('#resolved-id').value=identity.asset_id||candidate.asset_id;
   if(identity.name)document.querySelector('#resolved-name').value=identity.name;
@@ -437,7 +457,7 @@ const loadCases=async(includeArchived=false)=>{
     select.append(new Option(loadedCases.length?'Fall auswählen …':'Keine gespeicherten Fälle',''));
     loadedCases.forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${row.archived?' · archiviert':''}`,row.case_id)));
     message.textContent=loadedCases.length?`${loadedCases.length} gespeicherte Fälle`:'Noch keine gespeicherten Fälle.';
-    document.querySelector('#active-case').replaceChildren();
+    document.querySelector('#active-case').replaceChildren();fillResolutionCases();
   }catch(error){message.textContent=error.message;}
 };
 const loadProspectiveReferences=async()=>{
@@ -525,22 +545,44 @@ document.querySelector('#solution-pdf').addEventListener('change',async event=>{
     const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v};
     set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
     set('resolved-source',`Hebeltrader-Ausgabe ${data.issue} (PDF sha256 ${data.pdf_sha256.slice(0,12)})`);
-    status.textContent=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – bitte prüfen und Aktien-ID ergänzen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
+    status.textContent=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – bitte prüfen und passende Aktie wählen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
   }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
+});
+document.querySelector('#case-id').addEventListener('change',fillResolutionCandidates);
+document.querySelector('#resolved-candidate').addEventListener('change',event=>{
+  const option=event.target.selectedOptions[0];
+  document.querySelector('#resolved-id').value=option.value;
+  if(option.value)document.querySelector('#resolved-name').value=option.dataset.name;
 });
 document.querySelector('#resolution-form').addEventListener('submit',async event=>{
   event.preventDefault();const status=document.querySelector('#resolution-result');
   const value=id=>document.querySelector('#'+id).value;
-  const body={asset_id:value('resolved-id'),name:value('resolved-name'),basis:'user',
+  const caseId=encodeURIComponent(value('case-id'));
+  const headers={'content-type':'application/json','X-Research-Authorization':value('authorization')};
+  const post=(path,payload)=>fetch(`/api/hebeltrader/cases/${caseId}/${path}`,{method:'POST',headers,body:JSON.stringify(payload)});
+  const row=loadedCases.find(item=>item.case_id===value('case-id'));
+  const asReference=document.querySelector('#resolved-reference').checked;
+  const body={name:value('resolved-name'),basis:'user',
     source:value('resolved-source'),error_analysis:value('resolved-error'),
     algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null,
     confirmed_at:new Date().toISOString(),original_sha256:resolutionOriginalSha};
+  if(value('resolved-id'))body.asset_id=value('resolved-id');
   try{
-    const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(value('case-id'))}/resolution`,{
-      method:'POST',headers:{'content-type':'application/json','X-Research-Authorization':value('authorization')},
-      body:JSON.stringify(body)});
+    if(asReference&&row&&row.evaluation_class!=='prospective_blind'){
+      const r=await post('prospective',{basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'});
+      if(!r.ok){status.textContent=(await r.json()).detail;return}
+    }
+    const response=await post('resolution',body);
     const data=await response.json();
-    status.textContent=response.ok?`Gespeichert: ${data.case_status}; Original-Call: ${data.original_call_status}; Produktdaten: ${data.product_verification}`:data.detail;
+    if(!response.ok){status.textContent=data.detail;return}
+    const verdict=data.prediction_outcome==='confirmed'?'RICHTIG (Rang 1)':
+      data.prediction_outcome==='refuted'?`FALSCH (richtige Aktie: ${data.correct_rank?'Rang '+data.correct_rank:'nicht unter den Top 3'})`:'NICHT IDENTIFIZIERT';
+    let text=`${verdict} · Status: ${data.case_status} · Original-Call: ${data.original_call_status}`;
+    if(asReference){
+      const r=await post('reference-promotion',{source:value('resolved-source')});
+      text+=r.ok?' · als Referenzlösung gespeichert':' · Referenz nicht gespeichert: '+(await r.json()).detail;
+    }
+    status.textContent=text;loadCases();
   }catch(error){status.textContent='Auflösung konnte nicht gespeichert werden.';}
 });
 </script></body></html>

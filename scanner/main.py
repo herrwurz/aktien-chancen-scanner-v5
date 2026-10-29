@@ -25,7 +25,11 @@ from scanner.hebeltrader.detective.external_research import (
     build_public_research,
 )
 from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
-from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
+from scanner.hebeltrader.detective.investigation import (
+    InvestigationRequest,
+    Investigator,
+    canonical_company,
+)
 from scanner.hebeltrader.detective.resolution import ResolutionRequest
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.hebeltrader.detective.workflow import run_case
@@ -340,7 +344,14 @@ def create_app(settings: Settings | None = None, engine=None):
         case_access(request)
         journal = CaseJournal(settings.detective_public_root / "cases")
         try:
-            result = journal.resolve(case_id, payload.model_dump(exclude_none=True))
+            resolution = payload.model_dump(exclude_none=True)
+            if "asset_id" not in resolution:
+                # Same keying as discovered candidates, so a typed name still matches rank.
+                resolution["asset_id"] = (
+                    "company:"
+                    + hashlib.sha256(canonical_company(payload.name).encode()).hexdigest()
+                )
+            result = journal.resolve(case_id, resolution)
             journal.export_register(settings.detective_public_root / "case-register.md")
             if settings.detective_case_register:
                 journal.export_register(settings.detective_case_register)
