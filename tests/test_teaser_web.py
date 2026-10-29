@@ -196,6 +196,19 @@ def test_web_page_contains_api_cost_monitor(tmp_path, monkeypatch):
     assert "/api/hebeltrader/runtime" in response.text
 
 
+def test_analysis_status_and_result_are_directly_after_submit_form(tmp_path, monkeypatch):
+    response = web(tmp_path, monkeypatch).get("/", auth=("admin", "private-password"))
+
+    assert response.status_code == 200
+    html = response.text
+    button = html.index("Hinweise analysieren")
+    status = html.index('id="analysis-status"')
+    result = html.index('id="result"')
+    cases = html.index("Meine Fälle")
+    assert button < status < result < cases
+    assert "result.scrollIntoView" in html
+
+
 def test_runtime_reports_tavily_credits_and_openai_estimate(tmp_path, monkeypatch):
     from scanner.hebeltrader.detective import provider_usage
 

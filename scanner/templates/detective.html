@@ -57,7 +57,9 @@
     <label for="image">Screenshot oder PDF (Bilder maximal 2 MiB; PDF maximal 20 MiB/40 Seiten)</label>
     <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
     <button>Hinweise analysieren</button>
+    <p id="analysis-status" aria-live="polite"></p>
   </form>
+  <section id="result" aria-live="polite"></section>
   <section><h2>Meine Fälle</h2>
   <button type="button" id="load-cases">Gespeicherte Fälle laden</button>
   <button type="button" id="load-archived">Archivierte Fälle anzeigen</button>
@@ -70,7 +72,6 @@
     <button id="import-references" type="button">18 Referenzfälle laden</button>
     <p id="reference-status" aria-live="polite"></p><div id="references"></div>
   </section>{% endif %}
-  <section id="result" aria-live="polite"></section>
   <details><summary>Spätere Auflösung oder Korrektur erfassen</summary>
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
       Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
@@ -411,7 +412,10 @@ loadProspectiveReferences();
 document.querySelector('#load-cases').addEventListener('click',()=>loadCases(false));
 document.querySelector('#load-archived').addEventListener('click',()=>loadCases(true));
 form.addEventListener('submit',async event=>{event.preventDefault();result.textContent='Analyse läuft …';
-  const submit=form.querySelector('button');submit.disabled=true;
+  const submit=form.querySelector('button'),status=document.querySelector('#analysis-status');
+  const originalLabel=submit.textContent;submit.disabled=true;submit.textContent='Analyse läuft …';
+  status.textContent='Die Quellenrecherche läuft. Das kann einige Minuten dauern.';
+  result.scrollIntoView({behavior:'smooth',block:'start'});
   try{
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
@@ -430,11 +434,13 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const authorization=document.querySelector('#authorization').value;
   if(authorization)headers['X-Research-Authorization']=authorization;
   const response=await fetch('/api/hebeltrader/investigate',{method:'POST',headers,body:JSON.stringify(body)});
-  const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';return}
+  const data=await response.json();if(!response.ok){result.textContent=data.detail||'Analysefehler';status.textContent='Analyse fehlgeschlagen.';return}
   await loadApiCosts();
   result.replaceChildren();
   renderOverview(data);
   result.append(el('h2','Kandidaten'));
+  status.textContent='Analyse abgeschlossen. Das Ergebnis steht direkt unter dem Formular.';
+  result.scrollIntoView({behavior:'smooth',block:'start'});
   if(!data.candidates.length){
     result.append(el('p','Keine belastbaren Kandidaten. Siehe Failure-Code und Abdeckung oben.'));
     return;
@@ -449,8 +455,8 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
       `${cell.quote||cell.clue_id}: ${cell.status}`)));
   });
   result.append(comparison);
-  }catch(error){result.textContent='Die Analyse konnte nicht abgeschlossen werden. Verbindung prüfen und gespeicherte Fälle laden.';}
-  finally{submit.disabled=false;}
+  }catch(error){result.textContent='Die Analyse konnte nicht abgeschlossen werden. Verbindung prüfen und gespeicherte Fälle laden.';status.textContent='Analyse fehlgeschlagen.';}
+  finally{submit.disabled=false;submit.textContent=originalLabel;}
 });
 document.querySelector('#resolution-form').addEventListener('submit',async event=>{
   event.preventDefault();const status=document.querySelector('#resolution-result');
