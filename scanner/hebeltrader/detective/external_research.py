@@ -324,7 +324,10 @@ class ResearchApis:
             "Extract up to 8 specific business/event clues "
             "and up to 6 short global search queries. Also propose up to 5 unverified "
             "listed-company hypotheses when the wording gives a defensible business-model or "
-            "event match. Hypotheses are search seeds only, never evidence. Prefer exact "
+            "event match; for wording such as indispensable, dominant or no-alternative "
+            "supplier in a named industry, name the best-known listed bottleneck suppliers "
+            "of that industry. Write queries in English and prefer exact industry terms. "
+            "Hypotheses are search seeds only, never evidence. Prefer exact "
             "combinations of two or more distinctive clues; reject generic stock, chart, "
             "growth and return searches. "
             'Schema: {"clues":[{"quote":"exact input substring",'
@@ -483,7 +486,7 @@ class ApiPublicResearch(PublicWebResearch):
         self.phase = phase
 
     def can_fetch_new_document(self):
-        limits = {"discovery": 5, "peers": 5, "falsification": 1}
+        limits = {"discovery": 12, "peers": 6, "falsification": 3}
         return self.phase == "input" or self.phase_fetches[self.phase] < limits[self.phase]
 
     def search(self, query, limit=10):
@@ -500,6 +503,10 @@ class ApiPublicResearch(PublicWebResearch):
             except ValueError:
                 continue
         return valid
+
+    def snippet_document(self, url):
+        hit = self.search_hits[url]
+        return self._provider_document(url, hit["content"], extracted=False)
 
     def fetch(self, url):
         documents, errors = self.fetch_many([url])
