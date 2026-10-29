@@ -26,6 +26,14 @@ def test_dominance_teaser_gets_specific_english_queries_without_raw_headline():
     assert not any("Herrscher" in q for q in queries)
 
 
+def test_chip_dominance_teaser_covers_design_software_and_other_layers():
+    queries = build_queries(TEASER, [], [])
+    assert any("chip design software" in q for q in queries)
+    assert any("equipment" in q for q in queries)
+    assert any("foundry" in q for q in queries)
+    assert len(queries) <= 10
+
+
 def test_generic_headline_without_sector_keeps_raw_fallback():
     assert build_queries("Hier steckt eine irrwitzige Turnaround-Chance drin!", [], []) == [
         "Hier steckt eine irrwitzige Turnaround-Chance drin! company investor relations"

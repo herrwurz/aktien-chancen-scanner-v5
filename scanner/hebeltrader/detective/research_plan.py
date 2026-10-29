@@ -73,7 +73,13 @@ def build_queries(text, named, fallback):
         )
         queries.append(sector + " industry indispensable supplier sole source near monopoly")
         if sector == "semiconductor":
-            queries.append("semiconductor equipment sole supplier market share earnings growth")
+            # The dominant firm may sit in any layer of the chip value chain, not only equipment.
+            queries += [
+                "semiconductor equipment sole supplier market share earnings growth",
+                "chip design software duopoly market share customers no alternative",
+                "semiconductor IP architecture licensing dominant provider market share",
+                "semiconductor foundry materials dominant supplier market share earnings growth",
+            ]
     if re.search(r"wiederkehrend\w*|recurring revenue|\bARR\b", clean, re.I):
         queries.append(sector + ' "recurring revenue" quarterly results')
     if len(contexts) >= 2:
