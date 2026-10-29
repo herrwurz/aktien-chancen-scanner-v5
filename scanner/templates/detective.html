@@ -32,10 +32,11 @@
       <p><strong>OpenAI</strong><br><span id="openai-cost">–</span></p>
       <p><strong>Verfügbar</strong><br><span id="remaining-cost">–</span></p>
     </div>
-    <p class="muted">Vorsichtige interne Reservierungen, keine Rechnung der Anbieter. Fehlgeschlagene Aufrufe werden zur Sicherheit mitgezählt.</p>
+    <p class="muted">Interner Sicherheitszähler: höchstens 0,01 € je API-Aufruf, keine Rechnung der Anbieter. Tavily-Credits und OpenAI-Tokenkosten stehen darunter; fehlgeschlagene Aufrufe werden im Sicherheitszähler mitgezählt.</p>
     <h3>Verbleibende Anbieter-Credits</h3>
     <p id="tavily-credits">Tavily-Kontostand wird geladen …</p>
     <p id="openai-usage">OpenAI-Verbrauch wird geladen …</p>
+    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche; kostenloser Researcher-Tarif = 1.000 Credits/Monat, Pay-as-you-go = 0,008 USD/Credit. OpenAI GPT-4.1 mini = 0,40 USD/Mio. Eingabetokens und 1,60 USD/Mio. Ausgabetokens. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1-mini" target="_blank" rel="noopener noreferrer">OpenAI-Tarif</a>.</p>
     <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>.</p>
     <button type="button" id="refresh-api-costs">Kostenstand aktualisieren</button>
   </section>{% endif %}
@@ -95,7 +96,7 @@ const loadApiCosts=async()=>{
     const response=await fetch('/api/hebeltrader/runtime');
     if(!response.ok)throw new Error();
     const data=await response.json(), costs=data.api_costs;
-    status.textContent=`Monat ${costs.month}: ${euro(costs.reserved_cents)} von ${euro(costs.budget_cents)} reserviert (${costs.usage_percent} %).`;
+    status.textContent=`Interne Sicherheitsgrenze ${costs.month}: ${euro(costs.reserved_cents)} von ${euro(costs.budget_cents)} vorgemerkt (${costs.usage_percent} %). Keine Anbieterrechnung.`;
     document.querySelector('#tavily-cost').textContent=`${costs.providers.tavily.calls} Aufrufe · ${euro(costs.providers.tavily.reserved_cents)}`;
     document.querySelector('#openai-cost').textContent=`${costs.providers.openai.calls} Aufrufe · ${euro(costs.providers.openai.reserved_cents)}`;
     document.querySelector('#remaining-cost').textContent=euro(costs.remaining_cents);

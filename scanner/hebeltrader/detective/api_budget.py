@@ -18,6 +18,14 @@ class ApiBudget:
                 "CREATE TABLE IF NOT EXISTS reservations "
                 "(id INTEGER PRIMARY KEY, month TEXT, provider TEXT, cents INTEGER, at TEXT)"
             )
+            db.execute("CREATE TABLE IF NOT EXISTS ledger_meta (key TEXT PRIMARY KEY, value TEXT)")
+            migrated = db.execute("SELECT value FROM ledger_meta WHERE key='pricing_v2'").fetchone()
+            if migrated is None:
+                # V1 charged a fictional EUR 0.05/0.10 per call. One cent is a
+                # conservative ceiling for the configured Tavily Basic request and
+                # bounded GPT-4.1-mini request at the published provider tariffs.
+                db.execute("UPDATE reservations SET cents=1 WHERE cents>1")
+                db.execute("INSERT INTO ledger_meta VALUES('pricing_v2','2026-10-29')")
 
     @contextmanager
     def _db(self):
@@ -75,5 +83,5 @@ class ApiBudget:
                     "reserved_cents": per_provider.get("ai", (0, 0))[1],
                 },
             },
-            "accounting": "pessimistic_reservations_not_provider_invoice",
+            "accounting": "conservative_call_ceiling_not_provider_invoice",
         }

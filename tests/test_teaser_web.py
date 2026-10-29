@@ -163,7 +163,7 @@ def test_runtime_reports_persistent_api_cost_reservations_by_provider(tmp_path, 
             "tavily": {"calls": 2, "reserved_cents": 10},
             "openai": {"calls": 1, "reserved_cents": 10},
         },
-        "accounting": "pessimistic_reservations_not_provider_invoice",
+        "accounting": "conservative_call_ceiling_not_provider_invoice",
     }
 
 

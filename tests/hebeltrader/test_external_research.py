@@ -340,7 +340,30 @@ def test_provider_error_never_archives_api_credential_or_error_body(tmp_path):
     with pytest.raises(ValueError, match="HTTP 401"):
         api.search("cooling business")
     assert "private-search-key" not in "".join(p.read_text() for p in tmp_path.glob("api-*.json"))
-    assert api.budget.summary()["reserved_cents"] == 5
+    assert api.budget.summary()["reserved_cents"] == 1
+
+
+def test_legacy_fictional_per_call_reservations_are_repriced_once(tmp_path):
+    import sqlite3
+
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+
+    path = tmp_path / "budget.db"
+    with sqlite3.connect(path) as db:
+        db.execute(
+            "CREATE TABLE reservations "
+            "(id INTEGER PRIMARY KEY, month TEXT, provider TEXT, cents INTEGER, at TEXT)"
+        )
+        db.execute(
+            "INSERT INTO reservations(month,provider,cents,at) VALUES"
+            "(strftime('%Y-%m','now'),'search',5,'x'),"
+            "(strftime('%Y-%m','now'),'ai',10,'y')"
+        )
+
+    budget = ApiBudget(path, cap_cents=500)
+
+    assert budget.summary()["reserved_cents"] == 2
+    assert ApiBudget(path, cap_cents=500).summary()["reserved_cents"] == 2
 
 
 def test_openai_429_exposes_only_whitelisted_safe_error_code(tmp_path):

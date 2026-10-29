@@ -89,7 +89,7 @@ class ResearchApis:
         encoded = json.dumps(payload, ensure_ascii=False).encode()
         if len(encoded) > 40000:
             raise ValueError("API input size limit exceeded")
-        self.budget.reserve(provider, 5 if provider == "search" else 10)
+        self.budget.reserve(provider, 1)
         if provider == "search":
             self.search_calls += 1
         else:
