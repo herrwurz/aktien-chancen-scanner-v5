@@ -117,9 +117,9 @@ const loadApiCosts=async()=>{
       ? `Tavily ${tavily.plan}: ${tavily.plan_remaining} von ${tavily.plan_limit} Plan-Credits verfügbar · ${tavilySearchUsage} Such-Credits über diesen Schlüssel verbraucht.`
       : tavily.status==='not_configured'?'Tavily: kein API-Schlüssel konfiguriert.':(tavilyErrors[tavily.reason]||'Tavily-Kontostand derzeit nicht abrufbar.');
     const openai=data.provider_credits?.openai||{};
-    const usd=Number(openai.estimated_usd||0).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});
+    const usd=openai.estimated_usd==null?'Gesamtkosten nicht vollständig bestimmbar':Number(openai.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});
     const modelUsage=(openai.models||[]).map(row=>`${row.model}: ${row.input_tokens}/${row.output_tokens} Tokens · ${row.estimated_usd==null?'Preis unbekannt':Number(row.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6})}`).join(' | ');
-    document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · lokal geschätzt ${usd}. ${modelUsage} Verbleibendes Guthaben nur im Billing-Dashboard.`;
+    document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · ${openai.estimated_usd==null?usd:`lokal geschätzt ${usd}`}. ${modelUsage} Verbleibendes Guthaben nur im Billing-Dashboard.`;
   }catch(error){status.textContent='Kostenstand derzeit nicht verfügbar.';}
 };
 if(costButton){costButton.addEventListener('click',loadApiCosts);loadApiCosts();}

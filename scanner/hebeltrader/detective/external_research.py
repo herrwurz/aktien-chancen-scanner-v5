@@ -12,6 +12,7 @@ from uuid import uuid4
 import httpx
 
 from .clues import EXPLICIT_WKN
+from .provider_usage import MODEL_PRICES_USD_PER_MILLION
 from .public_web import PublicWebResearch
 from .temporal import timestamp
 
@@ -89,6 +90,11 @@ class ResearchApis:
         self.root.mkdir(parents=True, exist_ok=True)
         self.budget, self.approved = budget, approved
         self.search_key, self.ai_key, self.client = search_key, ai_key, client
+        if (
+            extraction_model not in MODEL_PRICES_USD_PER_MILLION
+            or reasoning_model not in MODEL_PRICES_USD_PER_MILLION
+        ):
+            raise ValueError("A supported model with known pricing is required")
         self.extraction_model = extraction_model
         self.reasoning_model = reasoning_model
         self.calls_by_model = {}
@@ -118,7 +124,7 @@ class ResearchApis:
         if len(encoded) > 40000:
             raise ValueError("API input size limit exceeded")
         model = payload.get("model") if provider == "ai" else None
-        reservation = 3 if model == "gpt-4.1-2025-04-14" else 1
+        reservation = 5 if model == "gpt-4.1-2025-04-14" else 1
         self.budget.reserve(provider, reservation)
         if provider == "search":
             self.search_calls += 1
@@ -203,8 +209,6 @@ class ResearchApis:
             (self.root / ("api-" + uuid4().hex + ".json")).write_text(archived, encoding="utf-8")
 
     def usage_summary(self):
-        from .provider_usage import MODEL_PRICES_USD_PER_MILLION
-
         models = {}
         for model, (incoming, outgoing) in self.usage_by_model.items():
             price = MODEL_PRICES_USD_PER_MILLION.get(model)
@@ -445,7 +449,7 @@ class ResearchApis:
         )
         allowed = {row["asset_id"] for row in compact}
         preferred = parsed.get("preferred_asset_id")
-        if preferred is not None and preferred not in allowed:
+        if not isinstance(preferred, str) or preferred not in allowed:
             preferred = None
 
         def strings(name):

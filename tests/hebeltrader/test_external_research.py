@@ -465,8 +465,8 @@ def test_two_stage_models_route_reasoning_and_extraction_separately(tmp_path):
         budget=ApiBudget(tmp_path / "budget.db"),
         approved=True,
         ai_key="private-ai",
-        extraction_model="cheap-model",
-        reasoning_model="strong-model",
+        extraction_model="gpt-4.1-mini-2025-04-14",
+        reasoning_model="gpt-4.1-2025-04-14",
         client=httpx.Client(transport=httpx.MockTransport(handler)),
     )
     api.plan("Teaser clue")
@@ -481,13 +481,81 @@ def test_two_stage_models_route_reasoning_and_extraction_separately(tmp_path):
         [{"asset_id": "company:one", "identity": {"name": "Example Corp"}}]
     )
 
-    assert models == ["strong-model", "cheap-model", "strong-model"]
+    assert models == [
+        "gpt-4.1-2025-04-14",
+        "gpt-4.1-mini-2025-04-14",
+        "gpt-4.1-2025-04-14",
+    ]
     assert review["preferred_asset_id"] == "company:one"
-    assert api.calls_by_model == {"strong-model": 2, "cheap-model": 1}
-    assert api.usage_summary()["models"] == {
-        "strong-model": {"input_tokens": 200, "output_tokens": 40, "estimated_usd": None},
-        "cheap-model": {"input_tokens": 100, "output_tokens": 20, "estimated_usd": None},
+    assert api.calls_by_model == {
+        "gpt-4.1-2025-04-14": 2,
+        "gpt-4.1-mini-2025-04-14": 1,
     }
+    assert api.usage_summary()["models"] == {
+        "gpt-4.1-2025-04-14": {
+            "input_tokens": 200,
+            "output_tokens": 40,
+            "estimated_usd": 0.00072,
+        },
+        "gpt-4.1-mini-2025-04-14": {
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "estimated_usd": 7.2e-05,
+        },
+    }
+
+
+def test_unknown_model_is_rejected_before_network_or_budget(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    budget = ApiBudget(tmp_path / "budget.db")
+    with pytest.raises(ValueError, match="supported model"):
+        ResearchApis(
+            root=tmp_path,
+            budget=budget,
+            approved=True,
+            ai_key="private",
+            reasoning_model="unknown-expensive-model",
+        )
+    assert budget.summary()["reserved_cents"] == 0
+
+
+def test_advisory_review_discards_non_string_preferred_asset_id(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        ai_key="private",
+        client=httpx.Client(
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(
+                    200,
+                    json={
+                        "choices": [
+                            {
+                                "message": {
+                                    "content": json.dumps(
+                                        {
+                                            "preferred_asset_id": ["company:one"],
+                                            "reason": "Malformed preference",
+                                            "counterarguments": [],
+                                            "missing_evidence": [],
+                                        }
+                                    )
+                                }
+                            }
+                        ]
+                    },
+                )
+            )
+        ),
+    )
+    result = api.review_candidates([{"asset_id": "company:one", "identity": {"name": "Example"}}])
+    assert result["preferred_asset_id"] is None
 
 
 def test_factory_refuses_missing_approval_and_then_missing_credentials(tmp_path):

@@ -207,6 +207,16 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
             }
         )
     )
+    (root / "api-unknown-model.json").write_text(
+        json.dumps(
+            {
+                "provider": "ai",
+                "recorded_at": recorded_at,
+                "request": {"model": "retired-unknown-model"},
+                "response": {"usage": {"prompt_tokens": 10, "completion_tokens": 5}},
+            }
+        )
+    )
     (root / "api-broken.json").write_text("not-json")
     (root / "api-array.json").write_text("[]")
     (root / "api-bad-time.json").write_text(
@@ -250,9 +260,10 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
         "status": "estimated",
         "model": "mixed",
         "month": datetime.now(UTC).strftime("%Y-%m"),
-        "input_tokens": 1250,
-        "output_tokens": 600,
-        "estimated_usd": 0.0025,
+        "input_tokens": 1260,
+        "output_tokens": 605,
+        "estimated_usd": None,
+        "pricing_complete": False,
         "models": [
             {
                 "model": "gpt-4.1-2025-04-14",
@@ -267,6 +278,13 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
                 "output_tokens": 500,
                 "estimated_usd": 0.0012,
                 "pricing_status": "known",
+            },
+            {
+                "model": "retired-unknown-model",
+                "input_tokens": 10,
+                "output_tokens": 5,
+                "estimated_usd": None,
+                "pricing_status": "unknown",
             },
         ],
         "balance_available_via_project_key": False,

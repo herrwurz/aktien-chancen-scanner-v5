@@ -149,13 +149,15 @@ def summarize_openai_usage(audit_root: Path):
         )
     input_tokens = sum(row[0] for row in usage_by_model.values())
     output_tokens = sum(row[1] for row in usage_by_model.values())
+    pricing_complete = all(row["pricing_status"] == "known" for row in models)
     return {
         "status": "estimated",
         "model": next(iter(usage_by_model), "none") if len(usage_by_model) <= 1 else "mixed",
         "month": month,
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
-        "estimated_usd": round(known_total, 6),
+        "estimated_usd": round(known_total, 6) if pricing_complete else None,
+        "pricing_complete": pricing_complete,
         "models": models,
         "balance_available_via_project_key": False,
     }
