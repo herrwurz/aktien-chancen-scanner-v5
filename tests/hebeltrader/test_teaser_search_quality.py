@@ -102,3 +102,39 @@ def test_discovery_uses_snippets_planner_names_and_undated_documents(tmp_path):
         for s in report["checked_candidates"][0]["sources"]
     )
     assert report["identification"]["status"] == "not_identified"
+
+
+def test_planner_uses_english_search_terms_for_hypothesis_verification(tmp_path):
+    import json
+
+    import httpx
+
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    reply = {
+        "clues": [
+            {
+                "quote": "Kunden kaum noch eine Wahl",
+                "description": "Kunden haben keine Alternative",
+                "search_terms": "sole supplier market share monopoly",
+            }
+        ],
+        "candidate_hypotheses": [{"company_name": "Example Litho", "reason": "bottleneck"}],
+        "queries": [],
+    }
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        ai_key="k",
+        client=httpx.Client(
+            transport=httpx.MockTransport(
+                lambda request: httpx.Response(
+                    200, json={"choices": [{"message": {"content": json.dumps(reply)}}]}
+                )
+            )
+        ),
+    )
+    plan = api.plan("Unternehmen, dessen Kunden kaum noch eine Wahl haben.")
+    assert plan["queries"] == ['"Example Litho" sole supplier market share monopoly']
