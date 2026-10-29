@@ -331,7 +331,9 @@ class ResearchApis:
             "combinations of two or more distinctive clues; reject generic stock, chart, "
             "growth and return searches. "
             'Schema: {"clues":[{"quote":"exact input substring",'
-            '"description":"specific factual clue"}],"candidate_hypotheses":['
+            '"description":"specific factual clue",'
+            '"search_terms":"2-5 English keywords for third-party verification"}],'
+            '"candidate_hypotheses":['
             '{"company_name":"listed company name","reason":"short clue-based reason"}],'
             '"queries":["search query"]}. '
             "Cover all distinctive combinations, counterparties, earnings and business models. "
@@ -346,6 +348,7 @@ class ResearchApis:
             if not isinstance(row, dict):
                 continue
             quote, description = row.get("quote"), row.get("description")
+            terms = row.get("search_terms")
             if (
                 not _literal(quote, text)
                 or not isinstance(description, str)
@@ -357,6 +360,7 @@ class ResearchApis:
                     "clue_id": "ai:" + hashlib.sha256(quote.encode()).hexdigest(),
                     "quote": quote,
                     "description": description[:250],
+                    "search_terms": terms[:80] if isinstance(terms, str) else "",
                 }
             )
         self.clues = list({c["clue_id"]: c for c in clues}.values())
@@ -383,9 +387,14 @@ class ResearchApis:
             and not re.search(r"\bWKN\b|optionsschein|\bISIN\b", q, re.I)
             and not re.search(product_code, q)
         ]
+        # English keywords verify better than German clue prose and work for non-issuer sources.
+        keywords = " ".join(c["search_terms"] for c in self.clues if c["search_terms"][:1])[:120]
         clue_terms = " ".join(c["description"] for c in self.clues[:2])[:180]
         verification_queries = [
-            f'"{name}" {clue_terms} investor relations'.strip() for name in hypotheses
+            f'"{name}" {keywords}'.strip()
+            if keywords
+            else f'"{name}" {clue_terms} investor relations'.strip()
+            for name in hypotheses
         ]
         return {
             "clues": self.clues,
