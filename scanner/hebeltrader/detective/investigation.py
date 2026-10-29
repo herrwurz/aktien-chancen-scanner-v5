@@ -70,7 +70,7 @@ def finding_timing(document, cutoff, *, current_hypothesis):
     if (
         current_hypothesis
         and assessment["eligibility"] == "uncertain"
-        and source_class(document) in {"B", "C"}
+        and source_class(document) in {"A", "B", "C"}
         and timestamp(document.get("retrieved_at"))
         and timestamp(document.get("retrieved_at")) <= cutoff
     ):
@@ -127,11 +127,15 @@ def _entities(text):
         r"\b[A-Z][A-Za-z0-9&-]+\s+(?:Semiconductor|Technologies|Therapeutics|Systems|Corporation)\b",
         text,
     )
-    found += re.findall(
+    # German capitalizes every noun, so a bare noun after "mit/von/an" is only a candidate
+    # entity when a transaction word precedes it.
+    for match in re.finditer(
         r"\b(?:von|mit|an|acquires?|acquired|partners? with)\s+"
         r"([A-Z][A-Za-z0-9&-]+(?:\s+[A-Z][A-Za-z0-9&-]+){0,2})",
         text,
-    )
+    ):
+        if _relation(text, match.start(1)) != "unknown_relation" or " " in match.group(1):
+            found.append(match.group(1))
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
@@ -191,7 +195,11 @@ def _queries(text, clues, spans):
     return build_queries(text, _entities(text), enrichment.search_queries)
 
 
-def _evidence(document, clues, cutoff):
+def _evidence(document, clues, cutoff, *, allow_undated=False):
+    undated = allow_undated and not document.get("published_at") and document.get("retrieved_at")
+    if undated:
+        # Live hypothesis mode: undated issuer pages are provisional evidence dated at retrieval.
+        document = dict(document, published_at=document["retrieved_at"])
     timing = assess_document(document, cutoff)
     text = document.get("text", "")
     facts = {
@@ -200,6 +208,7 @@ def _evidence(document, clues, cutoff):
         "support_quotes": {},
         "financial_metrics": [],
         "contradicted_fact_claims": [],
+        "published_at_assumed_retrieval": bool(undated),
         "teaser_term_overlap": sorted(
             {
                 (c.value or c.normalized).split("|")[-1]
@@ -356,11 +365,13 @@ class Investigator:
         fetched = list(documents or [])
         offline = documents is not None or self.web is None
         semantic_clues = []
+        hypotheses = []
         apis = getattr(self.web, "apis", None)
         if not offline and apis is not None and apis.ai_key:
             try:
                 planned = apis.plan(text)
                 semantic_clues = planned["clues"]
+                hypotheses = planned.get("candidate_hypotheses", [])
                 for item in semantic_clues:
                     start = text.index(item["quote"])
                     clues.append(
@@ -377,7 +388,7 @@ class Investigator:
                             extraction_method="ai_literal_quote_requires_manual_review",
                         )
                     )
-                queries = list(dict.fromkeys(planned["queries"] + queries))[:8]
+                queries = list(dict.fromkeys(planned["queries"] + queries))[:10]
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"source": "ai_planner", "error": str(exc)[:120]})
 
@@ -394,10 +405,16 @@ class Investigator:
                 ]
                 fetch_many = getattr(self.web, "fetch_many", None)
                 if fetch_many:
-                    limit = 1 if getattr(self.web, "phase", None) == "discovery" else len(hits)
+                    limit = 3 if getattr(self.web, "phase", None) == "discovery" else len(hits)
                     documents_batch, batch_errors = fetch_many([hit["url"] for hit in hits[:limit]])
                     fetched.extend(documents_batch)
                     errors.extend(batch_errors)
+                    # Remaining search hits keep their provider snippet instead of being dropped.
+                    snippet = getattr(self.web, "snippet_document", None)
+                    seen = {doc["url"] for doc in fetched}
+                    for hit in hits[limit : limit + 5] if snippet else []:
+                        if hit["url"] not in seen and hit.get("content"):
+                            fetched.append(snippet(hit["url"]))
                     return
                 for hit in hits:
                     if not getattr(self.web, "can_fetch_new_document", lambda: True)():
@@ -406,7 +423,7 @@ class Investigator:
                         fetched.append(self.web.fetch(hit["url"]))
                         loaded += 1
                         # Spread initial API discovery across different clue queries.
-                        if getattr(self.web, "phase", None) == "discovery" and loaded >= 1:
+                        if getattr(self.web, "phase", None) == "discovery" and loaded >= 3:
                             break
                     except (ValueError, httpx.HTTPError) as exc:
                         errors.append({"url": hit["url"], "error": str(exc)[:120]})
@@ -433,6 +450,20 @@ class Investigator:
                 if historical_blind and assess_document(doc, cutoff)["eligibility"] != "eligible":
                     continue
                 name = doc.get("company_name")
+                if not name and hypotheses:
+                    haystack = doc.get("title", "") + "\n" + doc.get("text", "")[:8000]
+                    name = next(
+                        (
+                            h
+                            for h in hypotheses
+                            if re.search(r"(?<!\w)" + re.escape(h) + r"(?!\w)", haystack, re.I)
+                        ),
+                        None,
+                    )
+                    if name:
+                        doc = dict(
+                            doc, company_name=name, identity_basis="hypothesis_literal_mention"
+                        )
                 if not name:
                     continue
                 interpretation = doc.get("ai_interpretation")
@@ -457,7 +488,7 @@ class Investigator:
                     {"name": name, "ticker": doc.get("ticker"), "records": [], "documents": []},
                 )
                 group["documents"].append(doc)
-                record = _evidence(doc, clues, cutoff)
+                record = _evidence(doc, clues, cutoff, allow_undated=request.publication_at is None)
                 if record:
                     group["records"].append(record)
             identities = {

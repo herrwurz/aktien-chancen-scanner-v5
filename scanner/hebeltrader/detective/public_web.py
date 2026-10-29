@@ -312,6 +312,8 @@ class PublicWebResearch:
         self._validate(url)
         self._check_robots(url)
         raw, meta = self._request(url)
+        if raw.lstrip()[:5] == b"%PDF-":
+            raise ValueError("binary PDF requires provider extraction")
         doc = parse_page(
             raw,
             meta["url"],

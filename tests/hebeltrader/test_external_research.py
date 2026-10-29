@@ -833,12 +833,12 @@ def test_phase_budget_preserves_documents_for_peer_and_falsification_steps(tmp_p
         root=tmp_path / "api", budget=ApiBudget(tmp_path / "budget.db"), approved=False
     )
     web = ApiPublicResearch(tmp_path / "sources", apis=api, allow_network=True)
-    for phase, limit in [("discovery", 5), ("peers", 5), ("falsification", 1)]:
+    for phase, limit in [("discovery", 12), ("peers", 6), ("falsification", 3)]:
         web.set_phase(phase)
         assert web.can_fetch_new_document()
         web.phase_fetches[phase] = limit
         assert not web.can_fetch_new_document()
-    assert sum(web.phase_fetches.values()) == 11
+    assert sum(web.phase_fetches.values()) == 21
 
 
 def test_success_audit_redacts_accidentally_reflected_credential(tmp_path):
