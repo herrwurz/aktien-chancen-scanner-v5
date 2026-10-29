@@ -183,6 +183,7 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
             {
                 "provider": "ai",
                 "recorded_at": recorded_at,
+                "request": {"model": "gpt-4.1-mini-2025-04-14"},
                 "response": {"usage": {"prompt_tokens": 1000, "completion_tokens": 500}},
             }
         )
@@ -192,6 +193,7 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
             {
                 "provider": "ai",
                 "recorded_at": recorded_at,
+                "request": {"model": "gpt-4.1-2025-04-14"},
                 "response": {"usage": {"input_tokens": 250, "output_tokens": 100}},
             }
         )
@@ -246,10 +248,26 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
 
     assert summarize_openai_usage(root) == {
         "status": "estimated",
-        "model": "gpt-4.1-mini-2025-04-14",
+        "model": "mixed",
         "month": datetime.now(UTC).strftime("%Y-%m"),
         "input_tokens": 1250,
         "output_tokens": 600,
-        "estimated_usd": 0.00146,
+        "estimated_usd": 0.0025,
+        "models": [
+            {
+                "model": "gpt-4.1-2025-04-14",
+                "input_tokens": 250,
+                "output_tokens": 100,
+                "estimated_usd": 0.0013,
+                "pricing_status": "known",
+            },
+            {
+                "model": "gpt-4.1-mini-2025-04-14",
+                "input_tokens": 1000,
+                "output_tokens": 500,
+                "estimated_usd": 0.0012,
+                "pricing_status": "known",
+            },
+        ],
         "balance_available_via_project_key": False,
     }

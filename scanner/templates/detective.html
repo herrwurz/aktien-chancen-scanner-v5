@@ -36,7 +36,7 @@
     <h3>Verbleibende Anbieter-Credits</h3>
     <p id="tavily-credits">Tavily-Kontostand wird geladen …</p>
     <p id="openai-usage">OpenAI-Verbrauch wird geladen …</p>
-    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche; kostenloser Researcher-Tarif = 1.000 Credits/Monat, Pay-as-you-go = 0,008 USD/Credit. OpenAI GPT-4.1 mini = 0,40 USD/Mio. Eingabetokens und 1,60 USD/Mio. Ausgabetokens. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1-mini" target="_blank" rel="noopener noreferrer">OpenAI-Tarif</a>.</p>
+    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche. OpenAI GPT-4.1 mini = 0,40/1,60 USD und GPT-4.1 = 2,00/8,00 USD je Mio. Eingabe-/Ausgabetokens. Unbekannte Modellpreise werden nicht geschätzt. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1" target="_blank" rel="noopener noreferrer">OpenAI-Tarife</a>.</p>
     <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>.</p>
     <button type="button" id="refresh-api-costs">Kostenstand aktualisieren</button>
   </section>{% endif %}
@@ -118,7 +118,8 @@ const loadApiCosts=async()=>{
       : tavily.status==='not_configured'?'Tavily: kein API-Schlüssel konfiguriert.':(tavilyErrors[tavily.reason]||'Tavily-Kontostand derzeit nicht abrufbar.');
     const openai=data.provider_credits?.openai||{};
     const usd=Number(openai.estimated_usd||0).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});
-    document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · lokal geschätzt ${usd}. Verbleibendes Guthaben nur im Billing-Dashboard.`;
+    const modelUsage=(openai.models||[]).map(row=>`${row.model}: ${row.input_tokens}/${row.output_tokens} Tokens · ${row.estimated_usd==null?'Preis unbekannt':Number(row.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6})}`).join(' | ');
+    document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · lokal geschätzt ${usd}. ${modelUsage} Verbleibendes Guthaben nur im Billing-Dashboard.`;
   }catch(error){status.textContent='Kostenstand derzeit nicht verfügbar.';}
 };
 if(costButton){costButton.addEventListener('click',loadApiCosts);loadApiCosts();}
@@ -173,7 +174,17 @@ const renderOverview=data=>{
       performed:'Ausgeführt',performed_with_source_gaps:'Ausgeführt mit Quellenlücken'};
     box.append(el('p',`Gegenprüfung: ${states[data.falsification.status]||data.falsification.status}`));
   }
-  if(data.semantic_research?.enabled)box.append(el('p',`KI-Quellenauswertung: ${data.semantic_research.validated_teaser_clues} belegte Eingabehinweise · ${data.semantic_research.search_api_calls} Such-API-Aufrufe · ${data.semantic_research.ai_api_calls} KI-Aufrufe. Befunde bleiben vorläufig.`));
+  if(data.semantic_research?.enabled){
+    const models=data.semantic_research.models||{};
+    box.append(el('p',`KI-Quellenauswertung: ${data.semantic_research.validated_teaser_clues} belegte Eingabehinweise · ${data.semantic_research.search_api_calls} Such-API-Aufrufe · ${data.semantic_research.ai_api_calls} KI-Aufrufe. Extraktion: ${models.extraction||'unbekannt'} · Schlussprüfung: ${models.reasoning||'unbekannt'}. Befunde bleiben vorläufig.`));
+  }
+  if(data.reasoning_review?.status==='advisory'){
+    const review=data.reasoning_review;
+    box.append(el('h3','Abschließende KI-Gegenprüfung'));
+    box.append(el('p',`${review.model}: ${review.reason||'Kein Kandidat ausreichend unterscheidbar.'}`));
+    if(review.counterarguments?.length)box.append(list(review.counterarguments));
+    box.append(el('p','Diese Gegenprüfung verändert die deterministische Rangfolge nicht.'));
+  }
   if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode==='public_web'?'Öffentliche Online-Recherche':data.research_mode}`));
   if(data.research_diagnostics){
     const diagnostic=data.research_diagnostics;

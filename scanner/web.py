@@ -70,6 +70,10 @@ def create_web_app():
             "discovery_feeds": settings.detective_discovery_feeds,
             "search_provider": settings.detective_search_provider,
             "source_ai_enabled": settings.detective_source_ai_enabled,
+            "ai_models": {
+                "extraction": settings.detective_extraction_model,
+                "reasoning": settings.detective_reasoning_model,
+            },
             "external_api_approved": settings.detective_external_api_approved,
             "search_key_configured": bool(
                 settings.detective_search_api_key

@@ -8,6 +8,11 @@ from time import monotonic
 
 import httpx
 
+MODEL_PRICES_USD_PER_MILLION = {
+    "gpt-4.1-mini-2025-04-14": (0.40, 1.60),
+    "gpt-4.1-2025-04-14": (2.00, 8.00),
+}
+
 
 class TavilyUsageMonitor:
     """Fetch Tavily account usage without exposing credentials or provider errors."""
@@ -90,8 +95,7 @@ def summarize_openai_usage(audit_root: Path):
     """Sum current-month token usage archived from successful OpenAI responses."""
 
     month = datetime.now(UTC).strftime("%Y-%m")
-    input_tokens = 0
-    output_tokens = 0
+    usage_by_model = {}
     for path in Path(audit_root).glob("api-*.json"):
         try:
             if path.stat().st_size > 2_000_000:
@@ -116,17 +120,42 @@ def summarize_openai_usage(audit_root: Path):
                 for value in (incoming, outgoing)
             ):
                 continue
-            input_tokens += incoming
-            output_tokens += outgoing
+            model = row.get("request", {}).get("model", "legacy_unknown")
+            if not isinstance(model, str) or len(model) > 100:
+                model = "legacy_unknown"
+            values = usage_by_model.setdefault(model, [0, 0])
+            values[0] += incoming
+            values[1] += outgoing
         except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
             continue
-    estimated_usd = round(input_tokens * 0.40 / 1_000_000 + output_tokens * 1.60 / 1_000_000, 6)
+    models = []
+    known_total = 0.0
+    for model in sorted(usage_by_model):
+        incoming, outgoing = usage_by_model[model]
+        price = MODEL_PRICES_USD_PER_MILLION.get(model)
+        estimated = (
+            round((incoming * price[0] + outgoing * price[1]) / 1_000_000, 6) if price else None
+        )
+        if estimated is not None:
+            known_total += estimated
+        models.append(
+            {
+                "model": model,
+                "input_tokens": incoming,
+                "output_tokens": outgoing,
+                "estimated_usd": estimated,
+                "pricing_status": "known" if price else "unknown",
+            }
+        )
+    input_tokens = sum(row[0] for row in usage_by_model.values())
+    output_tokens = sum(row[1] for row in usage_by_model.values())
     return {
         "status": "estimated",
-        "model": "gpt-4.1-mini-2025-04-14",
+        "model": next(iter(usage_by_model), "none") if len(usage_by_model) <= 1 else "mixed",
         "month": month,
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
-        "estimated_usd": estimated_usd,
+        "estimated_usd": round(known_total, 6),
+        "models": models,
         "balance_available_via_project_key": False,
     }

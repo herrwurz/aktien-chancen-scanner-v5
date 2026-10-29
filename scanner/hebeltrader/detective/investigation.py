@@ -644,6 +644,20 @@ class Investigator:
                 queries=falsification_queries,
             )
             ranked = compare()
+        reasoning_review = {
+            "status": "not_available_offline" if offline else "not_performed_no_candidates",
+            "changes_deterministic_ranking": False,
+        }
+        if not offline and apis is not None and apis.ai_key and ranked:
+            try:
+                reasoning_review = apis.review_candidates(ranked[:3])
+            except (ValueError, httpx.HTTPError) as exc:
+                reasoning_review = {
+                    "status": "failed",
+                    "error": str(exc)[:120],
+                    "changes_deterministic_ranking": False,
+                }
+                errors.append({"source": "reasoning_review", "error": str(exc)[:120]})
         top_tie = apply_tie_labels(ranked)
         counter_count = max(
             0,
@@ -736,6 +750,12 @@ class Investigator:
                 "validated_teaser_clues": len(semantic_clues),
                 "search_api_calls": getattr(apis, "search_calls", 0),
                 "ai_api_calls": getattr(apis, "ai_calls", 0),
+                "models": {
+                    "extraction": getattr(apis, "extraction_model", None),
+                    "reasoning": getattr(apis, "reasoning_model", None),
+                },
+                "calls_by_model": getattr(apis, "calls_by_model", {}),
+                "usage": getattr(apis, "usage_summary", lambda: None)(),
                 "findings_are_provisional": True,
                 "budget": apis.budget.summary() if apis is not None else None,
             },
@@ -755,6 +775,7 @@ class Investigator:
                 for doc in fetched
             ],
             "falsification": falsification,
+            "reasoning_review": reasoning_review,
             "peer_comparison": peer_comparison,
             "search_queries": queries,
             "limitations": limits,

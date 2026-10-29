@@ -111,6 +111,8 @@ Web-Passwort und internes Token beibehalten. In Runtime hinzufügen:
 | `DETECTIVE_SEARCH_API_KEY` | eigener Tavily-Schlüssel, geheim |
 | `DETECTIVE_SOURCE_AI_ENABLED` | `true` |
 | `DETECTIVE_SOURCE_AI_API_KEY` | eigener OpenAI-Schlüssel, geheim |
+| `DETECTIVE_EXTRACTION_MODEL` | `gpt-4.1-mini-2025-04-14` für wiederholte Quellenprüfung |
+| `DETECTIVE_REASONING_MODEL` | `gpt-4.1-2025-04-14` für Planung und abschließende Gegenprüfung |
 | `DETECTIVE_API_MONTHLY_BUDGET_EUR` | zunächst `5`, höchstens `20` |
 | `DETECTIVE_EXTERNAL_API_APPROVED` | bis zur Freigabe `false` |
 

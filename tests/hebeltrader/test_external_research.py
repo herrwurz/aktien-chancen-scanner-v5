@@ -260,6 +260,13 @@ def test_api_backed_pipeline_produces_cited_top3_without_primary_promotion(tmp_p
                         },
                     ],
                 }
+            elif "candidates" in data:
+                body = {
+                    "preferred_asset_id": data["candidates"][0]["asset_id"],
+                    "reason": "Citations favor the leader.",
+                    "counterarguments": [],
+                    "missing_evidence": ["Primary confirmation"],
+                }
             else:
                 i = int(data["url"].split("issuer")[1][0])
                 name = f"Company {i}"
@@ -412,6 +419,75 @@ def test_planner_turns_unverified_company_hypotheses_into_verification_queries(t
         '"Example Holdings"' in query and "investor relations" in query for query in plan["queries"]
     )
     assert all("MN84GA" not in query for query in plan["queries"])
+
+
+def test_two_stage_models_route_reasoning_and_extraction_separately(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    models = []
+
+    def handler(request):
+        payload = json.loads(request.content)
+        models.append(payload["model"])
+        user = json.loads(payload["messages"][1]["content"])
+        if "teaser" in user:
+            result = {
+                "clues": [{"quote": "Teaser clue", "description": "Teaser clue"}],
+                "queries": [],
+                "candidate_hypotheses": [],
+            }
+        elif "candidates" in user:
+            result = {
+                "preferred_asset_id": "company:one",
+                "reason": "The cited exclusivity clue is more specific.",
+                "counterarguments": ["Publication time is not proven."],
+                "missing_evidence": ["Primary issuer confirmation"],
+            }
+        else:
+            result = {
+                "company_name": "Example Corp",
+                "identity_quote": "Example Corp operates cooling systems.",
+                "ticker": None,
+                "ticker_quote": None,
+                "findings": [],
+            }
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"content": json.dumps(result)}}],
+                "usage": {"prompt_tokens": 100, "completion_tokens": 20},
+            },
+        )
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        ai_key="private-ai",
+        extraction_model="cheap-model",
+        reasoning_model="strong-model",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+    api.plan("Teaser clue")
+    api.annotate(
+        {
+            "url": "https://example.com",
+            "text": "Example Corp operates cooling systems.",
+            "source_kind": "news",
+        }
+    )
+    review = api.review_candidates(
+        [{"asset_id": "company:one", "identity": {"name": "Example Corp"}}]
+    )
+
+    assert models == ["strong-model", "cheap-model", "strong-model"]
+    assert review["preferred_asset_id"] == "company:one"
+    assert api.calls_by_model == {"strong-model": 2, "cheap-model": 1}
+    assert api.usage_summary()["models"] == {
+        "strong-model": {"input_tokens": 200, "output_tokens": 40, "estimated_usd": None},
+        "cheap-model": {"input_tokens": 100, "output_tokens": 20, "estimated_usd": None},
+    }
 
 
 def test_factory_refuses_missing_approval_and_then_missing_credentials(tmp_path):

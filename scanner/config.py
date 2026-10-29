@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     detective_search_api_key: SecretStr | None = None
     detective_source_ai_enabled: bool = False
     detective_source_ai_api_key: SecretStr | None = None
+    detective_extraction_model: str = Field(
+        default="gpt-4.1-mini-2025-04-14", pattern=r"^[A-Za-z0-9._-]{1,100}$"
+    )
+    detective_reasoning_model: str = Field(
+        default="gpt-4.1-2025-04-14", pattern=r"^[A-Za-z0-9._-]{1,100}$"
+    )
     detective_external_api_approved: bool = False
     detective_api_monthly_budget_eur: int = Field(default=20, ge=1, le=20)
     detective_primary_domains: Path | None = None
