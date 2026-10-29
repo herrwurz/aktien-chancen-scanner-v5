@@ -33,6 +33,10 @@
       <p><strong>Verfügbar</strong><br><span id="remaining-cost">–</span></p>
     </div>
     <p class="muted">Vorsichtige interne Reservierungen, keine Rechnung der Anbieter. Fehlgeschlagene Aufrufe werden zur Sicherheit mitgezählt.</p>
+    <h3>Verbleibende Anbieter-Credits</h3>
+    <p id="tavily-credits">Tavily-Kontostand wird geladen …</p>
+    <p id="openai-usage">OpenAI-Verbrauch wird geladen …</p>
+    <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>.</p>
     <button type="button" id="refresh-api-costs">Kostenstand aktualisieren</button>
   </section>{% endif %}
   <form id="form">
@@ -96,6 +100,13 @@ const loadApiCosts=async()=>{
     document.querySelector('#openai-cost').textContent=`${costs.providers.openai.calls} Aufrufe · ${euro(costs.providers.openai.reserved_cents)}`;
     document.querySelector('#remaining-cost').textContent=euro(costs.remaining_cents);
     document.querySelector('#api-cost-meter').style.width=`${Math.min(costs.usage_percent,100)}%`;
+    const tavily=data.provider_credits?.tavily||{};
+    document.querySelector('#tavily-credits').textContent=tavily.status==='available'
+      ? `Tavily ${tavily.plan}: ${tavily.plan_remaining} von ${tavily.plan_limit} Plan-Credits verfügbar · ${tavily.search_usage} Such-Credits über diesen Schlüssel verbraucht.`
+      : tavily.status==='not_configured'?'Tavily: kein API-Schlüssel konfiguriert.':'Tavily-Kontostand derzeit nicht abrufbar.';
+    const openai=data.provider_credits?.openai||{};
+    const usd=Number(openai.estimated_usd||0).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});
+    document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · lokal geschätzt ${usd}. Verbleibendes Guthaben nur im Billing-Dashboard.`;
   }catch(error){status.textContent='Kostenstand derzeit nicht verfügbar.';}
 };
 if(costButton){costButton.addEventListener('click',loadApiCosts);loadApiCosts();}

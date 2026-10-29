@@ -45,6 +45,9 @@ def create_web_app():
     Base.metadata.create_all(engine)
     engine.dispose()
     app = create_app(settings)
+    from scanner.hebeltrader.detective import provider_usage
+
+    tavily_usage = provider_usage.TavilyUsageMonitor()
 
     @app.get("/api/hebeltrader/runtime")
     def runtime_status():
@@ -54,6 +57,11 @@ def create_web_app():
             settings.detective_public_root / "api-budget.db",
             cap_cents=settings.detective_api_monthly_budget_eur * 100,
         ).summary()
+        search_key = (
+            settings.detective_search_api_key.get_secret_value().strip()
+            if settings.detective_search_api_key
+            else ""
+        )
         return {
             "public_research_enabled": settings.detective_public_allow_network,
             "peer_research_supported": True,
@@ -84,6 +92,12 @@ def create_web_app():
                     "openai": budget["providers"]["ai"],
                 },
                 "accounting": budget["accounting"],
+            },
+            "provider_credits": {
+                "tavily": tavily_usage.snapshot(search_key),
+                "openai": provider_usage.summarize_openai_usage(
+                    settings.detective_public_root / "api-audit"
+                ),
             },
         }
 

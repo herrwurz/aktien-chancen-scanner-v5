@@ -174,3 +174,53 @@ def test_web_page_contains_api_cost_monitor(tmp_path, monkeypatch):
     assert 'id="api-cost-monitor"' in response.text
     assert "API-Kostenüberwachung" in response.text
     assert "/api/hebeltrader/runtime" in response.text
+
+
+def test_runtime_reports_tavily_credits_and_openai_estimate(tmp_path, monkeypatch):
+    from scanner.hebeltrader.detective import provider_usage
+
+    monkeypatch.setenv("DETECTIVE_SEARCH_API_KEY", "tvly-test-key")
+    monkeypatch.setattr(
+        provider_usage.TavilyUsageMonitor,
+        "snapshot",
+        lambda self, key: {
+            "status": "available",
+            "plan": "Researcher",
+            "plan_usage": 100,
+            "plan_limit": 1000,
+            "plan_remaining": 900,
+            "key_usage": 100,
+            "key_limit": 1000,
+            "search_usage": 100,
+            "paygo_usage": 0,
+            "paygo_limit": 0,
+        },
+    )
+    monkeypatch.setattr(
+        provider_usage,
+        "summarize_openai_usage",
+        lambda root: {
+            "status": "estimated",
+            "model": "gpt-4.1-mini-2025-04-14",
+            "input_tokens": 1000,
+            "output_tokens": 200,
+            "estimated_usd": 0.00072,
+            "balance_available_via_project_key": False,
+        },
+    )
+
+    data = (
+        web(tmp_path, monkeypatch)
+        .get("/api/hebeltrader/runtime", auth=("admin", "private-password"))
+        .json()
+    )
+
+    assert data["provider_credits"]["tavily"]["plan_remaining"] == 900
+    assert data["provider_credits"]["openai"]["estimated_usd"] == 0.00072
+
+
+def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch):
+    response = web(tmp_path, monkeypatch).get("/", auth=("admin", "private-password"))
+
+    assert "Verbleibende Anbieter-Credits" in response.text
+    assert "OpenAI Billing-Dashboard" in response.text

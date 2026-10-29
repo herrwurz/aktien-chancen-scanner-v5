@@ -71,6 +71,21 @@ Das Monatsjournal nicht löschen oder durch ein altes Backup zurücksetzen: das 
 anwendungsinternen Verbrauchszähler zurücksetzen. Bestehende Fallhistorie und Datenbank
 werden nicht migriert. Neue Budget-/Auditdaten liegen ausschließlich im eigenen `/data`.
 
+Die geschützte Weboberfläche ergänzt zwei getrennte Provideranzeigen:
+
+- Tavily wird höchstens alle fünf Minuten über den offiziellen `GET /usage`-Endpunkt
+  abgefragt. Angezeigt werden Plan, Planlimit, Verbrauch und verbleibende Credits.
+- OpenAI stellt den verbleibenden Gratis- oder Prepaid-Kontostand nicht über den
+  vorhandenen Projektschlüssel bereit. Die Oberfläche summiert daher nur die im
+  privaten API-Audit archivierten Input- und Output-Tokens des laufenden Monats und
+  kennzeichnet die daraus berechneten Kosten ausdrücklich als lokale Schätzung.
+  Der verbindliche Kontostand bleibt im OpenAI-Billing-Dashboard.
+
+Die OpenAI-Schätzung verwendet für das fest konfigurierte Modell
+`gpt-4.1-mini-2025-04-14` die dokumentierten Standardpreise von 0,40 USD je Million
+Input-Tokens und 1,60 USD je Million Output-Tokens. Rabatte oder abweichende
+Providerabrechnungen werden nicht behauptet.
+
 ## Eigene Zugänge einrichten
 
 1. [Tavily-Konto](https://app.tavily.com/) anlegen, API-Schlüssel erzeugen und aktuellen
