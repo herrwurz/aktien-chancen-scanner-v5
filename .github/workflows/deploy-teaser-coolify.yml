@@ -3,7 +3,7 @@ name: Deploy teaser to Coolify
 on:
   workflow_dispatch:
   push:
-    branches: [feat/teaser-search-ai]
+    branches: [main]
 
 permissions:
   actions: read
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy]')
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Require successful test checks for this commit

@@ -139,6 +139,8 @@ def _entities(text):
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
+SEARCH_LOGIC_VERSION = "2026-10-29-search-v2"
+
 _RELATIONS = {
     "acquisition": r"übernah\w*|zukäuf\w*|acquir\w*|acquisition|merger|erwarb",
     "investment": r"invest\w*|beteilig\w*|minority stake",
@@ -821,6 +823,7 @@ class Investigator:
                 "scope": "global_public_search_not_complete_world_market",
             },
             "analysis_seconds": round(perf_counter() - started, 3),
+            "search_logic_version": SEARCH_LOGIC_VERSION,
             "historical_blind_eligible": bool(historical_blind),
             "research_mode": "operator_packet"
             if documents is not None
