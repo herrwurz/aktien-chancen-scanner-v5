@@ -54,7 +54,18 @@ def create_web_app():
             "source_diagnostics_supported": True,
             "max_requests_per_analysis": settings.detective_public_max_requests,
             "discovery_feeds": settings.detective_discovery_feeds,
-            "search_provider": "bing_rss",
+            "search_provider": settings.detective_search_provider,
+            "source_ai_enabled": settings.detective_source_ai_enabled,
+            "external_api_approved": settings.detective_external_api_approved,
+            "search_key_configured": bool(
+                settings.detective_search_api_key
+                and settings.detective_search_api_key.get_secret_value().strip()
+            ),
+            "ai_key_configured": bool(
+                settings.detective_source_ai_api_key
+                and settings.detective_source_ai_api_key.get_secret_value().strip()
+            ),
+            "monthly_reservation_limit_eur": settings.detective_api_monthly_budget_eur,
         }
 
     @app.get("/api/hebeltrader/references")

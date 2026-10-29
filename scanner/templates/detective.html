@@ -118,6 +118,7 @@ const renderOverview=data=>{
       performed:'Ausgeführt',performed_with_source_gaps:'Ausgeführt mit Quellenlücken'};
     box.append(el('p',`Gegenprüfung: ${states[data.falsification.status]||data.falsification.status}`));
   }
+  if(data.semantic_research?.enabled)box.append(el('p',`KI-Quellenauswertung: ${data.semantic_research.validated_teaser_clues} belegte Eingabehinweise · ${data.semantic_research.search_api_calls} Such-API-Aufrufe · ${data.semantic_research.ai_api_calls} KI-Aufrufe. Befunde bleiben vorläufig.`));
   if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode==='public_web'?'Öffentliche Online-Recherche':data.research_mode}`));
   if(data.research_diagnostics){
     const diagnostic=data.research_diagnostics;
@@ -204,6 +205,15 @@ const renderCandidate=(c,index)=>{
       const reason=cell.reason?` (${cell.reason})`:'';
       return `${cell.quote||cell.clue_id}: ${cell.status}${reason}`;
     })));
+  }
+  if((c.cited_findings||[]).length){
+    article.append(el('h4','KI-Auswertung mit Belegstellen – vorläufig, manuell prüfen'));
+    c.cited_findings.forEach(finding=>{
+      article.append(el('p',`${finding.status==='supported'?'Stützt Hinweis':'Gegenargument'} · ${finding.url}`));
+      article.append(el('blockquote',finding.quote));
+      if(!finding.usable_for_ranking)article.append(el('p','Zeitliche Verfügbarkeit nicht belegt: nicht für Rangfolge oder Gegenkandidatenzahl verwendet.'));
+      article.append(el('p',`Zeitprüfung: ${finding.temporal_eligibility}; Quelle publiziert: ${finding.published_at||'unbekannt'}; abgerufen: ${finding.retrieved_at||'unbekannt'}`));
+    });
   }
   const sources=c.sources||c.eligible_evidence||[];
   const primary=sources.filter(source=>['issuer','regulatory','product_document'].includes(source.source_kind));

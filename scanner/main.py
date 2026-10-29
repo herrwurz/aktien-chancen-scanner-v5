@@ -16,9 +16,12 @@ from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
 from scanner.hebeltrader.detective.case_journal import CaseJournal
+from scanner.hebeltrader.detective.external_research import (
+    ApiConfigurationError,
+    build_public_research,
+)
 from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
 from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
-from scanner.hebeltrader.detective.public_web import PublicWebResearch
 from scanner.hebeltrader.detective.resolution import ResolutionRequest
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.hebeltrader.detective.workflow import run_case
@@ -202,17 +205,7 @@ def create_app(settings: Settings | None = None, engine=None):
                 if settings.detective_primary_domains
                 else {}
             )
-            web = (
-                PublicWebResearch(
-                    settings.detective_public_root / "sources",
-                    allow_network=settings.detective_public_allow_network,
-                    max_requests=settings.detective_public_max_requests,
-                    primary_domains=domains,
-                    discovery_feeds=settings.detective_discovery_feeds,
-                )
-                if settings.detective_public_allow_network
-                else None
-            )
+            web = build_public_research(settings, domains)
             issuers = (
                 json.loads(settings.detective_product_issuers.read_text())
                 if settings.detective_product_issuers
@@ -223,6 +216,8 @@ def create_app(settings: Settings | None = None, engine=None):
                 payload,
                 register_path=settings.detective_case_register,
             )
+        except ApiConfigurationError as exc:
+            raise HTTPException(503, str(exc)) from None
         except (ValueError, httpx.HTTPError) as exc:
             raise HTTPException(422, "Public research unavailable: " + type(exc).__name__) from None
 

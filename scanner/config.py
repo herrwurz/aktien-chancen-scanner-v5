@@ -44,6 +44,12 @@ class Settings(BaseSettings):
     detective_public_root: Path = Path("data/hebeltrader-detective")
     detective_public_allow_network: bool = False
     detective_public_max_requests: int = Field(default=40, ge=1, le=100)
+    detective_search_provider: Literal["public", "tavily"] = "public"
+    detective_search_api_key: SecretStr | None = None
+    detective_source_ai_enabled: bool = False
+    detective_source_ai_api_key: SecretStr | None = None
+    detective_external_api_approved: bool = False
+    detective_api_monthly_budget_eur: int = Field(default=20, ge=1, le=20)
     detective_primary_domains: Path | None = None
     detective_product_issuers: Path | None = None
     detective_discovery_feeds: list[str] = ["https://www.deraktionaer.de/aktionaer-news.rss"]

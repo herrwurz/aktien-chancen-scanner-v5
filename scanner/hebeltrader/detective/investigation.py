@@ -295,14 +295,49 @@ class Investigator:
         queries = _queries(text, clues, spans)
         fetched = list(documents or [])
         offline = documents is not None or self.web is None
+        semantic_clues = []
+        apis = getattr(self.web, "apis", None)
+        if not offline and apis is not None and apis.ai_key:
+            try:
+                planned = apis.plan(text)
+                semantic_clues = planned["clues"]
+                for item in semantic_clues:
+                    start = text.index(item["quote"])
+                    clues.append(
+                        AtomicClue(
+                            clue_id=item["clue_id"],
+                            category="semantic_fact",
+                            normalized=item["description"],
+                            value=item["description"],
+                            quote=item["quote"],
+                            start=start,
+                            end=start + len(item["quote"]),
+                            source_id="teaser_text",
+                            instrument_scope="stock",
+                            extraction_method="ai_literal_quote_requires_manual_review",
+                        )
+                    )
+                queries = list(dict.fromkeys(planned["queries"] + queries))[:8]
+            except (ValueError, httpx.HTTPError) as exc:
+                errors.append({"source": "ai_planner", "error": str(exc)[:120]})
+
+        set_phase = getattr(self.web, "set_phase", lambda phase: None)
+        set_phase("discovery")
 
         def research(query):
+            loaded = 0
             try:
                 for hit in self.web.search(query, limit=10):
                     if any(doc["url"] == hit["url"] for doc in fetched):
                         continue
+                    if not getattr(self.web, "can_fetch_new_document", lambda: True)():
+                        break
                     try:
                         fetched.append(self.web.fetch(hit["url"]))
+                        loaded += 1
+                        # Spread initial API discovery across different clue queries.
+                        if getattr(self.web, "phase", None) == "discovery" and loaded >= 1:
+                            break
                     except (ValueError, httpx.HTTPError) as exc:
                         errors.append({"url": hit["url"], "error": str(exc)[:120]})
             except (ValueError, httpx.HTTPError) as exc:
@@ -315,6 +350,9 @@ class Investigator:
         cutoff = request.publication_at or retrieved
 
         def compare():
+            nonlocal cutoff
+            if request.publication_at is None:
+                cutoff = self.clock()
             groups = {}
             for doc in fetched:
                 if (
@@ -335,8 +373,10 @@ class Investigator:
                 canonical_name = " ".join(re.findall(r"\w+", canonical_name))
                 asset_id = "company:" + hashlib.sha256(canonical_name.encode()).hexdigest()
                 group = groups.setdefault(
-                    asset_id, {"name": name, "ticker": doc.get("ticker"), "records": []}
+                    asset_id,
+                    {"name": name, "ticker": doc.get("ticker"), "records": [], "documents": []},
                 )
+                group["documents"].append(doc)
                 record = _evidence(doc, clues, cutoff)
                 if record:
                     group["records"].append(record)
@@ -386,6 +426,43 @@ class Investigator:
             by_clue = {c.clue_id: c for c in clues}
             result = []
             for row in rows:
+                cited = []
+                if not offline and apis is not None:
+                    from .external_research import validate_interpretation
+
+                    for doc in groups[row.asset_id]["documents"]:
+                        interpretation = validate_interpretation(
+                            doc, semantic_clues, doc.get("ai_interpretation", {})
+                        )
+                        if interpretation:
+                            for finding in interpretation["findings"]:
+                                cited.append(
+                                    dict(
+                                        finding,
+                                        url=doc["url"],
+                                        source_kind=doc.get("source_kind"),
+                                        published_at=doc.get("published_at"),
+                                        retrieved_at=doc.get("retrieved_at"),
+                                        temporal_eligibility=assess_document(doc, cutoff)[
+                                            "eligibility"
+                                        ],
+                                        usable_for_ranking=(
+                                            assess_document(doc, cutoff)["eligibility"]
+                                            == "eligible"
+                                        ),
+                                        verification="ai_interpretation_requires_manual_review",
+                                    )
+                                )
+                supported = {
+                    c["clue_id"]
+                    for c in cited
+                    if c["status"] == "supported" and c["usable_for_ranking"]
+                }
+                disputed = {
+                    c["clue_id"]
+                    for c in cited
+                    if c["status"] == "contradicted" and c["usable_for_ranking"]
+                }
                 primary_ids = {
                     cluster.cluster_id for cluster in row.evidence_clusters if cluster.primary
                 }
@@ -399,6 +476,7 @@ class Investigator:
                 score = sum(50 if by_clue[c].category == "fact_claims" else 35 for c in specific)
                 score += min(10, row.evidence_score // 10)
                 score -= 100 * len(row.hard_contradictions)
+                score += max(-9, min(9, 2 * len(supported - disputed) - 3 * len(disputed)))
                 result.append(
                     {
                         "asset_id": row.asset_id,
@@ -413,10 +491,12 @@ class Investigator:
                             for cell in row.evidence_matrix
                         ],
                         "confirmed_specific_clues": specific,
+                        "cited_findings": cited,
                         "hard_contradictions": row.hard_contradictions,
                         "unknown_clues": row.unknown_clue_ids,
                         "sources": row.eligible_evidence,
-                        "comparison_evidence_available": any(
+                        "comparison_evidence_available": any(c["usable_for_ranking"] for c in cited)
+                        or any(
                             record.get("facts", {}).get("teaser_term_overlap")
                             for record in row.eligible_evidence
                         ),
@@ -434,6 +514,7 @@ class Investigator:
             return result
 
         ranked = compare()
+        set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
             "queries": [],
@@ -453,6 +534,7 @@ class Investigator:
                 queries=peer_queries,
             )
         peer_comparison["candidates_after_discovery"] = len(ranked)
+        set_phase("falsification")
         falsification = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
             "queries": [],
@@ -479,6 +561,8 @@ class Investigator:
             - int(bool(ranked and ranked[0]["comparison_evidence_available"])),
         )
         limits = []
+        if semantic_clues or any(doc.get("ai_interpretation") for doc in fetched):
+            limits.append("ai_interpretation_requires_manual_verification")
         if input_truncated:
             limits.append("input_excerpt_truncated")
         if counter_count < 5:
@@ -493,6 +577,11 @@ class Investigator:
             limits.append("insufficient_specific_primary_evidence")
         if ranked and not ranked[0]["identity"].get("ticker"):
             limits.append("listed_underlying_identity_unverified")
+        if ranked and any(
+            c["status"] == "contradicted" and c["usable_for_ranking"]
+            for c in ranked[0]["cited_findings"]
+        ):
+            limits.append("ai_counterevidence_requires_review")
         if len(ranked) > 1 and ranked[0]["evidence_score"] - ranked[1]["evidence_score"] < 35:
             limits.append("ambiguous_leading_candidates")
         if ranked and falsification.get("leader_before") != ranked[0]["asset_id"]:
@@ -519,6 +608,7 @@ class Investigator:
             "strategy": "HEBELTRADER_DETECTIVE",
             "run_id": run_id,
             "analyzed_at": self.clock().isoformat(),
+            "knowledge_as_of": cutoff.isoformat(),
             "teaser_sha256": sha(text.encode()),
             "publication_at": request.publication_at.isoformat()
             if request.publication_at
@@ -549,6 +639,14 @@ class Investigator:
             "checked_candidates": ranked,
             "countercandidate_count": counter_count,
             "criteria": [clue.model_dump(mode="json") for clue in clues],
+            "semantic_research": {
+                "enabled": bool(apis and apis.ai_key and not offline),
+                "validated_teaser_clues": len(semantic_clues),
+                "search_api_calls": getattr(apis, "search_calls", 0),
+                "ai_api_calls": getattr(apis, "ai_calls", 0),
+                "findings_are_provisional": True,
+                "budget": apis.budget.summary() if apis is not None else None,
+            },
             "source_timing": [assess_document(doc, cutoff) for doc in fetched],
             "falsification": falsification,
             "peer_comparison": peer_comparison,
@@ -596,14 +694,30 @@ class Investigator:
             else "likely_identified"
             if identified
             else "plausible_hypothesis"
-            if ranked and any(r["confirmed_specific_clues"] for r in ranked[:3])
+            if ranked
+            and any(
+                r["confirmed_specific_clues"]
+                or any(
+                    c["status"] == "supported" and c["usable_for_ranking"]
+                    for c in r["cited_findings"]
+                )
+                for r in ranked[:3]
+            )
             else "insufficient_evidence",
             "label": "Recherche derzeit nicht verfügbar"
             if source_blocked
             else "Wahrscheinlich identifiziert"
             if identified
             else "Plausible Hypothese"
-            if ranked and any(r["confirmed_specific_clues"] for r in ranked[:3])
+            if ranked
+            and any(
+                r["confirmed_specific_clues"]
+                or any(
+                    c["status"] == "supported" and c["usable_for_ranking"]
+                    for c in r["cited_findings"]
+                )
+                for r in ranked[:3]
+            )
             else "Nicht ausreichend identifizierbar",
         }
         for rank, row in enumerate(report["candidates"], 1):
@@ -613,6 +727,11 @@ class Investigator:
                 f"Score {row['evidence_score']}; "
                 "Widersprüche zuerst, danach spezifische Primärevidenz."
             )
+            if row["cited_findings"]:
+                row["ranking_reason"] += (
+                    f" {len(row['cited_findings'])} vorläufige KI-Belegstellen; "
+                    "keine unabhängige Primärbestätigung."
+                )
         from .product_research import research_calls
 
         report["derivative_candidate"] = research_calls(

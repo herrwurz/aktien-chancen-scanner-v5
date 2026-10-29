@@ -221,3 +221,13 @@ vor der Falsifikation. Operativer und freier Cashflow werden in Suchfragen unter
 Werberenditen weiterhin nicht als Aktienbeweis. Keine Herausgeber-Erfolgszahl gilt als eigene
 Trefferquote. Details und Quellenkritik: [Strategieübernahme](hebeltrader-publisher-strategy.md).
 Die 18 historischen Fallzuordnungen bleiben unverändert.
+
+### Änderungsjournal 29.10.2026 – echte Such-/KI-Anbindung
+
+Ergänzung ohne Änderung historischer Erstprognosen: Tavily-URL-Suche und OpenAI-Auswertung
+werden optional an den bestehenden Downloader und die Kandidatenprüfung angeschlossen.
+KI-Befunde brauchen wörtliche Zitate, bleiben vorläufig und unterliegen dem Zeitfilter.
+Auch eine allein durch KI ergänzte Identität erlaubt keine automatische Bestätigung.
+Keine bekannten Lösungen oder WKNs gelangen in die KI-Planung. Budget und Freigabe bleiben
+separat kontrolliert; ohne API-Zugänge ist die Live-Abnahme offen. Details:
+[Such-/KI-Anbindung](teaser-search-ai.md).
