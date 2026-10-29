@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 
@@ -259,3 +261,28 @@ def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch
     assert "OpenAI Billing-Dashboard" in response.text
     assert "authentication_failed" in response.text
     assert "invalid_response" in response.text
+
+
+def test_cases_use_compact_single_case_selector():
+    html = Path("scanner/templates/detective.html").read_text()
+    assert 'id="case-select"' in html
+    assert 'id="include-archived"' in html
+    assert 'id="active-case"' in html
+    assert 'id="cases"' not in html
+    assert "selectCase" in html
+
+
+def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
+    html = Path("scanner/templates/detective.html").read_text()
+    assert 'id="resolution-panel"' in html
+    assert 'class="resolution-callout"' in html
+    assert "Originalauflösung eintragen" in html
+    assert "openResolution" in html
+
+
+def test_analysis_status_has_visible_states_and_safe_error_details():
+    html = Path("scanner/templates/detective.html").read_text()
+    assert ".analysis-status.running" in html
+    assert "setAnalysisStatus" in html
+    assert "readResponseError" in html
+    assert "HTTP ${response.status}" in html
