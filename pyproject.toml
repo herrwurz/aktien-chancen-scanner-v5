@@ -21,7 +21,7 @@ dev = ["pytest==8.4.2", "ruff==0.14.1", "PyYAML==6.0.3", "reportlab==4.4.5"]
 include = ["scanner*"]
 
 [tool.setuptools.package-data]
-scanner = ["templates/*.html"]
+scanner = ["templates/*.html", "hebeltrader/detective/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
