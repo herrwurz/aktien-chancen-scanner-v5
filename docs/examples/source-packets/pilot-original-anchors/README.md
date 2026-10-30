@@ -48,5 +48,6 @@ Call-PDF-Produkte (Skyrizi/Rinvoq) bleiben Resolutionsleak.
 
 ## Nächster Schritt
 
-Prospective Teaser mit zweitem Anker **oder** Live-Falsifikation — Blind 202/26
-unverändert.
+Zweiten Teaser-Anker ergänzen (dann greift `historical_source_packet` → `identified`
+wie bei HT-027 named). Blind 202/26 unverändert. Siehe Batch-Summary
+`../evidence-batch-pilots-2026-10-30.json`.

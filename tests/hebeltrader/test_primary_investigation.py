@@ -394,6 +394,7 @@ def test_sec_issuer_anaphora_confirms_second_named_acquisition(tmp_path):
             publication_at=NOW,
         ),
         documents=docs,
+        historical_blind=True,
     )
     leader = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "TMO")
     quotes = {
@@ -403,11 +404,9 @@ def test_sec_issuer_anaphora_confirms_second_named_acquisition(tmp_path):
     }
     assert quotes >= {"Clario", "Solventum"}
     assert len(leader["confirmed_specific_clues"]) >= 2
-    # Offline packet scans stay not_identified (falsification/live gate), but the
-    # two named primary clues already yield a ranked plausible hypothesis and a
-    # ticker hypothesis from packet evidence.
-    assert report["decision"]["status"] == "plausible_hypothesis"
-    assert report["identification"]["status"] == "not_identified"
     assert report["packet_evidence"]["status"] == "ticker_hypothesis_ready"
     assert report["packet_evidence"]["ticker"] == "TMO"
-    assert report["packet_evidence"]["next_step"] == "live_falsification"
+    # Historical packet with ≥5 peer issuers may identify without live falsification.
+    assert report["identification"]["status"] == "identified"
+    assert report["identification"]["basis"] == "historical_source_packet"
+    assert report["decision"]["status"] == "likely_identified"

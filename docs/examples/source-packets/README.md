@@ -12,7 +12,8 @@ Real packets belong here as `{case_id}.json` only when:
 Pilots:
 
 - `pilot/` — HT-001 SEC 10-Q (no named teaser clues)
-- `pilot-named/` — HT-027 Clario+Solventum developmental enrichment
-- `pilot-original-anchors/` — corpus gap: 0/27 original teasers with ≥2 anchors; HT-023 AbbVie baseline
+- `pilot-named/` — HT-027 Clario+Solventum → **identified** via historical packet
+- `pilot-original-anchors/` — corpus gap + HT-023 AbbVie partial (`issuer_literal`)
+- `evidence-batch-pilots-2026-10-30.json` — four-case batch freeze summary
 
-See `docs/hebeltrader-source-packets.md` and `docs/hebeltrader-original-teaser-anchor-gap.md`.
+See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

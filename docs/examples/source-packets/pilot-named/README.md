@@ -27,13 +27,13 @@ python3 -m scanner.hebeltrader.detective.reference_scan \
 
 ## Ergebnis (kurz)
 
-| Variante | checked | TMO | `packet_evidence` | Entscheidung |
+| Variante | checked | TMO | `packet_evidence` | `identification` |
 |---|---|---|---|---|
-| original | 6 | Score 0 | `insufficient_evidence` | `ambiguous_tie` |
-| named (Clario+Solventum) | 6 | 2 Kernhinweise, Score 105 | **`ticker_hypothesis_ready` → TMO** | `plausible_hypothesis` |
+| original | 6 | Score 0 | `insufficient_evidence` | not_identified |
+| named (Clario+Solventum) | 6 | 2 Kernhinweise, Score 105 | **`ticker_hypothesis_ready` → TMO** | **`identified`** (`historical_source_packet`) |
 
-Bestätigte Quotes: **Clario**, **Solventum**. Formelles **`identified`** bleibt offline
-aus (Live-Falsifikation) — die Ticker-Hypothese steht trotzdem in `packet_evidence`.
+Bestätigte Quotes: **Clario**, **Solventum**. Historisches Paket mit ≥5 Peer-Emittenten
+reicht für Offline-`identified`; Live-Falsifikation bleibt der Web-Pfad.
 
 Market-Top-3 (Roche/Amgen/AZN) bleibt Chart/Sektor — kein TMO.
 

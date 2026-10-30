@@ -1,8 +1,10 @@
 {
   "label": "original",
-  "ranking_sha256": "3c47aca227553d79da45b676d58552b7aa261042b529fd460687b7d40ffb32c2",
+  "ranking_sha256": "eb5205afce0c5a324f46a4eb307bd5c2ee2a1fa37c7cd199955e729f0950ca5e",
   "identification": {
+    "basis": null,
     "label": "Nicht identifiziert",
+    "packet_peer_count": 5,
     "requires_manual_review": true,
     "score_is_probability": false,
     "status": "not_identified"
