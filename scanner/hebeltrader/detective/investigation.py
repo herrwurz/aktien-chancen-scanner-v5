@@ -496,7 +496,9 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 # the product appears near self-reference, the company name, or revenue
                 # prose on a document already tagged with company_name (10-Q product tables
                 # often omit "we/our" beside the product line).
-                if not _usable_product_token(term):
+                # Prefer clue.quote: normalized values are casefolded (dws), which would
+                # falsely fail the short ALL-CAPS product-code check (DWS/HBM/GPU).
+                if not _usable_product_token(clue.quote or term):
                     continue
                 confirmed = None
                 for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):

@@ -62,9 +62,16 @@ Freeze `batch-10/evidence-batch-10.json`: **10/10 named identified**
 Zusammen mit batch-10: **17/17** US-SEC named. Same-day EDGAR filings excluded
 (PIT). Gates unverändert.
 
+## Blind 202/26 — SEC 6-K (FPI) developmental
+
+`docs/examples/source-packets/blind-202-26-sec6k/`: Deutsche Bank 6-K exhibit
+(2026-10-28) + SAN/UBS/JPM/ING/HSBC. Named (Deutsche Bank + DWS) → **identified**
+via `historical_source_packet`. Original clue summary → not_identified.
+Prospective freeze SHA `3fff83e1…` untouched.
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
 reichere Teaser oder bewusste Diagnose-Anreicherung (wie Batch-10 named).
 
-Blind 202/26 und Chart-Scores unangetastet.
+Blind 202/26 Chart-Scores unangetastet (Freeze SHA unverändert).
