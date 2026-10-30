@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-001 SEC 10-Q source-packet pilot; developmental only.",
+  "cases": [
+    {
+      "case_id": "HT-001",
+      "headline": "Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine l\u00e4uft auf Hochtouren!",
+      "teaser_text": "Achtung, Anleger: W\u00e4hrend alle auf die gro\u00dfen KI-Namen starren, w\u00e4chst im Hintergrund ein Halbleiter-Schwergewicht zur wahren Gewinnmaschine! Die j\u00fcngsten Gesch\u00e4ftszahlen sind schlichtweg sensationell: Der Umsatz hat Rekordniveau erreicht, der Gewinn je Aktie ist kr\u00e4ftig explodiert und die Bruttomarge geh\u00f6rt zur absoluten Weltklasse. Auch der freie Cashflow sprudelt. Dazu kommen Zuk\u00e4ufe, die die Position bei KI-Rechenzentren und Robotik massiv ausbauen, und Analystenprognosen, die deutlich \u00fcbertroffen wurden. Die Bewertung ist ambitioniert, doch genau das k\u00f6nnte weitere Kursfantasie entfachen. Jetzt kommt der Hebel ins Spiel: Der passende Call-Optionsschein reagiert extrem sensibel auf Kursbewegungen und bietet ein Renditepotenzial von bis zu 1.191 Prozent!\n\nSichern Sie sich die komplette Analyse mit allen Kurszielen und Handlungsanleitungen, bevor der breite Markt zugreift!",
+      "publication_date": "2026-10-28",
+      "publication_at": "2026-10-28T08:15:00+01:00"
+    }
+  ]
+}

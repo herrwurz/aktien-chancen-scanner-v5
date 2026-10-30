@@ -1,0 +1,68 @@
+{
+  "case_id": "HT-001",
+  "kind": "sec_10q_pilot_packet",
+  "cutoff_publication_at": "2026-10-28T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "ADI",
+      "name": "Analog Devices",
+      "filingDate": "2026-08-19",
+      "url": "https://www.sec.gov/Archives/edgar/data/6281/000000628126000073/adi-20260801.htm",
+      "sha256": "e76d1028f68a4403c6f19445dec76aa3acfbd06f58064ce43769b61527749af1",
+      "chars": 80000,
+      "mentions_empower": true,
+      "mentions_alif": true
+    },
+    {
+      "ticker": "TXN",
+      "name": "Texas Instruments",
+      "filingDate": "2026-10-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/97476/000009747626000169/txn-20260930.htm",
+      "sha256": "077f17b9d8d35e22a1a6b0738bc4f9c49271936feaf8ae1e378b08bb842228bc",
+      "chars": 80000,
+      "mentions_empower": false,
+      "mentions_alif": false
+    },
+    {
+      "ticker": "NXPI",
+      "name": "NXP Semiconductors",
+      "filingDate": "2026-10-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1413447/000141344726000059/nxpi-20260927.htm",
+      "sha256": "3a8e6586a813f7b74da73d10d334d9cd0a4330bab9c23b9114260696a6e24ee2",
+      "chars": 80000,
+      "mentions_empower": false,
+      "mentions_alif": true
+    },
+    {
+      "ticker": "MCHP",
+      "name": "Microchip Technology",
+      "filingDate": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/827054/000082705426000038/mchp-20260630.htm",
+      "sha256": "e2ee8f5c164a0fa8ce9f479eb90240a739a78d10ced94d2c2a39b60c6cb7831c",
+      "chars": 80000,
+      "mentions_empower": false,
+      "mentions_alif": false
+    },
+    {
+      "ticker": "ON",
+      "name": "ON Semiconductor",
+      "filingDate": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/1097864/000109786426000017/on-20260703.htm",
+      "sha256": "f5a6d06cd01bf43f4ef42e84bbda6f82e8bbb731e6faacc3d8360b6239cd6fd1",
+      "chars": 80000,
+      "mentions_empower": false,
+      "mentions_alif": false
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "filingDate": "2026-09-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000173016826000080/avgo-20260802.htm",
+      "sha256": "ef13046d799a64eefa8ba0a050037b0afdd90210c62719dadc934b7088312f28",
+      "chars": 80000,
+      "mentions_empower": false,
+      "mentions_alif": false
+    }
+  ],
+  "policy": "Developmental evidence packet from SEC 10-Q filings dated before teaser publication_date. Not a publisher PDF."
+}

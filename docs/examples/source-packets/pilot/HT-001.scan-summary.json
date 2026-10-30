@@ -1,0 +1,109 @@
+{
+  "case_id": "HT-001",
+  "ranking_sha256": "99eaab94f3a9b0e6d3f9b2f6425505a0b29c16a8c3aa941c648b874c0fcfaf9e",
+  "identification": {
+    "label": "Nicht identifiziert",
+    "requires_manual_review": true,
+    "score_is_probability": false,
+    "status": "not_identified"
+  },
+  "decision": {
+    "label": "Nicht ausreichend identifizierbar",
+    "status": "insufficient_evidence"
+  },
+  "source_packet_status": "provided",
+  "candidates": [],
+  "checked_candidates": [],
+  "offline_hypotheses": [
+    {
+      "name": "ASML Holding",
+      "ticker": "ASML",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "Lam Research",
+      "ticker": "LRCX",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "KLA Corporation",
+      "ticker": "KLAC",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "Synopsys",
+      "ticker": "SNPS",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "Arm Holdings",
+      "ticker": "ARM",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "TSMC",
+      "ticker": "TSM",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "Nvidia",
+      "ticker": "NVDA",
+      "sector": "semiconductor"
+    },
+    {
+      "name": "SK Hynix",
+      "ticker": "000660.KO",
+      "sector": "semiconductor"
+    }
+  ],
+  "market_hypotheses": [
+    {
+      "name": "Analog Devices",
+      "ticker": "ADI",
+      "score": 17
+    },
+    {
+      "name": "NXP Semiconductors",
+      "ticker": "NXPI",
+      "score": 17
+    },
+    {
+      "name": "Texas Instruments",
+      "ticker": "TXN",
+      "score": 17
+    },
+    {
+      "name": "Advanced Micro Devices",
+      "ticker": "AMD",
+      "score": 15
+    },
+    {
+      "name": "Entegris",
+      "ticker": "ENTG",
+      "score": 15
+    },
+    {
+      "name": "TSMC",
+      "ticker": "TSM",
+      "score": 15
+    },
+    {
+      "name": "Cadence Design Systems",
+      "ticker": "CDNS",
+      "score": 14
+    },
+    {
+      "name": "Synopsys",
+      "ticker": "SNPS",
+      "score": 12
+    }
+  ],
+  "limitations": [
+    "fewer_than_five_countercandidates",
+    "active_falsification_not_performed",
+    "insufficient_specific_primary_evidence"
+  ],
+  "actual_company": "Analog Devices",
+  "actual_ticker": "ADI",
+  "evidence_hit": false
+}

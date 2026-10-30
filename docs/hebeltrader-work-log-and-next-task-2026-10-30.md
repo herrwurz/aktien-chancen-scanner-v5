@@ -85,8 +85,14 @@ Scan-Inputs mit Stand-Uhr-Guess: `*-inputs-with-publication-at.json` (24/27 + Bl
 Resolutionsindex: `docs/hebeltrader-pdf-resolution-index.*` (PDF ≠ Identifikationspaket).
 Market-Top-8 unverändert vs Dedup-PIT (Uhr greift erst bei echten Quellenpaketen).
 
-## 13. Offen (nächste Schritte)
-**A.** Echte IR/SEC-Quellenpakete je Fall (nicht Publisher-PDF); PDFs 192/26 + 137/26 nachreichen.
+## 13. Quellenpaket-Pilot HT-001 (2026-10-30)
+SEC-10-Q-Paket ADI+5 Peers (`docs/examples/source-packets/pilot/`). Pipeline ok;
+Evidenz trotzdem **not_identified** — Teaser ohne Eigenamen (Empower/Alif nur in Auflösung).
+Market-PIT: ADI Top-1. Publisher-PDFs bleiben Resolutionsartefakte.
+
+## 14. Offen (nächste Schritte)
+**A.** Pilot auf Fälle mit **eigenamen Spezifika im Teaser**; oder Operator-Pakete mit
+  Zitat-aligned IR. PDFs 192/26 + 137/26 nachreichen.
 
 **B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26.
 
