@@ -67,7 +67,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2096,
-      "advertised_return_targets_percent": [514, 2096],
+      "advertised_return_targets_percent": [
+        514,
+        2096
+      ],
       "advertised_loss_risk_percent": 62,
       "risk_reward_ratio": 21.1
     },
@@ -124,7 +127,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1494,
-      "advertised_return_targets_percent": [376, 1494],
+      "advertised_return_targets_percent": [
+        376,
+        1494
+      ],
       "advertised_loss_risk_percent": 71,
       "risk_reward_ratio": 13.3
     },
@@ -174,7 +180,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2853,
-      "advertised_return_targets_percent": [632, 2853],
+      "advertised_return_targets_percent": [
+        632,
+        2853
+      ],
       "advertised_loss_risk_percent": 63,
       "risk_reward_ratio": 27.6
     },
@@ -223,7 +232,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1354,
-      "advertised_return_targets_percent": [418, 1354],
+      "advertised_return_targets_percent": [
+        418,
+        1354
+      ],
       "advertised_loss_risk_percent": 48,
       "risk_reward_ratio": 18.37
     },
@@ -272,7 +284,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2814,
-      "advertised_return_targets_percent": [576, 2814],
+      "advertised_return_targets_percent": [
+        576,
+        2814
+      ],
       "advertised_loss_risk_percent": 71,
       "risk_reward_ratio": 23.7
     },
@@ -328,7 +343,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1434,
-      "advertised_return_targets_percent": [270, 1434],
+      "advertised_return_targets_percent": [
+        270,
+        1434
+      ],
       "advertised_loss_risk_percent": 61,
       "risk_reward_ratio": 13.9
     },
@@ -385,7 +403,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1225,
-      "advertised_return_targets_percent": [344, 1225],
+      "advertised_return_targets_percent": [
+        344,
+        1225
+      ],
       "advertised_loss_risk_percent": 56,
       "risk_reward_ratio": 13.94
     },
@@ -441,7 +462,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1269,
-      "advertised_return_targets_percent": [315, 1269]
+      "advertised_return_targets_percent": [
+        315,
+        1269
+      ]
     },
     {
       "case_id": "HT-019",
@@ -452,14 +476,14 @@
       "publication_date": "2026-10-26",
       "publication_issue": "198/26",
       "publication_at": null,
-      "first_prediction": null,
+      "first_prediction": "SLB",
       "first_prediction_confidence": null,
       "confidence_status": null,
-      "actual_company": null,
-      "actual_ticker": null,
-      "derivative_wkn": null,
-      "outcome": "unresolved",
-      "source_status": "user_supplied_teaser",
+      "actual_company": "SLB (Schlumberger)",
+      "actual_ticker": "SLB",
+      "derivative_wkn": "VY95PV",
+      "outcome": "correct",
+      "source_status": "assistant_prediction_later_confirmed_by_user_supplied_publisher_pdf",
       "key_clues": [
         "Ölgeschäft und jahrzehntelange Tätigkeit im Förderumfeld",
         "KI-Kühltechnik und Rechenzentren",
@@ -473,11 +497,22 @@
           "type": "user_supplied_teaser",
           "reference": "HEBELTRADER 198/26, supplied 2026-10-30",
           "verified_primary_source": false
+        },
+        {
+          "type": "existing_frozen_prediction_and_publisher_resolution",
+          "reference": "docs/hebeltrader-identification-rules.md, TI-ffbb614727fb96f052ea analysis/resolution; Hebeltrader_2026-198.pdf",
+          "sha256": "fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+          "verified_primary_source": true,
+          "verification_scope": "Existing recorded publisher-PDF confirmation of underlying and original call; no new issuer-product verification."
         }
       ],
-      "resolution_date": null,
+      "resolution_date": "2026-10-28",
       "resolution_clues": null,
-      "original_top3": null,
+      "original_top3": [
+        "SLB",
+        "Schneider Electric",
+        "Emerson"
+      ],
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
@@ -485,7 +520,20 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1464,
-      "advertised_return_targets_percent": [421, 1464]
+      "advertised_return_targets_percent": [
+        421,
+        1464
+      ],
+      "resolution_history": [
+        {
+          "prior_outcome": "unresolved",
+          "prior_first_prediction": null,
+          "prior_actual_company": null,
+          "reason": "Reconciled against already recorded 2026-10-28 SLB ranking and later publisher-PDF resolution in central knowledge base."
+        }
+      ],
+      "prediction_mode": "assistant_led_research",
+      "autonomous_scanner_success": false
     },
     {
       "case_id": "HT-003",
@@ -618,7 +666,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1433,
-      "advertised_return_targets_percent": [408, 1433],
+      "advertised_return_targets_percent": [
+        408,
+        1433
+      ],
       "advertised_loss_risk_percent": 56,
       "risk_reward_ratio": 16.46
     },
@@ -754,7 +805,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2252,
-      "advertised_return_targets_percent": [495, 2252],
+      "advertised_return_targets_percent": [
+        495,
+        2252
+      ],
       "advertised_loss_risk_percent": 62,
       "risk_reward_ratio": 22.2
     },
@@ -805,7 +859,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1169,
-      "advertised_return_targets_percent": [361, 1169]
+      "advertised_return_targets_percent": [
+        361,
+        1169
+      ]
     },
     {
       "case_id": "HT-013",
@@ -1201,7 +1258,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1705,
-      "advertised_return_targets_percent": [426, 1705]
+      "advertised_return_targets_percent": [
+        426,
+        1705
+      ]
     },
     {
       "case_id": "HT-018",
@@ -1306,6 +1366,70 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1191
+    },
+    {
+      "case_id": "HT-028",
+      "reference_number": 28,
+      "headline": "Vom Tief zum Triumph: Die Comeback-Story des Jahres!",
+      "teaser_text": "Achtung, Rekordjagd! Ein Branchenriese schreibt gerade Geschichte: Zum dritten Mal in Folge melden die Bücher Rekordgewinne, die Erträge ziehen kräftig an, und das Management blickt selbstbewusst in die Zukunft. Die Kapitalbasis ist so stark wie lange nicht, Dividenden und Aktienrückkäufe rücken in greifbare Nähe. Kein Wunder, dass die Analysten ihre Kursziele reihenweise nach oben schrauben. Charttechnisch hat die Aktie die 200-Tage-Linie zurückerobert, ein zusätzliches Kaufsignal. Jetzt kommt der Turbo: Unser Call-Optionsschein weist in der Analyse ein Renditepotenzial von bis zu 1.311 Prozent aus.",
+      "text_completeness": "user_supplied_excerpt_final_sentence_truncated",
+      "publication_date": "2026-10-30",
+      "publication_issue": "202/26",
+      "publication_at": null,
+      "first_prediction": "Deutsche Bank",
+      "first_prediction_confidence": null,
+      "confidence_status": "no_calibrated_probability",
+      "actual_company": "Deutsche Bank",
+      "actual_ticker": "DBK",
+      "derivative_wkn": null,
+      "outcome": "correct",
+      "source_status": "user_confirmed_after_recorded_assistant_prediction",
+      "key_clues": [
+        "Drittes Rekordquartal in Folge",
+        "Ertragswachstum",
+        "Kapitalbasis und Ausschüttungen",
+        "200-Tage-Linie mit exaktem Datumsbezug"
+      ],
+      "contradicting_clues": [
+        "Rückkäufe bereits teilweise abgeschlossen",
+        "Keine eigene Neuberechnung des Chartdurchbruchs"
+      ],
+      "failure_analysis": null,
+      "evidence_sources": [
+        {
+          "type": "pre_resolution_assistant_prediction",
+          "reference": "PR #73 commit ebe6dde7e8adfe06182eb85084680f85c4eb899a; HT-20226 original ranking",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_confirmation",
+          "reference": "2026-10-30 conversation: Es ist die Deutsche Bank.",
+          "verified_primary_source": false
+        }
+      ],
+      "resolution_date": "2026-10-30",
+      "resolution_clues": [
+        "User explicitly confirmed Deutsche Bank after rank-1 prediction."
+      ],
+      "original_top3": [
+        "Deutsche Bank",
+        "Commerzbank",
+        "UBS"
+      ],
+      "other_reported_candidates": [
+        "Barclays",
+        "HSBC",
+        "Citigroup"
+      ],
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_search_index_date_exact_time_unknown",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1311,
+      "prediction_mode": "assistant_led_research",
+      "autonomous_scanner_success": false,
+      "product_verification": "not_verified"
     }
   ]
 }
