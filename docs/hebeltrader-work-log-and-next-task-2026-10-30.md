@@ -80,8 +80,13 @@ Ingest: `scripts/ingest_publisher_pdfs.py`. PDF-Meta/SHA nur im Inventar (nicht 
   HT-012 BASF **137/26**, HT-016 ohne Issue.
 - 92× `publication_at_guess` aus „Stand: … um … Uhr“.
 
-## 12. Offen (nächste Schritte)
-**A.** PDFs 192/26 + 137/26 nachreichen; `publication_at` in Scan-Inputs bestätigen; Quellenpakete bauen.
+## 12. publication_at aus PDFs (2026-10-30)
+Scan-Inputs mit Stand-Uhr-Guess: `*-inputs-with-publication-at.json` (24/27 + Blind).
+Resolutionsindex: `docs/hebeltrader-pdf-resolution-index.*` (PDF ≠ Identifikationspaket).
+Market-Top-8 unverändert vs Dedup-PIT (Uhr greift erst bei echten Quellenpaketen).
+
+## 13. Offen (nächste Schritte)
+**A.** Echte IR/SEC-Quellenpakete je Fall (nicht Publisher-PDF); PDFs 192/26 + 137/26 nachreichen.
 
 **B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26.
 
