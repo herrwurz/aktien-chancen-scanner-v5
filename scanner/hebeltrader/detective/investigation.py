@@ -917,18 +917,53 @@ class Investigator:
             limits.append("new_top3_candidate_needs_falsification")
         if request.publication_at and request.publication_at > retrieved:
             limits.append("future_teaser_publication")
-        identified = bool(
-            not limits
-            and ranked
-            and counter_count >= 5
+        margin_ok = bool(
+            ranked
+            and (len(ranked) < 2 or ranked[0]["evidence_score"] - ranked[1]["evidence_score"] >= 35)
+        )
+        evidence_bar = bool(
+            ranked
             and len(ranked[0]["confirmed_specific_clues"]) >= 2
             and not ranked[0]["hard_contradictions"]
             and request.publication_at
-            and not offline
+            and ranked[0]["identity"].get("ticker")
+            and margin_ok
             and not errors
-            and (len(ranked) < 2 or ranked[0]["evidence_score"] - ranked[1]["evidence_score"] >= 35)
+        )
+        # Live path: falsification + comparison countercandidates required.
+        live_identified = bool(not limits and evidence_bar and counter_count >= 5 and not offline)
+        # Historical packet path: dated operator packet already holds ≥5 peer issuers.
+        # Falsification is still listed in limitations, but identification is allowed.
+        packet_peer_count = max(0, len(ranked) - 1) if ranked else 0
+        blocking_packet_limits = {
+            "insufficient_specific_primary_evidence",
+            "ambiguous_leading_candidates",
+            "listed_underlying_identity_unverified",
+            "ai_counterevidence_requires_review",
+            "future_teaser_publication",
+        }
+        historical_packet_identified = bool(
+            historical_blind
+            and offline
+            and evidence_bar
+            and packet_peer_count >= 5
+            and not blocking_packet_limits.intersection(limits)
+        )
+        identified = live_identified or historical_packet_identified
+        identification_basis = (
+            "live_falsification"
+            if live_identified
+            else "historical_source_packet"
+            if historical_packet_identified
+            else None
         )
         evidence_outcome = packet_evidence_result(ranked, offline=offline, limits=limits)
+        if (
+            historical_packet_identified
+            and evidence_outcome.get("status") == "ticker_hypothesis_ready"
+        ):
+            evidence_outcome = dict(evidence_outcome)
+            evidence_outcome["next_step"] = "manual_review"
         report = {
             "schema_version": 4,
             "case_id": case_id or run_id,
@@ -958,9 +993,17 @@ class Investigator:
             or next((c.value for c in clues if c.instrument_scope == "promotional"), None),
             "identification": {
                 "status": "identified" if identified else "not_identified",
-                "label": "Identifiziert, manuell prüfen" if identified else "Nicht identifiziert",
+                "label": (
+                    "Identifiziert (historisches Quellenpaket), manuell prüfen"
+                    if historical_packet_identified
+                    else "Identifiziert, manuell prüfen"
+                    if identified
+                    else "Nicht identifiziert"
+                ),
+                "basis": identification_basis,
                 "score_is_probability": False,
                 "requires_manual_review": True,
+                "packet_peer_count": packet_peer_count,
             },
             "packet_evidence": evidence_outcome,
             "candidates": ranked[:3],

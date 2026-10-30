@@ -4,32 +4,45 @@ Stand: 2026-10-30.
 
 ## In einem Satz
 
-**Teaser mit harten Ankern + datiertes IR/SEC-Paket → `packet_evidence.ticker`;
-Live-Falsifikation → formales `identified`.**
+**Teaser mit ≥2 harten Ankern + datiertes IR/SEC-Paket (≥5 Peer-Emittenten)
+→ `identification=identified` (`basis=historical_source_packet`);
+Live-Falsifikation bleibt für den öffentlichen Web-Pfad.**
 
 ## Stufen
 
-| Stufe | Feld | Bedeutung |
+| Stufe | Signal | Bedeutung |
 |---|---|---|
-| 0 Chart/Sektor | `market_hypotheses` | unverifizierte Vorschläge |
-| 1 Teil-Evidenz | `packet_evidence=partial_evidence` | 1 Kernhinweis (z.B. Emittentenname) |
-| 2 Ticker-Hypothese | `packet_evidence=ticker_hypothesis_ready` | ≥2 Kernhinweise, klarer Vorsprung |
-| 3 Identifiziert | `identification=identified` | plus Live-Falsifikation & ≥5 Gegenkandidaten |
+| 0 | `market_hypotheses` | Chart/Sektor, unverifiziert |
+| 1 | `packet_evidence=partial_evidence` | 1 Kernhinweis (z.B. Emittentenname) |
+| 2 | `packet_evidence=ticker_hypothesis_ready` | ≥2 Kernhinweise, klarer Vorsprung |
+| 3a | `identification=identified` / `basis=historical_source_packet` | Offline-Paket mit ≥5 Peers |
+| 3b | `identification=identified` / `basis=live_falsification` | Live-Suche + Gegenprüfung |
 
-Offline-Scans stoppen bewusst bei Stufe 2 (`identification` bleibt `not_identified`).
+## Batch-Lauf (Piloten)
 
-## Was der 27er-Korpus hergibt
+```bash
+python3 -m scanner.hebeltrader.detective.evidence_batch \
+  --inputs docs/examples/source-packets/pilot/HT-001.inputs.json \
+            docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.original.json \
+            docs/examples/source-packets/pilot-named/HT-027.inputs.original.json \
+            docs/examples/source-packets/pilot-named/HT-027.inputs.named.json \
+  --source-packets /path/to/packets \
+  --snapshots reports/snapshots-pit-pool-v1-remap-2026-10-30.json \
+  --summary docs/examples/source-packets/evidence-batch-pilots-2026-10-30.json
+```
 
-- Anonyme Teaser → Stufe 0–1 ohne Anreicherung
-- HT-023 (AbbVie im Headline) → Stufe 1 (`partial_evidence`, ABBV)
-- HT-027 mit Clario+Solventum (Diagnose-Anreicherung) → Stufe 2 (`ticker_hypothesis_ready`, TMO)
+Ergebnis (Freeze `evidence-batch-pilots-2026-10-30.json`):
 
-## Operator-Pfad für den nächsten echten Call
+| Inputs | `packet_evidence` | `identification` |
+|---|---|---|
+| HT-001 original | insufficient | not_identified |
+| HT-023 AbbVie headline | partial → **ABBV** | not_identified |
+| HT-027 original | insufficient | not_identified |
+| HT-027 Clario+Solventum | ready → **TMO** | **identified** (packet) |
 
-1. Teaser + `publication_at` sichern (vor Call-PDF).
-2. ≥2 Anker im Teaser (Eigenamen mit Relation und/oder Kennzahl).
-3. IR/SEC-Paket vor Cutoff mit Binding.
-4. Offline-Scan: Ziel `packet_evidence.status=ticker_hypothesis_ready`.
-5. Live-Lauf: Falsifikation → `identified`.
+## Korpus-Grenze
 
-Blind 202/26 und Chart-Scores bleiben unangetastet.
+27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
+reichere Teaser oder bewusste Diagnose-Anreicherung (wie HT-027 named).
+
+Blind 202/26 und Chart-Scores unangetastet.

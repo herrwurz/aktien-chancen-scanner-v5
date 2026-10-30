@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "data/hebeltrader/source-packets/ (HT-023/027) + docs/examples/source-packets/pilot/ (HT-001)",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "(local batch root; rankings sha256 frozen in freezes[])",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/pilot/HT-001.inputs.json",
+      "root": "batch/00-HT-001.inputs",
+      "ranking_sha256": "ee8e14df78792ac9b329efd252ec1cdefb6cf3b702af0681b653e9ccd4dceb2c",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.original.json",
+      "root": "batch/01-HT-023.inputs.original",
+      "ranking_sha256": "04150d9793b720607054e148a32d1d1e60f687958fad64825f2462b600ae2993",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.original.json",
+      "root": "batch/02-HT-027.inputs.original",
+      "ranking_sha256": "eb5205afce0c5a324f46a4eb307bd5c2ee2a1fa37c7cd199955e729f0950ca5e",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.named.json",
+      "root": "batch/03-HT-027.inputs.named",
+      "ranking_sha256": "7dbd9f0b8a871d4b171219a14bb7faddc6b2a78eac6172e0c83a51b65dd1aee8",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "HT-001",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "TXN",
+      "leader_name": "Texas Instruments",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/pilot/HT-001.inputs.json"
+    },
+    {
+      "case_id": "HT-023",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "partial_evidence",
+      "packet_evidence_ticker": "ABBV",
+      "packet_evidence_name": "AbbVie",
+      "confirmed_specific_clues": 1,
+      "evidence_score": 54,
+      "score_margin": 54,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "plausible_hypothesis",
+      "leader_ticker": "ABBV",
+      "leader_name": "AbbVie",
+      "checked_candidates": 7,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence"
+      ],
+      "next_step": "second_specific_anchor_or_stronger_margin",
+      "inputs": "docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.original.json"
+    },
+    {
+      "case_id": "HT-027",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "MTD",
+      "leader_name": "Mettler-Toledo International",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.original.json"
+    },
+    {
+      "case_id": "HT-027",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "TMO",
+      "packet_evidence_name": "Thermo Fisher Scientific",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 105,
+      "score_margin": 105,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "TMO",
+      "leader_name": "Thermo Fisher Scientific",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.named.json"
+    }
+  ],
+  "counts": {
+    "cases": 4,
+    "ticker_hypothesis_ready": 1,
+    "partial_evidence": 1,
+    "identified": 1,
+    "identified_from_packet": 1
+  }
+}

@@ -1,15 +1,17 @@
 {
   "label": "named",
-  "ranking_sha256": "49afda8b15eb8c56e966fde7ca19fb85814b81daaa411790ec42891445c73f1d",
+  "ranking_sha256": "7dbd9f0b8a871d4b171219a14bb7faddc6b2a78eac6172e0c83a51b65dd1aee8",
   "identification": {
-    "label": "Nicht identifiziert",
+    "basis": "historical_source_packet",
+    "label": "Identifiziert (historisches Quellenpaket), manuell prüfen",
+    "packet_peer_count": 5,
     "requires_manual_review": true,
     "score_is_probability": false,
-    "status": "not_identified"
+    "status": "identified"
   },
   "decision": {
-    "label": "Plausible Hypothese",
-    "status": "plausible_hypothesis"
+    "label": "Wahrscheinlich identifiziert",
+    "status": "likely_identified"
   },
   "packet_evidence": {
     "blocks_full_identification": [
@@ -20,7 +22,7 @@
     "evidence_score": 105,
     "label": "Ticker-Hypothese aus Primärevidenz",
     "name": "Thermo Fisher Scientific",
-    "next_step": "live_falsification",
+    "next_step": "manual_review",
     "score_margin": 105,
     "status": "ticker_hypothesis_ready",
     "ticker": "TMO"

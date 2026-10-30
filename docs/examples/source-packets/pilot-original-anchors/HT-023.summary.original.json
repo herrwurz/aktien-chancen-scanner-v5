@@ -1,8 +1,10 @@
 {
   "label": "original_headline_issuer_literal",
-  "ranking_sha256": "367d319d6bce2983aafea0093403f89270138ebe61fd7f36d39233667c1dbba4",
+  "ranking_sha256": "04150d9793b720607054e148a32d1d1e60f687958fad64825f2462b600ae2993",
   "identification": {
+    "basis": null,
     "label": "Nicht identifiziert",
+    "packet_peer_count": 6,
     "requires_manual_review": true,
     "score_is_probability": false,
     "status": "not_identified"
