@@ -1,0 +1,123 @@
+{
+  "label": "named",
+  "ranking_sha256": "0010aa9d56cd5601f90aac272b4a39b31930ba003bf01cb37e059b0e479262f2",
+  "identification": {
+    "label": "Nicht identifiziert",
+    "requires_manual_review": true,
+    "score_is_probability": false,
+    "status": "not_identified"
+  },
+  "decision": {
+    "label": "Plausible Hypothese",
+    "status": "plausible_hypothesis"
+  },
+  "source_packet_status": "provided",
+  "candidates": [
+    {
+      "name": "Thermo Fisher Scientific",
+      "ticker": "TMO",
+      "evidence_score": 53,
+      "confirmed_specific_clues": 1,
+      "confirmed_fact_quotes": [
+        "Clario"
+      ]
+    },
+    {
+      "name": "Mettler-Toledo International",
+      "ticker": "MTD",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Waters Corporation",
+      "ticker": "WAT",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    }
+  ],
+  "checked_candidates": [
+    {
+      "name": "Thermo Fisher Scientific",
+      "ticker": "TMO",
+      "evidence_score": 53,
+      "confirmed_specific_clues": 1,
+      "confirmed_fact_quotes": [
+        "Clario"
+      ]
+    },
+    {
+      "name": "Mettler-Toledo International",
+      "ticker": "MTD",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Waters Corporation",
+      "ticker": "WAT",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Danaher",
+      "ticker": "DHR",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Agilent Technologies",
+      "ticker": "A",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "IQVIA Holdings",
+      "ticker": "IQV",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    }
+  ],
+  "checked_count": 6,
+  "market_top3": [
+    {
+      "name": "Roche",
+      "ticker": "RO.SW",
+      "score": 19
+    },
+    {
+      "name": "Amgen",
+      "ticker": "AMGN",
+      "score": 17
+    },
+    {
+      "name": "AstraZeneca",
+      "ticker": "AZN.LSE",
+      "score": 17
+    }
+  ],
+  "limitations": [
+    "fewer_than_five_countercandidates",
+    "active_falsification_not_performed",
+    "insufficient_specific_primary_evidence"
+  ],
+  "criteria": [
+    "Künstliche Intelligenz",
+    "2000",
+    "acquisition_or_stake",
+    "acquisition|clario"
+  ],
+  "source_timing": {
+    "eligibility": [
+      "eligible"
+    ],
+    "availability_basis": [
+      "sec_edgar_filing_date_binding"
+    ]
+  }
+}

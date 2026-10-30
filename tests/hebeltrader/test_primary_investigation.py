@@ -319,3 +319,26 @@ def test_successful_empty_online_search_remains_distinct_from_source_failure(tmp
     )
     assert report["falsification"]["status"] == "not_performed_no_candidates"
     assert report["decision"]["status"] == "insufficient_evidence"
+
+
+def test_issuer_legal_abbrev_and_html_entities_still_confirm_named_acquisition(tmp_path):
+    docs = packet()
+    docs[-1]["company_name"] = "Thermo Fisher Scientific"
+    docs[-1]["ticker"] = "TMO"
+    docs[-1]["text"] = (
+        "Thermo Fisher Scientific Inc. (&#8220;Thermo Fisher&#8221;) issued a press release "
+        "announcing the completion of its acquisition of Clario Holdings, Inc."
+    )
+    report = Investigator(tmp_path, clock=lambda: NOW).analyze(
+        InvestigationRequest(
+            teaser_text="Mit der Übernahme von Clario baut der Konzern seine Position aus.",
+            publication_at=NOW,
+        ),
+        documents=docs,
+    )
+    leader = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "TMO")
+    assert leader["confirmed_specific_clues"]
+    assert any(
+        cell.get("quote") == "Clario" and cell.get("status") == "confirmed"
+        for cell in leader["evidence_matrix"]
+    )

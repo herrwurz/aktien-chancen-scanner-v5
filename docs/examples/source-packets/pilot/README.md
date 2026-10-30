@@ -25,11 +25,15 @@ python3 -m scanner.hebeltrader.detective.reference_scan \
 
 ## Ergebnis (kurz)
 
-- Pakete geladen (`source_packet_status=provided`), 6 Firmenidentitäten.
+- Pakete geladen (`source_packet_status=provided`).
+- Nach Fix der SEC-Filing-Date-Binding: **6 checked Firmenidentitäten** (früher
+  fälschlich `[]`, weil `sec_edgar_filing_date` nicht als Availability-Proof galt).
 - Evidenz-Identifikation: **`not_identified` / `insufficient_specific_primary_evidence`**.
-- Ursache: Teaser nennt keine eindeutigen Eigenamen (Empower/Alif nur in der Auflösung);
-  Matcher findet keine spezifischen Primärtreffer gegen die 10-Qs.
+- Ursache der fehlenden Bestätigung: Teaser nennt keine eindeutigen Eigenamen
+  (Empower/Alif nur in der Auflösung); Matcher findet keine spezifischen
+  Primärtreffer gegen die 10-Qs.
 - Market-Kanal (Pool-PIT): **ADI Top-1** (Score 17) — Chart/Sektor, keine Identifikation.
+- Named-Clue-Follow-up: `../pilot-named/` (HT-027 / Clario).
 
 ## Policy
 

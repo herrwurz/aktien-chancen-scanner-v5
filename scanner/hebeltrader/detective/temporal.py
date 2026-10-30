@@ -13,6 +13,38 @@ def timestamp(value):
         return None
 
 
+def _bound_availability(document, proof, declared):
+    """Return availability-basis label when proof binds declared time to this content."""
+    if not declared or not isinstance(proof, dict):
+        return None
+    if not (
+        document.get("raw_sha256")
+        and proof.get("content_sha256") == document.get("raw_sha256")
+        and str(proof.get("source_url", "")).startswith("https://")
+    ):
+        return None
+    basis = proof.get("basis")
+    if basis == "archived_snapshot":
+        # WayBack/operator archive: observation time must equal declared availability.
+        if timestamp(proof.get("observed_at")) == declared:
+            return "operator_archive_content_binding"
+        return None
+    if basis == "sec_edgar_filing_date":
+        # EDGAR accession URLs are immutable; filing/published date is public availability.
+        # observed_at is when the content was hashed (may be after cutoff).
+        published = timestamp(document.get("published_at"))
+        url = str(proof.get("source_url", ""))
+        if (
+            url.startswith("https://www.sec.gov/Archives/edgar/")
+            and published is not None
+            and published == declared
+            and timestamp(proof.get("observed_at")) is not None
+        ):
+            return "sec_edgar_filing_date_binding"
+        return None
+    return None
+
+
 def assess_document(document, cutoff):
     published = timestamp(document.get("published_at"))
     retrieved = timestamp(document.get("retrieved_at"))
@@ -20,25 +52,9 @@ def assess_document(document, cutoff):
     revision = timestamp(document.get("content_revision_at"))
     declared = timestamp(document.get("source_available_at"))
     proof = document.get("availability_evidence")
-    bound_proof = bool(
-        declared
-        and isinstance(proof, dict)
-        and proof.get("basis") == "archived_snapshot"
-        and str(proof.get("source_url", "")).startswith("https://")
-        and timestamp(proof.get("observed_at")) == declared
-        and document.get("raw_sha256")
-        and proof.get("content_sha256") == document.get("raw_sha256")
-    )
-    available = (
-        declared if bound_proof else retrieved if retrieved and retrieved <= cutoff else None
-    )
-    basis = (
-        "operator_archive_content_binding"
-        if bound_proof
-        else "observed_original"
-        if available
-        else "unknown"
-    )
+    binding = _bound_availability(document, proof, declared)
+    available = declared if binding else retrieved if retrieved and retrieved <= cutoff else None
+    basis = binding if binding else ("observed_original" if available else "unknown")
     after = any(t and t > cutoff for t in (published, event, revision, available, declared))
     eligible = bool(published and retrieved and available and not after)
     return {
@@ -50,6 +66,6 @@ def assess_document(document, cutoff):
         "content_revision_at": revision.isoformat() if revision else None,
         "availability_status": "documented" if available else "uncertain",
         "availability_basis": basis,
-        "availability_evidence": proof if bound_proof else None,
+        "availability_evidence": proof if binding else None,
         "eligibility": "after_cutoff" if after else "eligible" if eligible else "uncertain",
     }
