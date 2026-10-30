@@ -67,13 +67,21 @@ Meta: `docs/examples/snapshots-pit-pool-v1-remap-2026-10-30.meta.json`.
 
 ## 10. Vollkorpus-Check Pool-PIT+Dedup (2026-10-30)
 Alle 27 Refs + Blind auf Remap-Pool-PIT mit Dedup. Market Top8 unverändert 7/25;
-Offline Top8=6. Blind: DBK Rang ~565, nicht Top-8. **Keine** Publisher-PDFs im Repo;
-**0/27** `publication_at` → keine Evidenz-IDs. Artefakt:
+Offline Top8=6. Blind: DBK Rang ~565, nicht Top-8. Artefakt:
 `docs/examples/full-corpus-pool-pit-check-2026-10-30.{json,md}`.
 
-## 11. Offen (nächste Schritte)
-**A.** Beim nächsten Report-Kauf `publication_at` + echte Quellenpakete sichern (≥5 Gegenkandidaten).
-  Publisher-PDFs lokal für Stichproben, nicht committen.
+## 11. Publisher-PDF Archiv (2026-10-30)
+Operator-Upload: **131** HEBELTRADER-PDFs (2025+2026, inkl. ohne Teaser).
+Lokal gitignored: `data/hebeltrader/publisher-pdfs/` + `publisher-pdf-extracts/`.
+Inventar (commitbar): `docs/hebeltrader-publisher-pdf-inventory.{json,md}`.
+Ingest: `scripts/ingest_publisher_pdfs.py`. PDF-Meta/SHA nur im Inventar (nicht in
+`teaser-cases.json` — fester Web-Import-Hash).
+- Gemappt: 24/27 Refs + Blind 202/26. Lücken: HT-003 Costco **192/26** (Upload hat Costco **70/26**),
+  HT-012 BASF **137/26**, HT-016 ohne Issue.
+- 92× `publication_at_guess` aus „Stand: … um … Uhr“.
+
+## 12. Offen (nächste Schritte)
+**A.** PDFs 192/26 + 137/26 nachreichen; `publication_at` in Scan-Inputs bestätigen; Quellenpakete bauen.
 
 **B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26.
 
