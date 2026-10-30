@@ -66,11 +66,13 @@ Restlücken: Japan `.TSE`, Italien `.MI` ohne Venue, delistete/illiquide Namen.
 
 Kein Score-Retuning. Details: `docs/examples/*-pool-pit-diagnosis-notes-2026-10-30.md`.
 
+Market-Universum: **eine Zeile je Ticker** (SPX/NDX/Curated-Namen kollabieren; Structure/Layer vom Curated-Overlay gewinnen).
+
 ## Budget / nächste Schritte
 
-1. Pool + Remap + PIT-Diagnose → **0 € Extra**.
-2. Evidenz-Kanal (Quellenpakete) vor teuren API-Upgrades.
-3. Optional: Pool+Overlay-Dedup.
-4. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
+1. Pool + Remap + PIT-Diagnose + Dedup → **0 € Extra**.
+2. Evidenz-Kanal: echte Pakete brauchen `publication_at` (heute 0/27 Refs) — siehe
+   `docs/hebeltrader-source-packets.md`.
+3. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
 
 Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning).

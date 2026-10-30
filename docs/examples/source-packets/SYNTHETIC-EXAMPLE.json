@@ -1,0 +1,70 @@
+[
+  {
+    "company_name": "Company 5",
+    "ticker": "C5",
+    "url": "https://issuer5.example/release",
+    "title": "Company 5 company release",
+    "text": "Company 5 acquired AlphaPower and BetaLogic.",
+    "source_kind": "issuer",
+    "published_at": "2026-10-25T12:00:00+00:00",
+    "retrieved_at": "2026-10-28T12:00:00+00:00",
+    "source_available_at": "2026-10-25T12:00:00+00:00",
+    "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "availability_evidence": {
+      "basis": "archived_snapshot",
+      "source_url": "https://archive.example/issuer5-release",
+      "observed_at": "2026-10-25T12:00:00+00:00",
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  {
+    "company_name": "Company 0",
+    "ticker": "C0",
+    "url": "https://issuer0.example/release",
+    "title": "Company 0 company release",
+    "text": "Company 0 develops chips and artificial intelligence, and discusses AlphaPower and BetaLogic.",
+    "source_kind": "issuer",
+    "published_at": "2026-10-24T12:00:00+00:00",
+    "retrieved_at": "2026-10-28T12:00:00+00:00"
+  },
+  {
+    "company_name": "Company 1",
+    "ticker": "C1",
+    "url": "https://issuer1.example/release",
+    "title": "Company 1 company release",
+    "text": "Company 1 develops chips and artificial intelligence, and discusses AlphaPower and BetaLogic.",
+    "source_kind": "issuer",
+    "published_at": "2026-10-24T12:00:00+00:00",
+    "retrieved_at": "2026-10-28T12:00:00+00:00"
+  },
+  {
+    "company_name": "Company 2",
+    "ticker": "C2",
+    "url": "https://issuer2.example/release",
+    "title": "Company 2 company release",
+    "text": "Company 2 develops chips and artificial intelligence, and discusses AlphaPower and BetaLogic.",
+    "source_kind": "issuer",
+    "published_at": "2026-10-24T12:00:00+00:00",
+    "retrieved_at": "2026-10-28T12:00:00+00:00"
+  },
+  {
+    "company_name": "Company 3",
+    "ticker": "C3",
+    "url": "https://issuer3.example/release",
+    "title": "Company 3 company release",
+    "text": "Company 3 develops chips and artificial intelligence, and discusses AlphaPower and BetaLogic.",
+    "source_kind": "issuer",
+    "published_at": "2026-10-24T12:00:00+00:00",
+    "retrieved_at": "2026-10-28T12:00:00+00:00"
+  },
+  {
+    "company_name": "Company 4",
+    "ticker": "C4",
+    "url": "https://issuer4.example/release",
+    "title": "Company 4 company release",
+    "text": "Company 4 develops chips and artificial intelligence, and discusses AlphaPower and BetaLogic.",
+    "source_kind": "issuer",
+    "published_at": "2026-10-24T12:00:00+00:00",
+    "retrieved_at": "2026-10-28T12:00:00+00:00"
+  }
+]

@@ -58,10 +58,17 @@ Meta: `docs/examples/snapshots-pit-pool-v1-remap-2026-10-30.meta.json`.
 - Artefakte: `*-diagnosis-pool-pit.*`, `*-pool-pit-diagnosis-notes-2026-10-30.md`,
   `blind-202-26-pool-pit-posthoc.json`.
 
-## 9. Offen (nächste Schritte)
-**A.** Evidenz-Kanal stärken (Quellenpakete), Charts nur als Tie-Break.
+## 9. Evidenz-Kanal + Pool-Dedup (2026-10-30)
+- **Blocker:** 27er-Refs haben **0/27** `publication_at` → historische Pakete greifen nicht.
+- Vertrag + Validator: `docs/hebeltrader-source-packets.md`,
+  `scanner/hebeltrader/detective/source_packets.py`, synthetisches Beispiel unter
+  `docs/examples/source-packets/`.
+- Market-Universum: Ticker-Dedup (SPX/NDX/Curated-Namen → eine Zeile; z. B. AMGN/COST/DB1).
 
-**B.** Optional: Pool+Overlay-Ticker-Dedup (z. B. doppeltes AMGN in Top-8).
+## 10. Offen (nächste Schritte)
+**A.** Beim nächsten Report-Kauf `publication_at` + echte Quellenpakete sichern (≥5 Gegenkandidaten).
+
+**B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26.
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls

@@ -251,7 +251,58 @@ def _overlay_curated(pool_assets: list[dict], curated: list[dict] | None = None)
             row = dict(asset)
             row["sources"] = ["curated_global_universe"]
             by_key[key] = row
-    return sorted(by_key.values(), key=lambda a: a["name"].casefold())
+    return _dedupe_by_ticker(sorted(by_key.values(), key=lambda a: a["name"].casefold()))
+
+
+def _asset_quality(asset: dict) -> tuple:
+    """Higher is better when collapsing same-ticker pool/overlay rows."""
+    sources = asset.get("sources") or []
+    sector = (asset.get("sector") or "").casefold()
+    return (
+        1 if asset.get("structure") else 0,
+        1 if asset.get("layer") else 0,
+        1 if "curated_global_universe" in sources else 0,
+        0 if sector in {"", "information technology"} else 1,
+        -len(asset.get("name") or ""),
+    )
+
+
+def _dedupe_by_ticker(assets: list[dict]) -> list[dict]:
+    """One market row per ticker (SPX/NDX/curated name variants collapse)."""
+    without: list[dict] = []
+    by_ticker: dict[str, dict] = {}
+    for asset in assets:
+        ticker = asset.get("ticker")
+        if not ticker:
+            without.append(dict(asset))
+            continue
+        existing = by_ticker.get(ticker)
+        if existing is None:
+            by_ticker[ticker] = dict(asset)
+            continue
+        winner = existing if _asset_quality(existing) >= _asset_quality(asset) else asset
+        loser = asset if winner is existing else existing
+        merged = dict(winner)
+        merged["sources"] = sorted(
+            set([*(existing.get("sources") or []), *(asset.get("sources") or [])])
+        )
+        for field in ("structure", "layer", "sector"):
+            if merged.get(field) in (None, "", "information technology") and loser.get(field):
+                if field != "sector" or loser.get(field) != "information technology":
+                    merged[field] = loser[field]
+        aliases = list(
+            dict.fromkeys([*(existing.get("aliases") or []), *(asset.get("aliases") or [])])
+        )
+        if aliases:
+            merged["aliases"] = aliases
+        # Keep alternate display names discoverable without duplicating rank rows.
+        alt = loser.get("name")
+        if alt and alt != merged.get("name"):
+            merged.setdefault("aliases", [])
+            if alt not in merged["aliases"]:
+                merged["aliases"] = list(dict.fromkeys([*merged["aliases"], alt]))
+        by_ticker[ticker] = merged
+    return sorted([*by_ticker.values(), *without], key=lambda a: a["name"].casefold())
 
 
 @lru_cache(maxsize=1)
