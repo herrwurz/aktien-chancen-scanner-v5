@@ -28,7 +28,8 @@ Pflichtfelder je Dokument:
 - `source_kind`: `issuer` \| `regulator` \| `exchange` \| `archive` \| `secondary` \| `other`
 - `published_at`, `retrieved_at` (ISO-8601 mit Offset)
 
-Für nachträglich archivierte Inhalte zusätzlich:
+Für nachträglich archivierte / spätere Abrufe zusätzlich eine **gebundene**
+Verfügbarkeitsbasis (`raw_sha256` = `content_sha256`):
 
 ```json
 {
@@ -43,6 +44,12 @@ Für nachträglich archivierte Inhalte zusätzlich:
 }
 ```
 
+SEC-EDGAR-Filings (immutable Accession-URL): `basis: sec_edgar_filing_date`,
+`source_url` unter `https://www.sec.gov/Archives/edgar/…`,
+`source_available_at` = `published_at` (Filing-Datum). `observed_at` darf später
+sein (Hash-Zeitpunkt). Ohne Binding bleibt late `retrieved_at` → `uncertain`
+und historische Blind-Scans liefern `checked_candidates=[]`.
+
 Validierung:
 
 ```bash
@@ -51,8 +58,13 @@ python3 -m scanner.hebeltrader.detective.source_packets docs/examples/source-pac
 
 Synthetisches Beispiel (kein Blindbeleg): `docs/examples/source-packets/SYNTHETIC-EXAMPLE.json`.
 
-Erster Real-Pilot (SEC 10-Q, HT-001): `docs/examples/source-packets/pilot/` — Evidenz weiterhin
-`insufficient_specific_primary_evidence`, weil der Teaser keine Eigenamen trägt.
+Erster Real-Pilot (SEC 10-Q, HT-001): `docs/examples/source-packets/pilot/` — nach
+SEC-Binding: 6 checked Identitäten, aber weiterhin
+`insufficient_specific_primary_evidence` (Teaser ohne Eigenamen).
+
+Named-Clue-Pilot (HT-027 / Clario): `docs/examples/source-packets/pilot-named/` —
+mit Eigenamen bestätigt TMO den Kernhinweis `acquisition|clario` (1/2 nötig) →
+`plausible_hypothesis`, noch nicht `identified`.
 
 ## Operator-Checkliste (nächster echter Fall)
 

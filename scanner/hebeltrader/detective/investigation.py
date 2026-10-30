@@ -1,6 +1,7 @@
 """Primary teaser investigation: global discovery, equal comparison, falsification."""
 
 import hashlib
+import html
 import re
 import uuid
 from datetime import UTC, date, datetime
@@ -54,6 +55,17 @@ def apply_tie_labels(ranked):
     return tied
 
 
+def evidence_source_kind(document):
+    """Map packet/live source_kind onto EvidenceRecord primary kinds."""
+    kind = document.get("source_kind", "unknown")
+    if kind == "regulator":
+        # Operator packet contract uses "regulator"; Stage-B primary set uses "regulatory".
+        return "regulatory"
+    if kind in {"issuer", "regulatory", "product_document"}:
+        return kind
+    return "news"
+
+
 def source_class(document):
     explicit = document.get("source_class")
     if explicit in {"A", "B", "C", "D"}:
@@ -61,6 +73,7 @@ def source_class(document):
     return {
         "issuer": "A",
         "regulatory": "A",
+        "regulator": "A",
         "product_document": "A",
         "tavily_extract": "B",
         "search_snippet": "C",
@@ -258,13 +271,26 @@ def _queries(text, clues, spans):
     return build_queries(text, _entities(text), enrichment.search_queries)
 
 
+_LEGAL_ABBREV_PERIOD = re.compile(
+    r"\b(Inc|Corp|Ltd|LLC|Co|plc|AG|SE|SA|N\.?V\.?|GmbH)\.",
+    re.I,
+)
+
+
+def _match_text(raw):
+    """Normalize issuer HTML/entity noise and legal-abbrev periods for clue matching."""
+    text = html.unescape(raw or "")
+    # "Inc." / "Corp." must not act as sentence boundaries in subject windows.
+    return _LEGAL_ABBREV_PERIOD.sub(r"\1", text)
+
+
 def _evidence(document, clues, cutoff, *, allow_undated=False):
     undated = allow_undated and not document.get("published_at") and document.get("retrieved_at")
     if undated:
         # Live hypothesis mode: undated issuer pages are provisional evidence dated at retrieval.
         document = dict(document, published_at=document["retrieved_at"])
     timing = assess_document(document, cutoff)
-    text = document.get("text", "")
+    text = _match_text(document.get("text", ""))
     facts = {
         "origin_id": document["url"],
         "fact_claims": [],
@@ -295,15 +321,16 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
             match = re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I)
             if not match:
                 continue
-            context = text[max(0, match.start() - 100) : match.end() + 100]
+            # Wider window: SEC prose often places the issuer name one clause before the target.
+            context = text[max(0, match.start() - 220) : match.end() + 120]
             pattern = _RELATIONS[relation]
             company = document.get("company_name", "")
             subject = (
                 re.search(
                     re.escape(company)
-                    + r"(?P<link>[^.!?]{0,120})\b(?:"
+                    + r"(?P<link>[^.!?]{0,180})\b(?:"
                     + pattern
-                    + r")\b[^.!?]{0,80}"
+                    + r")\b[^.!?]{0,100}"
                     + re.escape(term),
                     context,
                     re.I,
@@ -349,8 +376,7 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
     if not timing["published_at"] or not timing["retrieved_at"]:
         return None
     published = datetime.fromisoformat(timing["published_at"])
-    kind = document.get("source_kind", "unknown")
-    kind = kind if kind in {"issuer", "regulatory", "product_document"} else "news"
+    kind = evidence_source_kind(document)
     return EvidenceRecord(
         source_id=sha(document["url"].encode()),
         url=document["url"],
@@ -889,7 +915,7 @@ class Investigator:
             "configured_discovery_feeds": getattr(self.web, "discovery_feeds", []),
             "source_quality": {
                 "primary_documents": sum(
-                    d.get("source_kind") in {"issuer", "regulatory"} for d in fetched
+                    d.get("source_kind") in {"issuer", "regulatory", "regulator"} for d in fetched
                 ),
                 "documents": len(fetched),
                 "scope": "global_public_search_not_complete_world_market",
