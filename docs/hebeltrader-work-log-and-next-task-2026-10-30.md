@@ -45,10 +45,14 @@ defaults darauf. PIT-Pool-Export: 919/1045 Bars, Coverage 904–906 / 27 as_of
 ~76 PIT-Misses auf EODHD-taugliche Codes gemappt (Nordic Share-Classes, FR/UK-Korrekturen,
 IT→XETRA/US wo möglich). Datei: `index_pool_ticker_remap_v1.json`.
 
-## 7. Offen (nächste Schritte)
-**A.** Optional: Pool-PIT mit Remaps neu exportieren (Coverage-Messung).
+## 7. PIT nach Remap (2026-10-30)
+Re-Export: **994/1044** Bars, Coverage **979–981** (vorher 919 / 904–906).
+Meta: `docs/examples/snapshots-pit-pool-v1-remap-2026-10-30.meta.json`.
 
-**B.** Optional: Refs/Blind mit Pool-PIT neu diagnostizieren (ohne Score-Retuning von 202/26).
+## 8. Offen (nächste Schritte)
+**A.** Refs/Blind mit Pool-PIT diagnostizieren (ohne Score-Retuning von 202/26).
+
+**B.** Evidenz-Kanal stärken (Quellenpakete), Charts nur als Tie-Break.
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
