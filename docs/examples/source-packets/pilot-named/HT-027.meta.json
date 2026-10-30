@@ -9,6 +9,7 @@
       "title": "Thermo Fisher Scientific SEC filing 2026-03-24 (Clario 8-K)",
       "url": "https://www.sec.gov/Archives/edgar/data/97745/000009774526000066/tmo-20260324.htm",
       "mentions_clario": true,
+      "mentions_solventum": false,
       "chars": 4764,
       "filing_date": "2026-03-24"
     },
@@ -18,7 +19,8 @@
       "title": "Thermo Fisher Scientific SEC filing 2026-05-01 (10-Q)",
       "url": "https://www.sec.gov/Archives/edgar/data/97745/000009774526000092/tmo-20260328.htm",
       "mentions_clario": true,
-      "chars": 80000,
+      "mentions_solventum": true,
+      "chars": 13107,
       "filing_date": "2026-05-01"
     },
     {
@@ -27,7 +29,8 @@
       "title": "Danaher SEC filing 2026-04-21",
       "url": "https://www.sec.gov/Archives/edgar/data/313616/000031361626000107/dhr-20260327.htm",
       "mentions_clario": false,
-      "chars": 80000,
+      "mentions_solventum": false,
+      "chars": 12000,
       "filing_date": "2026-04-21"
     },
     {
@@ -36,7 +39,8 @@
       "title": "Agilent Technologies SEC filing 2026-06-01",
       "url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087226000055/a-20260430.htm",
       "mentions_clario": false,
-      "chars": 80000,
+      "mentions_solventum": false,
+      "chars": 12000,
       "filing_date": "2026-06-01"
     },
     {
@@ -45,7 +49,8 @@
       "title": "IQVIA Holdings SEC filing 2026-05-05",
       "url": "https://www.sec.gov/Archives/edgar/data/1478242/000162828026030675/iqv-20260331.htm",
       "mentions_clario": false,
-      "chars": 80000,
+      "mentions_solventum": false,
+      "chars": 12000,
       "filing_date": "2026-05-05"
     },
     {
@@ -54,7 +59,8 @@
       "title": "Waters Corporation SEC filing 2026-05-12",
       "url": "https://www.sec.gov/Archives/edgar/data/1000697/000119312526219487/d435723d10q.htm",
       "mentions_clario": false,
-      "chars": 80000,
+      "mentions_solventum": false,
+      "chars": 12000,
       "filing_date": "2026-05-12"
     },
     {
@@ -63,9 +69,10 @@
       "title": "Mettler-Toledo International SEC filing 2026-05-08",
       "url": "https://www.sec.gov/Archives/edgar/data/1037646/000103764626000021/mtd-20260331.htm",
       "mentions_clario": false,
-      "chars": 80000,
+      "mentions_solventum": false,
+      "chars": 12000,
       "filing_date": "2026-05-08"
     }
   ],
-  "note": "TMO filings mention Clario before cutoff; peers are 10-Q countercandidates."
+  "note": "TMO filings mention Clario and Solventum before cutoff; peers are 10-Q countercandidates."
 }

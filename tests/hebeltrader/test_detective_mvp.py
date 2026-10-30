@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from scanner.hebeltrader.detective.clues import extract_clues
+from scanner.hebeltrader.detective.clues import extract_atomic_clues, extract_clues
 from scanner.hebeltrader.detective.schemas import DetectiveRequest
 from scanner.hebeltrader.detective.service import DetectiveService
 from scanner.hebeltrader.detective.sources import OfflineFixtureSource
@@ -160,6 +160,17 @@ def test_structured_event_financial_and_date_clues_are_preserved():
         {"metric": "cashflow", "value": "3", "unit": "mrd."},
     ]
     assert "Q2 2025" in clues["date_hints"]
+
+
+def test_gewinnsprung_compound_is_a_financial_metric_clue():
+    clues = extract_atomic_clues(
+        "Analysten erwarten für 2026 einen Gewinnsprung von mehr als 40 Prozent.",
+        [],
+    )
+    metric = next(c for c in clues if c.category == "financial_metric")
+    assert metric.normalized == "gewinn"
+    assert metric.value == "40"
+    assert metric.period == "2026"
 
 
 def test_call_finder_requires_explicit_identifier_time_evidence_and_stock_match():

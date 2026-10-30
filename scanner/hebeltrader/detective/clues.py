@@ -32,6 +32,13 @@ FINANCIAL_PERCENT_SENTENCE = re.compile(
     rf"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>{PERCENT_TOKEN})",
     re.I,
 )
+# HEBELTRADER teasers often say "Gewinnsprung von mehr als 40 Prozent" (compound noun).
+FINANCIAL_JUMP = re.compile(
+    rf"\b(?P<metric>umsatz|gewinn)sprung\b[^.!?]{{0,40}}?"
+    rf"(?:mehr als|über|rund|ca\.?|etwa)?\s*"
+    rf"(?P<value>\d+(?:[.,]\d+)?)\s*(?P<unit>{PERCENT_TOKEN})",
+    re.I,
+)
 DATE_HINT = re.compile(r"\b(?:Q[1-4]\s+20\d{2}|20\d{2}|\d{1,2}\.\d{1,2}\.20\d{2})\b", re.I)
 PROMOTIONAL_RETURN = re.compile(
     rf"(?P<value>\d{{1,3}}(?:\.\d{{3}})+|\d+(?:[,.]\d+)?)\s*{PERCENT_TOKEN}"
@@ -260,6 +267,7 @@ def extract_atomic_clues(text, spans):
         )
     financial_matches = list(FINANCIAL_METRIC.finditer(text))
     financial_matches.extend(FINANCIAL_PERCENT_SENTENCE.finditer(text))
+    financial_matches.extend(FINANCIAL_JUMP.finditer(text))
     seen_financial = set()
     for match in sorted(financial_matches, key=lambda item: (item.start(), item.end())):
         if any(start <= match.start() < end for start, end in promotional_ranges):
@@ -268,7 +276,9 @@ def extract_atomic_clues(text, spans):
         if key in seen_financial:
             continue
         seen_financial.add(key)
-        period_match = DATE_HINT.search(match.group(0))
+        period_match = DATE_HINT.search(match.group(0)) or DATE_HINT.search(
+            text[max(0, match.start() - 80) : match.end()]
+        )
         clues.append(
             _atomic(
                 "financial_metric",

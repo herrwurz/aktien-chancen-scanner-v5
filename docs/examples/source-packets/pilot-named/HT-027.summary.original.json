@@ -1,6 +1,6 @@
 {
   "label": "original",
-  "ranking_sha256": "4e58ccd60684a12d43956dc9921d8730bd961bd23248f0e0299e9b30d31d8bd8",
+  "ranking_sha256": "44307b1ac1e35f39360322eb14c3bc2c8a221accec824ea4dbd7ce0349398df3",
   "identification": {
     "label": "Nicht identifiziert",
     "requires_manual_review": true,
@@ -105,6 +105,7 @@
   ],
   "criteria": [
     "Künstliche Intelligenz",
+    "40",
     "2000"
   ],
   "source_timing": {
