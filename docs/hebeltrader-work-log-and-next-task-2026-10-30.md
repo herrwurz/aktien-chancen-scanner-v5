@@ -27,16 +27,25 @@ war noch nicht eingefroren.
 - **`case_diagnose`**, **`reference_evaluate`** mit Market-Coverage; Single-as_of nach
   publication_date wird als Leakage abgelehnt.
 
-## 4. Offen (nächste Schritte)
-**A. Auflösung 202/26** nach Report-Kauf: Position der Lösung dokumentieren, ohne Nachziehen.
+## 4. Auflösung Blind 202/26 (2026-10-30)
 
-**B. Abnahme** neuer PR (Active-Call-Ausschluss); Suite grün.
+**Miss – Fehlerklasse A (Universum).** Lösung: **Deutsche Bank**, Call **WB14HL**.
+Nicht in den eingefrorenen Top-8; fehlt im 115er-Universum. Freeze-SHA unverändert
+`3fff83e1387325ccf8c1fc47d49940c5d9385244fd00518c1ea0c4722a331b0f`.
+Dokumentation: [hebeltrader-202-26-resolution.md](hebeltrader-202-26-resolution.md).
+DB in `featured_calls.json` für künftige Ausschlüsse ergänzt. **Kein** Score-Retuning.
 
-### Active-Call-Ausschluss (neu)
+## 5. Offen (nächste Schritte)
+**A. Universum:** kuratierte EU-Banken-Lücke schließen (DBK + sinnvolle Peers), ohne
+fallbezogene Gewinnerregel für 202/26 — erst nach Bestätigung.
+
+**B.** Contingency/Budget-Plan (Miss-Klassen A–E, Go/No-Go) optional dokumentieren.
+
+### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
 innerhalb **180 Tagen** vor `publication_date` werden aus Offline-/Market-Hypothesen entfernt
 (Annahme: kein Zweit-Call solange der alte läuft). Scan liest **nicht** `teaser-cases.json`.
-Blind 202/26 PIT+Exclude: ADI/SNPS raus; Market-Top u. a. LLY, HNR1, IBE, KOG, LMT, MA, NXPI, NOVN.
+Blind 202/26 PIT+Exclude: ADI/SNPS raus; Market-Top waren LLY, HNR1, IBE, KOG, LMT, MA, NXPI, NOVN.
 
 Diagnose-Notizen: `docs/examples/reference-27-pit-diagnosis-notes-2026-10-30.md`.
 Japan-Lücken: bewusst akzeptiert (`accepted_snapshot_gaps`).

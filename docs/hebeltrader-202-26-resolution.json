@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "case_id": "BLIND-202-26",
+  "evaluation_class": "prospective_blind",
+  "independent_benchmark": true,
+  "first_ranking_sha256": "3fff83e1387325ccf8c1fc47d49940c5d9385244fd00518c1ea0c4722a331b0f",
+  "first_ranking_root": "docs/examples/blind-202-26-freeze-pit-excl",
+  "first_ranking_unchanged": true,
+  "resolution_recorded_at": "2026-10-30T12:55:00+00:00",
+  "pdf": {
+    "filename": "Hebeltrader_2026-202_2822.pdf",
+    "sha256": "d885c19faf83bc0a7b4eab1b9c5821f9328ae1d9b5cbef0016285519595fd885",
+    "pages": 6,
+    "publication_date": "2026-10-30",
+    "issue": "202/2026",
+    "source": "user_supplied_publisher_pdf",
+    "full_pdf_or_full_text_committed": false
+  },
+  "resolution": {
+    "asset_id": "DBK",
+    "name": "Deutsche Bank",
+    "ticker_candidates": ["DBK.XETRA", "DBK.DE"],
+    "source": "User-supplied publisher PDF Hebeltrader_2026-202_2822.pdf; issue 202/2026 dated 2026-10-30; pages 1-4; PDF-SHA256 d885c19faf83bc0a7b4eab1b9c5821f9328ae1d9b5cbef0016285519595fd885",
+    "basis": "primary_source",
+    "call_wkn": "WB14HL",
+    "stock_wkn": "514000",
+    "prediction_outcome": "miss",
+    "correct_rank": null,
+    "in_frozen_top8": false,
+    "in_universe_at_freeze": false,
+    "error_class": "A_universe",
+    "error_analysis": "Deutsche Bank was absent from global_universe.json (115 assets). Frozen market Top-8 were LLY, HNR1, IBE, KOG, LMT, MA, NXPI, NOVN. No active-call block applied. Chart-only above_gd200 suggestions cannot recover a name outside the universe. Do not retune scores for this case.",
+    "algorithm_change": "None for this freeze. Follow-up: curated EU-bank universe gap (separate change, not a winner rule for BLIND-202-26). Add Deutsche Bank to featured_calls blocklist for future teasers."
+  },
+  "newsletter_stated_product": {
+    "underlying": "Deutsche Bank",
+    "call_wkn": "WB14HL",
+    "stock_wkn": "514000",
+    "strike_eur": "38.00",
+    "maturity": "2027-03-19",
+    "omega_leverage": 9.1,
+    "issuer": null,
+    "isin": null,
+    "verification_scope": "Newsletter content only; issuer product terms and live quotes not independently verified"
+  },
+  "frozen_market_top8": [
+    "LLY",
+    "HNR1.XETRA",
+    "IBE.MC",
+    "KOG.OL",
+    "LMT",
+    "MA",
+    "NXPI",
+    "NOVN.SW"
+  ],
+  "teaser_input_at_freeze": {
+    "headline": "Vom Tief zum Triumph: Die Comeback-Story des Jahres!",
+    "teaser_text": "Branchenriese, dritter Rekordgewinn in Folge, starke Kapitalbasis, Dividenden und Aktienrückkäufe, 200-Tage-Linie zurückerobert, bis zu plus 1.311 Prozent.",
+    "publication_date": "2026-10-30",
+    "note": "Short clue summary used for prospective freeze; not a full publisher teaser transcript."
+  }
+}
