@@ -1,6 +1,6 @@
 {
-  "label": "original_headline_named_issuer",
-  "ranking_sha256": "b6cb9ef95ccd5712c1e90929303e260bce6ad3283da32ffcb76db7fe1d2d90d8",
+  "label": "original_headline_issuer_literal",
+  "ranking_sha256": "887e45780f34fc81530dcdde6946695af5b81081e41b99bb0188ac1e7e6657f6",
   "identification": {
     "label": "Nicht identifiziert",
     "requires_manual_review": true,
@@ -8,21 +8,23 @@
     "status": "not_identified"
   },
   "decision": {
-    "label": "Keine eindeutige Rangfolge",
-    "status": "ambiguous_tie"
+    "label": "Plausible Hypothese",
+    "status": "plausible_hypothesis"
   },
   "source_packet_status": "provided",
   "candidates": [
     {
-      "name": "Johnson & Johnson",
-      "ticker": "JNJ",
-      "evidence_score": 0,
-      "confirmed_specific_clues": 0,
-      "confirmed_fact_quotes": []
-    },
-    {
       "name": "AbbVie",
       "ticker": "ABBV",
+      "evidence_score": 54,
+      "confirmed_specific_clues": 1,
+      "confirmed_fact_quotes": [
+        "AbbVie"
+      ]
+    },
+    {
+      "name": "Johnson & Johnson",
+      "ticker": "JNJ",
       "evidence_score": 0,
       "confirmed_specific_clues": 0,
       "confirmed_fact_quotes": []
@@ -37,15 +39,17 @@
   ],
   "checked_candidates": [
     {
-      "name": "Johnson & Johnson",
-      "ticker": "JNJ",
-      "evidence_score": 0,
-      "confirmed_specific_clues": 0,
-      "confirmed_fact_quotes": []
-    },
-    {
       "name": "AbbVie",
       "ticker": "ABBV",
+      "evidence_score": 54,
+      "confirmed_specific_clues": 1,
+      "confirmed_fact_quotes": [
+        "AbbVie"
+      ]
+    },
+    {
+      "name": "Johnson & Johnson",
+      "ticker": "JNJ",
       "evidence_score": 0,
       "confirmed_specific_clues": 0,
       "confirmed_fact_quotes": []
@@ -107,11 +111,10 @@
   "limitations": [
     "fewer_than_five_countercandidates",
     "active_falsification_not_performed",
-    "insufficient_specific_primary_evidence",
-    "ambiguous_leading_candidates"
+    "insufficient_specific_primary_evidence"
   ],
   "criteria": [
-    "unknown_relation|abbvie"
+    "issuer_literal|abbvie"
   ],
   "source_timing": {
     "eligibility": [

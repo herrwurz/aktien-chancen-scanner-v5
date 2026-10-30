@@ -344,6 +344,35 @@ def test_issuer_legal_abbrev_and_html_entities_still_confirm_named_acquisition(t
     )
 
 
+def test_teaser_issuer_literal_binds_only_matching_candidate(tmp_path):
+    docs = packet()
+    docs[-1]["company_name"] = "AbbVie"
+    docs[-1]["ticker"] = "ABBV"
+    docs[-1]["source_kind"] = "regulator"
+    docs[-1]["text"] = "The company reported quarterly results and raised full-year guidance."
+    report = Investigator(tmp_path, clock=lambda: NOW).analyze(
+        InvestigationRequest(
+            teaser_text="AbbVie: Die nächste Milliarden-Wachstumsstory nimmt Fahrt auf!",
+            publication_at=NOW,
+        ),
+        documents=docs,
+    )
+    leader = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "ABBV")
+    assert leader["confirmed_specific_clues"]
+    assert any(
+        cell.get("quote") == "AbbVie" and cell.get("status") == "confirmed"
+        for cell in leader["evidence_matrix"]
+    )
+    assert report["candidates"][0]["identity"]["ticker"] == "ABBV"
+    assert report["decision"]["status"] == "plausible_hypothesis"
+    # Peers must not inherit the issuer-literal confirmation.
+    assert all(
+        not c["confirmed_specific_clues"]
+        for c in report["checked_candidates"]
+        if c["identity"]["ticker"] != "ABBV"
+    )
+
+
 def test_sec_issuer_anaphora_confirms_second_named_acquisition(tmp_path):
     docs = packet()
     docs[-1]["company_name"] = "Thermo Fisher Scientific"
