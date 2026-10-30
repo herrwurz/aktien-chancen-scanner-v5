@@ -22,9 +22,7 @@ def test_diagnose_inputs_reports_clues_and_market_top(tmp_path, monkeypatch):
             "structure": "oligopoly",
         }
     ]
-    snaps = ms.export_snapshots(
-        universe=universe, fetch={"UPC": UP}.get, today=date(2026, 10, 30)
-    )
+    snaps = ms.export_snapshots(universe=universe, fetch={"UPC": UP}.get, today=date(2026, 10, 30))
     snap_path = tmp_path / "snaps.json"
     snap_path.write_text(json.dumps(snaps), encoding="utf-8")
     inputs = {

@@ -79,9 +79,7 @@ def diagnose_inputs(inputs, snapshots=None, *, limit=8):
         as_of = snap_payload.get("as_of")
     cases = []
     for case in payload["cases"]:
-        blob = "\n".join(
-            part for part in (case.get("headline"), case.get("teaser_text")) if part
-        )
+        blob = "\n".join(part for part in (case.get("headline"), case.get("teaser_text")) if part)
         offline = [_compact_hypothesis(item) for item in screen(blob, limit=limit)]
         chart_clues = teaser_chart_clues(blob)
         sectors = sectors_in(blob)
@@ -96,17 +94,13 @@ def diagnose_inputs(inputs, snapshots=None, *, limit=8):
             coverage = ranked["snapshot_coverage"]
             ranked_before = ranked["ranked_before_limit"]
             market_status = (
-                "unverified_chart_universe_suggestions"
-                if market
-                else "no_market_hypotheses"
+                "unverified_chart_universe_suggestions" if market else "no_market_hypotheses"
             )
         cases.append(
             {
                 "case_id": case["case_id"],
                 "identification_status": None,
-                "input_completeness": (
-                    "complete" if case.get("teaser_text") else "headline_only"
-                ),
+                "input_completeness": ("complete" if case.get("teaser_text") else "headline_only"),
                 "source_packet_status": None,
                 "chart_clues": chart_clues,
                 "sectors_named": sectors,
@@ -177,8 +171,7 @@ def render_markdown(diagnosis):
             lines.append("Offline Top-8:")
             for item in case["offline_hypotheses"]:
                 lines.append(
-                    f"- {item.get('name')} ({item.get('ticker') or '—'}) "
-                    f"[{item.get('sector')}]"
+                    f"- {item.get('name')} ({item.get('ticker') or '—'}) [{item.get('sector')}]"
                 )
             lines.append("")
         if case["market_hypotheses"]:
@@ -186,10 +179,7 @@ def render_markdown(diagnosis):
             for item in case["market_hypotheses"]:
                 score = item.get("score")
                 score_bit = f" score={score}" if score is not None else ""
-                lines.append(
-                    f"- {item.get('name')} ({item.get('ticker') or '—'})"
-                    f"{score_bit}"
-                )
+                lines.append(f"- {item.get('name')} ({item.get('ticker') or '—'}){score_bit}")
             lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
