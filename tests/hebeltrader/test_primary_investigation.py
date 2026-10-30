@@ -357,8 +357,7 @@ def test_teaser_product_literals_plus_issuer_name_identify_historically(tmp_path
     report = Investigator(tmp_path, clock=lambda: NOW).analyze(
         InvestigationRequest(
             teaser_text=(
-                "AbbVie: Wachstumsstory!\n"
-                "Die Wachstumstreiber Skyrizi und Rinvoq heben den Umsatz."
+                "AbbVie: Wachstumsstory!\nDie Wachstumstreiber Skyrizi und Rinvoq heben den Umsatz."
             ),
             publication_at=NOW,
         ),
