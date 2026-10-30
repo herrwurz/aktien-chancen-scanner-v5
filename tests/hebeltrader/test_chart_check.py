@@ -57,3 +57,9 @@ def test_ticker_lookup_handles_legal_forms_and_aliases():
     assert ticker_for("NVIDIA Corporation") == "NVDA"
     assert ticker_for("Applied Materials Inc.") == "AMAT"
     assert ticker_for("Taiwan Semiconductor Manufacturing Company Ltd.") == "TSM"
+
+
+def test_name_match_uses_whole_words():
+    assert ticker_for("Intuit Inc.") != ticker_for("Intuitive Surgical Inc.")
+    assert ticker_for("Armstrong World Industries") is None
+    assert ticker_for("Sapient") is None
