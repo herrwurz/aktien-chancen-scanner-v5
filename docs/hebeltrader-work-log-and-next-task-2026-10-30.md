@@ -15,23 +15,26 @@ war noch nicht eingefroren.
   (`RO.SW`), Renk (`R3NK.XETRA`), Prysmian (`AEU.XETRA`) korrigiert. Acht Tokyo-`.TSE`-Namen
   bleiben **bewusst** ohne Snapshots: EODHD-Token ohne Japan-Börse; Teaser treffen Japan kaum —
   **kein** ADR-/Xetra-Fallback (`ticker_policy.accepted_snapshot_gaps`). Ansys: zu kurze Historie.
-- **Snapshots:** Live-Export `market_screen export` → 106/115 Features
-  (`docs/examples/snapshots-2026-10-30.meta.json`; Rohdatei unter gitignore
-  `reports/hebeltrader/snapshots-2026-10-30.json`).
-- **Blindfall mit Charts:** `docs/examples/blind-202-26-freeze-snapshots/`
-  (SHA `6a777229…`); Clue `above_gd200`; Market-Top unverified; weiterhin `not_identified`.
-- **27er-Referenz mit Charts:** `docs/examples/reference-27-freeze-snapshots/` + Diagnose +
-  Evaluate (`market_hypothesis_coverage`: Top1=1, Top3=2, Top8=5 bei 25 graded — unverified).
-- **`case_diagnose`:** lösungsfreie Ausgabe Hinweise/Coverage/Top-8 (JSON+Markdown).
-- **`reference_evaluate`:** `market_hypothesis_rank` / `market_hypothesis_coverage`.
+- **Snapshots (global):** `market_screen export` → 106/115
+  (`docs/examples/snapshots-2026-10-30.meta.json`).
+- **PIT-Snapshots:** `export-pit` → `by_as_of` je `publication_date`
+  (`docs/examples/snapshots-pit-2026-10-30.meta.json`). Basis: letzter Close ≤ Datum
+  (`publication_date_eod`). Aktuelles Token liefert ~1 Jahr Historie → vor ~2026-08-20 oft
+  `insufficient_history_at_as_of` (GD200 braucht ≥200 Sessions). Für volle PIT-Tiefe:
+  **EOD Historical All-World**.
+- **Blindfall PIT:** `docs/examples/blind-202-26-freeze-pit/` (SHA `ba738555…`).
+- **27er-Referenz PIT:** `docs/examples/reference-27-freeze-pit/` + Evaluate
+  (Market unverified: Top1=3, Top3=3, Top8=6 bei 16 suggestion_cases; 10 insufficient history,
+  1 ohne publication_date).
+- **`case_diagnose`**, **`reference_evaluate`** mit Market-Coverage; Single-as_of nach
+  publication_date wird als Leakage abgelehnt.
 
 ## 4. Offen (nächste Schritte)
-**A. PIT-Kalibrierung** nur mit Kursen ≤ Veröffentlichungsdatum der Referenzfälle
-(`--as-of` je Fall, nicht Global-as-of).
+**A. EOD-Historie** auf All-World (30+ Jahre) prüfen/upgraden, dann PIT-Export + Freeze für
+May–Jul-2026-Fälle wiederholen.
 
-**B. Auflösung 202/26** nach Report-Kauf: Position der Lösung in structure-/market-Hypothesen
-dokumentieren, ohne Logik auf diesen Fall zuzuschneiden.
+**B. Auflösung 202/26** nach Report-Kauf: Position der Lösung dokumentieren, ohne Nachziehen.
 
-**C. Abnahme:** `PYTHONPATH=. pytest -q tests/hebeltrader` grün; Token nur als Cursor-Secret / `.env`.
+**C. Abnahme:** Suite grün; Token nur Secret/`.env`.
 
-Japan-Lücken: bewusst akzeptiert (siehe `global_universe.json` → `accepted_snapshot_gaps`).
+Japan-Lücken: bewusst akzeptiert (`accepted_snapshot_gaps`).

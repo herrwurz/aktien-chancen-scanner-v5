@@ -8,19 +8,26 @@
     "status": "not_identified",
     "market_status": "snapshots_not_provided"
   },
-  "freeze_with_snapshots": {
+  "freeze_with_global_snapshots": {
     "root": "docs/examples/blind-202-26-freeze-snapshots",
     "snapshots_meta": "docs/examples/snapshots-2026-10-30.meta.json",
     "snapshot_as_of": "2026-10-30",
-    "snapshot_coverage": 106,
     "ranking_sha256": "6a7772290957b57cfc9cb2165166a8b2e9acf9d6233177206bb81fa26b3ea533",
+    "note": "Single global as_of; superseded for calibration by PIT freeze below."
+  },
+  "freeze_with_pit_snapshots": {
+    "root": "docs/examples/blind-202-26-freeze-pit",
+    "snapshots_meta": "docs/examples/snapshots-pit-2026-10-30.meta.json",
+    "snapshot_as_of": "2026-10-30",
+    "pit_basis": "publication_date_eod",
+    "ranking_sha256": "ba738555a2d637109c2e90d9c706942ae90c9e543c556a380c33c85c3dfe2e11",
     "status": "not_identified",
     "market_status": "unverified_chart_universe_suggestions",
-    "chart_clues": ["above_gd200"],
-    "diagnosis": "docs/examples/blind-202-26-diagnosis.json"
+    "chart_clues": ["above_gd200"]
   },
   "rules": [
     "Solution unknown at freeze time; do not retune logic after resolution.",
-    "Market hypotheses are unverified chart-universe suggestions, not identifications."
+    "Market hypotheses are unverified chart-universe suggestions, not identifications.",
+    "PIT uses publication_date EOD closes only; not an exact publication_at cutoff."
   ]
 }

@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .case_journal import read_frozen
 from .market_screen import rank as market_rank
-from .market_screen import teaser_chart_clues
+from .market_screen import resolve_case_snapshots, teaser_chart_clues
 from .structure_screen import screen, sectors_in
 
 
@@ -71,31 +71,35 @@ def diagnose_frozen(rankings):
 def diagnose_inputs(inputs, snapshots=None, *, limit=8):
     """Run structure/market screens on scan inputs without freezing a full investigation."""
     payload = json.loads(Path(inputs).read_text(encoding="utf-8"))
-    snapshot_map = None
-    as_of = None
+    snap_payload = None
     if snapshots is not None:
         snap_payload = json.loads(Path(snapshots).read_text(encoding="utf-8"))
-        snapshot_map = snap_payload["snapshots"]
-        as_of = snap_payload.get("as_of")
     cases = []
     for case in payload["cases"]:
         blob = "\n".join(part for part in (case.get("headline"), case.get("teaser_text")) if part)
         offline = [_compact_hypothesis(item) for item in screen(blob, limit=limit)]
         chart_clues = teaser_chart_clues(blob)
         sectors = sectors_in(blob)
-        if snapshot_map is None:
+        as_of = None
+        coverage = None
+        ranked_before = None
+        if snap_payload is None:
             market = []
             market_status = "snapshots_not_provided"
-            coverage = None
-            ranked_before = None
         else:
-            ranked = market_rank(blob, snapshot_map, limit=limit)
-            market = [_compact_hypothesis(item) for item in ranked["ranking"]]
-            coverage = ranked["snapshot_coverage"]
-            ranked_before = ranked["ranked_before_limit"]
-            market_status = (
-                "unverified_chart_universe_suggestions" if market else "no_market_hypotheses"
-            )
+            resolved = resolve_case_snapshots(snap_payload, case.get("publication_date"))
+            as_of = resolved.get("snapshot_as_of")
+            if resolved["status"] != "ok" or not resolved["snapshots"]:
+                market = []
+                market_status = resolved["status"]
+            else:
+                ranked = market_rank(blob, resolved["snapshots"], limit=limit)
+                market = [_compact_hypothesis(item) for item in ranked["ranking"]]
+                coverage = ranked["snapshot_coverage"]
+                ranked_before = ranked["ranked_before_limit"]
+                market_status = (
+                    "unverified_chart_universe_suggestions" if market else "no_market_hypotheses"
+                )
         cases.append(
             {
                 "case_id": case["case_id"],

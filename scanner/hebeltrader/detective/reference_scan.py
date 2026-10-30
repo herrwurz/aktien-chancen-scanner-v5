@@ -7,6 +7,7 @@ from pathlib import Path
 from .history import freeze_analysis
 from .investigation import InvestigationRequest, Investigator
 from .market_screen import rank as market_rank
+from .market_screen import resolve_case_snapshots
 from .structure_screen import screen
 
 _FIELDS = {"case_id", "headline", "teaser_text", "publication_date", "publication_at"}
@@ -84,20 +85,30 @@ def run_scan(inputs, root, source_packets=None, snapshots=None):
             else "no_local_sector_hypotheses"
         )
         if snapshot_payload is not None:
-            market = market_rank(blob, snapshot_payload["snapshots"], limit=8)
-            report["market_hypotheses"] = market["ranking"]
-            report["market_hypothesis_meta"] = {
-                "clues": market["clues"],
-                "sectors": market["sectors"],
-                "snapshot_as_of": snapshot_payload.get("as_of"),
-                "snapshot_coverage": market["snapshot_coverage"],
-                "ranked_before_limit": market["ranked_before_limit"],
-                "status": (
-                    "unverified_chart_universe_suggestions"
-                    if market["ranking"]
-                    else "no_market_hypotheses"
-                ),
-            }
+            resolved = resolve_case_snapshots(snapshot_payload, case.get("publication_date"))
+            if resolved["status"] != "ok" or not resolved["snapshots"]:
+                report["market_hypotheses"] = []
+                report["market_hypothesis_meta"] = {
+                    "status": resolved["status"],
+                    "snapshot_as_of": resolved.get("snapshot_as_of"),
+                    "pit_basis": resolved.get("pit_basis"),
+                }
+            else:
+                market = market_rank(blob, resolved["snapshots"], limit=8)
+                report["market_hypotheses"] = market["ranking"]
+                report["market_hypothesis_meta"] = {
+                    "clues": market["clues"],
+                    "sectors": market["sectors"],
+                    "snapshot_as_of": resolved.get("snapshot_as_of"),
+                    "snapshot_coverage": market["snapshot_coverage"],
+                    "ranked_before_limit": market["ranked_before_limit"],
+                    "pit_basis": resolved.get("pit_basis"),
+                    "status": (
+                        "unverified_chart_universe_suggestions"
+                        if market["ranking"]
+                        else "no_market_hypotheses"
+                    ),
+                }
         else:
             report["market_hypotheses"] = []
             report["market_hypothesis_meta"] = {"status": "snapshots_not_provided"}
