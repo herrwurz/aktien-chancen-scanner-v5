@@ -1,0 +1,92 @@
+{
+  "case_id": "BLIND-202-26",
+  "documents": 7,
+  "path": "docs/examples/source-packets/blind-202-26-sec6k/packets/BLIND-202-26.json",
+  "meta": [
+    {
+      "ticker": "DB",
+      "name": "Deutsche Bank",
+      "form": "6-K",
+      "filing_date": "2026-10-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1159508/000115950826000044/db20261028991.htm",
+      "primary": "db20261028991.htm",
+      "resolved_from_primary": "db202610286k.htm",
+      "chars": 12058,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/DB-2026-10-28-a1d49772.htm"
+    },
+    {
+      "ticker": "SAN",
+      "name": "Banco Santander",
+      "form": "6-K",
+      "filing_date": "2026-10-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/891478/000089147826000095/q32026earningspresentati.htm",
+      "primary": "q32026earningspresentati.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/SAN-2026-10-28-d4da9a6a.htm"
+    },
+    {
+      "ticker": "UBS",
+      "name": "UBS Group",
+      "form": "6-K",
+      "filing_date": "2026-10-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1610520/000161052026000112/edgar3q26ubspillar.htm",
+      "primary": "edgar3q26ubspillar.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/UBS-2026-10-28-261ed6c8.htm"
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026054343/jpm-20260630.htm",
+      "primary": "jpm-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/JPM-2026-08-06-33681bea.htm"
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase",
+      "form": "8-K",
+      "filing_date": "2026-10-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/19617/000119312526426704/d351999d8k.htm",
+      "primary": "d351999d8k.htm",
+      "resolved_from_primary": null,
+      "chars": 6185,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/JPM-2026-10-20-44018985.htm"
+    },
+    {
+      "ticker": "ING",
+      "name": "ING Groep",
+      "form": "6-K",
+      "filing_date": "2026-10-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1039765/000117184326006948/exh_991.htm",
+      "primary": "exh_991.htm",
+      "resolved_from_primary": "f6k_102926.htm",
+      "chars": 12084,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/ING-2026-10-29-f420e05c.htm"
+    },
+    {
+      "ticker": "HSBC",
+      "name": "HSBC Holdings",
+      "form": "6-K",
+      "filing_date": "2026-10-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1089113/000108911326000030/livedocq32026earningsrelea.htm",
+      "primary": "livedocq32026earningsrelea.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/BLIND-202-26/HSBC-2026-10-27-2c8206e9.htm"
+    }
+  ],
+  "cutoff_publication_at": "2026-10-30T08:15:00+01:00",
+  "needles": [
+    "DWS",
+    "share repurchase",
+    "dividend",
+    "Private Bank"
+  ],
+  "note": "Verified SEC EDGAR only (no guessed IR URLs). DB 6-K 2026-10-28 exhibit 99.1. Freeze untouched."
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "docs/examples/source-packets/blind-202-26-sec6k/packets",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "(batch root)",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/blind-202-26-sec6k/BLIND-202-26.inputs.named.json",
+      "root": "00-BLIND-202-26.inputs.named",
+      "ranking_sha256": "ac040a9ae496543bd6e370a0ea7d017ac4925c4fe5a71caadb773db282298649",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/blind-202-26-sec6k/BLIND-202-26.inputs.original.json",
+      "root": "01-BLIND-202-26.inputs.original",
+      "ranking_sha256": "2ed85134350ff8f0fcac52e606345d0e6542fb6259f9745c914c431a1da269a6",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "BLIND-202-26",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "DB",
+      "packet_evidence_name": "Deutsche Bank",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "DB",
+      "leader_name": "Deutsche Bank",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/blind-202-26-sec6k/BLIND-202-26.inputs.named.json"
+    },
+    {
+      "case_id": "BLIND-202-26",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "UBS",
+      "leader_name": "UBS Group",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/blind-202-26-sec6k/BLIND-202-26.inputs.original.json"
+    }
+  ],
+  "counts": {
+    "cases": 2,
+    "ticker_hypothesis_ready": 1,
+    "partial_evidence": 0,
+    "identified": 1,
+    "identified_from_packet": 1
+  }
+}

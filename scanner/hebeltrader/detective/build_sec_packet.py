@@ -34,6 +34,23 @@ _REVENUE_HINT = re.compile(
     re.I,
 )
 
+# Domestic + foreign-private-issuer forms used for evidence packets.
+_FILING_FORMS = frozenset({"10-Q", "10-K", "8-K", "6-K", "20-F"})
+
+_EARNINGS_NAME_HINT = re.compile(
+    # Prefer explicit earnings/results tokens. Avoid generic stems like "group".
+    # Filing names vary: q32026…, edgar3q26…, 3q2026…
+    r"(?:earnings?|results?|financial|interim|quarter|"
+    r"q[1-4]\d{2,4}|[1-4]q\d{2,4}|"
+    r"press|financiero|presentation|release)",
+    re.I,
+)
+
+_EXHIBIT_NAME_HINT = re.compile(
+    r"(?:991|99[_-]?1|ex[-_]?99|exhibit|earn|result|press|release|interim)",
+    re.I,
+)
+
 
 def _best_needle_span(text: str, needle: str) -> tuple[int, int] | None:
     """Pick the needle hit nearest revenue/sales prose (skip glossary-first traps)."""
@@ -92,13 +109,27 @@ def _focus_text(raw: bytes, needles: tuple[str, ...] = ()) -> str:
     return focused[:40000]
 
 
+def _filing_url(cik: str, accession: str, primary: str) -> str:
+    acc = accession.replace("-", "")
+    return f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{acc}/{primary}"
+
+
+def _earnings_name_score(name: str) -> int:
+    text = name or ""
+    score = 0
+    for match in _EARNINGS_NAME_HINT.finditer(text):
+        token = match.group(0).casefold()
+        score += 5 if token.startswith("earn") else 3 if "q" in token else 2
+    return score
+
+
 def list_filings(cik: str, *, cutoff_date: str, since: str = "2025-01-01"):
     time.sleep(0.12)
     payload = json.loads(_get(f"https://data.sec.gov/submissions/CIK{cik}.json"))
     recent = payload["filings"]["recent"]
     rows = []
     for index, form in enumerate(recent["form"]):
-        if form not in {"10-Q", "10-K", "8-K"}:
+        if form not in _FILING_FORMS:
             continue
         filed = recent["filingDate"][index]
         # Exclude same calendar day as the teaser: EDGAR timestamps are often
@@ -106,7 +137,6 @@ def list_filings(cik: str, *, cutoff_date: str, since: str = "2025-01-01"):
         if filed >= cutoff_date or filed < since:
             continue
         accession = recent["accessionNumber"][index]
-        acc = accession.replace("-", "")
         primary = recent["primaryDocument"][index]
         rows.append(
             {
@@ -114,34 +144,129 @@ def list_filings(cik: str, *, cutoff_date: str, since: str = "2025-01-01"):
                 "filed": filed,
                 "accession": accession,
                 "primary": primary,
-                "url": f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{acc}/{primary}",
+                "cik": cik,
+                "url": _filing_url(cik, accession, primary),
                 "name": payload.get("name"),
             }
         )
 
     def _rank(row):
-        form_rank = 0 if row["form"] == "10-Q" else 1 if row["form"] == "10-K" else 2
-        return (form_rank, row["filed"])
+        form_rank = {
+            "10-Q": 0,
+            "10-K": 1,
+            "20-F": 2,
+            "6-K": 3,
+            "8-K": 4,
+        }.get(row["form"], 9)
+        return (form_rank, row["filed"], _earnings_name_score(row["primary"]))
 
     rows.sort(key=_rank, reverse=True)
     return rows, payload.get("name")
 
 
+def _best_six_k(rows):
+    six_ks = [row for row in rows if row["form"] == "6-K"]
+    if not six_ks:
+        return None
+    six_ks.sort(
+        key=lambda row: (
+            _earnings_name_score(row["primary"]),
+            row["filed"],
+        ),
+        reverse=True,
+    )
+    return six_ks[0]
+
+
 def pick_filings(rows, *, extra_8k: bool = False):
+    """Prefer quarterly evidence: 10-Q, else recent 6-K (FPI), else 10-K/20-F.
+
+    Foreign private issuers rarely file 10-Q; their quarterly earnings arrive as
+    Form 6-K. Prefer that over a stale annual 20-F when both exist.
+    """
     chosen = []
     ten_q = next((row for row in rows if row["form"] == "10-Q"), None)
     if ten_q:
         chosen.append(ten_q)
     else:
-        ten_k = next((row for row in rows if row["form"] == "10-K"), None)
-        if ten_k:
-            chosen.append(ten_k)
+        six_k = _best_six_k(rows)
+        if six_k:
+            chosen.append(six_k)
+        else:
+            ten_k = next((row for row in rows if row["form"] == "10-K"), None)
+            if ten_k:
+                chosen.append(ten_k)
+            else:
+                twenty_f = next((row for row in rows if row["form"] == "20-F"), None)
+                if twenty_f:
+                    chosen.append(twenty_f)
     if extra_8k:
         for row in rows:
             if row["form"] == "8-K" and row not in chosen:
                 chosen.append(row)
                 break
     return chosen
+
+
+def resolve_filing_body(filing: dict) -> dict:
+    """For 6-K cover pages, prefer a substantive exhibit (e.g. EX-99.1 earnings).
+
+    SEC foreign-private-issuer 6-K primaries are often short wrappers; the
+    earnings release lives in a sibling ``.htm`` under the same accession.
+    Binding stays on the accession filing date / immutable EDGAR URL.
+    """
+    if filing.get("form") != "6-K":
+        return filing
+    cik = str(filing.get("cik") or "")
+    accession = filing.get("accession") or ""
+    if not cik or not accession:
+        return filing
+    acc = accession.replace("-", "")
+    time.sleep(0.12)
+    try:
+        payload = json.loads(
+            _get(f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{acc}/index.json")
+        )
+    except Exception:
+        return filing
+    items = (payload.get("directory") or {}).get("item") or []
+    candidates = []
+    primary = (filing.get("primary") or "").casefold()
+    for item in items:
+        name = str(item.get("name") or "")
+        if not name.casefold().endswith((".htm", ".html")):
+            continue
+        if name.casefold() == primary:
+            continue
+        if "index" in name.casefold():
+            continue
+        try:
+            size = int(item.get("size") or 0)
+        except (TypeError, ValueError):
+            size = 0
+        score = _earnings_name_score(name) + (10 if _EXHIBIT_NAME_HINT.search(name) else 0)
+        candidates.append((score, size, name))
+    if not candidates:
+        return filing
+    candidates.sort(reverse=True)
+    best_name = candidates[0][2]
+    # Require a clear exhibit/earnings win or a substantially larger body.
+    primary_size = 0
+    for item in items:
+        if str(item.get("name") or "").casefold() == primary:
+            try:
+                primary_size = int(item.get("size") or 0)
+            except (TypeError, ValueError):
+                primary_size = 0
+            break
+    best_score, best_size, _ = candidates[0]
+    if best_score < 5 and best_size < max(80_000, primary_size * 2):
+        return filing
+    resolved = dict(filing)
+    resolved["primary"] = best_name
+    resolved["url"] = _filing_url(cik, accession, best_name)
+    resolved["resolved_from_primary"] = filing.get("primary")
+    return resolved
 
 
 def build_document(
@@ -196,6 +321,7 @@ def build_packet(
         name = issuer.get("name") or sec_name or ticker
         picks = pick_filings(rows, extra_8k=bool(issuer.get("extra_8k")))
         for filing in picks:
+            filing = resolve_filing_body(filing)
             time.sleep(0.2)
             raw = _get(filing["url"])
             sha = hashlib.sha256(raw).hexdigest()
@@ -217,6 +343,8 @@ def build_packet(
                     "form": filing["form"],
                     "filing_date": filing["filed"],
                     "url": filing["url"],
+                    "primary": filing.get("primary"),
+                    "resolved_from_primary": filing.get("resolved_from_primary"),
                     "chars": len(doc["text"]),
                     "raw_path": str(path),
                 }
