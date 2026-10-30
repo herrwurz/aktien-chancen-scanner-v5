@@ -49,7 +49,7 @@ class ApiBudget:
             count = db.execute(
                 "SELECT COUNT(*) FROM reservations WHERE month=? AND provider=?", (month, provider)
             ).fetchone()[0]
-            if used + cents > self.cap_cents or count >= (500 if provider == "search" else 200):
+            if used + cents > self.cap_cents or count >= (1500 if provider == "search" else 600):
                 raise ValueError("Monthly API budget exhausted")
             db.execute(
                 "INSERT INTO reservations(month,provider,cents,at) VALUES(?,?,?,?)",
