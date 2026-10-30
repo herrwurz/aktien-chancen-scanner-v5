@@ -56,17 +56,27 @@ def chart_score(features):
     return max(0, score)
 
 
-def fetch_closes(ticker, *, token=None, client=None, today=None, exchange="US"):
+def fetch_eod_bars(
+    ticker,
+    *,
+    token=None,
+    client=None,
+    from_date=None,
+    to_date=None,
+    exchange="US",
+):
+    """Return oldest-to-newest ``{date, close}`` bars, or None on auth/network failure."""
     token = token or os.environ.get("EODHD_API_TOKEN")
     if not token or not ticker:
         return None
-    today = today or date.today()
+    to_date = to_date or date.today()
+    from_date = from_date or (to_date - timedelta(days=420))
     symbol = ticker if "." in ticker else f"{ticker}.{exchange}"
     params = {
         "api_token": token,
         "fmt": "json",
-        "from": (today - timedelta(days=420)).isoformat(),
-        "to": today.isoformat(),
+        "from": from_date.isoformat(),
+        "to": to_date.isoformat(),
     }
     try:
         response = (client or httpx).get(EOD_URL.format(symbol=symbol), params=params, timeout=10)
@@ -74,7 +84,41 @@ def fetch_closes(ticker, *, token=None, client=None, today=None, exchange="US"):
         rows = response.json()
     except (httpx.HTTPError, ValueError):
         return None
-    return [r.get("adjusted_close") or r.get("close") for r in rows if isinstance(r, dict)]
+    bars = []
+    for row in rows if isinstance(rows, list) else []:
+        if not isinstance(row, dict) or not row.get("date"):
+            continue
+        close = row.get("adjusted_close")
+        if close is None:
+            close = row.get("close")
+        if close is None:
+            continue
+        bars.append({"date": row["date"][:10], "close": float(close)})
+    bars.sort(key=lambda item: item["date"])
+    return bars
+
+
+def closes_through(bars, as_of):
+    """Closes with bar date ≤ ``as_of`` (ISO date or ``date``)."""
+    if bars is None:
+        return None
+    cutoff = as_of.isoformat() if isinstance(as_of, date) else str(as_of)[:10]
+    return [bar["close"] for bar in bars if bar["date"] <= cutoff]
+
+
+def fetch_closes(ticker, *, token=None, client=None, today=None, exchange="US"):
+    today = today or date.today()
+    bars = fetch_eod_bars(
+        ticker,
+        token=token,
+        client=client,
+        from_date=today - timedelta(days=420),
+        to_date=today,
+        exchange=exchange,
+    )
+    if bars is None:
+        return None
+    return closes_through(bars, today)
 
 
 def check(ticker, **options):

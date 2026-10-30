@@ -1,0 +1,95 @@
+{
+  "ranking_sha256": "6a7772290957b57cfc9cb2165166a8b2e9acf9d6233177206bb81fa26b3ea533",
+  "evaluation_class": "prospective_blind",
+  "cases": [
+    {
+      "case_id": "BLIND-202-26",
+      "identification_status": "not_identified",
+      "input_completeness": "complete",
+      "source_packet_status": "no_exact_cutoff",
+      "chart_clues": [
+        "above_gd200"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-30",
+      "snapshot_coverage": 106,
+      "ranked_before_limit": 106,
+      "market_hypotheses": [
+        {
+          "name": "Analog Devices",
+          "ticker": "ADI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 23
+        },
+        {
+          "name": "Eli Lilly",
+          "ticker": "LLY",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Hannover Rueck",
+          "ticker": "HNR1.XETRA",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented",
+          "score": 23
+        },
+        {
+          "name": "Iberdrola",
+          "ticker": "IBE.MC",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented",
+          "score": 23
+        },
+        {
+          "name": "Kongsberg Gruppen",
+          "ticker": "KOG.OL",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Lockheed Martin",
+          "ticker": "LMT",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Lonza",
+          "ticker": "LONN.SW",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Mastercard",
+          "ticker": "MA",
+          "sector": "financial services",
+          "layer": "payments",
+          "structure": "duopoly",
+          "score": 23
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "with_offline_hypotheses": 0,
+    "with_market_hypotheses": 1,
+    "snapshots_not_provided": 0
+  }
+}

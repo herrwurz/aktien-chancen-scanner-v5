@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "kind": "curated_global_sector_universe",
- "note": "Sector/layer/market-structure tags only. No teaser solutions; used to build hypotheses.",
+ "note": "Sector/layer/market-structure tags plus primary listing tickers for EODHD. Tickers follow public primary listings (US bare symbol → .US at fetch; EU/Asia with explicit exchange suffix). No teaser solutions; used to build hypotheses.",
  "assets": [
   {
    "name": "ASML Holding",
@@ -28,7 +28,8 @@
    "name": "Tokyo Electron",
    "sector": "semiconductor",
    "layer": "wafer-fab-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "8035.TSE"
   },
   {
    "name": "KLA Corporation",
@@ -72,7 +73,8 @@
    "name": "Samsung Electronics",
    "sector": "semiconductor",
    "layer": "foundry",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "005930.KO"
   },
   {
    "name": "Nvidia",
@@ -109,7 +111,8 @@
    "name": "SK Hynix",
    "sector": "semiconductor",
    "layer": "memory",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "000660.KO"
   },
   {
    "name": "Texas Instruments",
@@ -129,7 +132,8 @@
    "name": "Infineon Technologies",
    "sector": "semiconductor",
    "layer": "analog-mcu",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "IFX.XETRA"
   },
   {
    "name": "NXP Semiconductors",
@@ -142,7 +146,8 @@
    "name": "STMicroelectronics",
    "sector": "semiconductor",
    "layer": "analog-mcu",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "STMPA.PA"
   },
   {
    "name": "Entegris",
@@ -155,43 +160,50 @@
    "name": "Disco Corporation",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6146.TSE"
   },
   {
    "name": "Advantest",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6857.TSE"
   },
   {
    "name": "BE Semiconductor Industries",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "BESI.AS"
   },
   {
    "name": "ASM International",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ASM.AS"
   },
   {
    "name": "Siltronic",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "WAF.XETRA"
   },
   {
    "name": "Soitec",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SOI.PA"
   },
   {
    "name": "SAP",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SAP.XETRA"
   },
   {
    "name": "Microsoft",
@@ -239,7 +251,8 @@
    "name": "Dassault Systemes",
    "sector": "software",
    "layer": "engineering-software",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "DSY.PA"
   },
   {
    "name": "Autodesk",
@@ -294,235 +307,274 @@
    "name": "Snowflake",
    "sector": "software",
    "layer": "data-analytics",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "SNOW"
   },
   {
    "name": "Datadog",
    "sector": "software",
    "layer": "data-analytics",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "DDOG"
   },
   {
    "name": "Intuitive Surgical",
    "sector": "healthcare",
    "layer": "medtech",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ISRG"
   },
   {
    "name": "Stryker",
    "sector": "healthcare",
    "layer": "medtech",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SYK"
   },
   {
    "name": "Boston Scientific",
    "sector": "healthcare",
    "layer": "medtech",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "BSX"
   },
   {
    "name": "Medtronic",
    "sector": "healthcare",
    "layer": "medtech",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "MDT"
   },
   {
    "name": "Siemens Healthineers",
    "sector": "healthcare",
    "layer": "medtech",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SHL.XETRA"
   },
   {
    "name": "Sartorius",
    "sector": "healthcare",
    "layer": "medtech",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SRT3.XETRA"
   },
   {
    "name": "Novo Nordisk",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "NOVO-B.CO"
   },
   {
    "name": "Eli Lilly",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "LLY"
   },
   {
    "name": "Novartis",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "NOVN.SW"
   },
   {
    "name": "Roche",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "RO.SW"
   },
   {
    "name": "Merck & Co",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "MRK"
   },
   {
    "name": "AstraZeneca",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AZN.LSE"
   },
   {
    "name": "Lonza",
    "sector": "pharmaceutical",
    "layer": "pharma",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "LONN.SW"
   },
   {
    "name": "Thermo Fisher Scientific",
    "sector": "pharmaceutical",
    "layer": "life-science-tools",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "TMO"
   },
   {
    "name": "Danaher",
    "sector": "pharmaceutical",
    "layer": "life-science-tools",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "DHR"
   },
   {
    "name": "Illumina",
    "sector": "pharmaceutical",
    "layer": "life-science-tools",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ILMN"
   },
   {
    "name": "Rheinmetall",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "RHM.XETRA"
   },
   {
    "name": "Lockheed Martin",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "LMT"
   },
   {
    "name": "RTX",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "RTX"
   },
   {
    "name": "Northrop Grumman",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "NOC"
   },
   {
    "name": "BAE Systems",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "BA.LSE"
   },
   {
    "name": "Hensoldt",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "HAG.XETRA"
   },
   {
    "name": "Renk Group",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "R3NK.XETRA"
   },
   {
    "name": "Kongsberg Gruppen",
    "sector": "defense",
    "layer": "defense",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "KOG.OL"
   },
   {
    "name": "Siemens Energy",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ENR.XETRA"
   },
   {
    "name": "Schneider Electric",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SU.PA"
   },
   {
    "name": "ABB",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ABBN.SW"
   },
   {
    "name": "Eaton",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ETN"
   },
   {
    "name": "Vertiv",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "VRT"
   },
   {
    "name": "GE Vernova",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "GEV"
   },
   {
    "name": "Prysmian",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AEU.XETRA"
   },
   {
    "name": "Nexans",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "NEX.PA"
   },
   {
    "name": "Hubbell",
    "sector": "power infrastructure",
    "layer": "grid-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "HUBB"
   },
   {
    "name": "NextEra Energy",
    "sector": "power infrastructure",
    "layer": "utility",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "NEE"
   },
   {
    "name": "Iberdrola",
    "sector": "power infrastructure",
    "layer": "utility",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "IBE.MC"
   },
   {
    "name": "Constellation Energy",
    "sector": "power infrastructure",
    "layer": "utility",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "CEG"
   },
   {
    "name": "Vistra",
    "sector": "power infrastructure",
    "layer": "utility",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "VST"
   },
   {
    "name": "Costco Wholesale",
@@ -549,19 +601,22 @@
    "name": "Home Depot",
    "sector": "retail",
    "layer": "retail",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "HD"
   },
   {
    "name": "Inditex",
    "sector": "retail",
    "layer": "retail",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ITX.MC"
   },
   {
    "name": "Zalando",
    "sector": "retail",
    "layer": "retail",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ZAL.XETRA"
   },
   {
    "name": "Visa",
@@ -581,157 +636,208 @@
    "name": "London Stock Exchange Group",
    "sector": "financial services",
    "layer": "exchanges-data",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "LSEG.LSE"
   },
   {
    "name": "S&P Global",
    "sector": "financial services",
    "layer": "exchanges-data",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SPGI"
   },
   {
    "name": "Moody's",
    "sector": "financial services",
    "layer": "exchanges-data",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "MCO"
   },
   {
    "name": "Deutsche Boerse",
    "sector": "financial services",
    "layer": "exchanges-data",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "DB1.XETRA"
   },
   {
    "name": "CME Group",
    "sector": "financial services",
    "layer": "exchanges-data",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "CME"
   },
   {
    "name": "JPMorgan Chase",
    "sector": "financial services",
    "layer": "banks",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "JPM"
   },
   {
    "name": "Goldman Sachs",
    "sector": "financial services",
    "layer": "banks",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "GS"
   },
   {
    "name": "Allianz",
    "sector": "financial services",
    "layer": "banks",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "ALV.XETRA"
   },
   {
    "name": "Munich Re",
    "sector": "financial services",
    "layer": "banks",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "MUV2.XETRA"
   },
   {
    "name": "Hannover Rueck",
    "sector": "financial services",
    "layer": "banks",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "HNR1.XETRA"
   },
   {
    "name": "Berkshire Hathaway",
    "sector": "financial services",
    "layer": "banks",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "BRK-B"
   },
   {
    "name": "Deere & Company",
    "sector": "agricultural machinery",
    "layer": "machinery",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "DE"
   },
   {
    "name": "CNH Industrial",
    "sector": "agricultural machinery",
    "layer": "machinery",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "CNH"
   },
   {
    "name": "AGCO",
    "sector": "agricultural machinery",
    "layer": "machinery",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AGCO"
   },
   {
    "name": "Kubota",
    "sector": "agricultural machinery",
    "layer": "machinery",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6326.TSE"
   },
   {
    "name": "Swiss Re",
    "sector": "insurance",
    "layer": "reinsurance",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SREN.SW"
   },
   {
    "name": "SLB",
    "sector": "oilfield services",
    "layer": "oilfield",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "SLB"
   },
   {
    "name": "Halliburton",
    "sector": "oilfield services",
    "layer": "oilfield",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "HAL"
   },
   {
    "name": "Baker Hughes",
    "sector": "oilfield services",
    "layer": "oilfield",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "BKR"
   },
   {
    "name": "Fanuc",
    "sector": "robotics",
    "layer": "automation",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6954.TSE"
   },
   {
    "name": "Keyence",
    "sector": "robotics",
    "layer": "automation",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6861.TSE"
   },
   {
    "name": "Yaskawa Electric",
    "sector": "robotics",
    "layer": "automation",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6506.TSE"
   },
   {
    "name": "Rockwell Automation",
    "sector": "robotics",
    "layer": "automation",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ROK"
   },
   {
    "name": "Carrier Global",
    "sector": "cooling",
    "layer": "hvac",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "CARR"
   },
   {
    "name": "Trane Technologies",
    "sector": "cooling",
    "layer": "hvac",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "TT"
   },
   {
    "name": "Daikin Industries",
    "sector": "cooling",
    "layer": "hvac",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "6367.TSE"
   }
- ]
+ ],
+ "ticker_policy": {
+  "version": 1,
+  "as_of": "2026-10-30",
+  "rule": "Identifiers only for names already present; no solution-driven additions.",
+  "eodhd_notes": [
+    "US bare symbols resolve to .US at fetch.",
+    "Roche uses RO.SW (EODHD code); Renk uses R3NK.XETRA; Prysmian uses AEU.XETRA (Xetra dual listing) because MI/MIL returned 404 on the active plan.",
+    "Tokyo primary listings keep .TSE codes. EODHD exchanges-list for the active token has no Japan venue (TO is Toronto, not Tokyo; TSE/TYO/T return 404). Eight JP names are accepted snapshot-gaps: HEBELTRADER teasers rarely target Japan, so no ADR/Xetra fallback is applied."
+  ],
+  "accepted_snapshot_gaps": {
+    "as_of": "2026-10-30",
+    "japan_tse_primary": [
+      "8035.TSE",
+      "6146.TSE",
+      "6857.TSE",
+      "6326.TSE",
+      "6954.TSE",
+      "6861.TSE",
+      "6506.TSE",
+      "6367.TSE"
+    ],
+    "insufficient_history": ["ANSS"],
+    "decision": "Leave Japan .TSE unchanged; do not substitute ADR or EU dual listings."
+  }
+ }
 }

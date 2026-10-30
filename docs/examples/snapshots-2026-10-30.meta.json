@@ -1,0 +1,30 @@
+{
+  "as_of": "2026-10-30",
+  "exported_at": "2026-10-30T10:14:11.579494+00:00",
+  "snapshot_count": 106,
+  "export_meta": {
+    "attempted": 115,
+    "failed": 8,
+    "insufficient_history": 1,
+    "status": "partial",
+    "succeeded": 106,
+    "token_present": true,
+    "universe_tickers": 115,
+    "failed_tickers": [
+      "8035.TSE",
+      "6146.TSE",
+      "6857.TSE",
+      "ANSS",
+      "6326.TSE",
+      "6954.TSE",
+      "6861.TSE",
+      "6506.TSE",
+      "6367.TSE"
+    ]
+  },
+  "note": "Full snapshot JSON stays under gitignored reports/; regenerate with market_screen export.",
+  "accepted_gaps": {
+    "japan_tse": "Eight .TSE primaries stay without snapshots: EODHD token has no Japan exchange; teasers rarely cover Japan — no ADR/Xetra fallback (2026-10-30).",
+    "ansys": "ANSS returns insufficient EOD history (post-acquisition)."
+  }
+}

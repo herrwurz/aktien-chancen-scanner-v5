@@ -29,9 +29,18 @@ def test_rank_prefers_matching_chart_and_skips_missing_snapshots():
     fetch = {"UPB": UP, "DNB": DOWN, "UPC": UP}.get
     snaps = ms.export_snapshots(universe=UNIVERSE, fetch=fetch, today=date(2026, 10, 30))
     assert snaps["as_of"] == "2026-10-30" and set(snaps["snapshots"]) == {"UPB", "DNB", "UPC"}
+    assert snaps["export_meta"]["succeeded"] == 3
+    assert snaps["export_meta"]["status"] == "partial"  # NOD missing
     result = ms.rank(TEXT_202, snaps["snapshots"], universe=UNIVERSE)
     assert [r["ticker"] for r in result["ranking"]] == ["UPB", "UPC", "DNB"]
     assert result["ranking"][0]["score"] > result["ranking"][-1]["score"]
+
+
+def test_export_reports_missing_token_without_calling_network(monkeypatch):
+    monkeypatch.delenv("EODHD_API_TOKEN", raising=False)
+    snaps = ms.export_snapshots(universe=UNIVERSE[:1], today=date(2026, 10, 30))
+    assert snaps["snapshots"] == {}
+    assert snaps["export_meta"]["status"] == "missing_token"
 
 
 def test_sector_filter_applies_only_when_teaser_names_a_sector():

@@ -91,6 +91,81 @@ class TavilyUsageMonitor:
             return {"status": "unavailable", "reason": "invalid_response"}
 
 
+class EodhdUsageMonitor:
+    """Fetch EODHD daily API allowance without exposing credentials or account PII."""
+
+    USER_URL = "https://eodhd.com/api/user"
+
+    def __init__(self, *, getter=None, clock=monotonic, ttl_seconds=300):
+        self.getter = getter or httpx.get
+        self.clock = clock
+        self.ttl_seconds = ttl_seconds
+        self._cached = None
+
+    @staticmethod
+    def _count(value):
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise ValueError("invalid usage value")
+        return value
+
+    def snapshot(self, api_token):
+        if not api_token:
+            return {"status": "not_configured"}
+        fingerprint = hashlib.sha256(api_token.encode()).hexdigest()
+        now = self.clock()
+        if self._cached and self._cached[0] == fingerprint and now < self._cached[1]:
+            return self._cached[2]
+        try:
+            response = self.getter(
+                self.USER_URL,
+                params={"api_token": api_token, "fmt": "json"},
+                timeout=10,
+                follow_redirects=False,
+            )
+        except (httpx.HTTPError, RuntimeError):
+            return {"status": "unavailable", "reason": "network_error"}
+        status = response.status_code
+        if status != 200:
+            reason = {
+                401: "authentication_failed",
+                402: "daily_limit_exceeded",
+                403: "access_forbidden",
+                429: "rate_limited",
+            }.get(status, "provider_unavailable" if status >= 500 else "request_rejected")
+            return {"status": "unavailable", "reason": reason}
+        try:
+            payload = response.json()
+            if not isinstance(payload, dict):
+                raise ValueError("invalid usage response")
+            used = self._count(payload["apiRequests"])
+            daily_limit = self._count(payload["dailyRateLimit"])
+            extra = self._count(payload.get("extraLimit") or 0)
+            subscription_type = payload.get("subscriptionType")
+            subscription_mode = payload.get("subscriptionMode")
+            requests_date = payload.get("apiRequestsDate")
+            if not isinstance(subscription_type, str) or not subscription_type.strip():
+                raise ValueError("invalid subscription type")
+            if not isinstance(subscription_mode, str) or not subscription_mode.strip():
+                raise ValueError("invalid subscription mode")
+            if not isinstance(requests_date, str) or len(requests_date) > 32:
+                raise ValueError("invalid usage date")
+            # Never echo name/email/invite/payment or the token itself.
+            result = {
+                "status": "available",
+                "subscription_type": subscription_type.strip()[:40],
+                "subscription_mode": subscription_mode.strip()[:40],
+                "api_requests": used,
+                "api_requests_date": requests_date.strip()[:32],
+                "daily_rate_limit": daily_limit,
+                "extra_limit": extra,
+                "remaining": max(daily_limit + extra - used, 0),
+            }
+            self._cached = (fingerprint, now + self.ttl_seconds, result)
+            return result
+        except (KeyError, TypeError, ValueError, OverflowError, json.JSONDecodeError):
+            return {"status": "unavailable", "reason": "invalid_response"}
+
+
 def summarize_openai_usage(audit_root: Path):
     """Sum current-month token usage archived from successful OpenAI responses."""
 

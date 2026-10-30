@@ -215,6 +215,7 @@ def test_runtime_reports_tavily_credits_and_openai_estimate(tmp_path, monkeypatc
     from scanner.hebeltrader.detective import provider_usage
 
     monkeypatch.setenv("DETECTIVE_SEARCH_API_KEY", "tvly-test-key")
+    monkeypatch.setenv("EODHD_API_TOKEN", "eodhd-test-token")
     monkeypatch.setattr(
         provider_usage.TavilyUsageMonitor,
         "snapshot",
@@ -229,6 +230,20 @@ def test_runtime_reports_tavily_credits_and_openai_estimate(tmp_path, monkeypatc
             "search_usage": 100,
             "paygo_usage": 0,
             "paygo_limit": 0,
+        },
+    )
+    monkeypatch.setattr(
+        provider_usage.EodhdUsageMonitor,
+        "snapshot",
+        lambda self, key: {
+            "status": "available",
+            "subscription_type": "monthly",
+            "subscription_mode": "paid",
+            "api_requests": 128,
+            "api_requests_date": "2026-10-30",
+            "daily_rate_limit": 100000,
+            "extra_limit": 0,
+            "remaining": 99872,
         },
     )
     monkeypatch.setattr(
@@ -252,6 +267,9 @@ def test_runtime_reports_tavily_credits_and_openai_estimate(tmp_path, monkeypatc
 
     assert data["provider_credits"]["tavily"]["plan_remaining"] == 900
     assert data["provider_credits"]["openai"]["estimated_usd"] == 0.00072
+    assert data["eodhd_key_configured"] is True
+    assert data["provider_credits"]["eodhd"]["remaining"] == 99872
+    assert "eodhd-test-token" not in str(data)
 
 
 def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch):
@@ -261,6 +279,9 @@ def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch
     assert "OpenAI Billing-Dashboard" in response.text
     assert "authentication_failed" in response.text
     assert "invalid_response" in response.text
+    assert 'id="eodhd-usage"' in response.text
+    assert "EODHD-Tarife" in response.text
+    assert "daily_limit_exceeded" in response.text
 
 
 def test_cases_use_compact_single_case_selector():

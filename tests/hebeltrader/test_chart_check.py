@@ -23,9 +23,15 @@ def test_check_without_token_is_unavailable(monkeypatch):
 
 
 def test_check_uses_provider_rows():
-    rows = [{"close": 100 + i * 0.3} for i in range(300)]
+    from datetime import date, timedelta
+
+    start = date(2025, 1, 2)
+    rows = [
+        {"date": (start + timedelta(days=i)).isoformat(), "close": 100 + i * 0.3}
+        for i in range(300)
+    ]
     client = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200, json=rows)))
-    result = check("SNPS", token="t", client=client)
+    result = check("SNPS", token="t", client=client, today=start + timedelta(days=299))
     assert result["status"] == "ok" and result["breakout"]
 
 

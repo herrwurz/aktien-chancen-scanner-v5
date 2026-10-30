@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "prospective_blind",
+  "evaluation_class": "prospective_blind",
+  "independent_benchmark": true,
+  "note": "Prospective blind from work log 2026-10-30. Teaser body is the documented clue summary, not a publisher PDF transcript. Freeze ranking before any resolution. Do not retune logic to this case after the solution is known.",
+  "cases": [
+    {
+      "case_id": "BLIND-202-26",
+      "headline": "Vom Tief zum Triumph: Die Comeback-Story des Jahres!",
+      "teaser_text": "Branchenriese, dritter Rekordgewinn in Folge, starke Kapitalbasis, Dividenden und Aktienrückkäufe, 200-Tage-Linie zurückerobert, bis zu plus 1.311 Prozent.",
+      "publication_date": "2026-10-30",
+      "publication_at": null
+    }
+  ]
+}

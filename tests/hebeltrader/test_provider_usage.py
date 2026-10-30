@@ -307,3 +307,59 @@ def test_tavily_paygo_without_plan_limit_is_available():
     result = TavilyUsageMonitor(getter=lambda *a, **k: Response(payload)).snapshot("tvly-x")
     assert result["status"] == "available"
     assert result["plan_remaining"] is None and result["paygo_usage"] == 40
+
+
+def test_eodhd_usage_returns_daily_remaining_and_hides_pii():
+    from scanner.hebeltrader.detective.provider_usage import EodhdUsageMonitor
+
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append((url, kwargs))
+        return Response(
+            {
+                "name": "Secret Person",
+                "email": "secret@example.com",
+                "subscriptionType": "monthly",
+                "subscriptionMode": "paid",
+                "paymentMethod": "card",
+                "apiRequests": 128,
+                "apiRequestsDate": "2026-10-30",
+                "dailyRateLimit": 100000,
+                "extraLimit": 50,
+                "inviteToken": "invite-secret",
+            }
+        )
+
+    monitor = EodhdUsageMonitor(getter=get, clock=lambda: 10)
+    first = monitor.snapshot("eodhd-private-token")
+    second = monitor.snapshot("eodhd-private-token")
+    assert first == second
+    assert first == {
+        "status": "available",
+        "subscription_type": "monthly",
+        "subscription_mode": "paid",
+        "api_requests": 128,
+        "api_requests_date": "2026-10-30",
+        "daily_rate_limit": 100000,
+        "extra_limit": 50,
+        "remaining": 99922,
+    }
+    assert "Secret" not in str(first)
+    assert "invite" not in str(first)
+    assert len(calls) == 1
+    assert "eodhd-private-token" in str(calls[0][1]["params"]["api_token"])
+
+
+def test_eodhd_usage_without_token_and_http_errors():
+    from scanner.hebeltrader.detective.provider_usage import EodhdUsageMonitor
+
+    assert EodhdUsageMonitor().snapshot("") == {"status": "not_configured"}
+    assert EodhdUsageMonitor(getter=lambda *a, **k: Response({}, 402)).snapshot("t") == {
+        "status": "unavailable",
+        "reason": "daily_limit_exceeded",
+    }
+    assert EodhdUsageMonitor(getter=lambda *a, **k: Response({}, 401)).snapshot("t") == {
+        "status": "unavailable",
+        "reason": "authentication_failed",
+    }
