@@ -65,8 +65,15 @@ Meta: `docs/examples/snapshots-pit-pool-v1-remap-2026-10-30.meta.json`.
   `docs/examples/source-packets/`.
 - Market-Universum: Ticker-Dedup (SPX/NDX/Curated-Namen → eine Zeile; z. B. AMGN/COST/DB1).
 
-## 10. Offen (nächste Schritte)
+## 10. Vollkorpus-Check Pool-PIT+Dedup (2026-10-30)
+Alle 27 Refs + Blind auf Remap-Pool-PIT mit Dedup. Market Top8 unverändert 7/25;
+Offline Top8=6. Blind: DBK Rang ~565, nicht Top-8. **Keine** Publisher-PDFs im Repo;
+**0/27** `publication_at` → keine Evidenz-IDs. Artefakt:
+`docs/examples/full-corpus-pool-pit-check-2026-10-30.{json,md}`.
+
+## 11. Offen (nächste Schritte)
 **A.** Beim nächsten Report-Kauf `publication_at` + echte Quellenpakete sichern (≥5 Gegenkandidaten).
+  Publisher-PDFs lokal für Stichproben, nicht committen.
 
 **B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26.
 
