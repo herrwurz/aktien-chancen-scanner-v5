@@ -156,3 +156,34 @@ def test_company_name_variants_merge():
     assert canonical_company("TSMC") == canonical_company(
         "Taiwan Semiconductor Manufacturing Company (TSMC)"
     )
+
+
+def test_planner_prompt_requests_value_chain_spread_and_accepts_six_seeds(tmp_path):
+    import json
+
+    import httpx
+
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    seen = []
+    reply = {
+        "clues": [],
+        "candidate_hypotheses": [{"company_name": f"Layer Co {i}"} for i in range(8)],
+        "queries": [],
+    }
+
+    def handler(request):
+        seen.append(json.loads(request.content)["messages"][0]["content"])
+        return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(reply)}}]})
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        ai_key="k",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+    plan = api.plan("Herrscher der Chipindustrie")
+    assert "DIFFERENT layers" in seen[0]
+    assert len(plan["candidate_hypotheses"]) == 6

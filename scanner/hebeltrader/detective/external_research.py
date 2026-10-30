@@ -324,11 +324,15 @@ class ResearchApis:
         clean = re.sub(product_code, "[product identifier removed]", clean)
         result = self._json(
             "Extract up to 8 specific business/event clues "
-            "and up to 6 short global search queries. Also propose up to 5 unverified "
+            "and up to 6 short global search queries. Also propose up to 6 unverified "
             "listed-company hypotheses when the wording gives a defensible business-model or "
             "event match; for wording such as indispensable, dominant or no-alternative "
-            "supplier in a named industry, name the best-known listed bottleneck suppliers "
-            "of that industry. Write queries in English and prefer exact industry terms. "
+            "supplier in a named industry, name listed bottleneck suppliers spread across "
+            "DIFFERENT layers of that industry's value chain (for example design software "
+            "and IP, equipment, materials, manufacturing, components, end products), at most "
+            "two per layer, and include duopoly or oligopoly suppliers, not only the "
+            "best-known or largest companies. Write queries in English and prefer exact "
+            "industry terms. "
             "Hypotheses are search seeds only, never evidence. Prefer exact "
             "combinations of two or more distinctive clues; reject generic stock, chart, "
             "growth and return searches. "
@@ -368,7 +372,7 @@ class ResearchApis:
         self.clues = list({c["clue_id"]: c for c in clues}.values())
         hypothesis_rows = result.get("candidate_hypotheses")
         hypotheses = []
-        for row in hypothesis_rows[:5] if isinstance(hypothesis_rows, list) else []:
+        for row in hypothesis_rows[:6] if isinstance(hypothesis_rows, list) else []:
             if not isinstance(row, dict):
                 continue
             name = row.get("company_name")
