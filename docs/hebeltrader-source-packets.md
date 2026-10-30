@@ -64,3 +64,6 @@ Synthetisches Beispiel (kein Blindbeleg): `docs/examples/source-packets/SYNTHETI
 - Market-Top-8 = unverifizierte Chart-Vorschläge (Tie-Break), keine Identifikation.
 - Keine erfundenen Teasertexte oder rückdatierten „war öffentlich“-Behauptungen.
 - Blind 202/26 Freeze bleibt unangetastet (kein Score-Retuning).
+- **Publisher-Call-PDFs sind keine Quellenpakete** (Resolutionsleak). Siehe
+  `docs/hebeltrader-pdf-resolution-index.md`. Scan-Inputs dürfen nur die
+  `publication_at`-Guess daraus übernehmen.
