@@ -1,0 +1,95 @@
+{
+  "ranking_sha256": "3bb716e523794eed0ae1906979961e394f1265637624b1edd7e6dc154124cda9",
+  "evaluation_class": "prospective_blind",
+  "cases": [
+    {
+      "case_id": "BLIND-202-26",
+      "identification_status": "not_identified",
+      "input_completeness": "complete",
+      "source_packet_status": "no_exact_cutoff",
+      "chart_clues": [
+        "above_gd200"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-30",
+      "snapshot_coverage": 107,
+      "ranked_before_limit": 107,
+      "market_hypotheses": [
+        {
+          "name": "Analog Devices",
+          "ticker": "ADI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 23
+        },
+        {
+          "name": "Eli Lilly",
+          "ticker": "LLY",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Hannover Rueck",
+          "ticker": "HNR1.XETRA",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented",
+          "score": 23
+        },
+        {
+          "name": "Iberdrola",
+          "ticker": "IBE.MC",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented",
+          "score": 23
+        },
+        {
+          "name": "Kongsberg Gruppen",
+          "ticker": "KOG.OL",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Lockheed Martin",
+          "ticker": "LMT",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 23
+        },
+        {
+          "name": "Mastercard",
+          "ticker": "MA",
+          "sector": "financial services",
+          "layer": "payments",
+          "structure": "duopoly",
+          "score": 23
+        },
+        {
+          "name": "NXP Semiconductors",
+          "ticker": "NXPI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 23
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "with_offline_hypotheses": 0,
+    "with_market_hypotheses": 1,
+    "snapshots_not_provided": 0
+  }
+}

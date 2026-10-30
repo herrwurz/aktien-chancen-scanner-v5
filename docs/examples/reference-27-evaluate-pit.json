@@ -1,5 +1,5 @@
 {
-  "ranking_sha256": "1ee1997e703beed0cf2bf42b456c633e27ef226c2ac75f6fd9beeaff00ff9927",
+  "ranking_sha256": "150d85627c43aed4387aa18fe0c04cf6701922427b4c7dadd4a48c0c96bdb72e",
   "historical_conversation": {
     "total": 18,
     "correct": 10,
@@ -119,11 +119,11 @@
   },
   "market_hypothesis_coverage": {
     "graded_cases": 25,
-    "suggestion_cases": 16,
+    "suggestion_cases": 26,
     "snapshots_not_provided": 0,
-    "solution_in_first_suggestion": 3,
-    "solution_in_top3_suggestions": 3,
-    "solution_in_top8_suggestions": 6,
+    "solution_in_first_suggestion": 2,
+    "solution_in_top3_suggestions": 2,
+    "solution_in_top8_suggestions": 5,
     "interpretation": "Unverified chart-universe suggestions only; not evidence-backed identifications or an independent benchmark."
   },
   "missing_full_text_count": 4,
@@ -165,7 +165,7 @@
             "gd50": 932.41,
             "last": 987.65,
             "near_high_pct": -9.5,
-            "return_1y_pct": 8.1
+            "return_1y_pct": 7.5
           },
           "layer": "retail",
           "name": "Costco Wholesale",
@@ -184,11 +184,11 @@
             "gd50": 108.86,
             "last": 118.81,
             "near_high_pct": -11.3,
-            "return_1y_pct": 17.2
+            "return_1y_pct": 12.5
           },
           "layer": "retail",
           "name": "Walmart",
-          "score": 17,
+          "score": 16,
           "sector": "retail",
           "structure": "oligopoly",
           "ticker": "WMT"
@@ -203,7 +203,7 @@
             "gd50": 54.51,
             "last": 55.0,
             "near_high_pct": -5.5,
-            "return_1y_pct": 18.7
+            "return_1y_pct": 19.0
           },
           "layer": "retail",
           "name": "Inditex",
@@ -222,7 +222,7 @@
             "gd50": 23.02,
             "last": 25.25,
             "near_high_pct": -16.5,
-            "return_1y_pct": 2.5
+            "return_1y_pct": -5.2
           },
           "layer": "retail",
           "name": "Zalando",
@@ -241,11 +241,11 @@
             "gd50": 257.08,
             "last": 250.0,
             "near_high_pct": -12.0,
-            "return_1y_pct": 12.2
+            "return_1y_pct": 16.6
           },
           "layer": "retail",
           "name": "Amazon",
-          "score": 8,
+          "score": 9,
           "sector": "retail",
           "structure": "oligopoly",
           "ticker": "AMZN"
@@ -260,7 +260,7 @@
             "gd50": 312.24,
             "last": 309.63,
             "near_high_pct": -19.1,
-            "return_1y_pct": -16.1
+            "return_1y_pct": -17.8
           },
           "layer": "retail",
           "name": "Home Depot",
@@ -280,13 +280,13 @@
           "retail"
         ],
         "snapshot_as_of": "2026-10-16",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.007,
+      "analysis_seconds": 0.008,
       "evaluation_class": "development_regression"
     },
     {
@@ -369,7 +369,7 @@
             "gd50": 140.25,
             "last": 146.95,
             "near_high_pct": -0.2,
-            "return_1y_pct": 3.2
+            "return_1y_pct": 3.0
           },
           "layer": "reinsurance",
           "name": "Swiss Re",
@@ -389,7 +389,7 @@
           "insurance"
         ],
         "snapshot_as_of": "2026-10-14",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -419,7 +419,7 @@
             "gd50": 502.12,
             "last": 629.26,
             "near_high_pct": 0.0,
-            "return_1y_pct": 146.9
+            "return_1y_pct": 291.1
           },
           "layer": "ai-processors",
           "name": "Advanced Micro Devices",
@@ -438,7 +438,7 @@
             "gd50": 211.66,
             "last": 259.67,
             "near_high_pct": -1.1,
-            "return_1y_pct": 92.8
+            "return_1y_pct": 118.1
           },
           "layer": "cybersecurity",
           "name": "CrowdStrike",
@@ -457,7 +457,7 @@
             "gd50": 161.31,
             "last": 178.67,
             "near_high_pct": -0.0,
-            "return_1y_pct": 112.2
+            "return_1y_pct": 113.7
           },
           "layer": "cybersecurity",
           "name": "Fortinet",
@@ -476,7 +476,7 @@
             "gd50": 209.2,
             "last": 273.9,
             "near_high_pct": 0.0,
-            "return_1y_pct": 176.6
+            "return_1y_pct": 190.1
           },
           "layer": "life-science-tools",
           "name": "Illumina",
@@ -495,7 +495,7 @@
             "gd50": 936.89,
             "last": 1080.36,
             "near_high_pct": -10.9,
-            "return_1y_pct": 382.8
+            "return_1y_pct": 569.3
           },
           "layer": "memory",
           "name": "Micron Technology",
@@ -509,12 +509,31 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": true,
+            "gd200": 232.95,
+            "gd200_rising": true,
+            "gd50": 236.92,
+            "last": 265.3,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 37.4
+          },
+          "layer": "medtech",
+          "name": "Sartorius",
+          "score": 17,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "SRT3.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
             "gd200": 380.76,
             "gd200_rising": true,
             "gd50": 418.4,
             "last": 451.15,
             "near_high_pct": -5.3,
-            "return_1y_pct": 50.2
+            "return_1y_pct": 62.2
           },
           "layer": "foundry",
           "name": "TSMC",
@@ -533,7 +552,7 @@
             "gd50": 601.24,
             "last": 678.39,
             "near_high_pct": 0.0,
-            "return_1y_pct": 22.4
+            "return_1y_pct": 45.5
           },
           "layer": "life-science-tools",
           "name": "Thermo Fisher Scientific",
@@ -541,34 +560,15 @@
           "sector": "pharmaceutical",
           "structure": "oligopoly",
           "ticker": "TMO"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": true,
-            "gd200": 151.98,
-            "gd200_rising": true,
-            "gd50": 162.82,
-            "last": 192.59,
-            "near_high_pct": -7.0,
-            "return_1y_pct": -1.0
-          },
-          "layer": "data-analytics",
-          "name": "Palantir Technologies",
-          "score": 16,
-          "sector": "software",
-          "structure": "fragmented",
-          "ticker": "PLTR"
         }
       ],
       "market_hypothesis_meta": {
         "clues": [],
         "pit_basis": "publication_date_eod",
-        "ranked_before_limit": 106,
+        "ranked_before_limit": 107,
         "sectors": [],
         "snapshot_as_of": "2026-09-24",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -661,7 +661,7 @@
             "gd50": 117.42,
             "last": 154.85,
             "near_high_pct": -19.4,
-            "return_1y_pct": 270.7
+            "return_1y_pct": 303.7
           },
           "layer": "materials-components",
           "name": "Soitec",
@@ -680,7 +680,7 @@
             "gd50": 497.0,
             "last": 615.52,
             "near_high_pct": 0.0,
-            "return_1y_pct": 141.5
+            "return_1y_pct": 291.1
           },
           "layer": "ai-processors",
           "name": "Advanced Micro Devices",
@@ -699,7 +699,7 @@
             "gd50": 372.33,
             "last": 383.0,
             "near_high_pct": -13.8,
-            "return_1y_pct": 66.5
+            "return_1y_pct": 58.1
           },
           "layer": "analog-mcu",
           "name": "Analog Devices",
@@ -718,7 +718,7 @@
             "gd50": 138.39,
             "last": 143.04,
             "near_high_pct": -22.1,
-            "return_1y_pct": 64.0
+            "return_1y_pct": 53.9
           },
           "layer": "materials-components",
           "name": "Entegris",
@@ -737,7 +737,7 @@
             "gd50": 928.4,
             "last": 1043.8,
             "near_high_pct": -14.0,
-            "return_1y_pct": 366.5
+            "return_1y_pct": 542.6
           },
           "layer": "memory",
           "name": "Micron Technology",
@@ -756,7 +756,7 @@
             "gd50": 254580.65,
             "last": 273624.52,
             "near_high_pct": -24.3,
-            "return_1y_pct": 165.3
+            "return_1y_pct": 288.0
           },
           "layer": "foundry",
           "name": "Samsung Electronics",
@@ -775,7 +775,7 @@
             "gd50": 79.72,
             "last": 80.6,
             "near_high_pct": -23.0,
-            "return_1y_pct": 43.4
+            "return_1y_pct": 79.8
           },
           "layer": "materials-components",
           "name": "Siltronic",
@@ -794,7 +794,7 @@
             "gd50": 416.56,
             "last": 445.14,
             "near_high_pct": -6.5,
-            "return_1y_pct": 48.2
+            "return_1y_pct": 69.6
           },
           "layer": "foundry",
           "name": "TSMC",
@@ -815,7 +815,7 @@
           "semiconductor"
         ],
         "snapshot_as_of": "2026-09-21",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -855,38 +855,38 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 87.95,
-            "gd200_rising": false,
-            "gd50": 85.75,
-            "last": 92.34,
-            "near_high_pct": -9.4,
-            "return_1y_pct": 4.9
+            "gd200": 232.86,
+            "gd200_rising": true,
+            "gd50": 234.56,
+            "last": 244.8,
+            "near_high_pct": -7.4,
+            "return_1y_pct": 27.1
           },
           "layer": "medtech",
-          "name": "Medtronic",
-          "score": 12,
+          "name": "Sartorius",
+          "score": 15,
           "sector": "healthcare",
           "structure": "oligopoly",
-          "ticker": "MDT"
+          "ticker": "SRT3.XETRA"
         },
         {
           "features": {
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 232.86,
-            "gd200_rising": false,
-            "gd50": 234.56,
-            "last": 244.8,
-            "near_high_pct": -7.4,
-            "return_1y_pct": 3.8
+            "gd200": 87.95,
+            "gd200_rising": true,
+            "gd50": 85.75,
+            "last": 92.34,
+            "near_high_pct": -9.4,
+            "return_1y_pct": 3.5
           },
           "layer": "medtech",
-          "name": "Sartorius",
-          "score": 12,
+          "name": "Medtronic",
+          "score": 14,
           "sector": "healthcare",
           "structure": "oligopoly",
-          "ticker": "SRT3.XETRA"
+          "ticker": "MDT"
         },
         {
           "features": {
@@ -897,8 +897,8 @@
             "gd200_rising": false,
             "gd50": 37.14,
             "last": 38.81,
-            "near_high_pct": -19.3,
-            "return_1y_pct": -18.4
+            "near_high_pct": -19.8,
+            "return_1y_pct": -15.9
           },
           "layer": "medtech",
           "name": "Siemens Healthineers",
@@ -916,8 +916,8 @@
             "gd200_rising": false,
             "gd50": 46.81,
             "last": 46.95,
-            "near_high_pct": -55.3,
-            "return_1y_pct": -53.3
+            "near_high_pct": -56.6,
+            "return_1y_pct": -56.2
           },
           "layer": "medtech",
           "name": "Boston Scientific",
@@ -936,7 +936,7 @@
             "gd50": 381.67,
             "last": 369.83,
             "near_high_pct": -37.6,
-            "return_1y_pct": -30.2
+            "return_1y_pct": -18.6
           },
           "layer": "medtech",
           "name": "Intuitive Surgical",
@@ -954,8 +954,8 @@
             "gd200_rising": false,
             "gd50": 328.08,
             "last": 307.02,
-            "near_high_pct": -20.1,
-            "return_1y_pct": -15.9
+            "near_high_pct": -21.1,
+            "return_1y_pct": -21.1
           },
           "layer": "medtech",
           "name": "Stryker",
@@ -973,7 +973,7 @@
           "healthcare"
         ],
         "snapshot_as_of": "2026-09-03",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -1028,15 +1028,15 @@
             "above_gd50": true,
             "breakout": false,
             "gd200": 133.62,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 138.07,
             "last": 142.6,
             "near_high_pct": -13.5,
-            "return_1y_pct": 19.5
+            "return_1y_pct": 13.2
           },
           "layer": "grid-equipment",
           "name": "Nexans",
-          "score": 15,
+          "score": 16,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "NEX.PA"
@@ -1047,15 +1047,15 @@
             "above_gd50": true,
             "breakout": false,
             "gd200": 257.63,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 283.83,
             "last": 301.75,
             "near_high_pct": -3.0,
-            "return_1y_pct": 23.1
+            "return_1y_pct": 41.1
           },
           "layer": "grid-equipment",
           "name": "Schneider Electric",
-          "score": 13,
+          "score": 15,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "SU.PA"
@@ -1066,15 +1066,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 71.49,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 82.19,
             "last": 80.1,
             "near_high_pct": -9.6,
-            "return_1y_pct": 35.6
+            "return_1y_pct": 51.1
           },
           "layer": "grid-equipment",
           "name": "ABB",
-          "score": 7,
+          "score": 9,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "ABBN.SW"
@@ -1085,15 +1085,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 876.34,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 1031.05,
             "last": 911.4,
             "near_high_pct": -22.4,
-            "return_1y_pct": 59.1
+            "return_1y_pct": 44.2
           },
           "layer": "grid-equipment",
           "name": "GE Vernova",
-          "score": 7,
+          "score": 9,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "GEV"
@@ -1104,15 +1104,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 19.28,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 20.76,
             "last": 20.28,
             "near_high_pct": -5.3,
-            "return_1y_pct": 19.5
+            "return_1y_pct": 32.8
           },
           "layer": "utility",
           "name": "Iberdrola",
-          "score": 7,
+          "score": 9,
           "sector": "power infrastructure",
           "structure": "fragmented",
           "ticker": "IBE.MC"
@@ -1123,15 +1123,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 114.11,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 130.78,
             "last": 125.8,
             "near_high_pct": -19.8,
-            "return_1y_pct": 44.5
+            "return_1y_pct": 69.1
           },
           "layer": "grid-equipment",
           "name": "Prysmian",
-          "score": 7,
+          "score": 9,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "AEU.XETRA"
@@ -1142,15 +1142,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 149.55,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 154.62,
             "last": 149.7,
             "near_high_pct": -20.2,
-            "return_1y_pct": 41.7
+            "return_1y_pct": 67.8
           },
           "layer": "grid-equipment",
           "name": "Siemens Energy",
-          "score": 7,
+          "score": 9,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "ENR.XETRA"
@@ -1161,15 +1161,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 378.13,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 416.56,
             "last": 402.78,
             "near_high_pct": -12.4,
-            "return_1y_pct": 6.3
+            "return_1y_pct": 14.6
           },
           "layer": "grid-equipment",
           "name": "Eaton",
-          "score": 6,
+          "score": 8,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "ETN"
@@ -1186,7 +1186,7 @@
           "power infrastructure"
         ],
         "snapshot_as_of": "2026-08-28",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -1204,7 +1204,7 @@
       "offline_hypothesis_rank": null,
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
-      "market_hypothesis_rank": 8,
+      "market_hypothesis_rank": null,
       "market_hypotheses": [
         {
           "features": {
@@ -1212,15 +1212,15 @@
             "above_gd50": true,
             "breakout": true,
             "gd200": 377.13,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 425.13,
             "last": 450.0,
             "near_high_pct": 0.0,
-            "return_1y_pct": 32.2
+            "return_1y_pct": 29.3
           },
           "layer": "banks",
           "name": "Allianz",
-          "score": 18,
+          "score": 20,
           "sector": "financial services",
           "structure": "fragmented",
           "ticker": "ALV.XETRA"
@@ -1230,35 +1230,16 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": true,
-            "gd200": 237.05,
-            "gd200_rising": false,
-            "gd50": 259.98,
-            "last": 287.5,
-            "near_high_pct": 0.0,
-            "return_1y_pct": 32.7
-          },
-          "layer": "exchanges-data",
-          "name": "Deutsche Boerse",
-          "score": 18,
-          "sector": "financial services",
-          "structure": "oligopoly",
-          "ticker": "DB1.XETRA"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": true,
             "gd200": 148.01,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 189.96,
             "last": 224.99,
             "near_high_pct": 0.0,
-            "return_1y_pct": 127.2
+            "return_1y_pct": 125.8
           },
           "layer": "life-science-tools",
           "name": "Illumina",
-          "score": 18,
+          "score": 20,
           "sector": "pharmaceutical",
           "structure": "oligopoly",
           "ticker": "ILMN"
@@ -1269,15 +1250,15 @@
             "above_gd50": true,
             "breakout": true,
             "gd200": 114.27,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 128.58,
             "last": 155.53,
             "near_high_pct": 0.0,
-            "return_1y_pct": 85.6
+            "return_1y_pct": 89.5
           },
           "layer": "pharma",
           "name": "Merck & Co",
-          "score": 18,
+          "score": 20,
           "sector": "pharmaceutical",
           "structure": "oligopoly",
           "ticker": "MRK"
@@ -1288,15 +1269,15 @@
             "above_gd50": true,
             "breakout": true,
             "gd200": 335.39,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 352.29,
             "last": 379.0,
             "near_high_pct": -0.2,
-            "return_1y_pct": 42.2
+            "return_1y_pct": 42.6
           },
           "layer": "pharma",
           "name": "Roche",
-          "score": 18,
+          "score": 20,
           "sector": "pharmaceutical",
           "structure": "oligopoly",
           "ticker": "RO.SW"
@@ -1306,16 +1287,35 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": true,
+            "gd200": 533.32,
+            "gd200_rising": true,
+            "gd50": 547.49,
+            "last": 627.67,
+            "near_high_pct": -1.6,
+            "return_1y_pct": 28.5
+          },
+          "layer": "life-science-tools",
+          "name": "Thermo Fisher Scientific",
+          "score": 20,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "TMO"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
             "gd200": 273.37,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 251.46,
             "last": 276.02,
             "near_high_pct": -12.6,
-            "return_1y_pct": 9.1
+            "return_1y_pct": 6.2
           },
           "layer": "exchanges-data",
           "name": "CME Group",
-          "score": 17,
+          "score": 19,
           "sector": "financial services",
           "structure": "oligopoly",
           "ticker": "CME"
@@ -1326,15 +1326,15 @@
             "above_gd50": true,
             "breakout": true,
             "gd200": 10.57,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 10.7,
             "last": 11.56,
             "near_high_pct": -10.8,
-            "return_1y_pct": 12.4
+            "return_1y_pct": -4.6
           },
           "layer": "machinery",
           "name": "CNH Industrial",
-          "score": 17,
+          "score": 19,
           "sector": "agricultural machinery",
           "structure": "oligopoly",
           "ticker": "CNH"
@@ -1344,19 +1344,19 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": true,
-            "gd200": 202.03,
-            "gd200_rising": false,
-            "gd50": 196.43,
-            "last": 215.59,
-            "near_high_pct": -10.4,
-            "return_1y_pct": 1.0
+            "gd200": 237.05,
+            "gd200_rising": true,
+            "gd50": 259.98,
+            "last": 287.5,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 14.4
           },
-          "layer": "life-science-tools",
-          "name": "Danaher",
-          "score": 17,
-          "sector": "pharmaceutical",
+          "layer": "exchanges-data",
+          "name": "Deutsche Boerse",
+          "score": 19,
+          "sector": "financial services",
           "structure": "oligopoly",
-          "ticker": "DHR"
+          "ticker": "DB1.XETRA"
         }
       ],
       "market_hypothesis_meta": {
@@ -1364,10 +1364,10 @@
           "breakout"
         ],
         "pit_basis": "publication_date_eod",
-        "ranked_before_limit": 106,
+        "ranked_before_limit": 107,
         "sectors": [],
         "snapshot_as_of": "2026-08-25",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -1442,8 +1442,65 @@
         }
       ],
       "offline_hypothesis_status": "unverified_sector_universe_suggestions",
-      "market_hypothesis_rank": 1,
+      "market_hypothesis_rank": 4,
       "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 225.31,
+            "gd200_rising": true,
+            "gd50": 333.95,
+            "last": 349.56,
+            "near_high_pct": -11.7,
+            "return_1y_pct": 89.5
+          },
+          "layer": "cybersecurity",
+          "name": "Palo Alto Networks",
+          "score": 15,
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "PANW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 215.52,
+            "gd200_rising": true,
+            "gd50": 276.79,
+            "last": 321.29,
+            "near_high_pct": -4.8,
+            "return_1y_pct": 64.9
+          },
+          "layer": "data-analytics",
+          "name": "Snowflake",
+          "score": 15,
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "SNOW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 334.91,
+            "gd200_rising": true,
+            "gd50": 347.05,
+            "last": 374.3,
+            "near_high_pct": -4.7,
+            "return_1y_pct": 13.3
+          },
+          "layer": "engineering-software",
+          "name": "Ansys",
+          "score": 14,
+          "sector": "software",
+          "structure": "duopoly",
+          "ticker": "ANSS"
+        },
         {
           "features": {
             "above_gd200": true,
@@ -1453,8 +1510,8 @@
             "gd200_rising": false,
             "gd50": 150.45,
             "last": 185.64,
-            "near_high_pct": -17.5,
-            "return_1y_pct": -16.4
+            "near_high_pct": -22.0,
+            "return_1y_pct": -18.8
           },
           "layer": "enterprise-software",
           "name": "SAP",
@@ -1468,69 +1525,12 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 225.31,
-            "gd200_rising": false,
-            "gd50": 333.95,
-            "last": 349.56,
-            "near_high_pct": -11.7,
-            "return_1y_pct": 60.2
-          },
-          "layer": "cybersecurity",
-          "name": "Palo Alto Networks",
-          "score": 13,
-          "sector": "software",
-          "structure": "fragmented",
-          "ticker": "PANW"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
-            "gd200": 215.52,
-            "gd200_rising": false,
-            "gd50": 276.79,
-            "last": 321.29,
-            "near_high_pct": -4.8,
-            "return_1y_pct": 18.5
-          },
-          "layer": "data-analytics",
-          "name": "Snowflake",
-          "score": 13,
-          "sector": "software",
-          "structure": "fragmented",
-          "ticker": "SNOW"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
-            "gd200": 270.74,
-            "gd200_rising": false,
-            "gd50": 231.91,
-            "last": 272.22,
-            "near_high_pct": -23.9,
-            "return_1y_pct": -19.8
-          },
-          "layer": "enterprise-software",
-          "name": "Adobe",
-          "score": 12,
-          "sector": "software",
-          "structure": "oligopoly",
-          "ticker": "ADBE"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
             "gd200": 249.7,
             "gd200_rising": false,
             "gd50": 219.12,
             "last": 251.02,
-            "near_high_pct": -19.1,
-            "return_1y_pct": -16.5
+            "near_high_pct": -23.2,
+            "return_1y_pct": -13.0
           },
           "layer": "engineering-software",
           "name": "Autodesk",
@@ -1544,31 +1544,12 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 20.2,
-            "gd200_rising": false,
-            "gd50": 19.27,
-            "last": 22.23,
-            "near_high_pct": -9.0,
-            "return_1y_pct": -8.2
-          },
-          "layer": "engineering-software",
-          "name": "Dassault Systemes",
-          "score": 12,
-          "sector": "software",
-          "structure": "duopoly",
-          "ticker": "DSY.PA"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
             "gd200": 429.58,
             "gd200_rising": false,
             "gd50": 417.36,
             "last": 481.15,
-            "near_high_pct": -7.7,
-            "return_1y_pct": -7.7
+            "near_high_pct": -10.5,
+            "return_1y_pct": -3.9
           },
           "layer": "enterprise-software",
           "name": "Microsoft",
@@ -1582,30 +1563,49 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 150.29,
+            "gd200": 151.64,
             "gd200_rising": false,
-            "gd50": 128.67,
-            "last": 153.52,
-            "near_high_pct": -22.7,
-            "return_1y_pct": -22.2
+            "gd50": 137.94,
+            "last": 173.96,
+            "near_high_pct": -16.0,
+            "return_1y_pct": 11.5
           },
-          "layer": "engineering-software",
-          "name": "PTC",
+          "layer": "data-analytics",
+          "name": "Palantir Technologies",
           "score": 12,
           "sector": "software",
-          "structure": "duopoly",
-          "ticker": "PTC"
+          "structure": "fragmented",
+          "ticker": "PLTR"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 199.96,
+            "gd200_rising": false,
+            "gd50": 173.52,
+            "last": 205.07,
+            "near_high_pct": -22.4,
+            "return_1y_pct": -15.9
+          },
+          "layer": "enterprise-software",
+          "name": "Salesforce",
+          "score": 12,
+          "sector": "software",
+          "structure": "oligopoly",
+          "ticker": "CRM"
         }
       ],
       "market_hypothesis_meta": {
         "clues": [],
         "pit_basis": "publication_date_eod",
-        "ranked_before_limit": 16,
+        "ranked_before_limit": 17,
         "sectors": [
           "software"
         ],
         "snapshot_as_of": "2026-08-20",
-        "snapshot_coverage": 103,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -1630,16 +1630,92 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": true,
+            "gd200": 542.54,
+            "gd200_rising": true,
+            "gd50": 539.07,
+            "last": 604.94,
+            "near_high_pct": -9.5,
+            "return_1y_pct": 42.9
+          },
+          "layer": "defense",
+          "name": "Lockheed Martin",
+          "score": 19,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "LMT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 1422.58,
+            "gd200_rising": true,
+            "gd50": 1771.68,
+            "last": 1841.64,
+            "near_high_pct": -7.2,
+            "return_1y_pct": 145.8
+          },
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 324.33,
+            "gd200_rising": true,
+            "gd50": 510.4,
+            "last": 514.39,
+            "near_high_pct": -11.5,
+            "return_1y_pct": 184.3
+          },
+          "layer": "ai-processors",
+          "name": "Advanced Micro Devices",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AMD"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 373.49,
+            "gd200_rising": true,
+            "gd50": 417.2,
+            "last": 442.7,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 24.0
+          },
+          "layer": "banks",
+          "name": "Allianz",
+          "score": 17,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "ALV.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
             "gd200": 1943.52,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 1950.33,
             "last": 2240.48,
             "near_high_pct": -2.1,
-            "return_1y_pct": 22.7
+            "return_1y_pct": 28.4
           },
           "layer": "defense",
           "name": "BAE Systems",
-          "score": 15,
+          "score": 17,
           "sector": "defense",
           "structure": "oligopoly",
           "ticker": "BA.LSE"
@@ -1648,134 +1724,58 @@
           "features": {
             "above_gd200": true,
             "above_gd50": true,
+            "breakout": false,
+            "gd200": 56.96,
+            "gd200_rising": true,
+            "gd50": 59.21,
+            "last": 64.82,
+            "near_high_pct": -6.3,
+            "return_1y_pct": 52.2
+          },
+          "layer": "oilfield",
+          "name": "Baker Hughes",
+          "score": 17,
+          "sector": "oilfield services",
+          "structure": "oligopoly",
+          "ticker": "BKR"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 367.55,
+            "gd200_rising": true,
+            "gd50": 389.61,
+            "last": 392.28,
+            "near_high_pct": -18.3,
+            "return_1y_pct": 27.2
+          },
+          "layer": "ai-processors",
+          "name": "Broadcom",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AVGO"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
             "breakout": true,
-            "gd200": 254.47,
-            "gd200_rising": false,
-            "gd50": 278.95,
-            "last": 306.4,
-            "near_high_pct": -1.5,
-            "return_1y_pct": 25.0
+            "gd200": 137.14,
+            "gd200_rising": true,
+            "gd50": 189.64,
+            "last": 216.95,
+            "near_high_pct": -3.8,
+            "return_1y_pct": 104.3
           },
-          "layer": "grid-equipment",
-          "name": "Schneider Electric",
-          "score": 15,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "SU.PA"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
-            "gd200": 20.24,
-            "gd200_rising": false,
-            "gd50": 19.06,
-            "last": 21.68,
-            "near_high_pct": -11.2,
-            "return_1y_pct": -10.5
-          },
-          "layer": "engineering-software",
-          "name": "Dassault Systemes",
-          "score": 14,
+          "layer": "cybersecurity",
+          "name": "CrowdStrike",
+          "score": 17,
           "sector": "software",
-          "structure": "duopoly",
-          "ticker": "DSY.PA"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
-            "gd200": 52.3,
-            "gd200_rising": false,
-            "gd50": 55.15,
-            "last": 56.72,
-            "near_high_pct": -2.5,
-            "return_1y_pct": 22.4
-          },
-          "layer": "retail",
-          "name": "Inditex",
-          "score": 13,
-          "sector": "retail",
-          "structure": "oligopoly",
-          "ticker": "ITX.MC"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
-            "gd200": 75.08,
-            "gd200_rising": false,
-            "gd50": 114.37,
-            "last": 129.2,
-            "near_high_pct": -32.8,
-            "return_1y_pct": 209.3
-          },
-          "layer": "materials-components",
-          "name": "Soitec",
-          "score": 11,
-          "sector": "semiconductor",
-          "structure": "oligopoly",
-          "ticker": "SOI.PA"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
-            "gd200": 735.59,
-            "gd200_rising": false,
-            "gd50": 912.87,
-            "last": 893.8,
-            "near_high_pct": -17.2,
-            "return_1y_pct": 58.4
-          },
-          "layer": "materials-components",
-          "name": "ASM International",
-          "score": 7,
-          "sector": "semiconductor",
-          "structure": "oligopoly",
-          "ticker": "ASM.AS"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
-            "gd200": 19.13,
-            "gd200_rising": false,
-            "gd50": 20.74,
-            "last": 20.2,
-            "near_high_pct": -5.7,
-            "return_1y_pct": 19.0
-          },
-          "layer": "utility",
-          "name": "Iberdrola",
-          "score": 7,
-          "sector": "power infrastructure",
           "structure": "fragmented",
-          "ticker": "IBE.MC"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
-            "gd200": 132.59,
-            "gd200_rising": false,
-            "gd50": 140.12,
-            "last": 140.0,
-            "near_high_pct": -15.1,
-            "return_1y_pct": 17.3
-          },
-          "layer": "grid-equipment",
-          "name": "Nexans",
-          "score": 7,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "NEX.PA"
+          "ticker": "CRWD"
         }
       ],
       "market_hypothesis_meta": {
@@ -1783,10 +1783,10 @@
           "correction"
         ],
         "pit_basis": "publication_date_eod",
-        "ranked_before_limit": 12,
+        "ranked_before_limit": 107,
         "sectors": [],
         "snapshot_as_of": "2026-08-14",
-        "snapshot_coverage": 12,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -1820,11 +1820,132 @@
       ],
       "offline_hypothesis_status": "unverified_sector_universe_suggestions",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 231.87,
+            "gd200_rising": true,
+            "gd50": 229.98,
+            "last": 238.3,
+            "near_high_pct": -9.9,
+            "return_1y_pct": 21.7
+          },
+          "layer": "medtech",
+          "name": "Sartorius",
+          "score": 15,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "SRT3.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 87.85,
+            "gd200_rising": false,
+            "gd50": 81.37,
+            "last": 89.94,
+            "near_high_pct": -11.8,
+            "return_1y_pct": 1.0
+          },
+          "layer": "medtech",
+          "name": "Medtronic",
+          "score": 14,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "MDT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 39.04,
+            "gd200_rising": false,
+            "gd50": 35.48,
+            "last": 39.59,
+            "near_high_pct": -18.1,
+            "return_1y_pct": -12.8
+          },
+          "layer": "medtech",
+          "name": "Siemens Healthineers",
+          "score": 14,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "SHL.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 339.35,
+            "gd200_rising": false,
+            "gd50": 319.88,
+            "last": 347.05,
+            "near_high_pct": -10.8,
+            "return_1y_pct": -6.6
+          },
+          "layer": "medtech",
+          "name": "Stryker",
+          "score": 12,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "SYK"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 71.42,
+            "gd200_rising": false,
+            "gd50": 45.98,
+            "last": 51.19,
+            "near_high_pct": -52.7,
+            "return_1y_pct": -50.2
+          },
+          "layer": "medtech",
+          "name": "Boston Scientific",
+          "score": 0,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "BSX"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 479.2,
+            "gd200_rising": false,
+            "gd50": 392.11,
+            "last": 401.23,
+            "near_high_pct": -32.3,
+            "return_1y_pct": -15.0
+          },
+          "layer": "medtech",
+          "name": "Intuitive Surgical",
+          "score": 0,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "ISRG"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 6,
+        "sectors": [
+          "healthcare"
+        ],
         "snapshot_as_of": "2026-08-11",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 107,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -1842,11 +1963,171 @@
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 540.05,
+            "gd200_rising": true,
+            "gd50": 532.27,
+            "last": 599.45,
+            "near_high_pct": -10.3,
+            "return_1y_pct": 45.5
+          },
+          "layer": "defense",
+          "name": "Lockheed Martin",
+          "score": 22,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "LMT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 530.83,
+            "gd200_rising": true,
+            "gd50": 519.29,
+            "last": 599.23,
+            "near_high_pct": -6.0,
+            "return_1y_pct": 30.6
+          },
+          "layer": "life-science-tools",
+          "name": "Thermo Fisher Scientific",
+          "score": 22,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "TMO"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 371.49,
+            "gd200_rising": true,
+            "gd50": 411.89,
+            "last": 437.7,
+            "near_high_pct": -0.7,
+            "return_1y_pct": 25.8
+          },
+          "layer": "banks",
+          "name": "Allianz",
+          "score": 20,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "ALV.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 1935.59,
+            "gd200_rising": true,
+            "gd50": 1923.75,
+            "last": 2226.59,
+            "near_high_pct": -2.7,
+            "return_1y_pct": 32.2
+          },
+          "layer": "defense",
+          "name": "BAE Systems",
+          "score": 20,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "BA.LSE"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 135.31,
+            "gd200_rising": true,
+            "gd50": 187.06,
+            "last": 225.16,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 112.2
+          },
+          "layer": "cybersecurity",
+          "name": "CrowdStrike",
+          "score": 20,
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "CRWD"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 374.21,
+            "gd200_rising": true,
+            "gd50": 408.63,
+            "last": 444.96,
+            "near_high_pct": -0.8,
+            "return_1y_pct": 24.0
+          },
+          "layer": "grid-equipment",
+          "name": "Eaton",
+          "score": 20,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "ETN"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 52.09,
+            "gd200_rising": true,
+            "gd50": 54.82,
+            "last": 58.19,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 41.4
+          },
+          "layer": "retail",
+          "name": "Inditex",
+          "score": 20,
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "ITX.MC"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 309.58,
+            "gd200_rising": true,
+            "gd50": 331.92,
+            "last": 358.0,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 27.0
+          },
+          "layer": "banks",
+          "name": "JPMorgan Chase",
+          "score": 20,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "JPM"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [
+          "breakout",
+          "correction"
+        ],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 107,
+        "sectors": [],
         "snapshot_as_of": "2026-08-10",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 107,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -1879,11 +2160,170 @@
       ],
       "offline_hypothesis_status": "unverified_sector_universe_suggestions",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 1931.75,
+            "gd200_rising": true,
+            "gd50": 1913.44,
+            "last": 2182.93,
+            "near_high_pct": -4.6,
+            "return_1y_pct": 28.9
+          },
+          "layer": "defense",
+          "name": "BAE Systems",
+          "score": 17,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "BA.LSE"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 538.98,
+            "gd200_rising": true,
+            "gd50": 529.69,
+            "last": 579.27,
+            "near_high_pct": -13.3,
+            "return_1y_pct": 37.6
+          },
+          "layer": "defense",
+          "name": "Lockheed Martin",
+          "score": 17,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "LMT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 187.56,
+            "gd200_rising": true,
+            "gd50": 193.27,
+            "last": 222.51,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 45.6
+          },
+          "layer": "defense",
+          "name": "RTX",
+          "score": 17,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "RTX"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 277.04,
+            "gd200_rising": true,
+            "gd50": 299.83,
+            "last": 307.7,
+            "near_high_pct": -10.6,
+            "return_1y_pct": 22.9
+          },
+          "layer": "defense",
+          "name": "Kongsberg Gruppen",
+          "score": 15,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "KOG.OL"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 79.07,
+            "gd200_rising": false,
+            "gd50": 76.92,
+            "last": 90.36,
+            "near_high_pct": -20.1,
+            "return_1y_pct": 6.7
+          },
+          "layer": "defense",
+          "name": "Hensoldt",
+          "score": 14,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "HAG.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 599.35,
+            "gd200_rising": false,
+            "gd50": 533.16,
+            "last": 565.17,
+            "near_high_pct": -25.8,
+            "return_1y_pct": -2.1
+          },
+          "layer": "defense",
+          "name": "Northrop Grumman",
+          "score": 0,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "NOC"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 53.14,
+            "gd200_rising": false,
+            "gd50": 46.72,
+            "last": 51.31,
+            "near_high_pct": -41.3,
+            "return_1y_pct": -15.5
+          },
+          "layer": "defense",
+          "name": "Renk Group",
+          "score": 0,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "R3NK.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 1448.18,
+            "gd200_rising": false,
+            "gd50": 1102.59,
+            "last": 1159.0,
+            "near_high_pct": -41.1,
+            "return_1y_pct": -27.8
+          },
+          "layer": "defense",
+          "name": "Rheinmetall",
+          "score": 0,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "RHM.XETRA"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 8,
+        "sectors": [
+          "defense"
+        ],
         "snapshot_as_of": "2026-08-06",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 107,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -1901,11 +2341,170 @@
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 369.97,
+            "gd200_rising": true,
+            "gd50": 408.4,
+            "last": 436.6,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 24.5
+          },
+          "layer": "banks",
+          "name": "Allianz",
+          "score": 20,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "ALV.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 1929.95,
+            "gd200_rising": true,
+            "gd50": 1909.84,
+            "last": 2139.27,
+            "near_high_pct": -6.5,
+            "return_1y_pct": 24.8
+          },
+          "layer": "defense",
+          "name": "BAE Systems",
+          "score": 20,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "BA.LSE"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 169.12,
+            "gd200_rising": true,
+            "gd50": 248.72,
+            "last": 283.17,
+            "near_high_pct": -1.7,
+            "return_1y_pct": 113.0
+          },
+          "layer": "data-analytics",
+          "name": "Datadog",
+          "score": 20,
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "DDOG"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 373.07,
+            "gd200_rising": true,
+            "gd50": 405.99,
+            "last": 446.18,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 26.9
+          },
+          "layer": "grid-equipment",
+          "name": "Eaton",
+          "score": 20,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "ETN"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 141.29,
+            "gd200_rising": true,
+            "gd50": 178.82,
+            "last": 199.87,
+            "near_high_pct": -2.5,
+            "return_1y_pct": 104.4
+          },
+          "layer": "life-science-tools",
+          "name": "Illumina",
+          "score": 20,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "ILMN"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 51.92,
+            "gd200_rising": true,
+            "gd50": 54.48,
+            "last": 57.6,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 43.4
+          },
+          "layer": "retail",
+          "name": "Inditex",
+          "score": 20,
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "ITX.MC"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 308.64,
+            "gd200_rising": true,
+            "gd50": 328.44,
+            "last": 357.46,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 25.7
+          },
+          "layer": "banks",
+          "name": "JPMorgan Chase",
+          "score": 20,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "JPM"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 216.59,
+            "gd200_rising": true,
+            "gd50": 311.59,
+            "last": 362.66,
+            "near_high_pct": -1.0,
+            "return_1y_pct": 114.5
+          },
+          "layer": "cybersecurity",
+          "name": "Palo Alto Networks",
+          "score": 20,
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "PANW"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [
+          "breakout"
+        ],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 107,
+        "sectors": [],
         "snapshot_as_of": "2026-08-05",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 107,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -1923,11 +2522,168 @@
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 368.61,
+            "gd200_rising": true,
+            "gd50": 405.7,
+            "last": 432.5,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 31.0
+          },
+          "layer": "banks",
+          "name": "Allianz",
+          "score": 17,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "ALV.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 139.69,
+            "gd200_rising": true,
+            "gd50": 175.42,
+            "last": 205.1,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 99.7
+          },
+          "layer": "life-science-tools",
+          "name": "Illumina",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "ILMN"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 537.08,
+            "gd200_rising": true,
+            "gd50": 524.96,
+            "last": 579.16,
+            "near_high_pct": -13.3,
+            "return_1y_pct": 42.2
+          },
+          "layer": "defense",
+          "name": "Lockheed Martin",
+          "score": 17,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "LMT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 186.28,
+            "gd200_rising": true,
+            "gd50": 189.78,
+            "last": 214.51,
+            "near_high_pct": -1.5,
+            "return_1y_pct": 38.8
+          },
+          "layer": "defense",
+          "name": "RTX",
+          "score": 17,
+          "sector": "defense",
+          "structure": "oligopoly",
+          "ticker": "RTX"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 210.52,
+            "gd200_rising": true,
+            "gd50": 247.56,
+            "last": 293.28,
+            "near_high_pct": -1.6,
+            "return_1y_pct": 31.2
+          },
+          "layer": "data-analytics",
+          "name": "Snowflake",
+          "score": 17,
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "SNOW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 529.49,
+            "gd200_rising": true,
+            "gd50": 504.26,
+            "last": 573.86,
+            "near_high_pct": -10.0,
+            "return_1y_pct": 23.2
+          },
+          "layer": "life-science-tools",
+          "name": "Thermo Fisher Scientific",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "TMO"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 490.39,
+            "gd200_rising": true,
+            "gd50": 491.38,
+            "last": 511.54,
+            "near_high_pct": -0.4,
+            "return_1y_pct": 8.4
+          },
+          "layer": "banks",
+          "name": "Berkshire Hathaway",
+          "score": 16,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "BRK-B"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 232.21,
+            "gd200_rising": true,
+            "gd50": 250.52,
+            "last": 262.3,
+            "near_high_pct": -3.0,
+            "return_1y_pct": 3.8
+          },
+          "layer": "exchanges-data",
+          "name": "Deutsche Boerse",
+          "score": 16,
+          "sector": "financial services",
+          "structure": "oligopoly",
+          "ticker": "DB1.XETRA"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 107,
+        "sectors": [],
         "snapshot_as_of": "2026-07-31",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 107,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -2013,11 +2769,11 @@
             "gd50": 273.82,
             "last": 293.53,
             "near_high_pct": -7.0,
-            "return_1y_pct": 16.0
+            "return_1y_pct": 13.8
           },
           "layer": "exchanges-data",
           "name": "CME Group",
-          "score": 22,
+          "score": 21,
           "sector": "financial services",
           "structure": "oligopoly",
           "ticker": "CME"
@@ -2032,7 +2788,7 @@
             "gd50": 933.36,
             "last": 994.06,
             "near_high_pct": -8.9,
-            "return_1y_pct": 8.8
+            "return_1y_pct": 6.9
           },
           "layer": "retail",
           "name": "Costco Wholesale",
@@ -2051,7 +2807,7 @@
             "gd50": 285.21,
             "last": 307.7,
             "near_high_pct": -0.6,
-            "return_1y_pct": 42.0
+            "return_1y_pct": 39.3
           },
           "layer": "exchanges-data",
           "name": "Deutsche Boerse",
@@ -2070,7 +2826,7 @@
             "gd50": 373.3,
             "last": 402.92,
             "near_high_pct": 0.0,
-            "return_1y_pct": 17.7
+            "return_1y_pct": 18.8
           },
           "layer": "payments",
           "name": "Visa",
@@ -2084,31 +2840,12 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": true,
-            "gd200": 117.9,
-            "gd200_rising": false,
-            "gd50": 109.0,
-            "last": 118.7,
-            "near_high_pct": -11.3,
-            "return_1y_pct": 17.1
-          },
-          "layer": "retail",
-          "name": "Walmart",
-          "score": 20,
-          "sector": "retail",
-          "structure": "oligopoly",
-          "ticker": "WMT"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": true,
             "gd200": 493.7,
             "gd200_rising": true,
             "gd50": 508.71,
             "last": 532.23,
             "near_high_pct": 0.0,
-            "return_1y_pct": 11.2
+            "return_1y_pct": 8.1
           },
           "layer": "banks",
           "name": "Berkshire Hathaway",
@@ -2127,7 +2864,7 @@
             "gd50": 256.73,
             "last": 273.4,
             "near_high_pct": -0.4,
-            "return_1y_pct": 13.9
+            "return_1y_pct": 12.7
           },
           "layer": "banks",
           "name": "Hannover Rueck",
@@ -2146,7 +2883,7 @@
             "gd50": 575.94,
             "last": 616.4,
             "near_high_pct": -0.2,
-            "return_1y_pct": 12.0
+            "return_1y_pct": 10.6
           },
           "layer": "payments",
           "name": "Mastercard",
@@ -2154,6 +2891,25 @@
           "sector": "financial services",
           "structure": "duopoly",
           "ticker": "MA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 117.9,
+            "gd200_rising": false,
+            "gd50": 109.0,
+            "last": 118.7,
+            "near_high_pct": -11.3,
+            "return_1y_pct": 11.1
+          },
+          "layer": "retail",
+          "name": "Walmart",
+          "score": 19,
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "WMT"
         }
       ],
       "market_hypothesis_meta": {
@@ -2168,13 +2924,13 @@
           "financial services"
         ],
         "snapshot_as_of": "2026-10-19",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.002,
+      "analysis_seconds": 0.003,
       "evaluation_class": "development_regression"
     },
     {
@@ -2212,8 +2968,8 @@
             "gd200_rising": false,
             "gd50": 39.04,
             "last": 41.71,
-            "near_high_pct": -13.3,
-            "return_1y_pct": -12.3
+            "near_high_pct": -13.8,
+            "return_1y_pct": -13.5
           },
           "layer": "medtech",
           "name": "Siemens Healthineers",
@@ -2232,7 +2988,7 @@
             "gd50": 90.69,
             "last": 93.03,
             "near_high_pct": -8.8,
-            "return_1y_pct": 5.7
+            "return_1y_pct": 0.3
           },
           "layer": "medtech",
           "name": "Medtronic",
@@ -2251,7 +3007,7 @@
             "gd50": 248.22,
             "last": 261.1,
             "near_high_pct": -1.6,
-            "return_1y_pct": 10.7
+            "return_1y_pct": 10.0
           },
           "layer": "medtech",
           "name": "Sartorius",
@@ -2270,7 +3026,7 @@
             "gd50": 394.19,
             "last": 428.12,
             "near_high_pct": -27.8,
-            "return_1y_pct": -19.2
+            "return_1y_pct": -7.5
           },
           "layer": "medtech",
           "name": "Intuitive Surgical",
@@ -2289,7 +3045,7 @@
             "gd50": 45.77,
             "last": 44.51,
             "near_high_pct": -57.6,
-            "return_1y_pct": -55.7
+            "return_1y_pct": -55.4
           },
           "layer": "medtech",
           "name": "Boston Scientific",
@@ -2308,7 +3064,7 @@
             "gd50": 296.63,
             "last": 297.6,
             "near_high_pct": -22.5,
-            "return_1y_pct": -18.5
+            "return_1y_pct": -20.8
           },
           "layer": "medtech",
           "name": "Stryker",
@@ -2329,7 +3085,7 @@
           "healthcare"
         ],
         "snapshot_as_of": "2026-10-21",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -2422,7 +3178,7 @@
             "gd50": 386.2,
             "last": 428.27,
             "near_high_pct": -3.6,
-            "return_1y_pct": 86.2
+            "return_1y_pct": 81.2
           },
           "layer": "analog-mcu",
           "name": "Analog Devices",
@@ -2441,7 +3197,7 @@
             "gd50": 231.06,
             "last": 251.69,
             "near_high_pct": -23.7,
-            "return_1y_pct": 24.1
+            "return_1y_pct": 20.3
           },
           "layer": "analog-mcu",
           "name": "NXP Semiconductors",
@@ -2460,7 +3216,7 @@
             "gd50": 272.72,
             "last": 308.33,
             "near_high_pct": -6.3,
-            "return_1y_pct": 98.0
+            "return_1y_pct": 90.4
           },
           "layer": "analog-mcu",
           "name": "Texas Instruments",
@@ -2479,7 +3235,7 @@
             "gd50": 545.58,
             "last": 578.44,
             "near_high_pct": -10.9,
-            "return_1y_pct": 127.0
+            "return_1y_pct": 124.2
           },
           "layer": "ai-processors",
           "name": "Advanced Micro Devices",
@@ -2498,7 +3254,7 @@
             "gd50": 145.72,
             "last": 159.32,
             "near_high_pct": -13.3,
-            "return_1y_pct": 82.6
+            "return_1y_pct": 74.4
           },
           "layer": "materials-components",
           "name": "Entegris",
@@ -2517,7 +3273,7 @@
             "gd50": 980.43,
             "last": 983.23,
             "near_high_pct": -19.0,
-            "return_1y_pct": 339.4
+            "return_1y_pct": 343.6
           },
           "layer": "memory",
           "name": "Micron Technology",
@@ -2536,7 +3292,7 @@
             "gd50": 434.29,
             "last": 439.51,
             "near_high_pct": -9.5,
-            "return_1y_pct": 46.3
+            "return_1y_pct": 47.1
           },
           "layer": "foundry",
           "name": "TSMC",
@@ -2555,7 +3311,7 @@
             "gd50": 319.69,
             "last": 342.46,
             "near_high_pct": -17.8,
-            "return_1y_pct": 1.9
+            "return_1y_pct": 0.3
           },
           "layer": "chip-design-software",
           "name": "Cadence Design Systems",
@@ -2573,13 +3329,13 @@
           "semiconductor"
         ],
         "snapshot_as_of": "2026-10-28",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.003,
+      "analysis_seconds": 0.004,
       "evaluation_class": "development_regression"
     },
     {
@@ -2603,7 +3359,7 @@
             "gd50": 271.45,
             "last": 296.67,
             "near_high_pct": -9.8,
-            "return_1y_pct": 90.5
+            "return_1y_pct": 80.8
           },
           "layer": "analog-mcu",
           "name": "Texas Instruments",
@@ -2622,7 +3378,7 @@
             "gd50": 938.36,
             "last": 1003.67,
             "near_high_pct": -8.0,
-            "return_1y_pct": 9.9
+            "return_1y_pct": 8.5
           },
           "layer": "retail",
           "name": "Costco Wholesale",
@@ -2641,7 +3397,7 @@
             "gd50": 384.42,
             "last": 407.93,
             "near_high_pct": -8.2,
-            "return_1y_pct": 77.3
+            "return_1y_pct": 73.5
           },
           "layer": "analog-mcu",
           "name": "Analog Devices",
@@ -2660,7 +3416,7 @@
             "gd50": 277.72,
             "last": 308.06,
             "near_high_pct": -2.4,
-            "return_1y_pct": 21.7
+            "return_1y_pct": 18.7
           },
           "layer": "exchanges-data",
           "name": "CME Group",
@@ -2679,7 +3435,7 @@
             "gd50": 235.7,
             "last": 261.83,
             "near_high_pct": -6.1,
-            "return_1y_pct": 94.4
+            "return_1y_pct": 98.6
           },
           "layer": "cybersecurity",
           "name": "CrowdStrike",
@@ -2698,7 +3454,7 @@
             "gd50": 289.09,
             "last": 314.3,
             "near_high_pct": -0.9,
-            "return_1y_pct": 45.1
+            "return_1y_pct": 43.2
           },
           "layer": "exchanges-data",
           "name": "Deutsche Boerse",
@@ -2717,7 +3473,7 @@
             "gd50": 171.01,
             "last": 183.33,
             "near_high_pct": -5.9,
-            "return_1y_pct": 117.7
+            "return_1y_pct": 114.3
           },
           "layer": "cybersecurity",
           "name": "Fortinet",
@@ -2752,16 +3508,16 @@
           "correction"
         ],
         "pit_basis": "publication_date_eod",
-        "ranked_before_limit": 106,
+        "ranked_before_limit": 107,
         "sectors": [],
         "snapshot_as_of": "2026-10-26",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.002,
+      "analysis_seconds": 0.003,
       "evaluation_class": "development_regression"
     },
     {
@@ -2848,7 +3604,7 @@
             "gd50": 387.42,
             "last": 433.28,
             "near_high_pct": -2.4,
-            "return_1y_pct": 88.4
+            "return_1y_pct": 86.6
           },
           "layer": "analog-mcu",
           "name": "Analog Devices",
@@ -2867,7 +3623,7 @@
             "gd50": 231.88,
             "last": 266.0,
             "near_high_pct": -19.4,
-            "return_1y_pct": 31.2
+            "return_1y_pct": 32.2
           },
           "layer": "analog-mcu",
           "name": "NXP Semiconductors",
@@ -2886,7 +3642,7 @@
             "gd50": 273.62,
             "last": 311.42,
             "near_high_pct": -5.3,
-            "return_1y_pct": 100.0
+            "return_1y_pct": 100.3
           },
           "layer": "analog-mcu",
           "name": "Texas Instruments",
@@ -2905,7 +3661,7 @@
             "gd50": 547.58,
             "last": 566.42,
             "near_high_pct": -12.8,
-            "return_1y_pct": 122.3
+            "return_1y_pct": 114.3
           },
           "layer": "ai-processors",
           "name": "Advanced Micro Devices",
@@ -2924,7 +3680,7 @@
             "gd50": 146.04,
             "last": 160.0,
             "near_high_pct": -12.9,
-            "return_1y_pct": 83.4
+            "return_1y_pct": 69.8
           },
           "layer": "materials-components",
           "name": "Entegris",
@@ -2943,7 +3699,7 @@
             "gd50": 320.24,
             "last": 342.75,
             "near_high_pct": -17.7,
-            "return_1y_pct": 2.0
+            "return_1y_pct": 0.4
           },
           "layer": "chip-design-software",
           "name": "Cadence Design Systems",
@@ -2962,7 +3718,7 @@
             "gd50": 436.08,
             "last": 490.19,
             "near_high_pct": -8.3,
-            "return_1y_pct": 10.7
+            "return_1y_pct": 7.7
           },
           "layer": "chip-design-software",
           "name": "Synopsys",
@@ -2981,7 +3737,7 @@
             "gd50": 1706.26,
             "last": 1675.7,
             "near_high_pct": -15.5,
-            "return_1y_pct": 56.8
+            "return_1y_pct": 57.4
           },
           "layer": "lithography",
           "name": "ASML Holding",
@@ -3001,13 +3757,13 @@
           "semiconductor"
         ],
         "snapshot_as_of": "2026-10-29",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.002,
+      "analysis_seconds": 0.003,
       "evaluation_class": "development_regression"
     },
     {
@@ -3055,19 +3811,38 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 134.57,
+            "gd200": 380.92,
             "gd200_rising": true,
-            "gd50": 136.76,
-            "last": 142.2,
-            "near_high_pct": -13.8,
-            "return_1y_pct": 19.2
+            "gd50": 415.27,
+            "last": 425.37,
+            "near_high_pct": -7.5,
+            "return_1y_pct": 19.4
           },
           "layer": "grid-equipment",
-          "name": "Nexans",
+          "name": "Eaton",
           "score": 15,
           "sector": "power infrastructure",
           "structure": "oligopoly",
-          "ticker": "NEX.PA"
+          "ticker": "ETN"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 116.12,
+            "gd200_rising": true,
+            "gd50": 126.21,
+            "last": 126.75,
+            "near_high_pct": -19.2,
+            "return_1y_pct": 57.6
+          },
+          "layer": "grid-equipment",
+          "name": "Prysmian",
+          "score": 15,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "AEU.XETRA"
         },
         {
           "features": {
@@ -3079,7 +3854,7 @@
             "gd50": 285.91,
             "last": 291.1,
             "near_high_pct": -6.4,
-            "return_1y_pct": 18.7
+            "return_1y_pct": 30.3
           },
           "layer": "grid-equipment",
           "name": "Schneider Electric",
@@ -3093,38 +3868,57 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 116.12,
-            "gd200_rising": false,
-            "gd50": 126.21,
-            "last": 126.75,
-            "near_high_pct": -19.2,
-            "return_1y_pct": 45.6
+            "gd200": 134.57,
+            "gd200_rising": true,
+            "gd50": 136.76,
+            "last": 142.2,
+            "near_high_pct": -13.8,
+            "return_1y_pct": 11.6
           },
           "layer": "grid-equipment",
-          "name": "Prysmian",
-          "score": 13,
+          "name": "Nexans",
+          "score": 14,
           "sector": "power infrastructure",
           "structure": "oligopoly",
-          "ticker": "AEU.XETRA"
+          "ticker": "NEX.PA"
         },
         {
           "features": {
             "above_gd200": true,
-            "above_gd50": true,
+            "above_gd50": false,
             "breakout": false,
-            "gd200": 380.92,
-            "gd200_rising": false,
-            "gd50": 415.27,
-            "last": 425.37,
-            "near_high_pct": -7.5,
-            "return_1y_pct": 12.3
+            "gd200": 72.65,
+            "gd200_rising": true,
+            "gd50": 80.59,
+            "last": 78.66,
+            "near_high_pct": -11.2,
+            "return_1y_pct": 41.0
           },
           "layer": "grid-equipment",
-          "name": "Eaton",
-          "score": 12,
+          "name": "ABB",
+          "score": 7,
           "sector": "power infrastructure",
           "structure": "oligopoly",
-          "ticker": "ETN"
+          "ticker": "ABBN.SW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 892.77,
+            "gd200_rising": true,
+            "gd50": 1001.74,
+            "last": 956.71,
+            "near_high_pct": -18.5,
+            "return_1y_pct": 51.3
+          },
+          "layer": "grid-equipment",
+          "name": "GE Vernova",
+          "score": 7,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "GEV"
         },
         {
           "features": {
@@ -3136,7 +3930,7 @@
             "gd50": 20.53,
             "last": 20.16,
             "near_high_pct": -5.8,
-            "return_1y_pct": 18.8
+            "return_1y_pct": 34.1
           },
           "layer": "utility",
           "name": "Iberdrola",
@@ -3147,60 +3941,22 @@
         },
         {
           "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
-            "gd200": 72.65,
-            "gd200_rising": false,
-            "gd50": 80.59,
-            "last": 78.66,
-            "near_high_pct": -11.2,
-            "return_1y_pct": 33.1
-          },
-          "layer": "grid-equipment",
-          "name": "ABB",
-          "score": 5,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "ABBN.SW"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
-            "gd200": 892.77,
-            "gd200_rising": false,
-            "gd50": 1001.74,
-            "last": 956.71,
-            "near_high_pct": -18.5,
-            "return_1y_pct": 67.1
-          },
-          "layer": "grid-equipment",
-          "name": "GE Vernova",
-          "score": 5,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "GEV"
-        },
-        {
-          "features": {
             "above_gd200": false,
             "above_gd50": false,
             "breakout": false,
-            "gd200": 151.42,
-            "gd200_rising": false,
-            "gd50": 150.94,
-            "last": 144.26,
-            "near_high_pct": -23.1,
-            "return_1y_pct": 36.5
+            "gd200": 86.56,
+            "gd200_rising": true,
+            "gd50": 85.63,
+            "last": 82.31,
+            "near_high_pct": -14.7,
+            "return_1y_pct": 18.7
           },
-          "layer": "grid-equipment",
-          "name": "Siemens Energy",
-          "score": 1,
+          "layer": "utility",
+          "name": "NextEra Energy",
+          "score": 3,
           "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "ENR.XETRA"
+          "structure": "fragmented",
+          "ticker": "NEE"
         }
       ],
       "market_hypothesis_meta": {
@@ -3213,13 +3969,13 @@
           "power infrastructure"
         ],
         "snapshot_as_of": "2026-09-11",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.002,
+      "analysis_seconds": 0.003,
       "evaluation_class": "development_regression"
     },
     {
@@ -3267,31 +4023,12 @@
             "above_gd200": true,
             "above_gd50": true,
             "breakout": false,
-            "gd200": 134.47,
-            "gd200_rising": true,
-            "gd50": 136.76,
-            "last": 139.2,
-            "near_high_pct": -15.6,
-            "return_1y_pct": 16.7
-          },
-          "layer": "grid-equipment",
-          "name": "Nexans",
-          "score": 15,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "NEX.PA"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": true,
-            "breakout": false,
             "gd200": 260.65,
             "gd200_rising": true,
             "gd50": 285.69,
             "last": 287.4,
             "near_high_pct": -7.6,
-            "return_1y_pct": 17.2
+            "return_1y_pct": 27.5
           },
           "layer": "grid-equipment",
           "name": "Schneider Electric",
@@ -3303,6 +4040,63 @@
         {
           "features": {
             "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 134.47,
+            "gd200_rising": true,
+            "gd50": 136.76,
+            "last": 139.2,
+            "near_high_pct": -15.6,
+            "return_1y_pct": 5.9
+          },
+          "layer": "grid-equipment",
+          "name": "Nexans",
+          "score": 14,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "NEX.PA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 72.53,
+            "gd200_rising": true,
+            "gd50": 80.76,
+            "last": 77.86,
+            "near_high_pct": -12.1,
+            "return_1y_pct": 41.9
+          },
+          "layer": "grid-equipment",
+          "name": "ABB",
+          "score": 7,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "ABBN.SW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 890.76,
+            "gd200_rising": true,
+            "gd50": 1005.28,
+            "last": 923.37,
+            "near_high_pct": -21.4,
+            "return_1y_pct": 43.9
+          },
+          "layer": "grid-equipment",
+          "name": "GE Vernova",
+          "score": 7,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "GEV"
+        },
+        {
+          "features": {
+            "above_gd200": true,
             "above_gd50": false,
             "breakout": false,
             "gd200": 19.39,
@@ -3310,7 +4104,7 @@
             "gd50": 20.55,
             "last": 20.02,
             "near_high_pct": -6.5,
-            "return_1y_pct": 17.9
+            "return_1y_pct": 32.4
           },
           "layer": "utility",
           "name": "Iberdrola",
@@ -3324,54 +4118,16 @@
             "above_gd200": true,
             "above_gd50": false,
             "breakout": false,
-            "gd200": 72.53,
-            "gd200_rising": false,
-            "gd50": 80.76,
-            "last": 77.86,
-            "near_high_pct": -12.1,
-            "return_1y_pct": 31.8
-          },
-          "layer": "grid-equipment",
-          "name": "ABB",
-          "score": 5,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "ABBN.SW"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
-            "gd200": 890.76,
-            "gd200_rising": false,
-            "gd50": 1005.28,
-            "last": 923.37,
-            "near_high_pct": -21.4,
-            "return_1y_pct": 61.2
-          },
-          "layer": "grid-equipment",
-          "name": "GE Vernova",
-          "score": 5,
-          "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "GEV"
-        },
-        {
-          "features": {
-            "above_gd200": true,
-            "above_gd50": false,
-            "breakout": false,
             "gd200": 115.89,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 126.59,
             "last": 123.6,
             "near_high_pct": -21.2,
-            "return_1y_pct": 42.0
+            "return_1y_pct": 55.8
           },
           "layer": "grid-equipment",
           "name": "Prysmian",
-          "score": 5,
+          "score": 7,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "AEU.XETRA"
@@ -3382,15 +4138,15 @@
             "above_gd50": false,
             "breakout": false,
             "gd200": 380.44,
-            "gd200_rising": false,
+            "gd200_rising": true,
             "gd50": 414.99,
             "last": 409.15,
             "near_high_pct": -11.0,
-            "return_1y_pct": 8.0
+            "return_1y_pct": 14.2
           },
           "layer": "grid-equipment",
           "name": "Eaton",
-          "score": 4,
+          "score": 6,
           "sector": "power infrastructure",
           "structure": "oligopoly",
           "ticker": "ETN"
@@ -3400,19 +4156,19 @@
             "above_gd200": false,
             "above_gd50": false,
             "breakout": false,
-            "gd200": 151.23,
-            "gd200_rising": false,
-            "gd50": 151.42,
-            "last": 140.82,
-            "near_high_pct": -24.9,
-            "return_1y_pct": 33.3
+            "gd200": 86.55,
+            "gd200_rising": true,
+            "gd50": 85.7,
+            "last": 82.44,
+            "near_high_pct": -14.5,
+            "return_1y_pct": 19.4
           },
-          "layer": "grid-equipment",
-          "name": "Siemens Energy",
-          "score": 1,
+          "layer": "utility",
+          "name": "NextEra Energy",
+          "score": 3,
           "sector": "power infrastructure",
-          "structure": "oligopoly",
-          "ticker": "ENR.XETRA"
+          "structure": "fragmented",
+          "ticker": "NEE"
         }
       ],
       "market_hypothesis_meta": {
@@ -3423,7 +4179,7 @@
           "power infrastructure"
         ],
         "snapshot_as_of": "2026-09-10",
-        "snapshot_coverage": 106,
+        "snapshot_coverage": 107,
         "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
@@ -3442,11 +4198,168 @@
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 1217.27,
+            "gd200_rising": true,
+            "gd50": 1491.19,
+            "last": 1744.47,
+            "near_high_pct": -0.5,
+            "return_1y_pct": 134.1
+          },
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 300.92,
+            "gd200_rising": true,
+            "gd50": 411.19,
+            "last": 491.64,
+            "near_high_pct": -1.9,
+            "return_1y_pct": 197.3
+          },
+          "layer": "wafer-fab-equipment",
+          "name": "Applied Materials",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AMAT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 945.71,
+            "gd200_rising": true,
+            "gd50": 975.58,
+            "last": 1147.51,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 50.3
+          },
+          "layer": "pharma",
+          "name": "Eli Lilly",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "LLY"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 49.54,
+            "gd200_rising": true,
+            "gd50": 50.64,
+            "last": 53.72,
+            "near_high_pct": -4.2,
+            "return_1y_pct": 22.1
+          },
+          "layer": "retail",
+          "name": "Inditex",
+          "score": 17,
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "ITX.MC"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 137.88,
+            "gd200_rising": true,
+            "gd50": 179.26,
+            "last": 210.57,
+            "near_high_pct": -1.1,
+            "return_1y_pct": 162.6
+          },
+          "layer": "inspection-metrology",
+          "name": "KLA Corporation",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "KLAC"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 199.02,
+            "gd200_rising": true,
+            "gd50": 274.82,
+            "last": 323.88,
+            "near_high_pct": -5.6,
+            "return_1y_pct": 278.5
+          },
+          "layer": "wafer-fab-equipment",
+          "name": "Lam Research",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "LRCX"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 29.36,
+            "gd200_rising": true,
+            "gd50": 46.05,
+            "last": 65.14,
+            "near_high_pct": -4.6,
+            "return_1y_pct": 156.3
+          },
+          "layer": "analog-mcu",
+          "name": "STMicroelectronics",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "fragmented",
+          "ticker": "STMPA.PA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 63.73,
+            "gd200_rising": true,
+            "gd50": 76.67,
+            "last": 82.68,
+            "near_high_pct": -4.0,
+            "return_1y_pct": 79.7
+          },
+          "layer": "grid-equipment",
+          "name": "ABB",
+          "score": 15,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "ABBN.SW"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 106,
+        "sectors": [],
         "snapshot_as_of": "2026-06-08",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 106,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -3507,11 +4420,172 @@
       ],
       "offline_hypothesis_status": "unverified_sector_universe_suggestions",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 844.8,
+            "gd200_rising": true,
+            "gd50": 914.24,
+            "last": 1059.39,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 81.4
+          },
+          "layer": "banks",
+          "name": "Goldman Sachs",
+          "score": 17,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "GS"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 354.56,
+            "gd200_rising": true,
+            "gd50": 366.79,
+            "last": 376.7,
+            "near_high_pct": -3.7,
+            "return_1y_pct": 11.7
+          },
+          "layer": "banks",
+          "name": "Allianz",
+          "score": 14,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "ALV.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 228.78,
+            "gd200_rising": false,
+            "gd50": 250.01,
+            "last": 242.1,
+            "near_high_pct": -13.7,
+            "return_1y_pct": -12.7
+          },
+          "layer": "exchanges-data",
+          "name": "Deutsche Boerse",
+          "score": 6,
+          "sector": "financial services",
+          "structure": "oligopoly",
+          "ticker": "DB1.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 8811.24,
+            "gd200_rising": false,
+            "gd50": 9160.59,
+            "last": 8923.44,
+            "near_high_pct": -21.6,
+            "return_1y_pct": -21.1
+          },
+          "layer": "exchanges-data",
+          "name": "London Stock Exchange Group",
+          "score": 6,
+          "sector": "financial services",
+          "structure": "oligopoly",
+          "ticker": "LSEG.LSE"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 300.81,
+            "gd200_rising": true,
+            "gd50": 300.15,
+            "last": 298.12,
+            "near_high_pct": -9.6,
+            "return_1y_pct": 15.9
+          },
+          "layer": "banks",
+          "name": "JPMorgan Chase",
+          "score": 5,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "JPM"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 490.44,
+            "gd200_rising": true,
+            "gd50": 476.67,
+            "last": 471.51,
+            "near_high_pct": -8.2,
+            "return_1y_pct": -6.2
+          },
+          "layer": "banks",
+          "name": "Berkshire Hathaway",
+          "score": 4,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "BRK-B"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 274.53,
+            "gd200_rising": true,
+            "gd50": 287.91,
+            "last": 248.07,
+            "near_high_pct": -21.4,
+            "return_1y_pct": -10.5
+          },
+          "layer": "exchanges-data",
+          "name": "CME Group",
+          "score": 4,
+          "sector": "financial services",
+          "structure": "oligopoly",
+          "ticker": "CME"
+        },
+        {
+          "features": {
+            "above_gd200": false,
+            "above_gd50": false,
+            "breakout": false,
+            "gd200": 242.04,
+            "gd200_rising": false,
+            "gd50": 248.37,
+            "last": 225.2,
+            "near_high_pct": -16.8,
+            "return_1y_pct": -15.6
+          },
+          "layer": "banks",
+          "name": "Hannover Rueck",
+          "score": 2,
+          "sector": "financial services",
+          "structure": "fragmented",
+          "ticker": "HNR1.XETRA"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [
+          "correction"
+        ],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 13,
+        "sectors": [
+          "financial services"
+        ],
         "snapshot_as_of": "2026-06-02",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 106,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -3529,11 +4603,168 @@
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 62.79,
+            "gd200_rising": true,
+            "gd50": 74.37,
+            "last": 83.62,
+            "near_high_pct": -1.5,
+            "return_1y_pct": 81.5
+          },
+          "layer": "grid-equipment",
+          "name": "ABB",
+          "score": 17,
+          "sector": "power infrastructure",
+          "structure": "oligopoly",
+          "ticker": "ABBN.SW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 1188.65,
+            "gd200_rising": true,
+            "gd50": 1450.29,
+            "last": 1608.54,
+            "near_high_pct": -1.2,
+            "return_1y_pct": 117.6
+          },
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 237.58,
+            "gd200_rising": true,
+            "gd50": 328.15,
+            "last": 516.1,
+            "near_high_pct": -0.4,
+            "return_1y_pct": 356.6
+          },
+          "layer": "ai-processors",
+          "name": "Advanced Micro Devices",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AMD"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 291.55,
+            "gd200_rising": true,
+            "gd50": 396.4,
+            "last": 449.58,
+            "near_high_pct": -1.1,
+            "return_1y_pct": 184.3
+          },
+          "layer": "wafer-fab-equipment",
+          "name": "Applied Materials",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AMAT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 150.84,
+            "gd200_rising": true,
+            "gd50": 198.44,
+            "last": 353.29,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 175.8
+          },
+          "layer": "chip-ip",
+          "name": "Arm Holdings",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ARM"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 165.93,
+            "gd200_rising": true,
+            "gd50": 230.45,
+            "last": 284.4,
+            "near_high_pct": -1.1,
+            "return_1y_pct": 165.1
+          },
+          "layer": "materials-components",
+          "name": "BE Semiconductor Industries",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "BESI.AS"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 350.17,
+            "gd200_rising": true,
+            "gd50": 384.33,
+            "last": 445.22,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 86.1
+          },
+          "layer": "ai-processors",
+          "name": "Broadcom",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AVGO"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 323.09,
+            "gd200_rising": true,
+            "gd50": 321.98,
+            "last": 374.93,
+            "near_high_pct": -1.8,
+            "return_1y_pct": 31.8
+          },
+          "layer": "chip-design-software",
+          "name": "Cadence Design Systems",
+          "score": 17,
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "CDNS"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 106,
+        "sectors": [],
         "snapshot_as_of": "2026-05-29",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 106,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
@@ -3551,16 +4782,175 @@
       "offline_hypotheses": [],
       "offline_hypothesis_status": "no_local_sector_hypotheses",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 639.74,
+            "gd200_rising": true,
+            "gd50": 830.57,
+            "last": 973.6,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 87.7
+          },
+          "layer": "materials-components",
+          "name": "ASM International",
+          "score": 20,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "ASM.AS"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 1233.12,
+            "gd200_rising": true,
+            "gd50": 1521.96,
+            "last": 1894.51,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 144.2
+          },
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "score": 20,
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 306.25,
+            "gd200_rising": true,
+            "gd50": 422.14,
+            "last": 552.05,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 222.2
+          },
+          "layer": "wafer-fab-equipment",
+          "name": "Applied Materials",
+          "score": 20,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "AMAT"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 173.49,
+            "gd200_rising": true,
+            "gd50": 249.28,
+            "last": 307.9,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 144.3
+          },
+          "layer": "materials-components",
+          "name": "BE Semiconductor Industries",
+          "score": 20,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "BESI.AS"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 952.37,
+            "gd200_rising": true,
+            "gd50": 990.79,
+            "last": 1159.29,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 44.6
+          },
+          "layer": "pharma",
+          "name": "Eli Lilly",
+          "score": 20,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "LLY"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 49.73,
+            "gd200_rising": true,
+            "gd50": 51.01,
+            "last": 54.47,
+            "near_high_pct": -2.8,
+            "return_1y_pct": 27.5
+          },
+          "layer": "retail",
+          "name": "Inditex",
+          "score": 20,
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "ITX.MC"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 139.91,
+            "gd200_rising": true,
+            "gd50": 184.04,
+            "last": 240.89,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 178.3
+          },
+          "layer": "inspection-metrology",
+          "name": "KLA Corporation",
+          "score": 20,
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "KLAC"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 202.58,
+            "gd200_rising": true,
+            "gd50": 282.53,
+            "last": 361.88,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 301.5
+          },
+          "layer": "wafer-fab-equipment",
+          "name": "Lam Research",
+          "score": 20,
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "LRCX"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [
+          "breakout"
+        ],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 106,
+        "sectors": [],
         "snapshot_as_of": "2026-06-11",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 106,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.002,
+      "analysis_seconds": 0.004,
       "evaluation_class": "development_regression"
     },
     {
@@ -3616,16 +5006,178 @@
       ],
       "offline_hypothesis_status": "unverified_sector_universe_suggestions",
       "market_hypothesis_rank": null,
-      "market_hypotheses": [],
+      "market_hypotheses": [
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 321.22,
+            "gd200_rising": true,
+            "gd50": 331.84,
+            "last": 344.4,
+            "near_high_pct": -7.2,
+            "return_1y_pct": 29.0
+          },
+          "layer": "pharma",
+          "name": "Roche",
+          "score": 19,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "RO.SW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 13592.01,
+            "gd200_rising": true,
+            "gd50": 13637.04,
+            "last": 14269.12,
+            "near_high_pct": -7.6,
+            "return_1y_pct": 41.0
+          },
+          "layer": "pharma",
+          "name": "AstraZeneca",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "AZN.LSE"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 985.72,
+            "gd200_rising": true,
+            "gd50": 1064.84,
+            "last": 1233.79,
+            "near_high_pct": 0.0,
+            "return_1y_pct": 61.0
+          },
+          "layer": "pharma",
+          "name": "Eli Lilly",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "LLY"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 131.15,
+            "gd200_rising": true,
+            "gd50": 155.55,
+            "last": 191.76,
+            "near_high_pct": -1.3,
+            "return_1y_pct": 97.4
+          },
+          "layer": "life-science-tools",
+          "name": "Illumina",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "ILMN"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 111.8,
+            "gd200_rising": true,
+            "gd50": 118.96,
+            "last": 126.8,
+            "near_high_pct": -1.0,
+            "return_1y_pct": 35.0
+          },
+          "layer": "pharma",
+          "name": "Novartis",
+          "score": 17,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "NOVN.SW"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": true,
+            "gd200": 296.88,
+            "gd200_rising": false,
+            "gd50": 287.03,
+            "last": 323.33,
+            "near_high_pct": -24.8,
+            "return_1y_pct": -21.7
+          },
+          "layer": "pharma",
+          "name": "Novo Nordisk",
+          "score": 16,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "NOVO-B.CO"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 229.96,
+            "gd200_rising": true,
+            "gd50": 226.59,
+            "last": 232.2,
+            "near_high_pct": -12.2,
+            "return_1y_pct": 6.8
+          },
+          "layer": "medtech",
+          "name": "Sartorius",
+          "score": 16,
+          "sector": "healthcare",
+          "structure": "oligopoly",
+          "ticker": "SRT3.XETRA"
+        },
+        {
+          "features": {
+            "above_gd200": true,
+            "above_gd50": true,
+            "breakout": false,
+            "gd200": 105.69,
+            "gd200_rising": true,
+            "gd50": 116.11,
+            "last": 128.1,
+            "near_high_pct": -0.5,
+            "return_1y_pct": 64.6
+          },
+          "layer": "pharma",
+          "name": "Merck & Co",
+          "score": 15,
+          "sector": "pharmaceutical",
+          "structure": "oligopoly",
+          "ticker": "MRK"
+        }
+      ],
       "market_hypothesis_meta": {
+        "clues": [
+          "correction"
+        ],
         "pit_basis": "publication_date_eod",
+        "ranked_before_limit": 16,
+        "sectors": [
+          "pharmaceutical",
+          "healthcare"
+        ],
         "snapshot_as_of": "2026-07-07",
-        "status": "insufficient_history_at_as_of"
+        "snapshot_coverage": 107,
+        "status": "unverified_chart_universe_suggestions"
       },
       "abstained": true,
       "countercandidate_count": 0,
       "input_completeness": "complete",
-      "analysis_seconds": 0.002,
+      "analysis_seconds": 0.003,
       "evaluation_class": "development_regression"
     }
   ],
