@@ -72,13 +72,13 @@ class TavilyUsageMonitor:
             if not isinstance(plan, str) or not plan.strip() or api_key in plan:
                 raise ValueError("invalid usage plan")
             plan_usage = self._count(account["plan_usage"])
-            plan_limit = self._count(account["plan_limit"])
+            plan_limit = self._optional_count(account, "plan_limit")
             result = {
                 "status": "available",
                 "plan": plan.strip()[:80],
                 "plan_usage": plan_usage,
                 "plan_limit": plan_limit,
-                "plan_remaining": max(plan_limit - plan_usage, 0),
+                "plan_remaining": None if plan_limit is None else max(plan_limit - plan_usage, 0),
                 "key_usage": self._optional_count(key, "usage"),
                 "key_limit": self._optional_count(key, "limit"),
                 "search_usage": self._optional_count(key, "search_usage"),
