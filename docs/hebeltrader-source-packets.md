@@ -51,6 +51,9 @@ python3 -m scanner.hebeltrader.detective.source_packets docs/examples/source-pac
 
 Synthetisches Beispiel (kein Blindbeleg): `docs/examples/source-packets/SYNTHETIC-EXAMPLE.json`.
 
+Erster Real-Pilot (SEC 10-Q, HT-001): `docs/examples/source-packets/pilot/` — Evidenz weiterhin
+`insufficient_specific_primary_evidence`, weil der Teaser keine Eigenamen trägt.
+
 ## Operator-Checkliste (nächster echter Fall)
 
 1. Beim Report-Kauf / Teaser-Abruf **`publication_at`** notieren (nicht nur Datum).
