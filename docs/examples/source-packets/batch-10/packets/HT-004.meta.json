@@ -1,0 +1,73 @@
+{
+  "case_id": "HT-004",
+  "cutoff_publication_at": "2026-09-24T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "CRM",
+      "name": "Salesforce",
+      "form": "10-Q",
+      "filing_date": "2026-08-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000110852426000190/crm-20260731.htm",
+      "chars": 10038,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/CRM-2026-08-27-0a85fae5.htm"
+    },
+    {
+      "ticker": "CRM",
+      "name": "Salesforce",
+      "form": "8-K",
+      "filing_date": "2026-09-17",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000110852426000210/crm-20260916.htm",
+      "chars": 5727,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/CRM-2026-09-17-13822984.htm"
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle",
+      "form": "10-Q",
+      "filing_date": "2026-09-11",
+      "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526389274/orcl-20260831.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/ORCL-2026-09-11-08139d55.htm"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "form": "10-Q",
+      "filing_date": "2026-04-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526191507/msft-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/MSFT-2026-04-29-8d9fa72e.htm"
+    },
+    {
+      "ticker": "ADBE",
+      "name": "Adobe",
+      "form": "10-Q",
+      "filing_date": "2026-09-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000156/adbe-20260828.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/ADBE-2026-09-22-d8a0dbb0.htm"
+    },
+    {
+      "ticker": "NOW",
+      "name": "ServiceNow",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/1373715/000137371526000076/now-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/NOW-2026-07-23-bfedeb40.htm"
+    },
+    {
+      "ticker": "INTU",
+      "name": "Intuit",
+      "form": "10-Q",
+      "filing_date": "2026-05-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/896878/000089687826000025/intu-20260430.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-004/INTU-2026-05-20-d72b9ad6.htm"
+    }
+  ],
+  "needles": [
+    "Data Cloud",
+    "Agentforce"
+  ]
+}

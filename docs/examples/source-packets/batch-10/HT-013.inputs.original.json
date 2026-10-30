@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-013 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-013",
+      "headline": "Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!",
+      "teaser_text": "Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!\nStillstand war gestern. Nach rund vier Jahren Seitwärtsphase könnte bei einem etablierten Qualitätswert jetzt der Turbo zünden. Die Zutaten für eine Neubewertung sind vorhanden: wieder anziehendes Wachstum, ein kräftiger freier Cashflow, steigende Gewinne und ein Forward-KGV unter dem historischen Durchschnitt. Analysten rechnen für die kommenden Jahre mit jährlichen Gewinnzuwächsen von über 10 Prozent. Wer den möglichen Ausbruch nicht verpassen will, sollte auch den Hebel im Blick behalten: Das empfohlene Derivat könnte im Idealfall bis zu 2.205 Prozent zulegen. Das CRV von 21,9 macht daraus ein Setup mit Seltenheitswert.",
+      "publication_date": "2026-08-25",
+      "publication_at": "2026-08-25T08:15:00+01:00"
+    }
+  ]
+}

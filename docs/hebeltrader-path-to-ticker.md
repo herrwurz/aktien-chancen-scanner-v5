@@ -48,9 +48,17 @@ Ergebnis (Freeze `evidence-batch-pilots-2026-10-30.json`):
 
 **3/7 identified** via `historical_source_packet`. SEC-Paket: `build_sec_packet`.
 
+## Zehner-Batch (parallel)
+
+`docs/examples/source-packets/batch-10/`: Manifest → `build_sec_packet_batch`
+→ `evidence_batch` über 10 Fälle (20 Inputs: original+named).
+
+Freeze `batch-10/evidence-batch-10.json`: **10/10 named identified**
+(ADI, CRM, MU, UNH, VRT, PFE, AVGO, DHR, ABBV, CARR); Original weiter 0/10.
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
-reichere Teaser oder bewusste Diagnose-Anreicherung (wie HT-009/023/027 named).
+reichere Teaser oder bewusste Diagnose-Anreicherung (wie Batch-10 named).
 
 Blind 202/26 und Chart-Scores unangetastet.
