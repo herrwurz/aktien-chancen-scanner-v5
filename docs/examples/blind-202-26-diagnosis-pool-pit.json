@@ -1,0 +1,79 @@
+{
+  "ranking_sha256": null,
+  "evaluation_class": "prospective_blind",
+  "cases": [
+    {
+      "case_id": "BLIND-202-26",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "above_gd200"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-30",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 1053,
+      "market_hypotheses": [
+        {
+          "name": "APA Corporation",
+          "ticker": "APA",
+          "sector": "energy",
+          "score": 23
+        },
+        {
+          "name": "Agilent Technologies",
+          "ticker": "A",
+          "sector": "healthcare",
+          "score": 23
+        },
+        {
+          "name": "Air Liquide",
+          "ticker": "AI.PA",
+          "sector": "materials",
+          "score": 23
+        },
+        {
+          "name": "Air Products",
+          "ticker": "APD",
+          "sector": "materials",
+          "score": 23
+        },
+        {
+          "name": "Allfunds Group",
+          "ticker": "ALLFG.AS",
+          "sector": "financial services",
+          "score": 23
+        },
+        {
+          "name": "Altria",
+          "ticker": "MO",
+          "sector": "retail",
+          "score": 23
+        },
+        {
+          "name": "Amgen",
+          "ticker": "AMGN",
+          "sector": "healthcare",
+          "score": 23
+        },
+        {
+          "name": "Amgen Inc.",
+          "ticker": "AMGN",
+          "sector": "information technology",
+          "score": 23
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "with_offline_hypotheses": 0,
+    "with_market_hypotheses": 1,
+    "snapshots_not_provided": 0
+  }
+}

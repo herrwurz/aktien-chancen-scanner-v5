@@ -1,0 +1,2482 @@
+{
+  "ranking_sha256": null,
+  "evaluation_class": "development_regression",
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors_named": [
+        "retail"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Costco Wholesale",
+          "ticker": "COST",
+          "sector": "retail",
+          "layer": "retail",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Walmart",
+          "ticker": "WMT",
+          "sector": "retail",
+          "layer": "retail",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-16",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 106,
+      "market_hypotheses": [
+        {
+          "name": "Costco",
+          "ticker": "COST",
+          "sector": "retail",
+          "score": 18
+        },
+        {
+          "name": "Costco Wholesale",
+          "ticker": "COST",
+          "sector": "retail",
+          "layer": "retail",
+          "structure": "oligopoly",
+          "score": 18
+        },
+        {
+          "name": "Airbnb",
+          "ticker": "ABNB",
+          "sector": "retail",
+          "score": 17
+        },
+        {
+          "name": "Altria",
+          "ticker": "MO",
+          "sector": "retail",
+          "score": 17
+        },
+        {
+          "name": "Archer Daniels Midland",
+          "ticker": "ADM",
+          "sector": "retail",
+          "score": 17
+        },
+        {
+          "name": "B&M European Value Retail",
+          "ticker": "BME.LSE",
+          "sector": "retail",
+          "score": 17
+        },
+        {
+          "name": "Church & Dwight",
+          "ticker": "CHD",
+          "sector": "retail",
+          "score": 17
+        },
+        {
+          "name": "Coca-Cola Company",
+          "ticker": "KO",
+          "sector": "retail",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-016",
+      "identification_status": null,
+      "input_completeness": "headline_only",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "power infrastructure"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Siemens Energy",
+          "ticker": "ENR.XETRA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "NextEra Energy",
+          "ticker": "NEE",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Schneider Electric",
+          "ticker": "SU.PA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Iberdrola",
+          "ticker": "IBE.MC",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "no_publication_date_for_pit",
+      "snapshot_as_of": null,
+      "snapshot_coverage": null,
+      "ranked_before_limit": null,
+      "market_hypotheses": [],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-002",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors_named": [
+        "insurance"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Swiss Re",
+          "ticker": "SREN.SW",
+          "sector": "insurance",
+          "layer": "reinsurance",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-14",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 19,
+      "market_hypotheses": [
+        {
+          "name": "Beazley",
+          "ticker": "BEZ.LSE",
+          "sector": "insurance",
+          "score": 20
+        },
+        {
+          "name": "Hannover Re",
+          "ticker": "HNR1.XETRA",
+          "sector": "insurance",
+          "score": 19
+        },
+        {
+          "name": "Swiss Re",
+          "ticker": "SREN.SW",
+          "sector": "insurance",
+          "layer": "reinsurance",
+          "structure": "oligopoly",
+          "score": 19
+        },
+        {
+          "name": "Hiscox",
+          "ticker": "HSX.LSE",
+          "sector": "insurance",
+          "score": 15
+        },
+        {
+          "name": "SCOR SE",
+          "ticker": "SCR.PA",
+          "sector": "insurance",
+          "score": 15
+        },
+        {
+          "name": "Zurich Insurance Group",
+          "ticker": "ZURN.SW",
+          "sector": "insurance",
+          "score": 14
+        },
+        {
+          "name": "Tryg",
+          "ticker": "TRYG.CO",
+          "sector": "insurance",
+          "score": 12
+        },
+        {
+          "name": "Admiral Group",
+          "ticker": "ADM.LSE",
+          "sector": "insurance",
+          "score": 7
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-004",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-09-24",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 1064,
+      "market_hypotheses": [
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "Advanced Micro Devices",
+          "ticker": "AMD",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Advanced Micro Devices, Inc.",
+          "ticker": "AMD",
+          "sector": "information technology",
+          "score": 17
+        },
+        {
+          "name": "Agilent Technologies",
+          "ticker": "A",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Allfunds Group",
+          "ticker": "ALLFG.AS",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Balfour Beatty",
+          "ticker": "BBY.LSE",
+          "sector": "construction and materials",
+          "score": 17
+        },
+        {
+          "name": "Beazley",
+          "ticker": "BEZ.LSE",
+          "sector": "insurance",
+          "score": 17
+        },
+        {
+          "name": "Bio-Techne",
+          "ticker": "TECH",
+          "sector": "healthcare",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-005",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors_named": [
+        "semiconductor"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly"
+        },
+        {
+          "name": "Lam Research",
+          "ticker": "LRCX",
+          "sector": "semiconductor",
+          "layer": "wafer-fab-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "KLA Corporation",
+          "ticker": "KLAC",
+          "sector": "semiconductor",
+          "layer": "inspection-metrology",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Synopsys",
+          "ticker": "SNPS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Arm Holdings",
+          "ticker": "ARM",
+          "sector": "semiconductor",
+          "layer": "chip-ip",
+          "structure": "monopoly"
+        },
+        {
+          "name": "TSMC",
+          "ticker": "TSM",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Nvidia",
+          "ticker": "NVDA",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Micron Technology",
+          "ticker": "MU",
+          "sector": "semiconductor",
+          "layer": "memory",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-09-21",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 24,
+      "market_hypotheses": [
+        {
+          "name": "Soitec",
+          "ticker": "SOI.PA",
+          "sector": "semiconductor",
+          "layer": "materials-components",
+          "structure": "oligopoly",
+          "score": 22
+        },
+        {
+          "name": "Advanced Micro Devices",
+          "ticker": "AMD",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly",
+          "score": 20
+        },
+        {
+          "name": "Analog Devices",
+          "ticker": "ADI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 17
+        },
+        {
+          "name": "Entegris",
+          "ticker": "ENTG",
+          "sector": "semiconductor",
+          "layer": "materials-components",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Micron Technology",
+          "ticker": "MU",
+          "sector": "semiconductor",
+          "layer": "memory",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Samsung Electronics",
+          "ticker": "005930.KO",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Siltronic",
+          "ticker": "WAF.XETRA",
+          "sector": "semiconductor",
+          "layer": "materials-components",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "TSMC",
+          "ticker": "TSM",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-006",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "healthcare"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Intuitive Surgical",
+          "ticker": "ISRG",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Stryker",
+          "ticker": "SYK",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-09-03",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 83,
+      "market_hypotheses": [
+        {
+          "name": "Amgen",
+          "ticker": "AMGN",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Argenx",
+          "ticker": "ARGX.BR",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Biogen",
+          "ticker": "BIIB",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Bristol Myers Squibb",
+          "ticker": "BMY",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Cardinal Health",
+          "ticker": "CAH",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Gilead Sciences",
+          "ticker": "GILD",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Henry Schein",
+          "ticker": "HSIC",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "IQVIA",
+          "ticker": "IQV",
+          "sector": "healthcare",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-007",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors_named": [
+        "power infrastructure"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Siemens Energy",
+          "ticker": "ENR.XETRA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "NextEra Energy",
+          "ticker": "NEE",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Schneider Electric",
+          "ticker": "SU.PA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Iberdrola",
+          "ticker": "IBE.MC",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-28",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 63,
+      "market_hypotheses": [
+        {
+          "name": "EDP - Energias de Portugal",
+          "ticker": "EDP.LS",
+          "sector": "power infrastructure",
+          "score": 20
+        },
+        {
+          "name": "Severn Trent",
+          "ticker": "SVT.LSE",
+          "sector": "power infrastructure",
+          "score": 20
+        },
+        {
+          "name": "Fortum",
+          "ticker": "FORTUM.HE",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "SSE plc",
+          "ticker": "SSE.LSE",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 16
+        },
+        {
+          "name": "Nexans",
+          "ticker": "NEX.PA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly",
+          "score": 16
+        },
+        {
+          "name": "EDP Renováveis",
+          "ticker": "EDPR.LS",
+          "sector": "power infrastructure",
+          "score": 15
+        },
+        {
+          "name": "EVN",
+          "ticker": "EVN.VI",
+          "sector": "power infrastructure",
+          "score": 15
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-013",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-25",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 1073,
+      "market_hypotheses": [
+        {
+          "name": "Admiral Group",
+          "ticker": "ADM.LSE",
+          "sector": "insurance",
+          "score": 20
+        },
+        {
+          "name": "Aena",
+          "ticker": "AENA.MC",
+          "sector": "travel and leisure",
+          "score": 20
+        },
+        {
+          "name": "Agilent Technologies",
+          "ticker": "A",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Airbnb",
+          "ticker": "ABNB",
+          "sector": "retail",
+          "score": 20
+        },
+        {
+          "name": "Airbnb, Inc.",
+          "ticker": "ABNB",
+          "sector": "information technology",
+          "score": 20
+        },
+        {
+          "name": "Aker BP",
+          "ticker": "AKRBP.OL",
+          "sector": "energy",
+          "score": 20
+        },
+        {
+          "name": "Allfunds Group",
+          "ticker": "ALLFG.AS",
+          "sector": "financial services",
+          "score": 20
+        },
+        {
+          "name": "Allianz",
+          "ticker": "ALV.XETRA",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented",
+          "score": 20
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-014",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "software"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "SAP",
+          "ticker": "SAP.XETRA",
+          "sector": "software",
+          "layer": "enterprise-software",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Dassault Systemes",
+          "ticker": "DSY.PA",
+          "sector": "software",
+          "layer": "engineering-software",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Palo Alto Networks",
+          "ticker": "PANW",
+          "sector": "software",
+          "layer": "cybersecurity",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Palantir Technologies",
+          "ticker": "PLTR",
+          "sector": "software",
+          "layer": "data-analytics",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Microsoft",
+          "ticker": "MSFT",
+          "sector": "software",
+          "layer": "enterprise-software",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Autodesk",
+          "ticker": "ADSK",
+          "sector": "software",
+          "layer": "engineering-software",
+          "structure": "duopoly"
+        },
+        {
+          "name": "CrowdStrike",
+          "ticker": "CRWD",
+          "sector": "software",
+          "layer": "cybersecurity",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Snowflake",
+          "ticker": "SNOW",
+          "sector": "software",
+          "layer": "data-analytics",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-20",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 19,
+      "market_hypotheses": [
+        {
+          "name": "Palo Alto Networks",
+          "ticker": "PANW",
+          "sector": "software",
+          "layer": "cybersecurity",
+          "structure": "fragmented",
+          "score": 15
+        },
+        {
+          "name": "Snowflake",
+          "ticker": "SNOW",
+          "sector": "software",
+          "layer": "data-analytics",
+          "structure": "fragmented",
+          "score": 15
+        },
+        {
+          "name": "Bechtle",
+          "ticker": "BC8.XETRA",
+          "sector": "software",
+          "score": 14
+        },
+        {
+          "name": "SAP",
+          "ticker": "SAP.XETRA",
+          "sector": "software",
+          "layer": "enterprise-software",
+          "structure": "oligopoly",
+          "score": 14
+        },
+        {
+          "name": "Autodesk",
+          "ticker": "ADSK",
+          "sector": "software",
+          "layer": "engineering-software",
+          "structure": "duopoly",
+          "score": 12
+        },
+        {
+          "name": "Microsoft",
+          "ticker": "MSFT",
+          "sector": "software",
+          "layer": "enterprise-software",
+          "structure": "oligopoly",
+          "score": 12
+        },
+        {
+          "name": "Palantir Technologies",
+          "ticker": "PLTR",
+          "sector": "software",
+          "layer": "data-analytics",
+          "structure": "fragmented",
+          "score": 12
+        },
+        {
+          "name": "Salesforce",
+          "ticker": "CRM",
+          "sector": "software",
+          "layer": "enterprise-software",
+          "structure": "oligopoly",
+          "score": 12
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-008",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-14",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 1075,
+      "market_hypotheses": [
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 19
+        },
+        {
+          "name": "APA Corporation",
+          "ticker": "APA",
+          "sector": "energy",
+          "score": 19
+        },
+        {
+          "name": "Arista Networks",
+          "ticker": "ANET",
+          "sector": "information technology",
+          "score": 19
+        },
+        {
+          "name": "ExxonMobil",
+          "ticker": "XOM",
+          "sector": "energy",
+          "score": 19
+        },
+        {
+          "name": "Gilead Sciences",
+          "ticker": "GILD",
+          "sector": "healthcare",
+          "score": 19
+        },
+        {
+          "name": "Gilead Sciences, Inc.",
+          "ticker": "GILD",
+          "sector": "information technology",
+          "score": 19
+        },
+        {
+          "name": "Hasbro",
+          "ticker": "HAS",
+          "sector": "retail",
+          "score": 19
+        },
+        {
+          "name": "Johnson Matthey",
+          "ticker": "JMAT.LSE",
+          "sector": "chemicals",
+          "score": 19
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-009",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "healthcare"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Intuitive Surgical",
+          "ticker": "ISRG",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Stryker",
+          "ticker": "SYK",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-11",
+      "snapshot_coverage": 980,
+      "ranked_before_limit": 85,
+      "market_hypotheses": [
+        {
+          "name": "Agilent Technologies",
+          "ticker": "A",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Amgen",
+          "ticker": "AMGN",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Becton Dickinson",
+          "ticker": "BDX",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Bio-Techne",
+          "ticker": "TECH",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Cardinal Health",
+          "ticker": "CAH",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Charles River Laboratories",
+          "ticker": "CRL",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Henry Schein",
+          "ticker": "HSIC",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Labcorp",
+          "ticker": "LH",
+          "sector": "healthcare",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-010",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-10",
+      "snapshot_coverage": 980,
+      "ranked_before_limit": 1077,
+      "market_hypotheses": [
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 22
+        },
+        {
+          "name": "APA Corporation",
+          "ticker": "APA",
+          "sector": "energy",
+          "score": 22
+        },
+        {
+          "name": "H&M",
+          "ticker": "HM-B.ST",
+          "sector": "retail",
+          "score": 22
+        },
+        {
+          "name": "Kingfisher",
+          "ticker": "KGF.LSE",
+          "sector": "retail",
+          "score": 22
+        },
+        {
+          "name": "Kingfisher plc",
+          "ticker": "KGF.LSE",
+          "sector": "retail",
+          "score": 22
+        },
+        {
+          "name": "Lockheed Martin",
+          "ticker": "LMT",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 22
+        },
+        {
+          "name": "Newmont",
+          "ticker": "NEM",
+          "sector": "materials",
+          "score": 22
+        },
+        {
+          "name": "Assa Abloy",
+          "ticker": "ASSA-B.ST",
+          "sector": "construction and materials",
+          "score": 21
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-015",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "defense"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Rheinmetall",
+          "ticker": "RHM.XETRA",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Lockheed Martin",
+          "ticker": "LMT",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-06",
+      "snapshot_coverage": 980,
+      "ranked_before_limit": 10,
+      "market_hypotheses": [
+        {
+          "name": "Airbus",
+          "ticker": "AIR.PA",
+          "sector": "defense",
+          "score": 17
+        },
+        {
+          "name": "BAE Systems",
+          "ticker": "BA.LSE",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Lockheed Martin",
+          "ticker": "LMT",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "RTX",
+          "ticker": "RTX",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Kongsberg Gruppen",
+          "ticker": "KOG.OL",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 15
+        },
+        {
+          "name": "Hensoldt",
+          "ticker": "HAG.XETRA",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 14
+        },
+        {
+          "name": "MTU Aero Engines",
+          "ticker": "MTX.XETRA",
+          "sector": "defense",
+          "score": 12
+        },
+        {
+          "name": "Northrop Grumman",
+          "ticker": "NOC",
+          "sector": "defense",
+          "layer": "defense",
+          "structure": "oligopoly",
+          "score": 0
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-011",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-08-05",
+      "snapshot_coverage": 980,
+      "ranked_before_limit": 1078,
+      "market_hypotheses": [
+        {
+          "name": "ABN AMRO",
+          "ticker": "ABN.AS",
+          "sector": "financial services",
+          "score": 20
+        },
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 20
+        },
+        {
+          "name": "Acerinox",
+          "ticker": "ACX.MC",
+          "sector": "basic resources",
+          "score": 20
+        },
+        {
+          "name": "Ageas",
+          "ticker": "AGS.BR",
+          "sector": "insurance",
+          "score": 20
+        },
+        {
+          "name": "Agilent Technologies",
+          "ticker": "A",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Airbus",
+          "ticker": "AIR.PA",
+          "sector": "defense",
+          "score": 20
+        },
+        {
+          "name": "Allianz",
+          "ticker": "ALV.XETRA",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented",
+          "score": 20
+        },
+        {
+          "name": "Ametek",
+          "ticker": "AME",
+          "sector": "industrials",
+          "score": 20
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-012",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-07-31",
+      "snapshot_coverage": 980,
+      "ranked_before_limit": 1079,
+      "market_hypotheses": [
+        {
+          "name": "3M",
+          "ticker": "MMM",
+          "sector": "industrials",
+          "score": 17
+        },
+        {
+          "name": "ABN AMRO",
+          "ticker": "ABN.AS",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Admiral Group",
+          "ticker": "ADM.LSE",
+          "sector": "insurance",
+          "score": 17
+        },
+        {
+          "name": "Aflac",
+          "ticker": "AFL",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Allfunds Group",
+          "ticker": "ALLFG.AS",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Allianz",
+          "ticker": "ALV.XETRA",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented",
+          "score": 17
+        },
+        {
+          "name": "Allstate",
+          "ticker": "ALL",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Amgen",
+          "ticker": "AMGN",
+          "sector": "healthcare",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-017",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors_named": [
+        "retail",
+        "financial services"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Walmart",
+          "ticker": "WMT",
+          "sector": "retail",
+          "layer": "retail",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Visa",
+          "ticker": "V",
+          "sector": "financial services",
+          "layer": "payments",
+          "structure": "duopoly"
+        },
+        {
+          "name": "London Stock Exchange Group",
+          "ticker": "LSEG.LSE",
+          "sector": "financial services",
+          "layer": "exchanges-data",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "JPMorgan Chase",
+          "ticker": "JPM",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Amazon",
+          "ticker": "AMZN",
+          "sector": "retail",
+          "layer": "retail",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Mastercard",
+          "ticker": "MA",
+          "sector": "financial services",
+          "layer": "payments",
+          "structure": "duopoly"
+        },
+        {
+          "name": "S&P Global",
+          "ticker": "SPGI",
+          "sector": "financial services",
+          "layer": "exchanges-data",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Goldman Sachs",
+          "ticker": "GS",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-19",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 235,
+      "market_hypotheses": [
+        {
+          "name": "CME Group",
+          "ticker": "CME",
+          "sector": "financial services",
+          "layer": "exchanges-data",
+          "structure": "oligopoly",
+          "score": 21
+        },
+        {
+          "name": "Allfunds Group",
+          "ticker": "ALLFG.AS",
+          "sector": "financial services",
+          "score": 20
+        },
+        {
+          "name": "Altria",
+          "ticker": "MO",
+          "sector": "retail",
+          "score": 20
+        },
+        {
+          "name": "B&M European Value Retail",
+          "ticker": "BME.LSE",
+          "sector": "retail",
+          "score": 20
+        },
+        {
+          "name": "Church & Dwight",
+          "ticker": "CHD",
+          "sector": "retail",
+          "score": 20
+        },
+        {
+          "name": "Coca-Cola Company",
+          "ticker": "KO",
+          "sector": "retail",
+          "score": 20
+        },
+        {
+          "name": "Deutsche Boerse",
+          "ticker": "DB1.XETRA",
+          "sector": "financial services",
+          "layer": "exchanges-data",
+          "structure": "oligopoly",
+          "score": 20
+        },
+        {
+          "name": "Deutsche Börse",
+          "ticker": "DB1.XETRA",
+          "sector": "financial services",
+          "score": 20
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-018",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors_named": [
+        "healthcare"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Intuitive Surgical",
+          "ticker": "ISRG",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Stryker",
+          "ticker": "SYK",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-21",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 82,
+      "market_hypotheses": [
+        {
+          "name": "Agilent Technologies",
+          "ticker": "A",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Becton Dickinson",
+          "ticker": "BDX",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Bio-Techne",
+          "ticker": "TECH",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Biogen",
+          "ticker": "BIIB",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Cardinal Health",
+          "ticker": "CAH",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Centene Corporation",
+          "ticker": "CNC",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Charles River Laboratories",
+          "ticker": "CRL",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Demant",
+          "ticker": "DEMANT.CO",
+          "sector": "healthcare",
+          "score": 20
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-001",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "semiconductor"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly"
+        },
+        {
+          "name": "Lam Research",
+          "ticker": "LRCX",
+          "sector": "semiconductor",
+          "layer": "wafer-fab-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "KLA Corporation",
+          "ticker": "KLAC",
+          "sector": "semiconductor",
+          "layer": "inspection-metrology",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Synopsys",
+          "ticker": "SNPS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Arm Holdings",
+          "ticker": "ARM",
+          "sector": "semiconductor",
+          "layer": "chip-ip",
+          "structure": "monopoly"
+        },
+        {
+          "name": "TSMC",
+          "ticker": "TSM",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Nvidia",
+          "ticker": "NVDA",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "SK Hynix",
+          "ticker": "000660.KO",
+          "sector": "semiconductor",
+          "layer": "memory",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-28",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 23,
+      "market_hypotheses": [
+        {
+          "name": "Analog Devices",
+          "ticker": "ADI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 17
+        },
+        {
+          "name": "NXP Semiconductors",
+          "ticker": "NXPI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 17
+        },
+        {
+          "name": "Texas Instruments",
+          "ticker": "TXN",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 17
+        },
+        {
+          "name": "Advanced Micro Devices",
+          "ticker": "AMD",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly",
+          "score": 15
+        },
+        {
+          "name": "Entegris",
+          "ticker": "ENTG",
+          "sector": "semiconductor",
+          "layer": "materials-components",
+          "structure": "oligopoly",
+          "score": 15
+        },
+        {
+          "name": "TSMC",
+          "ticker": "TSM",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly",
+          "score": 15
+        },
+        {
+          "name": "Cadence Design Systems",
+          "ticker": "CDNS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly",
+          "score": 14
+        },
+        {
+          "name": "Synopsys",
+          "ticker": "SNPS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly",
+          "score": 12
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-019",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "above_gd200",
+        "correction"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-26",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 1057,
+      "market_hypotheses": [
+        {
+          "name": "BT Group",
+          "ticker": "BT-A.LSE",
+          "sector": "telecommunications",
+          "score": 25
+        },
+        {
+          "name": "British American Tobacco",
+          "ticker": "BATS.LSE",
+          "sector": "food, beverage and tobacco",
+          "score": 25
+        },
+        {
+          "name": "Cboe Global Markets",
+          "ticker": "CBOE",
+          "sector": "financial services",
+          "score": 25
+        },
+        {
+          "name": "Dow Inc.",
+          "ticker": "DOW",
+          "sector": "materials",
+          "score": 25
+        },
+        {
+          "name": "Ericsson",
+          "ticker": "ERIC-B.ST",
+          "sector": "telecommunications",
+          "score": 25
+        },
+        {
+          "name": "Linde plc",
+          "ticker": "LIN",
+          "sector": "materials",
+          "score": 25
+        },
+        {
+          "name": "Ocado",
+          "ticker": "OCDO.LSE",
+          "sector": "retail",
+          "score": 25
+        },
+        {
+          "name": "Texas Instruments",
+          "ticker": "TXN",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 25
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-020",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "steady_uptrend"
+      ],
+      "sectors_named": [
+        "semiconductor"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly"
+        },
+        {
+          "name": "KLA Corporation",
+          "ticker": "KLAC",
+          "sector": "semiconductor",
+          "layer": "inspection-metrology",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Synopsys",
+          "ticker": "SNPS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Cadence Design Systems",
+          "ticker": "CDNS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly"
+        },
+        {
+          "name": "Arm Holdings",
+          "ticker": "ARM",
+          "sector": "semiconductor",
+          "layer": "chip-ip",
+          "structure": "monopoly"
+        },
+        {
+          "name": "Lam Research",
+          "ticker": "LRCX",
+          "sector": "semiconductor",
+          "layer": "wafer-fab-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "TSMC",
+          "ticker": "TSM",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Nvidia",
+          "ticker": "NVDA",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-10-29",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 22,
+      "market_hypotheses": [
+        {
+          "name": "NXP Semiconductors",
+          "ticker": "NXPI",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 21
+        },
+        {
+          "name": "Texas Instruments",
+          "ticker": "TXN",
+          "sector": "semiconductor",
+          "layer": "analog-mcu",
+          "structure": "fragmented",
+          "score": 21
+        },
+        {
+          "name": "Advanced Micro Devices",
+          "ticker": "AMD",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly",
+          "score": 19
+        },
+        {
+          "name": "Entegris",
+          "ticker": "ENTG",
+          "sector": "semiconductor",
+          "layer": "materials-components",
+          "structure": "oligopoly",
+          "score": 19
+        },
+        {
+          "name": "Cadence Design Systems",
+          "ticker": "CDNS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly",
+          "score": 14
+        },
+        {
+          "name": "Synopsys",
+          "ticker": "SNPS",
+          "sector": "semiconductor",
+          "layer": "chip-design-software",
+          "structure": "duopoly",
+          "score": 12
+        },
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly",
+          "score": 11
+        },
+        {
+          "name": "TSMC",
+          "ticker": "TSM",
+          "sector": "semiconductor",
+          "layer": "foundry",
+          "structure": "oligopoly",
+          "score": 11
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-021",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors_named": [
+        "power infrastructure"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Siemens Energy",
+          "ticker": "ENR.XETRA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "NextEra Energy",
+          "ticker": "NEE",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Schneider Electric",
+          "ticker": "SU.PA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Iberdrola",
+          "ticker": "IBE.MC",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-09-11",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 61,
+      "market_hypotheses": [
+        {
+          "name": "EDP - Energias de Portugal",
+          "ticker": "EDP.LS",
+          "sector": "power infrastructure",
+          "score": 20
+        },
+        {
+          "name": "Fortum",
+          "ticker": "FORTUM.HE",
+          "sector": "power infrastructure",
+          "score": 20
+        },
+        {
+          "name": "RWE",
+          "ticker": "RWE.XETRA",
+          "sector": "power infrastructure",
+          "score": 20
+        },
+        {
+          "name": "Verbund",
+          "ticker": "VER.VI",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 15
+        },
+        {
+          "name": "EVN",
+          "ticker": "EVN.VI",
+          "sector": "power infrastructure",
+          "score": 15
+        },
+        {
+          "name": "Eaton",
+          "ticker": "ETN",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly",
+          "score": 15
+        },
+        {
+          "name": "Naturgy",
+          "ticker": "NTGY.MC",
+          "sector": "power infrastructure",
+          "score": 15
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-022",
+      "identification_status": null,
+      "input_completeness": "headline_only",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [
+        "power infrastructure"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Siemens Energy",
+          "ticker": "ENR.XETRA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "NextEra Energy",
+          "ticker": "NEE",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Schneider Electric",
+          "ticker": "SU.PA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Iberdrola",
+          "ticker": "IBE.MC",
+          "sector": "power infrastructure",
+          "layer": "utility",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-09-10",
+      "snapshot_coverage": 981,
+      "ranked_before_limit": 62,
+      "market_hypotheses": [
+        {
+          "name": "AES Corporation",
+          "ticker": "AES",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "EDP - Energias de Portugal",
+          "ticker": "EDP.LS",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "Fortum",
+          "ticker": "FORTUM.HE",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "RWE",
+          "ticker": "RWE.XETRA",
+          "sector": "power infrastructure",
+          "score": 17
+        },
+        {
+          "name": "EVN",
+          "ticker": "EVN.VI",
+          "sector": "power infrastructure",
+          "score": 15
+        },
+        {
+          "name": "Naturgy",
+          "ticker": "NTGY.MC",
+          "sector": "power infrastructure",
+          "score": 15
+        },
+        {
+          "name": "Schneider Electric",
+          "ticker": "SU.PA",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly",
+          "score": 15
+        },
+        {
+          "name": "American Water Works",
+          "ticker": "AWK",
+          "sector": "power infrastructure",
+          "score": 14
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-023",
+      "identification_status": null,
+      "input_completeness": "headline_only",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-06-08",
+      "snapshot_coverage": 979,
+      "ranked_before_limit": 1081,
+      "market_hypotheses": [
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly",
+          "score": 17
+        },
+        {
+          "name": "ASML Holding N.V. New York Registry Shares",
+          "ticker": "ASML",
+          "sector": "information technology",
+          "score": 17
+        },
+        {
+          "name": "AbbVie",
+          "ticker": "ABBV",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Applied Materials",
+          "ticker": "AMAT",
+          "sector": "semiconductor",
+          "layer": "wafer-fab-equipment",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Applied Materials, Inc.",
+          "ticker": "AMAT",
+          "sector": "information technology",
+          "score": 17
+        },
+        {
+          "name": "Argenx",
+          "ticker": "ARGX.BR",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "BNP Paribas",
+          "ticker": "BNP.PA",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Beazley",
+          "ticker": "BEZ.LSE",
+          "sector": "insurance",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-024",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors_named": [
+        "financial services"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Visa",
+          "ticker": "V",
+          "sector": "financial services",
+          "layer": "payments",
+          "structure": "duopoly"
+        },
+        {
+          "name": "London Stock Exchange Group",
+          "ticker": "LSEG.LSE",
+          "sector": "financial services",
+          "layer": "exchanges-data",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "JPMorgan Chase",
+          "ticker": "JPM",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented"
+        },
+        {
+          "name": "Mastercard",
+          "ticker": "MA",
+          "sector": "financial services",
+          "layer": "payments",
+          "structure": "duopoly"
+        },
+        {
+          "name": "S&P Global",
+          "ticker": "SPGI",
+          "sector": "financial services",
+          "layer": "exchanges-data",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Goldman Sachs",
+          "ticker": "GS",
+          "sector": "financial services",
+          "layer": "banks",
+          "structure": "fragmented"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-06-02",
+      "snapshot_coverage": 979,
+      "ranked_before_limit": 132,
+      "market_hypotheses": [
+        {
+          "name": "Barclays",
+          "ticker": "BARC.LSE",
+          "sector": "financial services",
+          "score": 19
+        },
+        {
+          "name": "BBVA",
+          "ticker": "BBVA.MC",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "BNP Paribas",
+          "ticker": "BNP.PA",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "BNY Mellon",
+          "ticker": "BNY",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Banco Bilbao Vizcaya Argentaria",
+          "ticker": "BBVA.MC",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Banco Sabadell",
+          "ticker": "SAB.MC",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Bank of America",
+          "ticker": "BAC",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "Bankinter",
+          "ticker": "BKT.MC",
+          "sector": "financial services",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-025",
+      "identification_status": null,
+      "input_completeness": "headline_only",
+      "source_packet_status": null,
+      "chart_clues": [],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-05-29",
+      "snapshot_coverage": 979,
+      "ranked_before_limit": 1083,
+      "market_hypotheses": [
+        {
+          "name": "ABB",
+          "ticker": "ABBN.SW",
+          "sector": "power infrastructure",
+          "layer": "grid-equipment",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "ABB Ltd",
+          "ticker": "ABBN.SW",
+          "sector": "industrial goods and services",
+          "score": 17
+        },
+        {
+          "name": "ABN AMRO",
+          "ticker": "ABN.AS",
+          "sector": "financial services",
+          "score": 17
+        },
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly",
+          "score": 17
+        },
+        {
+          "name": "ASML Holding N.V. New York Registry Shares",
+          "ticker": "ASML",
+          "sector": "information technology",
+          "score": 17
+        },
+        {
+          "name": "AT&S",
+          "ticker": "ATS.VI",
+          "sector": "electronics",
+          "score": 17
+        },
+        {
+          "name": "Acerinox",
+          "ticker": "ACX.MC",
+          "sector": "basic resources",
+          "score": 17
+        },
+        {
+          "name": "Advanced Micro Devices",
+          "ticker": "AMD",
+          "sector": "semiconductor",
+          "layer": "ai-processors",
+          "structure": "oligopoly",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-026",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors_named": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "offline_hypotheses": [],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-06-11",
+      "snapshot_coverage": 979,
+      "ranked_before_limit": 1080,
+      "market_hypotheses": [
+        {
+          "name": "ASM International",
+          "ticker": "ASM.AS",
+          "sector": "semiconductor",
+          "layer": "materials-components",
+          "structure": "oligopoly",
+          "score": 20
+        },
+        {
+          "name": "ASML Holding",
+          "ticker": "ASML",
+          "sector": "semiconductor",
+          "layer": "lithography",
+          "structure": "monopoly",
+          "score": 20
+        },
+        {
+          "name": "ASML Holding N.V. New York Registry Shares",
+          "ticker": "ASML",
+          "sector": "information technology",
+          "score": 20
+        },
+        {
+          "name": "Acerinox",
+          "ticker": "ACX.MC",
+          "sector": "basic resources",
+          "score": 20
+        },
+        {
+          "name": "Amgen",
+          "ticker": "AMGN",
+          "sector": "healthcare",
+          "score": 20
+        },
+        {
+          "name": "Amgen Inc.",
+          "ticker": "AMGN",
+          "sector": "information technology",
+          "score": 20
+        },
+        {
+          "name": "Applied Materials",
+          "ticker": "AMAT",
+          "sector": "semiconductor",
+          "layer": "wafer-fab-equipment",
+          "structure": "oligopoly",
+          "score": 20
+        },
+        {
+          "name": "Applied Materials, Inc.",
+          "ticker": "AMAT",
+          "sector": "information technology",
+          "score": 20
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    },
+    {
+      "case_id": "HT-027",
+      "identification_status": null,
+      "input_completeness": "complete",
+      "source_packet_status": null,
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors_named": [
+        "pharmaceutical",
+        "healthcare"
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "offline_hypotheses": [
+        {
+          "name": "Intuitive Surgical",
+          "ticker": "ISRG",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Novo Nordisk",
+          "ticker": "NOVO-B.CO",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Thermo Fisher Scientific",
+          "ticker": "TMO",
+          "sector": "pharmaceutical",
+          "layer": "life-science-tools",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Stryker",
+          "ticker": "SYK",
+          "sector": "healthcare",
+          "layer": "medtech",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Eli Lilly",
+          "ticker": "LLY",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly"
+        },
+        {
+          "name": "Danaher",
+          "ticker": "DHR",
+          "sector": "pharmaceutical",
+          "layer": "life-science-tools",
+          "structure": "oligopoly"
+        }
+      ],
+      "market_hypothesis_status": "unverified_chart_universe_suggestions",
+      "snapshot_as_of": "2026-07-07",
+      "snapshot_coverage": 980,
+      "ranked_before_limit": 100,
+      "market_hypotheses": [
+        {
+          "name": "Roche",
+          "ticker": "RO.SW",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly",
+          "score": 19
+        },
+        {
+          "name": "Amgen",
+          "ticker": "AMGN",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "AstraZeneca",
+          "ticker": "AZN.LSE",
+          "sector": "pharmaceutical",
+          "layer": "pharma",
+          "structure": "oligopoly",
+          "score": 17
+        },
+        {
+          "name": "Bayer",
+          "ticker": "BAYN.XETRA",
+          "sector": "pharmaceutical",
+          "score": 17
+        },
+        {
+          "name": "Becton Dickinson",
+          "ticker": "BDX",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Cardinal Health",
+          "ticker": "CAH",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "Charles River Laboratories",
+          "ticker": "CRL",
+          "sector": "healthcare",
+          "score": 17
+        },
+        {
+          "name": "DaVita",
+          "ticker": "DVA",
+          "sector": "healthcare",
+          "score": 17
+        }
+      ],
+      "interpretation": "Unverified local hypotheses only; chart/sector matches are not identifications."
+    }
+  ],
+  "summary": {
+    "cases": 27,
+    "with_offline_hypotheses": 17,
+    "with_market_hypotheses": 26,
+    "snapshots_not_provided": 0
+  }
+}

@@ -30,8 +30,24 @@
     "in_universe_at_freeze": false,
     "error_class": "A_universe",
     "error_analysis": "Deutsche Bank was absent from global_universe.json (115 assets). Frozen market Top-8 were LLY, HNR1, IBE, KOG, LMT, MA, NXPI, NOVN. No active-call block applied. Chart-only above_gd200 suggestions cannot recover a name outside the universe. Do not retune scores for this case.",
-    "algorithm_change": "None for this freeze. Follow-up: curated EU-bank universe gap (separate change, not a winner rule for BLIND-202-26). Add Deutsche Bank to featured_calls blocklist for future teasers."
+    "algorithm_change": "None for this freeze. Index-pool v1 closes the universe gap for future cases (not a winner rule for BLIND-202-26). Add Deutsche Bank to featured_calls blocklist for future teasers."
   },
+  "posthoc_pool_pit": {
+    "recorded_at": "2026-10-30T19:05:00+00:00",
+    "snapshots_meta": "docs/examples/snapshots-pit-pool-v1-remap-2026-10-30.meta.json",
+    "diagnosis": "docs/examples/blind-202-26-diagnosis-pool-pit.json",
+    "notes": "docs/examples/blind-202-26-pool-pit-diagnosis-notes-2026-10-30.md",
+    "detail": "docs/examples/blind-202-26-pool-pit-posthoc.json",
+    "dbk_in_pool_pit": true,
+    "in_pool_top8": false,
+    "dbk_match_score": 10,
+    "dbk_rank_among_scored": 622,
+    "names_at_score_23": 112,
+    "residual_error_class": "B_chart_rank",
+    "first_ranking_unchanged": true,
+    "no_score_retune": true
+  },
+
   "newsletter_stated_product": {
     "underlying": "Deutsche Bank",
     "call_wkn": "WB14HL",

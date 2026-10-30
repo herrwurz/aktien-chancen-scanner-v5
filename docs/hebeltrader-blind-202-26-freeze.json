@@ -46,6 +46,14 @@
     "in_frozen_top8": false,
     "first_ranking_unchanged": true
   },
+  "posthoc_pool_pit_diagnosis": {
+    "diagnosis": "docs/examples/blind-202-26-diagnosis-pool-pit.json",
+    "notes": "docs/examples/blind-202-26-pool-pit-diagnosis-notes-2026-10-30.md",
+    "posthoc_json": "docs/examples/blind-202-26-pool-pit-posthoc.json",
+    "residual_error_class": "B_chart_rank",
+    "dbk_in_pool_top8": false,
+    "no_score_retune": true
+  },
   "rules": [
     "Solution unknown at freeze time; do not retune logic after resolution.",
     "Market hypotheses are unverified chart-universe suggestions, not identifications.",

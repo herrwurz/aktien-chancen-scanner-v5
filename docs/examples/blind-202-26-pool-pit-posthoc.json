@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "case_id": "BLIND-202-26",
+  "kind": "posthoc_pool_pit_diagnosis",
+  "freeze_unchanged": true,
+  "no_score_retune": true,
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "diagnosis": "docs/examples/blind-202-26-diagnosis-pool-pit.json",
+  "snapshot_as_of": "2026-10-30",
+  "snapshot_coverage": 981,
+  "universe": {
+    "dbk_in_pool_pit": true,
+    "ticker": "DBK.XETRA",
+    "freeze_error_class": "A_universe",
+    "class_a_status": "closed_by_index_pool_v1"
+  },
+  "dbk_features_as_of": {
+    "above_gd200": true,
+    "above_gd50": false,
+    "breakout": false,
+    "gd200_rising": false,
+    "return_1y_pct": -0.7,
+    "near_high_pct": -15.9,
+    "last": 30.08,
+    "gd50": 31.96,
+    "gd200": 29.59
+  },
+  "ranking": {
+    "chart_clues": ["above_gd200"],
+    "sectors_named": [],
+    "dbk_match_score": 10,
+    "dbk_rank_among_scored": 622,
+    "names_at_score_23": 112,
+    "ranked_before_limit": 1053,
+    "in_pool_top8": false,
+    "pool_top8": [
+      "APA",
+      "A",
+      "AI.PA",
+      "APD",
+      "ALLFG.AS",
+      "MO",
+      "AMGN",
+      "AMGN"
+    ],
+    "note": "Top-8 among many score=23 ties is alphabetical by name; not an identification."
+  },
+  "residual_error_class": "B_chart_rank",
+  "interpretation": "Index-pool closes the freeze universe gap (class A). Chart-only match_score still leaves DBK at 10 vs 112 names at 23 on publication_date EOD. Residual is chart-rank density, not absence. Do not retune scores for BLIND-202-26."
+}

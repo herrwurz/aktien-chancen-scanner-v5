@@ -49,10 +49,19 @@ IT→XETRA/US wo möglich). Datei: `index_pool_ticker_remap_v1.json`.
 Re-Export: **994/1044** Bars, Coverage **979–981** (vorher 919 / 904–906).
 Meta: `docs/examples/snapshots-pit-pool-v1-remap-2026-10-30.meta.json`.
 
-## 8. Offen (nächste Schritte)
-**A.** Refs/Blind mit Pool-PIT diagnostizieren (ohne Score-Retuning von 202/26).
+## 8. Pool-PIT Diagnose Refs/Blind (2026-10-30)
+`case_diagnose` auf Remap-Pool-PIT (coverage 979–981). **Kein Score-Retuning.**
 
-**B.** Evidenz-Kanal stärken (Quellenpakete), Charts nur als Tie-Break.
+- Blind 202/26: Klasse **A** geschlossen (`DBK.XETRA` kandidierbar); Residual **B_chart_rank**
+  (Score 10, Rang ~622; 112× Score 23). Freeze unverändert.
+- 27er Market Top-8: 6→7 / Top3 2→3 (entwicklungsdiagnostisch). Coverage ≫ kuratiert, Treffer nur leicht ↑.
+- Artefakte: `*-diagnosis-pool-pit.*`, `*-pool-pit-diagnosis-notes-2026-10-30.md`,
+  `blind-202-26-pool-pit-posthoc.json`.
+
+## 9. Offen (nächste Schritte)
+**A.** Evidenz-Kanal stärken (Quellenpakete), Charts nur als Tie-Break.
+
+**B.** Optional: Pool+Overlay-Ticker-Dedup (z. B. doppeltes AMGN in Top-8).
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
