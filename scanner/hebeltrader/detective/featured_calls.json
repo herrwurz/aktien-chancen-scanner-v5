@@ -179,6 +179,13 @@
       "featured_date": "2026-10-29",
       "featured_issue": "201/26",
       "source_case_id": "HT-020"
+    },
+    {
+      "company": "Deutsche Bank",
+      "ticker": "DBK",
+      "featured_date": "2026-10-30",
+      "featured_issue": "202/26",
+      "source_case_id": "BLIND-202-26"
     }
   ]
 }

@@ -25,6 +25,27 @@
     "market_status": "unverified_chart_universe_suggestions",
     "chart_clues": ["above_gd200"]
   },
+  "freeze_with_pit_snapshots_and_active_call_exclusion": {
+    "root": "docs/examples/blind-202-26-freeze-pit-excl",
+    "snapshots_meta": "docs/examples/snapshots-pit-2026-10-30.meta.json",
+    "snapshot_as_of": "2026-10-30",
+    "pit_basis": "publication_date_eod",
+    "ranking_sha256": "3fff83e1387325ccf8c1fc47d49940c5d9385244fd00518c1ea0c4722a331b0f",
+    "status": "not_identified",
+    "market_status": "unverified_chart_universe_suggestions",
+    "chart_clues": ["above_gd200"],
+    "market_top8": ["LLY", "HNR1.XETRA", "IBE.MC", "KOG.OL", "LMT", "MA", "NXPI", "NOVN.SW"]
+  },
+  "resolution": {
+    "documented_in": "docs/hebeltrader-202-26-resolution.md",
+    "json": "docs/hebeltrader-202-26-resolution.json",
+    "underlying": "Deutsche Bank",
+    "call_wkn": "WB14HL",
+    "prediction_outcome": "miss",
+    "error_class": "A_universe",
+    "in_frozen_top8": false,
+    "first_ranking_unchanged": true
+  },
   "rules": [
     "Solution unknown at freeze time; do not retune logic after resolution.",
     "Market hypotheses are unverified chart-universe suggestions, not identifications.",
