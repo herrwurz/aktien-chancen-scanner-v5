@@ -45,11 +45,34 @@ curl -sS -A 'Mozilla/5.0' -H 'Accept: application/json' \
 INDEX_POOL_NDX_JSON=/tmp/ndx_nasdaq.json python3 scripts/build_index_pool_v1.py
 ```
 
+## PIT-Export (Pool)
+
+Meta: [`docs/examples/snapshots-pit-pool-v1-2026-10-30.meta.json`](examples/snapshots-pit-pool-v1-2026-10-30.meta.json)  
+Voll-JSON: gitignored `reports/snapshots-pit-pool-v1-2026-10-30.json`.
+
+| Kennzahl | Wert |
+|---|---:|
+| Attempted | 1045 |
+| Succeeded bars | 919 |
+| Coverage / as_of | 904–906 |
+| as_of dates | 27 |
+| Status | partial |
+
+Spot-Checks ok: `DBK.XETRA`, ATX (`EBS.VI`, `BG.VI`, `POST.VI`, …).  
+~126 Ticker-Map-Fehler (Share-Classes/Lokal-Suffixe, z. B. Schweden/Italien/UK) → Follow-up, kein Sektor-Patch.
+
+```bash
+python3 -m scanner.hebeltrader.detective.market_screen export-pit \
+  reports/snapshots-pit-pool-v1-2026-10-30.json \
+  --inputs docs/examples/reference-27-inputs.json
+```
+
 ## Budget / nächste Schritte
 
-1. Pool committed → **0 € Extra**.
-2. PIT-/Snapshot-Export auf dem Pool (~1.1k Tickers, 1 Call/Ticker) bei Bedarf.
-3. EODHD Fundamentals (~60 $/Mo) erst wenn automatischer Constituent-Refresh den
+1. Pool + ATX committed → **0 € Extra**.
+2. PIT-Meta committed; Voll-JSON lokal unter `reports/`.
+3. Ticker-Normalisierung für Share-Classes verbessern (Coverage ↑).
+4. EODHD Fundamentals (~60 $/Mo) erst wenn automatischer Constituent-Refresh den
    manuellen Quartals-Rebuild klar schlägt.
 
 Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning). Der Pool behebt die
