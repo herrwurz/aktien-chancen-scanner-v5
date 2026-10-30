@@ -7,7 +7,7 @@ from scanner.hebeltrader.detective.reference_scan import run_scan
 from scanner.hebeltrader.detective.structure_screen import load_universe
 
 UP = [100 + i * 0.3 for i in range(300)]
-BLIND = Path("data/hebeltrader/blind-202-26.json")
+BLIND = Path("docs/examples/blind-202-26-inputs.json")
 
 
 def test_reference_scan_attaches_market_hypotheses_from_snapshots(tmp_path):

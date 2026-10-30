@@ -14,8 +14,8 @@ Blindtest 202/26 war noch nicht eingefroren.
 - **Ticker-Abdeckung:** alle 115 Universumsnamen haben Primärlisting-Ticker (EODHD-Suffixe für
   Nicht-US). Kriterien dokumentiert in `global_universe.json` (`ticker_policy`); keine
   lösungsgetriebenen Namens-Erweiterungen.
-- **Blindfall:** `data/hebeltrader/blind-202-26.json` + eingefrorenes Ranking unter
-  `docs/examples/blind-202-26-freeze/` und Meta
+- **Blindfall:** [`docs/examples/blind-202-26-inputs.json`](examples/blind-202-26-inputs.json)
+  + eingefrorenes Ranking unter `docs/examples/blind-202-26-freeze/` und Meta
   [`hebeltrader-blind-202-26-freeze.json`](hebeltrader-blind-202-26-freeze.json)
   (SHA in der Datei). Lösung unbekannt; nach Auflösung nicht nachkalibrieren.
 - **`reference_scan --snapshots`:** optional Chart-Hypothesen aus `market_screen`-Export;
