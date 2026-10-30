@@ -23,7 +23,7 @@ from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
 from .sources import UnavailableResearchSource
-from .structure_screen import screen_queries, ticker_for
+from .structure_screen import screen_queries, screened_names, structure_bonus, ticker_for
 from .temporal import assess_document, timestamp
 from .verification import verify_candidates
 
@@ -143,7 +143,7 @@ def _entities(text):
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
-SEARCH_LOGIC_VERSION = "2026-10-31-search-v6"
+SEARCH_LOGIC_VERSION = "2026-10-31-search-v7"
 _LEGAL_WORDS = re.compile(
     r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag|se|sa|nv|n v|holding|holdings"
     r"|co|company|group|the)\b"
@@ -212,13 +212,30 @@ def _clues(text, spans):
     )
 
 
-def _apply_chart(ranked, top=6):
+def _is_hypothesis(name, hypotheses):
+    # A document about a shortlisted company stays comparison evidence even without AI-cited
+    # clue support; the ranking then relies on structure and chart instead.
+    key = canonical_company(name)
+    return any(canonical_company(h) == key for h in hypotheses)
+
+
+def _apply_chart(ranked, cache, text, top=6):
     # Chart clues (long uptrend, breakout) are checked with market data, not web text.
+    for row in ranked:
+        data = row["identity"]
+        data = data if isinstance(data, dict) else data.model_dump()
+        structure = structure_bonus(data.get("name") or "", text)
+        if structure:
+            row["market_structure"] = structure
+            row["evidence_score"] += structure["bonus"]
     for row in ranked[:top]:
         identity = row["identity"]
         data = identity if isinstance(identity, dict) else identity.model_dump()
         ticker = data.get("ticker") or ticker_for(data.get("name") or "")
-        result = chart_check(ticker) if ticker else {"status": "no_ticker"}
+        key = row["asset_id"]
+        if key not in cache:
+            cache[key] = chart_check(ticker) if ticker else {"status": "no_ticker"}
+        result = cache[key]
         row["chart"] = result
         if result["status"] == "ok":
             row["evidence_score"] += chart_score(result)
@@ -417,7 +434,9 @@ class Investigator:
             try:
                 planned = apis.plan(text)
                 semantic_clues = planned["clues"]
-                hypotheses = planned.get("candidate_hypotheses", [])
+                hypotheses = list(
+                    dict.fromkeys(planned.get("candidate_hypotheses", []) + screened_names(text))
+                )
                 for item in semantic_clues:
                     start = text.index(item["quote"])
                     clues.append(
@@ -521,6 +540,7 @@ class Investigator:
                     isinstance(interpretation, dict)
                     and not interpretation.get("ticker")
                     and not interpretation.get("findings")
+                    and not _is_hypothesis(name, hypotheses)
                 ):
                     # A named publisher, research platform, or article author is not enough to
                     # establish a listed-stock candidate. Keep only identities tied to a quoted
@@ -679,8 +699,9 @@ class Investigator:
             return result
 
         ranked = compare()
+        chart_cache = {}
         if not offline:
-            _apply_chart(ranked)
+            _apply_chart(ranked, chart_cache, text)
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -726,6 +747,8 @@ class Investigator:
                 queries=falsification_queries,
             )
             ranked = compare()
+        if not offline:
+            _apply_chart(ranked, chart_cache, text)
         reasoning_review = {
             "status": "not_available_offline" if offline else "not_performed_no_candidates",
             "changes_deterministic_ranking": False,

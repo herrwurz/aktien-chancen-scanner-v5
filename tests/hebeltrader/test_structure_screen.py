@@ -36,3 +36,19 @@ def test_interleave_alternates_and_caps():
     merged = _interleave(["p1", "p2"], ["s1", "s2"], ["f1"], cap=10)
     assert merged == ["p1", "s1", "p2", "s2", "f1"]
     assert len(_interleave([f"p{i}" for i in range(9)], [f"s{i}" for i in range(9)], [])) == 10
+
+
+def test_structure_bonus_only_for_no_choice_wording_and_concentrated_layers():
+    from scanner.hebeltrader.detective.structure_screen import structure_bonus
+
+    assert structure_bonus("Synopsys", DOMINANT)["bonus"] == 15
+    assert structure_bonus("Nvidia", DOMINANT)["bonus"] == 2
+    assert structure_bonus("Synopsys", "Starkes Wachstum bei Chips") is None
+    assert structure_bonus("Unbekannt", DOMINANT) is None
+
+
+def test_hypothesis_name_matches_legal_form_variants():
+    from scanner.hebeltrader.detective.investigation import _is_hypothesis
+
+    assert _is_hypothesis("Synopsys Inc.", ["Synopsys"])
+    assert not _is_hypothesis("Nvidia", ["Synopsys"])
