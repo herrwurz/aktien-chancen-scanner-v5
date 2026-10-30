@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .featured_calls import blocked_features
 from .history import freeze_analysis
 from .investigation import InvestigationRequest, Investigator
 from .market_screen import rank as market_rank
@@ -78,7 +79,18 @@ def run_scan(inputs, root, source_packets=None, snapshots=None):
             "complete" if case["teaser_text"] else "headline_only"
         )
         blob = _teaser_blob(case)
-        report["offline_hypotheses"] = screen(blob, limit=8)
+        blocked = blocked_features(case.get("publication_date"))
+        report["recent_call_exclusions"] = {
+            "status": blocked["status"],
+            "lookback_days": blocked.get("lookback_days"),
+            "as_of": blocked.get("as_of"),
+            "excluded": blocked.get("entries") or [],
+            "interpretation": (
+                "Prior HEBELTRADER featured underlyings within the lookback window are "
+                "removed from offline/market hypotheses only; not used as solutions."
+            ),
+        }
+        report["offline_hypotheses"] = screen(blob, limit=8, blocked=blocked)
         report["offline_hypothesis_status"] = (
             "unverified_sector_universe_suggestions"
             if report["offline_hypotheses"]
@@ -94,7 +106,7 @@ def run_scan(inputs, root, source_packets=None, snapshots=None):
                     "pit_basis": resolved.get("pit_basis"),
                 }
             else:
-                market = market_rank(blob, resolved["snapshots"], limit=8)
+                market = market_rank(blob, resolved["snapshots"], limit=8, blocked=blocked)
                 report["market_hypotheses"] = market["ranking"]
                 report["market_hypothesis_meta"] = {
                     "clues": market["clues"],
@@ -103,6 +115,7 @@ def run_scan(inputs, root, source_packets=None, snapshots=None):
                     "snapshot_coverage": market["snapshot_coverage"],
                     "ranked_before_limit": market["ranked_before_limit"],
                     "pit_basis": resolved.get("pit_basis"),
+                    "excluded_recent_calls": len(blocked.get("entries") or []),
                     "status": (
                         "unverified_chart_universe_suggestions"
                         if market["ranking"]

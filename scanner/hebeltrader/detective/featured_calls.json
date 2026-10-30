@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader_featured_calls_blocklist",
+  "note": "Past HEBELTRADER featured underlyings used ONLY to exclude hypothesis candidates. Never treated as solutions or scan inputs. Scan loads this file, never teaser-cases.json.",
+  "default_lookback_days": 180,
+  "policy": "As of a teaser publication_date D, exclude any featured call with featured_date < D and D - featured_date <= lookback_days. Rationale: publisher rarely re-issues a new call on an underlying while a prior call is still running.",
+  "calls": [
+    {
+      "company": "Adidas",
+      "ticker": "ADS",
+      "featured_date": "2026-05-29",
+      "featured_issue": "93/26",
+      "source_case_id": "HT-025"
+    },
+    {
+      "company": "Eni",
+      "ticker": "ENI",
+      "featured_date": "2026-06-02",
+      "featured_issue": "95/26",
+      "source_case_id": "HT-024"
+    },
+    {
+      "company": "AbbVie",
+      "ticker": "ABBV",
+      "featured_date": "2026-06-08",
+      "featured_issue": "98/26",
+      "source_case_id": "HT-023"
+    },
+    {
+      "company": "Carrier Global",
+      "ticker": "CARR",
+      "featured_date": "2026-06-11",
+      "featured_issue": "101/26",
+      "source_case_id": "HT-026"
+    },
+    {
+      "company": "Thermo Fisher Scientific",
+      "ticker": "TMO",
+      "featured_date": "2026-07-07",
+      "featured_issue": "119/26",
+      "source_case_id": "HT-027"
+    },
+    {
+      "company": "BASF",
+      "ticker": null,
+      "featured_date": "2026-07-31",
+      "featured_issue": "137/26",
+      "source_case_id": "HT-012"
+    },
+    {
+      "company": "Thales",
+      "ticker": null,
+      "featured_date": "2026-08-05",
+      "featured_issue": "140/26",
+      "source_case_id": "HT-011"
+    },
+    {
+      "company": "Leonardo S.p.A.",
+      "ticker": null,
+      "featured_date": "2026-08-06",
+      "featured_issue": "141/26",
+      "source_case_id": "HT-015"
+    },
+    {
+      "company": "Broadcom",
+      "ticker": "AVGO",
+      "featured_date": "2026-08-10",
+      "featured_issue": "143/26",
+      "source_case_id": "HT-010"
+    },
+    {
+      "company": "Pfizer",
+      "ticker": "PFE",
+      "featured_date": "2026-08-11",
+      "featured_issue": "144/26",
+      "source_case_id": "HT-009"
+    },
+    {
+      "company": "KKR & Co.",
+      "ticker": "KKR",
+      "featured_date": "2026-08-14",
+      "featured_issue": "147/26",
+      "source_case_id": "HT-008"
+    },
+    {
+      "company": "SAP",
+      "ticker": null,
+      "featured_date": "2026-08-20",
+      "featured_issue": "151/26",
+      "source_case_id": "HT-014"
+    },
+    {
+      "company": "Danaher",
+      "ticker": "DHR",
+      "featured_date": "2026-08-25",
+      "featured_issue": "154/26",
+      "source_case_id": "HT-013"
+    },
+    {
+      "company": "Vertiv Holdings",
+      "ticker": "VRT",
+      "featured_date": "2026-08-28",
+      "featured_issue": "157/26",
+      "source_case_id": "HT-007"
+    },
+    {
+      "company": "UnitedHealth Group",
+      "ticker": "UNH",
+      "featured_date": "2026-09-03",
+      "featured_issue": "161/26",
+      "source_case_id": "HT-006"
+    },
+    {
+      "company": "Constellation Energy",
+      "ticker": "CEG",
+      "featured_date": "2026-09-10",
+      "featured_issue": "166/26",
+      "source_case_id": "HT-022"
+    },
+    {
+      "company": "BP plc",
+      "ticker": "BP",
+      "featured_date": "2026-09-11",
+      "featured_issue": "167/26",
+      "source_case_id": "HT-021"
+    },
+    {
+      "company": "Micron Technology",
+      "ticker": "MU",
+      "featured_date": "2026-09-21",
+      "featured_issue": "173/26",
+      "source_case_id": "HT-005"
+    },
+    {
+      "company": "Salesforce",
+      "ticker": "CRM",
+      "featured_date": "2026-09-24",
+      "featured_issue": "176/26",
+      "source_case_id": "HT-004"
+    },
+    {
+      "company": "Zurich Insurance Group",
+      "ticker": null,
+      "featured_date": "2026-10-14",
+      "featured_issue": "190/26",
+      "source_case_id": "HT-002"
+    },
+    {
+      "company": "Costco Wholesale",
+      "ticker": "COST",
+      "featured_date": "2026-10-16",
+      "featured_issue": "192/26",
+      "source_case_id": "HT-003"
+    },
+    {
+      "company": "JPMorgan Chase",
+      "ticker": "JPM",
+      "featured_date": "2026-10-19",
+      "featured_issue": "193/26",
+      "source_case_id": "HT-017"
+    },
+    {
+      "company": "Johnson & Johnson",
+      "ticker": "JNJ",
+      "featured_date": "2026-10-21",
+      "featured_issue": "195/26",
+      "source_case_id": "HT-018"
+    },
+    {
+      "company": "Analog Devices",
+      "ticker": "ADI",
+      "featured_date": "2026-10-28",
+      "featured_issue": "200/26",
+      "source_case_id": "HT-001"
+    },
+    {
+      "company": "Synopsys",
+      "ticker": "SNPS",
+      "featured_date": "2026-10-29",
+      "featured_issue": "201/26",
+      "source_case_id": "HT-020"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from .case_journal import read_frozen
+from .featured_calls import blocked_features
 from .market_screen import rank as market_rank
 from .market_screen import resolve_case_snapshots, teaser_chart_clues
 from .structure_screen import screen, sectors_in
@@ -77,7 +78,8 @@ def diagnose_inputs(inputs, snapshots=None, *, limit=8):
     cases = []
     for case in payload["cases"]:
         blob = "\n".join(part for part in (case.get("headline"), case.get("teaser_text")) if part)
-        offline = [_compact_hypothesis(item) for item in screen(blob, limit=limit)]
+        blocked = blocked_features(case.get("publication_date"))
+        offline = [_compact_hypothesis(item) for item in screen(blob, limit=limit, blocked=blocked)]
         chart_clues = teaser_chart_clues(blob)
         sectors = sectors_in(blob)
         as_of = None
@@ -93,7 +95,7 @@ def diagnose_inputs(inputs, snapshots=None, *, limit=8):
                 market = []
                 market_status = resolved["status"]
             else:
-                ranked = market_rank(blob, resolved["snapshots"], limit=limit)
+                ranked = market_rank(blob, resolved["snapshots"], limit=limit, blocked=blocked)
                 market = [_compact_hypothesis(item) for item in ranked["ranking"]]
                 coverage = ranked["snapshot_coverage"]
                 ranked_before = ranked["ranked_before_limit"]
