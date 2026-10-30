@@ -1,0 +1,825 @@
+{
+  "schema_version": 1,
+  "kind": "full_corpus_pool_pit_check",
+  "as_of": "2026-10-30",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "universe": "index_pool_v1+curated_overlay+ticker_remap_v1+ticker_dedupe",
+  "limits": {
+    "publisher_pdfs_in_repo": false,
+    "publication_at_count": 0,
+    "source_packets_present": false,
+    "evidence_identifications_possible": false,
+    "checks_run": [
+      "structure_offline_top8",
+      "market_chart_pool_pit_top8_dedup",
+      "solution_hit_rates_developmental"
+    ]
+  },
+  "market": {
+    "graded": 25,
+    "top1": 2,
+    "top3": 3,
+    "top8": 7
+  },
+  "market_with_hypotheses": 26,
+  "market_pre_dedup": {
+    "graded": 25,
+    "top1": 2,
+    "top3": 3,
+    "top8": 7
+  },
+  "offline": {
+    "graded": 25,
+    "top1": 2,
+    "top3": 4,
+    "top8": 6
+  },
+  "offline_with_hypotheses": 17,
+  "blind_202_26": {
+    "in_top8": false,
+    "top8": [
+      "APA",
+      "A",
+      "AI.PA",
+      "APD",
+      "ALLFG.AS",
+      "MO",
+      "AMGN",
+      "AAPL"
+    ],
+    "dbk_rank": 565,
+    "dbk_score": 10,
+    "coverage": 981,
+    "ranked_before_limit": 957,
+    "names_at_score_23": 98
+  },
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "company": "Costco Wholesale",
+      "ticker": "COST",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-10-16",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 1,
+      "offline_hit_rank": 1,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "COST",
+        "ABNB",
+        "MO",
+        "ADM",
+        "BME.LSE",
+        "CHD",
+        "KO",
+        "CL"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors": [
+        "retail"
+      ]
+    },
+    {
+      "case_id": "HT-016",
+      "company": null,
+      "ticker": null,
+      "historical_outcome": "unresolved",
+      "has_teaser": false,
+      "publication_date": null,
+      "publication_at": null,
+      "graded": false,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": null,
+      "market_status": "no_publication_date_for_pit",
+      "market_top8": [],
+      "chart_clues": [],
+      "sectors": [
+        "power infrastructure"
+      ]
+    },
+    {
+      "case_id": "HT-002",
+      "company": "Zurich Insurance Group",
+      "ticker": null,
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-10-14",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 5,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "BEZ.LSE",
+        "SREN.SW",
+        "HSX.LSE",
+        "SCR.PA",
+        "ZURN.SW",
+        "TRYG.CO",
+        "ADM.LSE",
+        "AGS.BR"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors": [
+        "insurance"
+      ]
+    },
+    {
+      "case_id": "HT-004",
+      "company": "Salesforce",
+      "ticker": "CRM",
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-09-24",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "AES",
+        "AMD",
+        "A",
+        "ALLFG.AS",
+        "BBY.LSE",
+        "BEZ.LSE",
+        "TECH",
+        "BIIB"
+      ],
+      "chart_clues": [],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-005",
+      "company": "Micron Technology",
+      "ticker": "MU",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-09-21",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 5,
+      "offline_hit_rank": 8,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "SOI.PA",
+        "AMD",
+        "ADI",
+        "ENTG",
+        "MU",
+        "005930.KO",
+        "WAF.XETRA",
+        "TSM"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors": [
+        "semiconductor"
+      ]
+    },
+    {
+      "case_id": "HT-006",
+      "company": "UnitedHealth Group",
+      "ticker": "UNH",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-09-03",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "AMGN",
+        "ARGX.BR",
+        "BIIB",
+        "BMY",
+        "CAH",
+        "GILD",
+        "HSIC",
+        "IQV"
+      ],
+      "chart_clues": [],
+      "sectors": [
+        "healthcare"
+      ]
+    },
+    {
+      "case_id": "HT-007",
+      "company": "Vertiv Holdings",
+      "ticker": "VRT",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-08-28",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "EDP.LS",
+        "SVT.LSE",
+        "FORTUM.HE",
+        "SSE.LSE",
+        "AES",
+        "NEX.PA",
+        "EDPR.LS",
+        "EVN.VI"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors": [
+        "power infrastructure"
+      ]
+    },
+    {
+      "case_id": "HT-013",
+      "company": "Danaher",
+      "ticker": "DHR",
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-08-25",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "ADM.LSE",
+        "AENA.MC",
+        "A",
+        "ABNB",
+        "AKRBP.OL",
+        "ALLFG.AS",
+        "ALV.XETRA",
+        "AMGN"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-014",
+      "company": "SAP",
+      "ticker": null,
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-08-20",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 4,
+      "offline_hit_rank": 1,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "PANW",
+        "SNOW",
+        "BC8.XETRA",
+        "SAP.XETRA",
+        "ADSK",
+        "MSFT",
+        "PLTR",
+        "CRM"
+      ],
+      "chart_clues": [],
+      "sectors": [
+        "software"
+      ]
+    },
+    {
+      "case_id": "HT-008",
+      "company": "KKR & Co.",
+      "ticker": "KKR",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-08-14",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "AES",
+        "APA",
+        "ANET",
+        "XOM",
+        "GILD",
+        "HAS",
+        "JMAT.LSE",
+        "LMT"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-009",
+      "company": "Pfizer",
+      "ticker": "PFE",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-08-11",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 980,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "A",
+        "AMGN",
+        "BDX",
+        "TECH",
+        "CAH",
+        "CRL",
+        "HSIC",
+        "LH"
+      ],
+      "chart_clues": [],
+      "sectors": [
+        "healthcare"
+      ]
+    },
+    {
+      "case_id": "HT-010",
+      "company": "Broadcom",
+      "ticker": "AVGO",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-08-10",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 980,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "AES",
+        "APA",
+        "HM-B.ST",
+        "KGF.LSE",
+        "LMT",
+        "NEM",
+        "ASSA-B.ST",
+        "AVY"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-015",
+      "company": "Leonardo S.p.A.",
+      "ticker": null,
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-08-06",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 980,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "AIR.PA",
+        "BA.LSE",
+        "LMT",
+        "RTX",
+        "KOG.OL",
+        "HAG.XETRA",
+        "MTX.XETRA",
+        "NOC"
+      ],
+      "chart_clues": [],
+      "sectors": [
+        "defense"
+      ]
+    },
+    {
+      "case_id": "HT-011",
+      "company": "Thales",
+      "ticker": null,
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-08-05",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 980,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "ABN.AS",
+        "AES",
+        "ACX.MC",
+        "AGS.BR",
+        "A",
+        "AIR.PA",
+        "ALV.XETRA",
+        "AME"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-012",
+      "company": "BASF",
+      "ticker": null,
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-07-31",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 980,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "MMM",
+        "ABN.AS",
+        "ADM.LSE",
+        "AFL",
+        "ALLFG.AS",
+        "ALV.XETRA",
+        "ALL",
+        "AMGN"
+      ],
+      "chart_clues": [],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-017",
+      "company": "JPMorgan Chase",
+      "ticker": "JPM",
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-10-19",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": 4,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "CME",
+        "ALLFG.AS",
+        "MO",
+        "BME.LSE",
+        "CHD",
+        "KO",
+        "DB1.XETRA",
+        "DG"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors": [
+        "retail",
+        "financial services"
+      ]
+    },
+    {
+      "case_id": "HT-018",
+      "company": "Johnson & Johnson",
+      "ticker": "JNJ",
+      "historical_outcome": "correct",
+      "has_teaser": true,
+      "publication_date": "2026-10-21",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "A",
+        "BDX",
+        "TECH",
+        "BIIB",
+        "CAH",
+        "CNC",
+        "CRL",
+        "DEMANT.CO"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "sectors": [
+        "healthcare"
+      ]
+    },
+    {
+      "case_id": "HT-001",
+      "company": "Analog Devices",
+      "ticker": "ADI",
+      "historical_outcome": "wrong",
+      "has_teaser": true,
+      "publication_date": "2026-10-28",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 1,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "ADI",
+        "NXPI",
+        "TXN",
+        "AMD",
+        "ENTG",
+        "TSM",
+        "CDNS",
+        "SNPS"
+      ],
+      "chart_clues": [],
+      "sectors": [
+        "semiconductor"
+      ]
+    },
+    {
+      "case_id": "HT-019",
+      "company": null,
+      "ticker": null,
+      "historical_outcome": "unresolved",
+      "has_teaser": true,
+      "publication_date": "2026-10-26",
+      "publication_at": null,
+      "graded": false,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "BT-A.LSE",
+        "BATS.LSE",
+        "CBOE",
+        "DOW",
+        "ERIC-B.ST",
+        "LIN",
+        "OCDO.LSE",
+        "TXN"
+      ],
+      "chart_clues": [
+        "above_gd200",
+        "correction"
+      ],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-020",
+      "company": "Synopsys",
+      "ticker": "SNPS",
+      "historical_outcome": "not_identified",
+      "has_teaser": true,
+      "publication_date": "2026-10-29",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 6,
+      "offline_hit_rank": 3,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "NXPI",
+        "TXN",
+        "AMD",
+        "ENTG",
+        "CDNS",
+        "SNPS",
+        "ASML",
+        "TSM"
+      ],
+      "chart_clues": [
+        "steady_uptrend"
+      ],
+      "sectors": [
+        "semiconductor"
+      ]
+    },
+    {
+      "case_id": "HT-021",
+      "company": "BP plc",
+      "ticker": "BP",
+      "historical_outcome": "not_tested",
+      "has_teaser": true,
+      "publication_date": "2026-09-11",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "EDP.LS",
+        "FORTUM.HE",
+        "RWE.XETRA",
+        "VER.VI",
+        "AES",
+        "EVN.VI",
+        "ETN",
+        "NTGY.MC"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors": [
+        "power infrastructure"
+      ]
+    },
+    {
+      "case_id": "HT-022",
+      "company": "Constellation Energy",
+      "ticker": "CEG",
+      "historical_outcome": "not_tested",
+      "has_teaser": false,
+      "publication_date": "2026-09-10",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 981,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "AES",
+        "EDP.LS",
+        "FORTUM.HE",
+        "RWE.XETRA",
+        "EVN.VI",
+        "NTGY.MC",
+        "SU.PA",
+        "AWK"
+      ],
+      "chart_clues": [],
+      "sectors": [
+        "power infrastructure"
+      ]
+    },
+    {
+      "case_id": "HT-023",
+      "company": "AbbVie",
+      "ticker": "ABBV",
+      "historical_outcome": "not_tested",
+      "has_teaser": false,
+      "publication_date": "2026-06-08",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": 2,
+      "offline_hit_rank": null,
+      "coverage": 979,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "ASML",
+        "ABBV",
+        "AMAT",
+        "ARGX.BR",
+        "BNP.PA",
+        "BEZ.LSE",
+        "CHRW",
+        "CSX"
+      ],
+      "chart_clues": [],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-024",
+      "company": "Eni",
+      "ticker": "ENI",
+      "historical_outcome": "not_tested",
+      "has_teaser": true,
+      "publication_date": "2026-06-02",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 979,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "BARC.LSE",
+        "BBVA.MC",
+        "BNP.PA",
+        "BNY",
+        "SAB.MC",
+        "BAC",
+        "BKT.MC",
+        "EBS.VI"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors": [
+        "financial services"
+      ]
+    },
+    {
+      "case_id": "HT-025",
+      "company": "Adidas",
+      "ticker": "ADS",
+      "historical_outcome": "not_tested",
+      "has_teaser": false,
+      "publication_date": "2026-05-29",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 979,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "ABBN.SW",
+        "ABN.AS",
+        "ASML",
+        "ATS.VI",
+        "ACX.MC",
+        "AMD",
+        "A",
+        "AIXA.XETRA"
+      ],
+      "chart_clues": [],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-026",
+      "company": "Carrier Global",
+      "ticker": "CARR",
+      "historical_outcome": "not_tested",
+      "has_teaser": true,
+      "publication_date": "2026-06-11",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": null,
+      "coverage": 979,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "ASM.AS",
+        "ASML",
+        "ACX.MC",
+        "AMGN",
+        "AMAT",
+        "ARGX.BR",
+        "AIZ",
+        "ALAB"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "sectors": []
+    },
+    {
+      "case_id": "HT-027",
+      "company": "Thermo Fisher Scientific",
+      "ticker": "TMO",
+      "historical_outcome": "not_tested",
+      "has_teaser": true,
+      "publication_date": "2026-07-07",
+      "publication_at": null,
+      "graded": true,
+      "market_hit_rank": null,
+      "offline_hit_rank": 3,
+      "coverage": 980,
+      "market_status": "unverified_chart_universe_suggestions",
+      "market_top8": [
+        "RO.SW",
+        "AMGN",
+        "AZN.LSE",
+        "BAYN.XETRA",
+        "BDX",
+        "CAH",
+        "CRL",
+        "DVA"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "sectors": [
+        "pharmaceutical",
+        "healthcare"
+      ]
+    }
+  ]
+}
