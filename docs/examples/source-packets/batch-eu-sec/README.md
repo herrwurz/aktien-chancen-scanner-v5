@@ -4,8 +4,8 @@ Parallel SEC **6-K** packets for remaining reference cases that (1) have
 `publication_at` and (2) file with the SEC as foreign private issuers.
 
 No guessed IR URLs. Zurich / Thales / Leonardo SpA / Adidas have **no** SEC
-issuer CIK in the company tickers map — deferred (need BaFin/EQS/IR archive
-binding). Costco / BASF still lack `publication_at` for HT-003 / HT-012.
+issuer CIK — covered separately in `batch-eu-ir-wayback/` (Wayback IR + SEC
+peers). Costco / BASF still lack `publication_at` for HT-003 / HT-012.
 
 ## Ergebnis (named)
 

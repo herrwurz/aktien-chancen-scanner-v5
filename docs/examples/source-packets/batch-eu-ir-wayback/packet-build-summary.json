@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-ir-wayback-packet-batch-result-v1",
+  "manifest": "docs/examples/source-packets/batch-eu-ir-wayback/manifest.json",
+  "out_dir": "docs/examples/source-packets/batch-eu-ir-wayback/packets",
+  "built": 4,
+  "reused": 0,
+  "errors": [],
+  "results": [
+    {
+      "case_id": "HT-002",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-002.json",
+      "documents": 6,
+      "lead_form": "wayback_ir"
+    },
+    {
+      "case_id": "HT-011",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-011.json",
+      "documents": 6,
+      "lead_form": "wayback_ir"
+    },
+    {
+      "case_id": "HT-015",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-015.json",
+      "documents": 6,
+      "lead_form": "wayback_ir"
+    },
+    {
+      "case_id": "HT-025",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-025.json",
+      "documents": 6,
+      "lead_form": "wayback_ir"
+    }
+  ]
+}

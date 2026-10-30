@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "docs/examples/source-packets/batch-eu-ir-wayback/packets",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "/tmp/evidence-batch-eu-ir-wayback",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-002.inputs.named.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/00-HT-002.inputs.named",
+      "ranking_sha256": "fe49727fb1f62c73e71008ed47fd35b77e2d25cd9eeeaa90f52f013fcefd4f78",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-002.inputs.original.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/01-HT-002.inputs.original",
+      "ranking_sha256": "51750d1b00befbb37b94d7f07e85f251dc56d30446d26a361d3b2a834fecfc1d",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-011.inputs.named.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/02-HT-011.inputs.named",
+      "ranking_sha256": "f617af368912350bb814d348babda3dd253951f6e860a7981847d87503a5e8c6",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-011.inputs.original.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/03-HT-011.inputs.original",
+      "ranking_sha256": "84a1e434991c62ce5d26aa04123687700570f12e90be8a6fad506cd59bb54fb7",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-015.inputs.named.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/04-HT-015.inputs.named",
+      "ranking_sha256": "3e30d0edb11e97aff663c819f96ef7a6db9069a885bb3e6803ee7bc99b3e7ec9",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-015.inputs.original.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/05-HT-015.inputs.original",
+      "ranking_sha256": "ad61923b13a23a72121b9f68f8712d92e06b11d9898ea98e3b832c5ff7ce7eb8",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-025.inputs.named.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/06-HT-025.inputs.named",
+      "ranking_sha256": "792e61e5f6136d9de6f1358ab9f7e32ab76e41e108ed1e6e0e7bc5eb18946852",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-025.inputs.original.json",
+      "root": "/tmp/evidence-batch-eu-ir-wayback/07-HT-025.inputs.original",
+      "ranking_sha256": "c324aafaa75e153a34eba6393055ac05296f990513d65ee61c12a7f47c38f538",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "HT-002",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "ZURN",
+      "packet_evidence_name": "Zurich Insurance",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "ZURN",
+      "leader_name": "Zurich Insurance",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-002.inputs.named.json"
+    },
+    {
+      "case_id": "HT-002",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "MET",
+      "leader_name": "MetLife",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-002.inputs.original.json"
+    },
+    {
+      "case_id": "HT-011",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "HO",
+      "packet_evidence_name": "Thales",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "HO",
+      "leader_name": "Thales",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-011.inputs.named.json"
+    },
+    {
+      "case_id": "HT-011",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "HO",
+      "leader_name": "Thales",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-011.inputs.original.json"
+    },
+    {
+      "case_id": "HT-015",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "LDO",
+      "packet_evidence_name": "Leonardo",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "LDO",
+      "leader_name": "Leonardo",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-015.inputs.named.json"
+    },
+    {
+      "case_id": "HT-015",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "LDO",
+      "leader_name": "Leonardo",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-015.inputs.original.json"
+    },
+    {
+      "case_id": "HT-025",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "ADS",
+      "packet_evidence_name": "Adidas",
+      "confirmed_specific_clues": 3,
+      "evidence_score": 155,
+      "score_margin": 155,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "ADS",
+      "leader_name": "Adidas",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-025.inputs.named.json"
+    },
+    {
+      "case_id": "HT-025",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "ADS",
+      "leader_name": "Adidas",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-ir-wayback/HT-025.inputs.original.json"
+    }
+  ],
+  "counts": {
+    "cases": 8,
+    "ticker_hypothesis_ready": 4,
+    "partial_evidence": 0,
+    "identified": 4,
+    "identified_from_packet": 4
+  }
+}

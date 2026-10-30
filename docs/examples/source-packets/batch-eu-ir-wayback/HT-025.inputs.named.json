@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-025 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-025",
+      "headline": "Adidas: Der WM-Turbo springt an!",
+      "teaser_text": "Adidas: Der WM-Turbo springt an!\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Adidas — Wachstumstreiber Trionda und Adizero heben den Umsatz.",
+      "publication_date": "2026-05-29",
+      "publication_at": "2026-05-29T08:15:00+01:00"
+    }
+  ]
+}
