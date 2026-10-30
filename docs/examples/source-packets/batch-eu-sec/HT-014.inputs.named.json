@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-014 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-014",
+      "headline": "Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!",
+      "teaser_text": "Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!\nLange abgestraft, jetzt plötzlich wieder brandgefährlich: Bei diesem Softwarewert könnte gerade eine neue Aufwärtswelle anlaufen. Die operative Basis stimmt, denn das Cloud-Geschäft wächst mit Wucht, die Erlöse ziehen an und der Auftragsbestand liefert starke Rückendeckung. Gleichzeitig hat der Markt begonnen, den KI-Hebel neu zu bewerten. Genau diese Mischung aus Comeback, Cloud-Dynamik und charttechnischer Trendwende macht die Story jetzt so spannend. Für spekulative Anleger besonders reizvoll: Das empfohlene Derivat bringt im Idealfall eine rekordverdächtige Gewinnchance von mehr als 3.700 Prozent ins Spiel.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern SAP — Mit der Übernahme von Dremio — Mit der Übernahme von Prior Labs — Wachstumstreiber S/4HANA heben den Umsatz.",
+      "publication_date": "2026-08-20",
+      "publication_at": "2026-08-20T08:15:00+01:00"
+    }
+  ]
+}

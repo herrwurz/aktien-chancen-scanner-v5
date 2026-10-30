@@ -69,6 +69,12 @@ Zusammen mit batch-10: **17/17** US-SEC named. Same-day EDGAR filings excluded
 via `historical_source_packet`. Original clue summary → not_identified.
 Prospective freeze SHA `3fff83e1…` untouched.
 
+## EU-SEC Batch (FPI with EDGAR)
+
+`batch-eu-sec/`: **3/3 named identified** (SAP, BP, Eni/E). Zurich / Thales /
+Leonardo / Adidas have no SEC issuer CIK — deferred. Costco / BASF still lack
+`publication_at`.
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder

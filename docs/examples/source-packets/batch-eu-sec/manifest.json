@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-sec-packet-batch-manifest-v1",
+  "note": "EU/FPI issuers with SEC EDGAR listings + publication_at. No guessed IR URLs. Zurich/Thales/Leonardo/Adidas lack SEC issuer filings — deferred.",
+  "cases": [
+    {
+      "case_id": "HT-014",
+      "cutoff": "2026-08-20T08:15:00+01:00",
+      "lead": "SAP:0001000184:SAP",
+      "peers": [
+        "ORCL:0001341439:Oracle",
+        "CRM:0001108524:Salesforce",
+        "NOW:0001373715:ServiceNow",
+        "WDAY:0001327811:Workday",
+        "ADBE:0000796343:Adobe"
+      ],
+      "needles": [
+        "Dremio",
+        "Prior Labs",
+        "S/4HANA",
+        "Cloud ERP"
+      ],
+      "issuer_display": "SAP",
+      "named_products": [
+        "S/4HANA"
+      ],
+      "named_acquisitions": [
+        "Dremio",
+        "Prior Labs"
+      ]
+    },
+    {
+      "case_id": "HT-021",
+      "cutoff": "2026-09-11T08:15:00+01:00",
+      "lead": "BP:0000313807:BP",
+      "peers": [
+        "SHEL:0001306965:Shell",
+        "TTE:0000879764:TotalEnergies",
+        "EQNR:0001140625:Equinor",
+        "XOM:0000034088:Exxon Mobil",
+        "CVX:0000093410:Chevron"
+      ],
+      "needles": [
+        "Castrol",
+        "Archaea",
+        "share buyback",
+        "dividend"
+      ],
+      "issuer_display": "BP",
+      "named_products": [
+        "Castrol"
+      ],
+      "named_acquisitions": [
+        "Archaea"
+      ]
+    },
+    {
+      "case_id": "HT-024",
+      "cutoff": "2026-06-02T08:15:00+01:00",
+      "lead": "E:0001002242:Eni",
+      "peers": [
+        "BP:0000313807:BP",
+        "SHEL:0001306965:Shell",
+        "TTE:0000879764:TotalEnergies",
+        "EQNR:0001140625:Equinor",
+        "XOM:0000034088:Exxon Mobil"
+      ],
+      "needles": [
+        "Plenitude",
+        "Versalis",
+        "share repurchase",
+        "buyback"
+      ],
+      "issuer_display": "Eni",
+      "named_products": [
+        "Plenitude"
+      ],
+      "named_acquisitions": []
+    }
+  ]
+}

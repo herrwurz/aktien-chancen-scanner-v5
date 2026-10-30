@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-sec-packet-batch-result-v1",
+  "manifest": "docs/examples/source-packets/batch-eu-sec/manifest.json",
+  "out_dir": "docs/examples/source-packets/batch-eu-sec/packets",
+  "built": 3,
+  "reused": 0,
+  "errors": [],
+  "results": [
+    {
+      "case_id": "HT-014",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-sec/packets/HT-014.json",
+      "documents": 6
+    },
+    {
+      "case_id": "HT-021",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-sec/packets/HT-021.json",
+      "documents": 6
+    },
+    {
+      "case_id": "HT-024",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-eu-sec/packets/HT-024.json",
+      "documents": 6
+    }
+  ]
+}
