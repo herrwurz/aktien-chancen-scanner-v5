@@ -1,0 +1,73 @@
+{
+  "case_id": "HT-005",
+  "cutoff_publication_at": "2026-09-21T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "form": "10-Q",
+      "filing_date": "2026-06-25",
+      "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000015/mu-20260528.htm",
+      "chars": 10025,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/MU-2026-06-25-33c16c0e.htm"
+    },
+    {
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "form": "8-K",
+      "filing_date": "2026-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/723125/000110465926101067/tm2624017d1_8k.htm",
+      "chars": 4689,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/MU-2026-08-26-a70b0532.htm"
+    },
+    {
+      "ticker": "ADI",
+      "name": "Analog Devices",
+      "form": "10-Q",
+      "filing_date": "2026-08-19",
+      "url": "https://www.sec.gov/Archives/edgar/data/6281/000000628126000073/adi-20260801.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/ADI-2026-08-19-e76d1028.htm"
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "form": "10-Q",
+      "filing_date": "2026-09-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000173016826000080/avgo-20260802.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/AVGO-2026-09-10-ef13046d.htm"
+    },
+    {
+      "ticker": "TXN",
+      "name": "Texas Instruments",
+      "form": "10-Q",
+      "filing_date": "2026-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/97476/000009747626000152/txn-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/TXN-2026-07-24-bc230f07.htm"
+    },
+    {
+      "ticker": "AMAT",
+      "name": "Applied Materials",
+      "form": "10-Q",
+      "filing_date": "2026-08-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/6951/000162828026058235/amat-20260726.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/AMAT-2026-08-20-ceda0a34.htm"
+    },
+    {
+      "ticker": "LRCX",
+      "name": "Lam Research",
+      "form": "10-Q",
+      "filing_date": "2026-04-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/707549/000070754926000022/lrcx-20260329.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-005/LRCX-2026-04-23-13dae0a1.htm"
+    }
+  ],
+  "needles": [
+    "HBM",
+    "DRAM"
+  ]
+}

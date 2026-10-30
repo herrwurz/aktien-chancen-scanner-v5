@@ -487,21 +487,58 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 continue
             if relation not in _RELATIONS:
                 continue
-            match = re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I)
-            if not match:
-                continue
-            # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
-            context = text[max(0, match.start() - 400) : match.end() + 120]
             pattern = _RELATIONS[relation]
-            subject = _fact_claim_subject(company, context, pattern, term)
-            if subject and not re.search(
-                r"\b(?:competitor|konkurrent|according|says|said)\b", subject.group("link"), re.I
-            ):
+            confirmed_context = None
+            contradicted = False
+            for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
+                # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
+                context = text[max(0, match.start() - 400) : match.end() + 120]
+                subject = _fact_claim_subject(company, context, pattern, term)
+                # Also accept SEC headlines: "Acquisition of Target" / "Target Acquisition"
+                # when the filing already carries this issuer's company_name.
+                sec_headline = bool(
+                    relation == "acquisition"
+                    and company
+                    and re.search(
+                        rf"(?:acquisition of|acquired)\s+{re.escape(term)}"
+                        rf"|{re.escape(term)}\s+Acquisition",
+                        context,
+                        re.I,
+                    )
+                    and re.search(
+                        r"\b(?:the company|the registrant|\bwe\b|our)\b|"
+                        + r"(?<!\w)"
+                        + re.escape(company)
+                        + r"(?!\w)",
+                        context,
+                        re.I,
+                    )
+                )
+                owned = (
+                    subject
+                    and not re.search(
+                        r"\b(?:competitor|konkurrent|according|says|said)\b",
+                        subject.group("link"),
+                        re.I,
+                    )
+                ) or (
+                    sec_headline
+                    and not re.search(
+                        r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
+                    )
+                )
+                if not owned:
+                    continue
                 denial = re.search(
                     r"\b(?:not|never|nicht|keine?)\b.{0,35}\b(?:" + pattern + r")\b", context, re.I
                 )
-                facts["contradicted_fact_claims" if denial else "fact_claims"].append(value)
-                facts["support_quotes"][clue.clue_id] = context
+                confirmed_context = context
+                contradicted = bool(denial)
+                break
+            if confirmed_context:
+                key = "contradicted_fact_claims" if contradicted else "fact_claims"
+                facts[key].append(value)
+                facts["support_quotes"][clue.clue_id] = confirmed_context
         elif clue.category == "financial_metric":
             for observed in _clues(text, []):
                 prefix = re.split(r"[.!?;\n]", text[: observed.start])[-1]

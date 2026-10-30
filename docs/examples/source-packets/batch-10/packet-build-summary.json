@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-sec-packet-batch-result-v1",
+  "out_dir": "docs/examples/source-packets/batch-10/packets",
+  "built_or_present": 10,
+  "errors": [],
+  "results": [
+    {
+      "case_id": "HT-001",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-001.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-004",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-004.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-005",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-005.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-006",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-006.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-007",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-007.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-009",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-009.json",
+      "documents": 8
+    },
+    {
+      "case_id": "HT-010",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-010.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-013",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-013.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-023",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-023.json",
+      "documents": 8
+    },
+    {
+      "case_id": "HT-026",
+      "status": "present",
+      "path": "docs/examples/source-packets/batch-10/packets/HT-026.json",
+      "documents": 7
+    }
+  ]
+}

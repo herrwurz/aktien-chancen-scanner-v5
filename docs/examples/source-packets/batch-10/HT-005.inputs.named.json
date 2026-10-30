@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-005 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-005",
+      "headline": "Gewinnsprung voraus: Der unterschätzte KI-Profiteur!",
+      "teaser_text": "Gewinnsprung voraus: Der unterschätzte KI-Profiteur!\nDer nächste große KI-Profiteur steht offenbar vor dem Comeback! Nach einer scharfen Korrektur verdichten sich die Signale für eine kraftvolle Trendwende. Gleichzeitig überzeugt der führende Halbleiterkonzern mit einer beeindruckenden fundamentalen Perspektive: Die Gewinne sollen geradezu explodieren, während die Bewertung gemessen an den erwarteten Erträgen überraschend attraktiv erscheint. Rückenwind liefern der anhaltende KI-Boom, eine hohe Nachfrage und die Aussicht auf eine nachhaltige Verbesserung der Margen. Gelingt der charttechnische Ausbruch, könnte eine dynamische Neubewertung starten. Für risikobereite Anleger wurde ein Derivat ausgewählt, das ein Gewinnpotenzial von bis zu 1.091 Prozent bietet.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Micron — Wachstumstreiber HBM und DRAM heben den Umsatz.",
+      "publication_date": "2026-09-21",
+      "publication_at": "2026-09-21T08:15:00+01:00"
+    }
+  ]
+}

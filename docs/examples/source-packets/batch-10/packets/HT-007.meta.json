@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-007",
+  "cutoff_publication_at": "2026-08-28T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "VRT",
+      "name": "Vertiv",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1674101/000162828026050609/vrt-20260630.htm",
+      "chars": 8018,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/VRT-2026-07-29-a6626afc.htm"
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv",
+      "form": "8-K",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1674101/000162828026050323/vrt-20260729.htm",
+      "chars": 3564,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/VRT-2026-07-29-c5f51a5d.htm"
+    },
+    {
+      "ticker": "CARR",
+      "name": "Carrier Global",
+      "form": "10-Q",
+      "filing_date": "2026-07-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000032/carr-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/CARR-2026-07-28-4800471d.htm"
+    },
+    {
+      "ticker": "ETN",
+      "name": "Eaton",
+      "form": "10-Q",
+      "filing_date": "2026-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000030/etn-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/ETN-2026-07-31-245fd402.htm"
+    },
+    {
+      "ticker": "EMR",
+      "name": "Emerson Electric",
+      "form": "10-Q",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/32604/000003260426000043/emr-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/EMR-2026-08-04-60fa368a.htm"
+    },
+    {
+      "ticker": "HON",
+      "name": "Honeywell",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/773840/000077384026000124/hon-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/HON-2026-07-23-59d6e7c4.htm"
+    },
+    {
+      "ticker": "JCI",
+      "name": "Johnson Controls",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/833444/000083344426000087/jci-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-007/JCI-2026-07-29-f43f0573.htm"
+    }
+  ],
+  "needles": [
+    "PurgeRite"
+  ]
+}

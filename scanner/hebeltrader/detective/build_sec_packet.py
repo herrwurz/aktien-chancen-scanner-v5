@@ -40,7 +40,7 @@ def _best_needle_span(text: str, needle: str) -> tuple[int, int] | None:
     # Prefer prose tokens (Skyrizi), not XBRL tags (SKYRIZIMember).
     pattern = re.compile(rf"(?<![A-Za-z0-9]){re.escape(needle)}(?![A-Za-z0-9])", re.I)
     best = None
-    best_score = -1
+    best_score = float("-inf")
     for match in pattern.finditer(text):
         ctx = text[max(0, match.start() - 160) : match.end() + 220]
         score = len(_REVENUE_HINT.findall(ctx))

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-007 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-007",
+      "headline": "Cloud, Strom und Kühlung: Hier liegt der Schlüssel zum nächsten KI-Schub!",
+      "teaser_text": "Cloud, Strom und Kühlung: Hier liegt der Schlüssel zum nächsten KI-Schub!\nDieser KI-Infrastruktur-Profiteur steht vor dem nächsten Ausbruch! Während viele Anleger nur auf die großen Namen blicken, läuft bei diesem spezialisierten Technologiekonzern die Wachstumsmaschine auf Hochtouren. Der Umsatz legte zuletzt kräftig zu, der bereinigte Gewinn je Aktie schoss sogar noch deutlich stärker nach oben. Auch die operative Marge verbesserte sich spürbar, während der freie Cashflow ein beeindruckendes Niveau erreichte. Für das kommende Geschäftsjahr wird erneut ein dynamisches Umsatz- und Gewinnwachstum angepeilt. Charttechnisch steht die Aktie nach einer kräftigen Korrektur vor der entscheidenden Wende. Gelingt der Ausbruch, könnte das empfohlene Derivat im Best-Case zum Vervielfacher werden: Beim ersten Kursziel winkt ein Gewinnpotenzial von 361 Prozent, beim zweiten Kursziel sogar ein beeindruckendes Plus von 1.169 Prozent.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Vertiv — Mit der Übernahme von PurgeRite.",
+      "publication_date": "2026-08-28",
+      "publication_at": "2026-08-28T08:15:00+01:00"
+    }
+  ]
+}

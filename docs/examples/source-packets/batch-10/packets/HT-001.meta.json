@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-001",
+  "cutoff_publication_at": "2026-10-28T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "ADI",
+      "name": "Analog Devices",
+      "form": "10-Q",
+      "filing_date": "2026-08-19",
+      "url": "https://www.sec.gov/Archives/edgar/data/6281/000000628126000073/adi-20260801.htm",
+      "chars": 8016,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/ADI-2026-08-19-e76d1028.htm"
+    },
+    {
+      "ticker": "ADI",
+      "name": "Analog Devices",
+      "form": "8-K",
+      "filing_date": "2026-09-17",
+      "url": "https://www.sec.gov/Archives/edgar/data/6281/000119312526394361/d175690d8k.htm",
+      "chars": 8754,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/ADI-2026-09-17-e09fc16a.htm"
+    },
+    {
+      "ticker": "TXN",
+      "name": "Texas Instruments",
+      "form": "10-Q",
+      "filing_date": "2026-10-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/97476/000009747626000169/txn-20260930.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/TXN-2026-10-23-077f17b9.htm"
+    },
+    {
+      "ticker": "NXPI",
+      "name": "NXP Semiconductors",
+      "form": "10-Q",
+      "filing_date": "2026-10-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1413447/000141344726000059/nxpi-20260927.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/NXPI-2026-10-27-3a8e6586.htm"
+    },
+    {
+      "ticker": "MCHP",
+      "name": "Microchip Technology",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/827054/000082705426000038/mchp-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/MCHP-2026-08-06-e2ee8f5c.htm"
+    },
+    {
+      "ticker": "ON",
+      "name": "ON Semiconductor",
+      "form": "10-Q",
+      "filing_date": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/1097864/000109786426000017/on-20260703.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/ON-2026-08-03-f5a6d06c.htm"
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "form": "10-Q",
+      "filing_date": "2026-09-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000173016826000080/avgo-20260802.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-001/AVGO-2026-09-10-ef13046d.htm"
+    }
+  ],
+  "needles": [
+    "Empower"
+  ]
+}

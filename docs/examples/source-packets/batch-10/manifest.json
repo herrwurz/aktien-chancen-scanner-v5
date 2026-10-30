@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-sec-packet-batch-v1",
+  "note": "Ten US SEC cases with publication_at. Named enrichments are developmental diagnosis, not freeze inputs. Call-PDFs remain resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-001",
+      "cutoff": "2026-10-28T08:15:00+01:00",
+      "lead": "ADI:0000006281:Analog Devices:extra8k",
+      "peers": [
+        "TXN:0000097476:Texas Instruments",
+        "NXPI:0001413447:NXP Semiconductors",
+        "MCHP:0000827054:Microchip Technology",
+        "ON:0001097864:ON Semiconductor",
+        "AVGO:0001730168:Broadcom"
+      ],
+      "needles": [
+        "Empower"
+      ],
+      "named_products": [],
+      "issuer_display": "Analog Devices",
+      "named_acquisitions": [
+        "Empower"
+      ]
+    },
+    {
+      "case_id": "HT-004",
+      "cutoff": "2026-09-24T08:15:00+01:00",
+      "lead": "CRM:0001108524:Salesforce:extra8k",
+      "peers": [
+        "ORCL:0001341439:Oracle",
+        "MSFT:0000789019:Microsoft",
+        "ADBE:0000796343:Adobe",
+        "NOW:0001373715:ServiceNow",
+        "INTU:0000896878:Intuit"
+      ],
+      "needles": [
+        "Data Cloud",
+        "Agentforce"
+      ],
+      "named_products": [
+        "Data Cloud",
+        "Agentforce"
+      ],
+      "issuer_display": "Salesforce"
+    },
+    {
+      "case_id": "HT-005",
+      "cutoff": "2026-09-21T08:15:00+01:00",
+      "lead": "MU:0000723125:Micron Technology:extra8k",
+      "peers": [
+        "ADI:0000006281:Analog Devices",
+        "AVGO:0001730168:Broadcom",
+        "TXN:0000097476:Texas Instruments",
+        "AMAT:0000006951:Applied Materials",
+        "LRCX:0000707549:Lam Research"
+      ],
+      "needles": [
+        "HBM",
+        "DRAM"
+      ],
+      "named_products": [
+        "HBM",
+        "DRAM"
+      ],
+      "issuer_display": "Micron"
+    },
+    {
+      "case_id": "HT-006",
+      "cutoff": "2026-09-03T08:15:00+01:00",
+      "lead": "UNH:0000731766:UnitedHealth Group:extra8k",
+      "peers": [
+        "ELV:0001156039:Elevance Health",
+        "CVS:0000064803:CVS Health",
+        "CI:0001739940:Cigna",
+        "HUM:0000049071:Humana",
+        "CNC:0001071739:Centene"
+      ],
+      "needles": [
+        "Optum",
+        "UnitedHealthcare"
+      ],
+      "named_products": [
+        "Optum",
+        "UnitedHealthcare"
+      ],
+      "issuer_display": "UnitedHealth"
+    },
+    {
+      "case_id": "HT-007",
+      "cutoff": "2026-08-28T08:15:00+01:00",
+      "lead": "VRT:0001674101:Vertiv:extra8k",
+      "peers": [
+        "CARR:0001783180:Carrier Global",
+        "ETN:0001551182:Eaton",
+        "EMR:0000032604:Emerson Electric",
+        "HON:0000773840:Honeywell",
+        "JCI:0000833444:Johnson Controls"
+      ],
+      "needles": [
+        "PurgeRite"
+      ],
+      "named_products": [],
+      "issuer_display": "Vertiv",
+      "named_acquisitions": [
+        "PurgeRite"
+      ]
+    },
+    {
+      "case_id": "HT-009",
+      "cutoff": "2026-08-11T08:15:00+01:00",
+      "lead": "PFE:0000078003:Pfizer:extra8k",
+      "peers": [
+        "JNJ:0000200406:Johnson & Johnson",
+        "MRK:0000310158:Merck",
+        "ABBV:0001551152:AbbVie",
+        "LLY:0000059478:Eli Lilly",
+        "AMGN:0000318154:Amgen",
+        "BMY:0000014272:Bristol-Myers Squibb"
+      ],
+      "needles": [
+        "Prevnar",
+        "Paxlovid"
+      ],
+      "reuse_packet": "docs/examples/source-packets/pilot-ht-009/HT-009.json",
+      "named_products": [
+        "Prevnar",
+        "Paxlovid"
+      ],
+      "issuer_display": "Pfizer"
+    },
+    {
+      "case_id": "HT-010",
+      "cutoff": "2026-08-10T08:15:00+01:00",
+      "lead": "AVGO:0001730168:Broadcom:extra8k",
+      "peers": [
+        "NVDA:0001045810:NVIDIA",
+        "AMD:0000002488:Advanced Micro Devices",
+        "QCOM:0000804328:QUALCOMM",
+        "INTC:0000050863:Intel",
+        "TXN:0000097476:Texas Instruments"
+      ],
+      "needles": [
+        "VMware",
+        "custom AI"
+      ],
+      "named_products": [
+        "VMware"
+      ],
+      "issuer_display": "Broadcom"
+    },
+    {
+      "case_id": "HT-013",
+      "cutoff": "2026-08-25T08:15:00+01:00",
+      "lead": "DHR:0000313616:Danaher:extra8k",
+      "peers": [
+        "TMO:0000097745:Thermo Fisher Scientific",
+        "A:0001090872:Agilent Technologies",
+        "IQV:0001478242:IQVIA",
+        "WAT:0001000697:Waters",
+        "MTD:0001037646:Mettler-Toledo"
+      ],
+      "needles": [
+        "Masimo"
+      ],
+      "named_products": [],
+      "issuer_display": "Danaher",
+      "named_acquisitions": [
+        "Masimo"
+      ]
+    },
+    {
+      "case_id": "HT-023",
+      "cutoff": "2026-06-08T08:15:00+01:00",
+      "lead": "ABBV:0001551152:AbbVie:extra8k",
+      "peers": [
+        "JNJ:0000200406:Johnson & Johnson",
+        "LLY:0000059478:Eli Lilly",
+        "MRK:0000310158:Merck",
+        "PFE:0000078003:Pfizer",
+        "AMGN:0000318154:Amgen",
+        "BMY:0000014272:Bristol-Myers Squibb"
+      ],
+      "needles": [
+        "Skyrizi",
+        "Rinvoq"
+      ],
+      "reuse_packet": "docs/examples/source-packets/pilot-original-anchors/HT-023.json",
+      "named_products": [
+        "Skyrizi",
+        "Rinvoq"
+      ],
+      "issuer_display": "AbbVie"
+    },
+    {
+      "case_id": "HT-026",
+      "cutoff": "2026-06-11T08:15:00+01:00",
+      "lead": "CARR:0001783180:Carrier Global:extra8k",
+      "peers": [
+        "VRT:0001674101:Vertiv",
+        "JCI:0000833444:Johnson Controls",
+        "TT:0001466258:Trane Technologies",
+        "ETN:0001551182:Eaton",
+        "EMR:0000032604:Emerson Electric"
+      ],
+      "needles": [
+        "Viessmann",
+        "Toshiba"
+      ],
+      "named_products": [
+        "Viessmann",
+        "Toshiba"
+      ],
+      "issuer_display": "Carrier Global",
+      "named_acquisitions": []
+    }
+  ]
+}

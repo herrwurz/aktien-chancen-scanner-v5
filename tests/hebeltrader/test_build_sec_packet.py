@@ -26,3 +26,15 @@ def test_focus_text_prefers_revenue_hit_over_glossary_definition():
     focused = _focus_text(raw, ("Prevnar",))
     assert "$3.3 billion" in focused
     assert "up 6% operationally" in focused
+
+
+def test_focus_text_keeps_brand_even_when_only_includes_context():
+    raw = (
+        b"<html><body>"
+        b"The Company's portfolio includes industry-leading brands such as "
+        b"Carrier, Viessmann, Toshiba, Automated Logic and Carrier Transicold."
+        b"</body></html>"
+    )
+    focused = _focus_text(raw, ("Viessmann", "Toshiba"))
+    assert "Viessmann" in focused
+    assert "Toshiba" in focused
