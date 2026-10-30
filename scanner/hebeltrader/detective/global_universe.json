@@ -7,19 +7,22 @@
    "name": "ASML Holding",
    "sector": "semiconductor",
    "layer": "lithography",
-   "structure": "monopoly"
+   "structure": "monopoly",
+   "ticker": "ASML"
   },
   {
    "name": "Lam Research",
    "sector": "semiconductor",
    "layer": "wafer-fab-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "LRCX"
   },
   {
    "name": "Applied Materials",
    "sector": "semiconductor",
    "layer": "wafer-fab-equipment",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AMAT"
   },
   {
    "name": "Tokyo Electron",
@@ -31,31 +34,36 @@
    "name": "KLA Corporation",
    "sector": "semiconductor",
    "layer": "inspection-metrology",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "KLAC"
   },
   {
    "name": "Synopsys",
    "sector": "semiconductor",
    "layer": "chip-design-software",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "SNPS"
   },
   {
    "name": "Cadence Design Systems",
    "sector": "semiconductor",
    "layer": "chip-design-software",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "CDNS"
   },
   {
    "name": "Arm Holdings",
    "sector": "semiconductor",
    "layer": "chip-ip",
-   "structure": "monopoly"
+   "structure": "monopoly",
+   "ticker": "ARM"
   },
   {
    "name": "TSMC",
    "sector": "semiconductor",
    "layer": "foundry",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "TSM"
   },
   {
    "name": "Samsung Electronics",
@@ -67,25 +75,29 @@
    "name": "Nvidia",
    "sector": "semiconductor",
    "layer": "ai-processors",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "NVDA"
   },
   {
    "name": "Advanced Micro Devices",
    "sector": "semiconductor",
    "layer": "ai-processors",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AMD"
   },
   {
    "name": "Broadcom",
    "sector": "semiconductor",
    "layer": "ai-processors",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AVGO"
   },
   {
    "name": "Micron Technology",
    "sector": "semiconductor",
    "layer": "memory",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "MU"
   },
   {
    "name": "SK Hynix",
@@ -97,13 +109,15 @@
    "name": "Texas Instruments",
    "sector": "semiconductor",
    "layer": "analog-mcu",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "TXN"
   },
   {
    "name": "Analog Devices",
    "sector": "semiconductor",
    "layer": "analog-mcu",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "ADI"
   },
   {
    "name": "Infineon Technologies",
@@ -115,7 +129,8 @@
    "name": "NXP Semiconductors",
    "sector": "semiconductor",
    "layer": "analog-mcu",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "NXPI"
   },
   {
    "name": "STMicroelectronics",
@@ -127,7 +142,8 @@
    "name": "Entegris",
    "sector": "semiconductor",
    "layer": "materials-components",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ENTG"
   },
   {
    "name": "Disco Corporation",
@@ -175,37 +191,43 @@
    "name": "Microsoft",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "MSFT"
   },
   {
    "name": "Oracle",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ORCL"
   },
   {
    "name": "Salesforce",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "CRM"
   },
   {
    "name": "ServiceNow",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "NOW"
   },
   {
    "name": "Adobe",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "ADBE"
   },
   {
    "name": "Intuit",
    "sector": "software",
    "layer": "enterprise-software",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "INTU"
   },
   {
    "name": "Dassault Systemes",
@@ -217,43 +239,50 @@
    "name": "Autodesk",
    "sector": "software",
    "layer": "engineering-software",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "ADSK"
   },
   {
    "name": "PTC",
    "sector": "software",
    "layer": "engineering-software",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "PTC"
   },
   {
    "name": "Ansys",
    "sector": "software",
    "layer": "engineering-software",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "ANSS"
   },
   {
    "name": "Palo Alto Networks",
    "sector": "software",
    "layer": "cybersecurity",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "PANW"
   },
   {
    "name": "CrowdStrike",
    "sector": "software",
    "layer": "cybersecurity",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "CRWD"
   },
   {
    "name": "Fortinet",
    "sector": "software",
    "layer": "cybersecurity",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "FTNT"
   },
   {
    "name": "Palantir Technologies",
    "sector": "software",
    "layer": "data-analytics",
-   "structure": "fragmented"
+   "structure": "fragmented",
+   "ticker": "PLTR"
   },
   {
    "name": "Snowflake",
@@ -493,19 +522,22 @@
    "name": "Costco Wholesale",
    "sector": "retail",
    "layer": "retail",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "COST"
   },
   {
    "name": "Walmart",
    "sector": "retail",
    "layer": "retail",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "WMT"
   },
   {
    "name": "Amazon",
    "sector": "retail",
    "layer": "retail",
-   "structure": "oligopoly"
+   "structure": "oligopoly",
+   "ticker": "AMZN"
   },
   {
    "name": "Home Depot",
@@ -529,13 +561,15 @@
    "name": "Visa",
    "sector": "financial services",
    "layer": "payments",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "V"
   },
   {
    "name": "Mastercard",
    "sector": "financial services",
    "layer": "payments",
-   "structure": "duopoly"
+   "structure": "duopoly",
+   "ticker": "MA"
   },
   {
    "name": "London Stock Exchange Group",

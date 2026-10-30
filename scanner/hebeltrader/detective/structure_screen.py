@@ -73,3 +73,12 @@ def screen_queries(text, **options):
         f'"{asset["name"]}" market position customers alternatives competitors'
         for asset in screen(text, **options)
     ]
+
+
+def ticker_for(name):
+    """Universe ticker for a candidate name (matched on normalised name), if known."""
+    key = re.sub(r"[^a-z0-9]", "", name.casefold())
+    for asset in load_universe():
+        if asset.get("ticker") and re.sub(r"[^a-z0-9]", "", asset["name"].casefold()) in (key,):
+            return asset["ticker"]
+    return None
