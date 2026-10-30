@@ -75,13 +75,25 @@ def screen_queries(text, **options):
     ]
 
 
-def ticker_for(name):
-    """Universe ticker for a candidate name (matched on normalised name), if known."""
-    key = re.sub(r"[^a-z0-9]", "", name.casefold())
+def _key(value):
+    return re.sub(r"[^a-z0-9]", "", value.casefold())
+
+
+def find_asset(name):
+    """Match a candidate name to the universe: exact, legal-form suffix or alias."""
+    key = _key(name or "")
+    if not key:
+        return None
     for asset in load_universe():
-        if asset.get("ticker") and re.sub(r"[^a-z0-9]", "", asset["name"].casefold()) in (key,):
-            return asset["ticker"]
+        names = [asset["name"], *asset.get("aliases", [])]
+        if any(key == _key(n) or key.startswith(_key(n)) for n in names):
+            return asset
     return None
+
+
+def ticker_for(name):
+    asset = find_asset(name)
+    return asset.get("ticker") if asset else None
 
 
 def screened_names(text, **options):
@@ -92,12 +104,11 @@ def structure_bonus(name, text):
     """Bonus when the teaser says 'customers have no choice' and the layer is concentrated."""
     if not re.search(CHOICE, stock_text(text), re.I):
         return None
-    key = re.sub(r"[^a-z0-9]", "", name.casefold())
-    for asset in load_universe():
-        if key and key == re.sub(r"[^a-z0-9]", "", asset["name"].casefold()):
-            return {
-                "layer": asset["layer"],
-                "structure": asset["structure"],
-                "bonus": {"monopoly": 15, "duopoly": 15, "oligopoly": 2}.get(asset["structure"], 0),
-            }
-    return None
+    asset = find_asset(name)
+    if not asset:
+        return None
+    return {
+        "layer": asset["layer"],
+        "structure": asset["structure"],
+        "bonus": {"monopoly": 15, "duopoly": 15, "oligopoly": 2}.get(asset["structure"], 0),
+    }

@@ -36,15 +36,24 @@ def trend_features(closes):
 
 
 def chart_score(features):
-    """Small bounded bonus for 'long-term uptrend' and 'breakout' teaser wording."""
+    """Bounded score for 'uptrend' and 'decisive chart moment' (price above GD50 and GD200).
+
+    Hebeltrader entries require a confirmed uptrend: price above both averages scores most.
+    A deep drawdown from the 1-year high contradicts a 'years of steady gains' claim.
+    """
     if not features:
         return 0
-    score = 0
-    score += 4 if features["above_gd200"] and features["gd200_rising"] else 0
-    score += 2 if features["above_gd50"] else 0
-    score += 2 if features["return_1y_pct"] > 15 else 0
+    if features["above_gd50"] and features["above_gd200"]:
+        score = 12
+    elif features["above_gd200"]:
+        score = 4
+    else:
+        score = 0
+    score += 2 if features["gd200_rising"] else 0
+    score += 1 if features["return_1y_pct"] > 15 else 0
     score += 2 if features["breakout"] else 0
-    return score
+    score -= 4 if features["near_high_pct"] < -25 else 0
+    return max(0, score)
 
 
 def fetch_closes(ticker, *, token=None, client=None, today=None, exchange="US"):

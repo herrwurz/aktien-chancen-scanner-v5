@@ -28,7 +28,8 @@ def test_unknown_sector_yields_no_shortlist():
 
 def test_universe_has_no_teaser_solutions_metadata_only():
     assert all(
-        set(a) <= {"name", "sector", "layer", "structure", "ticker"} for a in load_universe()
+        set(a) <= {"name", "sector", "layer", "structure", "ticker", "aliases"}
+        for a in load_universe()
     )
 
 

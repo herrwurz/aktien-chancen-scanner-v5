@@ -47,7 +47,7 @@
     <h3>Verbleibende Anbieter-Credits</h3>
     <p id="tavily-credits">Tavily-Kontostand wird geladen …</p>
     <p id="openai-usage">OpenAI-Verbrauch wird geladen …</p>
-    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche. OpenAI GPT-4.1 mini = 0,40/1,60 USD und GPT-4.1 = 2,00/8,00 USD je Mio. Eingabe-/Ausgabetokens. Unbekannte Modellpreise werden nicht geschätzt. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1" target="_blank" rel="noopener noreferrer">OpenAI-Tarife</a>.</p>
+    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche, Pay-as-you-go 0,008 $ je Credit. OpenAI GPT-4.1 mini = 0,40/1,60 USD und GPT-4.1 = 2,00/8,00 USD je Mio. Eingabe-/Ausgabetokens. Unbekannte Modellpreise werden nicht geschätzt. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1" target="_blank" rel="noopener noreferrer">OpenAI-Tarife</a>.</p>
     <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>.</p>
     <button type="button" id="refresh-api-costs">Kostenstand aktualisieren</button>
   </section>{% endif %}
@@ -135,7 +135,7 @@ const loadApiCosts=async()=>{
       provider_unavailable:'Der Tavily-Usage-Dienst ist vorübergehend nicht verfügbar.',
       request_rejected:'Tavily hat die Usage-Abfrage abgelehnt.'};
     document.querySelector('#tavily-credits').textContent=tavily.status==='available'
-      ? `Tavily ${tavily.plan}: ${tavily.plan_remaining} von ${tavily.plan_limit} Plan-Credits verfügbar · ${tavilySearchUsage} Such-Credits über diesen Schlüssel verbraucht.`
+      ? `Tavily ${tavily.plan}: ${tavily.plan_usage} Credits verbraucht`+(tavily.plan_limit==null?'':` (Plan-Limit ${tavily.plan_limit}, ${tavily.plan_remaining} frei)`)+(tavily.paygo_usage==null&&tavily.paygo_limit==null?'':` · Pay-as-you-go: ${tavily.paygo_usage??0}${tavily.paygo_limit==null?' (kein Limit)':` von ${tavily.paygo_limit}`} Credits ≈ ${(((tavily.paygo_usage??0)*0.008)).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:2})}`)+` · ${tavilySearchUsage} Such-Credits über diesen Schlüssel.`
       : tavily.status==='not_configured'?'Tavily: kein API-Schlüssel konfiguriert.':(tavilyErrors[tavily.reason]||'Tavily-Kontostand derzeit nicht abrufbar.');
     const openai=data.provider_credits?.openai||{};
     const usd=openai.estimated_usd==null?'Gesamtkosten nicht vollständig bestimmbar':Number(openai.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});

@@ -143,7 +143,7 @@ def _entities(text):
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
-SEARCH_LOGIC_VERSION = "2026-10-31-search-v7"
+SEARCH_LOGIC_VERSION = "2026-10-31-search-v8"
 _LEGAL_WORDS = re.compile(
     r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag|se|sa|nv|n v|holding|holdings"
     r"|co|company|group|the)\b"
