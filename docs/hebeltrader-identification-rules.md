@@ -231,3 +231,66 @@ Auch eine allein durch KI ergänzte Identität erlaubt keine automatische Bestä
 Keine bekannten Lösungen oder WKNs gelangen in die KI-Planung. Budget und Freigabe bleiben
 separat kontrolliert; ohne API-Zugänge ist die Live-Abnahme offen. Details:
 [Such-/KI-Anbindung](teaser-search-ai.md).
+
+
+## Neuer Fall HT-20226 – Erstprognose vom 30.10.2026
+
+- Originalüberschrift: „Vom Tief zum Triumph: Die Comeback-Story des Jahres!“
+- Nutzer lieferte den Teasertext einschließlich 1.311 % Call-Werbepotenzial; letzter Satz abgebrochen. Öffentlicher Suchindex ordnet denselben Text Rudolf Wittmer, HEBELTRADER 202/26, Erscheinungsdatum 30.10.2026 zu. Direkter Shopabruf war nicht verfügbar. Keine genaue Publikationsuhrzeit belegt.
+- Quelle: https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20226-5112.html
+- **Eingefrorene assistentengestützte Erstprognose:** 1. Deutsche Bank, 2. Commerzbank, 3. UBS. Rang 2/3 sind deutlich schwächere Vergleichskandidaten, keine gleichwertigen Identifikationen.
+- Favorit: Deutsche Bank AG, DBK, Aktien-WKN 514000, ISIN DE0005140008.
+- Status: starke, primärquellenbasierte Hypothese; Herausgeberauflösung noch nicht vorhanden. Original-Call-WKN unbekannt, Produktparameter ungeprüft.
+- Kein autonomer Scannerlauf und kein bestätigter unabhängiger Blindtest. Keine Prozent-Konfidenz. Keine Änderung der historischen 18-Fall-Bilanz.
+
+### Kernhinweise und aktive Gegenprüfung
+
+| Kriterium | Deutsche Bank | Commerzbank | UBS |
+|---|---|---|---|
+| Drittes Rekordquartal in Folge | Explizit in Unternehmensmeldung vom 28.10.2026 | Rekord-Halbjahr belegt; Q3 erst für 05.11.2026 terminiert; kein passender aktueller Nachweis | Q3-Nettogewinn 2,690 Mrd. USD nach 2,800 Mrd. in Q2; konkrete Dreier-Rekordformulierung nicht belegt |
+| Ertragswachstum | Q3 +4 % auf 8,3 Mrd. EUR | H1 +7 % auf 6,5 Mrd. EUR | Q3 13,350 Mrd. USD nach 12,760 Mrd. im Vorjahr |
+| Kapital/Ausschüttungen | CET1 14,0 %, Ausschüttungsquote 60 %; 1,5 Mrd. EUR Rückkäufe 2026 bereits abgeschlossen | CET1 14,4 %, geplanter Rückkauf bis 1,2 Mrd. EUR laut Augustmeldung | CET1 14,7 %, Rückkäufe/Dividendenwachstum vorgesehen |
+| 200-Tage-Linie | Sekundärdaten melden Kreuzung am 29.10.; Brokeranalyse vom 29.10. beschreibt Schluss vom 28.10. noch darunter. Keine eigene Neuberechnung | Nicht verifiziert | Nicht verifiziert |
+| Kurszielanhebungen | UBS 37→38 EUR, Originalstudie laut dpa vom 29.10.; Citi 31,70→32,80 EUR sekundär berichtet | Keine passende Serie in dieser Prüfung belegt | Keine passende Serie in dieser Prüfung belegt |
+
+Zusätzlich aktiv geprüfte Gegenkandidaten:
+- Barclays: Q3-Bericht mit CET1 14,2 %, neuem Rückkauf bis 500 Mio. GBP und wachsendem Ergebnis. Exakte dreimalige Rekordserie nicht belegt.
+- HSBC: Q3-Vorsteuergewinn 9,6 Mrd. USD berichtet; 10,0 Mrd. ohne Sondereffekte. Nicht vermischen. CET1 13,9 %, gegenüber Q2 um 0,2 Prozentpunkte gesunken: schwächerer Match zum Kapitalaufbau; kein Beleg der spezifischen Rekordserie.
+- Citigroup: Q3-Nettogewinn 5,2 Mrd. USD, Erträge +8 % zum Vorjahr, CET1 12,8 % unverändert zum Vorquartal, Ausschüttungen 4,1 Mrd. USD. Keine genaue Dreier-Rekordserie belegt.
+
+Falsifikation des Favoriten:
+- „Rekord“ bezeichnet hier periodenspezifische Quartalsrekorde, nicht zwingend drei nacheinander absolut steigende Quartalsgewinne.
+- „Ausschüttungen rücken näher“ ist unpräzise: Rückkäufe sind bei Deutsche Bank bereits erfolgt, nicht erstmals möglich.
+- „Kapitalbasis so stark wie lange nicht“ ist durch CET1 14,0 % am oberen Zielrand gestützt, aber kein geprüfter historischer Höchststand.
+- Chartinformationen hängen an Datum, Börsenplatz und Datenreihe; der Schluss vom 28.10. ist nicht gleich dem vom 29.10. Keine nachträgliche Chartbestätigung aus bloßer Teaserbehauptung.
+- Nicht bei jeder Alternative ist ein Gegenbeweis belegt. Ein fehlender Nachweis der Rekordserie bleibt unbekannt und wird nicht als bewiesene Widerlegung ausgegeben.
+
+### Quellen der Erstprüfung
+
+Unternehmens-/Regulatorquellen:
+- https://www.db.com/news/detail/20261028-deutsche-bank-veroeffentlicht-ergebnisse-zum-dritten-quartal-2026
+- https://www.eqs-news.com/de/news/corporate/commerzbank-erzielt-rekordergebnis-im-ersten-halbjahr-2026-ausblick-bestatigt/acd38764-866f-4f6a-a428-5676272652a9_de
+- https://investor-relations.commerzbank.com/de/quartalsergebnisse
+- https://www.ubs.com/global/en/investor-relations/press-releases/overview-news-display-ndp/en-20261028-3q26-quarterly-result.html
+- https://www.sec.gov/Archives/edgar/data/312069/000031206926000240/bplcq326resultsannouncement.htm
+- https://www.hsbc.com/investors/results-and-announcements/all-reporting/3q-2026-quick-read
+- https://www.sec.gov/Archives/edgar/data/831001/000110465926115323/c-ex99d1.htm
+
+Ergänzende Chart-/Analystenquellen, keine fundamentalen Primärbelege:
+- https://www.xtb.com/de/Marktanalysen/Trading-News/deutsche-bank-aktie-dax-spitzenreiter-nach-erholungsrallye-ein-signal-zum-aktien-kaufen
+- https://www.finanzen.net/aktien/deutsche_bank-aktie
+- https://www.wallstreet-online.de/nachricht/21609642-ubs-stuft-deutsche-bank-ag-buy
+- https://goldesel.de/aktien/news/deutsche-bank-aktie-citi-hebt-kursziel-nach-starken-quartalszahlen-auf-3280-euro
+
+Heute zugängliche Quellen sind keine authentifizierten historischen Inhaltsfassungen.
+Die Recherche ist vor einer hier vorliegenden Herausgeberauflösung erfolgt, aber ohne
+extern attestierten Freeze-Zeitpunkt und ohne vollständiges Rohdatenarchiv.
+
+### Regression für spätere Implementierung
+
+Periodenbezogene Quartalsrekorde nicht mit sequenziell steigendem Gewinn verwechseln;
+Vorsteuer-/Nettogewinn und berichtet/bereinigt getrennt halten; Kapitalstärke nicht ohne
+Zeitreihe als Rekord bestätigen; Chartdurchbruch am exakten Handelstag prüfen; bereits
+abgeschlossene Rückkäufe von neuen Ankündigungen unterscheiden. Gewinnername und
+Call-Werbepotenzial dürfen keine Produktions-Rankingregel werden. Diese Dokumentation
+enthält Testanforderungen, keine neu ausgeführten Produkttests.
