@@ -59,7 +59,9 @@ Voll-JSON: gitignored `reports/snapshots-pit-pool-v1-2026-10-30.json`.
 | Status | partial |
 
 Spot-Checks ok: `DBK.XETRA`, ATX (`EBS.VI`, `BG.VI`, `POST.VI`, …).  
-~126 Ticker-Map-Fehler (Share-Classes/Lokal-Suffixe, z. B. Schweden/Italien/UK) → Follow-up, kein Sektor-Patch.
+Ticker-Remap v1: `index_pool_ticker_remap_v1.json` (~76 EODHD-verifizierte Korrekturen,
+z. B. `ASSAB.ST`→`ASSA-B.ST`, `CAPP.PA`→`CAP.PA`, `ENI.MI`→`ENI.XETRA`).  
+Restlücken: Japan `.TSE` (bewusst), Italien `.MI` ohne EODHD-Venue (teilweise XETRA/US-Fallback).
 
 ```bash
 python3 -m scanner.hebeltrader.detective.market_screen export-pit \
