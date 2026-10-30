@@ -8,7 +8,7 @@ def test_uptrend_with_breakout_scores_high():
     closes = [100 + i * 0.3 for i in range(300)]
     features = trend_features(closes)
     assert features["above_gd200"] and features["gd200_rising"] and features["breakout"]
-    assert chart_score(features) == 10
+    assert chart_score(features) == 17
 
 
 def test_downtrend_scores_zero_and_short_history_is_none():
@@ -32,3 +32,28 @@ def test_check_uses_provider_rows():
 def test_ticker_lookup():
     assert ticker_for("Synopsys") == "SNPS"
     assert ticker_for("Unbekannt AG") is None
+
+
+def _features(**values):
+    base = {
+        "above_gd50": False,
+        "above_gd200": False,
+        "gd200_rising": False,
+        "return_1y_pct": 0,
+        "near_high_pct": -5,
+        "breakout": False,
+    }
+    return base | values
+
+
+def test_price_above_both_averages_outranks_single_average_and_drawdown():
+    both = chart_score(_features(above_gd50=True, above_gd200=True))
+    only200 = chart_score(_features(above_gd200=True, gd200_rising=True, return_1y_pct=40))
+    crashed = chart_score(_features(above_gd200=True, near_high_pct=-48))
+    assert both > only200 > crashed
+
+
+def test_ticker_lookup_handles_legal_forms_and_aliases():
+    assert ticker_for("NVIDIA Corporation") == "NVDA"
+    assert ticker_for("Applied Materials Inc.") == "AMAT"
+    assert ticker_for("Taiwan Semiconductor Manufacturing Company Ltd.") == "TSM"

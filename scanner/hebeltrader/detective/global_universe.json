@@ -63,7 +63,10 @@
    "sector": "semiconductor",
    "layer": "foundry",
    "structure": "oligopoly",
-   "ticker": "TSM"
+   "ticker": "TSM",
+   "aliases": [
+    "Taiwan Semiconductor Manufacturing"
+   ]
   },
   {
    "name": "Samsung Electronics",
@@ -76,7 +79,10 @@
    "sector": "semiconductor",
    "layer": "ai-processors",
    "structure": "oligopoly",
-   "ticker": "NVDA"
+   "ticker": "NVDA",
+   "aliases": [
+    "NVIDIA"
+   ]
   },
   {
    "name": "Advanced Micro Devices",
