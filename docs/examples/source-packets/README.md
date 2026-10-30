@@ -19,6 +19,7 @@ Pilots:
 - `batch-us-rest/` — restliche US-SEC der 27er; **7/7 named** (gesamt 17/17 US)
 - `blind-202-26-sec6k/` — FPI **6-K** developmental packet (DB+peers); named → identified;
   prospective Blind freeze SHA untouched
+- `batch-eu-sec/` — EU/FPI with SEC listings (SAP/BP/Eni); **3/3 named identified**
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

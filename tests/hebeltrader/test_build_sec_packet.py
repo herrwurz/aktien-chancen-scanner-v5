@@ -3,6 +3,7 @@
 from scanner.hebeltrader.detective.build_sec_packet import (
     _earnings_name_score,
     _focus_text,
+    _pick_needles,
     pick_filings,
     resolve_filing_body,
 )
@@ -128,3 +129,10 @@ def test_resolve_filing_body_noop_for_non_6k():
         "url": "https://www.sec.gov/Archives/edgar/data/19617/0001/x.htm",
     }
     assert resolve_filing_body(filing) is filing
+
+
+def test_pick_needles_drops_generic_finance_tokens():
+    assert _pick_needles(("Plenitude", "buyback", "share repurchase", "Castrol")) == (
+        "Plenitude",
+        "Castrol",
+    )

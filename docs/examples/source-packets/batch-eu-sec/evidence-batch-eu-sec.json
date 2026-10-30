@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "docs/examples/source-packets/batch-eu-sec/packets",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "(batch root)",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-014.inputs.named.json",
+      "root": "00-HT-014.inputs.named",
+      "ranking_sha256": "3e6d4e499036e935a924e55c5cf302c5662a86deac844bfe7f3175c17142ef2d",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-014.inputs.original.json",
+      "root": "01-HT-014.inputs.original",
+      "ranking_sha256": "d564a497d48c668eaca0f81f7bfba4eb0d3157d326fb2d4a5fe754ba016b5953",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-021.inputs.named.json",
+      "root": "02-HT-021.inputs.named",
+      "ranking_sha256": "0d9277338c0e0f3310659d8a4cc7214aca624bfe0c38784f64bb186b382998bb",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-021.inputs.original.json",
+      "root": "03-HT-021.inputs.original",
+      "ranking_sha256": "1ded5c921249b5497ad96f52280e1b5792e1ac396d634a8e4a5be435d9b720e4",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-024.inputs.named.json",
+      "root": "04-HT-024.inputs.named",
+      "ranking_sha256": "fb3fd37e22e61b85615576dfa4b73e2d590dfd6c2e97201ba34e0f5bbf173a3b",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-024.inputs.original.json",
+      "root": "05-HT-024.inputs.original",
+      "ranking_sha256": "86a2aa7216b3ec047e3d646628c25ede67833d80fefae16f1b2a8a6153d5b00f",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "HT-014",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "SAP",
+      "packet_evidence_name": "SAP",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "SAP",
+      "leader_name": "SAP",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-014.inputs.named.json"
+    },
+    {
+      "case_id": "HT-014",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "CRM",
+      "leader_name": "Salesforce",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-014.inputs.original.json"
+    },
+    {
+      "case_id": "HT-021",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "BP",
+      "packet_evidence_name": "BP",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "BP",
+      "leader_name": "BP",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-021.inputs.named.json"
+    },
+    {
+      "case_id": "HT-021",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "BP",
+      "leader_name": "BP",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-021.inputs.original.json"
+    },
+    {
+      "case_id": "HT-024",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "E",
+      "packet_evidence_name": "Eni",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "E",
+      "leader_name": "Eni",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-024.inputs.named.json"
+    },
+    {
+      "case_id": "HT-024",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "BP",
+      "leader_name": "BP",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-eu-sec/HT-024.inputs.original.json"
+    }
+  ],
+  "counts": {
+    "cases": 6,
+    "ticker_hypothesis_ready": 3,
+    "partial_evidence": 0,
+    "identified": 3,
+    "identified_from_packet": 3
+  }
+}

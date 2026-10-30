@@ -120,6 +120,14 @@ def _earnings_name_score(name: str) -> int:
     for match in _EARNINGS_NAME_HINT.finditer(text):
         token = match.group(0).casefold()
         score += 5 if token.startswith("earn") else 3 if "q" in token else 2
+    # Period-stamped bodies (bp-20260630.htm, sap-20251231x20f.htm).
+    if re.search(r"20\d{2}-?\d{2}-?\d{2}|20\d{6}", text):
+        score += 4
+    # Opaque short broker codes (a9916s.htm) are usually not earnings packages.
+    # Do not penalize quarter-tagged names (q32026pr.htm).
+    stem = re.sub(r"\.(htm|html)$", "", text.casefold())
+    if score <= 0 and re.fullmatch(r"[a-z]\d{3,5}[a-z]", stem):
+        score -= 4
     return score
 
 
@@ -164,7 +172,35 @@ def list_filings(cik: str, *, cutoff_date: str, since: str = "2025-01-01"):
     return rows, payload.get("name")
 
 
-def _best_six_k(rows):
+_GENERIC_PICK_NEEDLES = frozenset(
+    {
+        "buyback",
+        "share buyback",
+        "share repurchase",
+        "dividend",
+        "dividends",
+        "capital",
+        "revenue",
+        "revenues",
+        "earnings",
+    }
+)
+
+
+def _pick_needles(needles: tuple[str, ...]) -> tuple[str, ...]:
+    """Distinctive product/issuer needles only — generic finance words match every 6-K."""
+    out = []
+    for needle in needles:
+        cleaned = (needle or "").strip()
+        if len(cleaned) < 4:
+            continue
+        if cleaned.casefold() in _GENERIC_PICK_NEEDLES:
+            continue
+        out.append(cleaned)
+    return tuple(out)
+
+
+def _best_six_k(rows, *, needles: tuple[str, ...] = (), cik: str | None = None):
     six_ks = [row for row in rows if row["form"] == "6-K"]
     if not six_ks:
         return None
@@ -175,10 +211,33 @@ def _best_six_k(rows):
         ),
         reverse=True,
     )
+    pick_needles = _pick_needles(needles)
+    if not pick_needles or not cik:
+        return six_ks[0]
+    # Lead issuer: among recent/high-scoring 6-Ks, prefer a body that mentions a focus needle
+    # (avoids AGM/capitalization wrappers that outrank earnings by filing date alone).
+    for row in six_ks[:10]:
+        candidate = dict(row)
+        candidate.setdefault("cik", cik)
+        body = resolve_filing_body(candidate)
+        try:
+            time.sleep(0.12)
+            raw = _get(body["url"])
+        except Exception:
+            continue
+        lowered = raw.decode("utf-8", "replace").casefold()
+        if any(needle.casefold() in lowered for needle in pick_needles):
+            return body
     return six_ks[0]
 
 
-def pick_filings(rows, *, extra_8k: bool = False):
+def pick_filings(
+    rows,
+    *,
+    extra_8k: bool = False,
+    needles: tuple[str, ...] = (),
+    cik: str | None = None,
+):
     """Prefer quarterly evidence: 10-Q, else recent 6-K (FPI), else 10-K/20-F.
 
     Foreign private issuers rarely file 10-Q; their quarterly earnings arrive as
@@ -189,7 +248,7 @@ def pick_filings(rows, *, extra_8k: bool = False):
     if ten_q:
         chosen.append(ten_q)
     else:
-        six_k = _best_six_k(rows)
+        six_k = _best_six_k(rows, needles=needles, cik=cik)
         if six_k:
             chosen.append(six_k)
         else:
@@ -319,7 +378,13 @@ def build_packet(
         cik = issuer["cik"]
         rows, sec_name = list_filings(cik, cutoff_date=cutoff_date)
         name = issuer.get("name") or sec_name or ticker
-        picks = pick_filings(rows, extra_8k=bool(issuer.get("extra_8k")))
+        lead_needles = needles_by_ticker.get(ticker, ()) if issuer is issuers[0] else ()
+        picks = pick_filings(
+            rows,
+            extra_8k=bool(issuer.get("extra_8k")),
+            needles=lead_needles,
+            cik=cik,
+        )
         for filing in picks:
             filing = resolve_filing_body(filing)
             time.sleep(0.2)

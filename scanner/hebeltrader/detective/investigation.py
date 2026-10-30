@@ -221,10 +221,11 @@ def _entities(text):
     ):
         if _relation(text, match.start(1)) != "unknown_relation" or " " in match.group(1):
             found.append(match.group(1))
-    # Issuer names after an explicit issuer cue (Title Case; allow "Johnson & Johnson").
+    # Issuer names after an explicit issuer cue (Title Case; allow "Johnson & Johnson",
+    # and short tickers like BP / ENI after Konzern/Emittent).
     for match in re.finditer(
         r"\b(?:Emittent|Konzern|Unternehmen|Firma|Issuer|Company)\b"
-        r"[:\s]+([A-Z][A-Za-z0-9&-]{2,}"
+        r"[:\s]+([A-Z][A-Za-z0-9&-]{1,}"
         r"(?:\s+(?:&|and|[A-Z][A-Za-z0-9&-]{2,})){0,4})",
         text,
     ):
@@ -330,15 +331,14 @@ def _clues(text, spans):
     for name in _entities(text):
         start = text.index(name)
         relation = _relation(text, start)
-        # Bare proper names: product cue → product_literal; else issuer_literal.
-        if relation == "unknown_relation":
-            window = text[max(0, start - 100) : start]
-            if _PRODUCT_CUE.search(window):
-                relation = "product_literal"
-                method = "teaser_product_literal_requires_issuer_filing_mention"
-            else:
-                relation = "issuer_literal"
-                method = "teaser_issuer_literal_requires_candidate_name_match"
+        window = text[max(0, start - 100) : start]
+        # Adjacent product cue wins over a distant earlier Übernahme/acquisition hit.
+        if _PRODUCT_CUE.search(window):
+            relation = "product_literal"
+            method = "teaser_product_literal_requires_issuer_filing_mention"
+        elif relation == "unknown_relation":
+            relation = "issuer_literal"
+            method = "teaser_issuer_literal_requires_candidate_name_match"
         else:
             method = "named_entity_literal_requires_transaction_context"
         target = relation + "|" + name.casefold()
