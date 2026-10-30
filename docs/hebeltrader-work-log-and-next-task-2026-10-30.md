@@ -13,8 +13,8 @@ war noch nicht eingefroren.
 ## 3. In diesem Fortsetzungsbranch erledigt
 - **Ticker-Abdeckung:** alle 115 Universumsnamen haben Listing-Ticker; EODHD-Codes für Roche
   (`RO.SW`), Renk (`R3NK.XETRA`), Prysmian (`AEU.XETRA`) korrigiert. Acht Tokyo-`.TSE`-Namen
-  bleiben Snapshot-Lücken (Japan-EOD auf dem aktiven Plan nicht verfügbar). Ansys: zu kurze
-  Historie (Übernahme).
+  bleiben **bewusst** ohne Snapshots: EODHD-Token ohne Japan-Börse; Teaser treffen Japan kaum —
+  **kein** ADR-/Xetra-Fallback (`ticker_policy.accepted_snapshot_gaps`). Ansys: zu kurze Historie.
 - **Snapshots:** Live-Export `market_screen export` → 106/115 Features
   (`docs/examples/snapshots-2026-10-30.meta.json`; Rohdatei unter gitignore
   `reports/hebeltrader/snapshots-2026-10-30.json`).
@@ -26,13 +26,12 @@ war noch nicht eingefroren.
 - **`reference_evaluate`:** `market_hypothesis_rank` / `market_hypothesis_coverage`.
 
 ## 4. Offen (nächste Schritte)
-**A. Japan-EOD** erst nach Plan mit TSE-Zugang oder bewusster ADR-/Xetra-Fallback-Politik.
-
-**B. PIT-Kalibrierung** nur mit Kursen ≤ Veröffentlichungsdatum der Referenzfälle
+**A. PIT-Kalibrierung** nur mit Kursen ≤ Veröffentlichungsdatum der Referenzfälle
 (`--as-of` je Fall, nicht Global-as-of).
 
-**C. Auflösung 202/26** nach Report-Kauf: Position der Lösung in structure-/market-Hypothesen
+**B. Auflösung 202/26** nach Report-Kauf: Position der Lösung in structure-/market-Hypothesen
 dokumentieren, ohne Logik auf diesen Fall zuzuschneiden.
 
-**D. Abnahme:** `PYTHONPATH=. pytest -q tests/hebeltrader` grün; keine Lösungsfelder im Scan-Input;
-Token nur als Cursor-Secret / `.env`, nie committen.
+**C. Abnahme:** `PYTHONPATH=. pytest -q tests/hebeltrader` grün; Token nur als Cursor-Secret / `.env`.
+
+Japan-Lücken: bewusst akzeptiert (siehe `global_universe.json` → `accepted_snapshot_gaps`).

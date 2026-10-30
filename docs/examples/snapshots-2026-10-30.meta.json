@@ -22,5 +22,9 @@
       "6367.TSE"
     ]
   },
-  "note": "Full snapshot JSON stays under gitignored reports/; regenerate with market_screen export."
+  "note": "Full snapshot JSON stays under gitignored reports/; regenerate with market_screen export.",
+  "accepted_gaps": {
+    "japan_tse": "Eight .TSE primaries stay without snapshots: EODHD token has no Japan exchange; teasers rarely cover Japan — no ADR/Xetra fallback (2026-10-30).",
+    "ansys": "ANSS returns insufficient EOD history (post-acquisition)."
+  }
 }

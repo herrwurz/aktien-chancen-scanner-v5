@@ -27,13 +27,12 @@ Evaluator. Der allgemeine Marktscanner bleibt unter `/market-scanner`.
 5. **Keine EODHD-Snapshots** im Repo; Token hier nicht gesetzt → Chart-Ranking nicht kalibriert.
 6. Doppelte Welten (V3-Fixture/Detective vs. Primary Investigate) erhöhen Wartungslast.
 
-## Nächste Entwicklung (dieser Branch)
+## Fortschritt in diesem Branch (nach Review)
 
-A. Ticker für bestehende Universumsnamen ergänzen (öffentliche Primärlistings / EODHD-Suffixe;
-   keine neuen Lösungs-Namen).
-B. Blindfall `BLIND-202-26` speichern und Ranking ohne Lösung einfrieren.
-C. `reference_scan --snapshots` optional an `market_screen` anbinden.
-D. Doku/Arbeitsprotokoll aktualisieren.
+A–D oben erledigt (Ticker 115/115, Blind-Freeze, `--snapshots`, Doku). Live-Export:
+**106/115** Snapshots. Acht Japan-`.TSE`-Primärlistings bleiben **bewusst** ohne Kursfeatures
+(EODHD ohne Japan-Venue; Teaser treffen Japan selten — kein ADR-/Xetra-Fallback; siehe
+`global_universe.json` → `accepted_snapshot_gaps`). Ansys: unzureichende Historie.
 
 Abnahmeziel „sehr hohe Top-3-Wahrscheinlichkeit“ bleibt **unbelegt**, bis prospektive Blindtests
 mit späteren Auflösungen existieren.

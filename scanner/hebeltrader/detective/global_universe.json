@@ -822,7 +822,22 @@
   "eodhd_notes": [
     "US bare symbols resolve to .US at fetch.",
     "Roche uses RO.SW (EODHD code); Renk uses R3NK.XETRA; Prysmian uses AEU.XETRA (Xetra dual listing) because MI/MIL returned 404 on the active plan.",
-    "Tokyo .TSE primary listings are unavailable on the active EODHD package (exchange-symbol-list/TSE 404); eight JP names keep primary .TSE codes and remain snapshot-gaps until a plan with Japan EOD is enabled."
-  ]
+    "Tokyo primary listings keep .TSE codes. EODHD exchanges-list for the active token has no Japan venue (TO is Toronto, not Tokyo; TSE/TYO/T return 404). Eight JP names are accepted snapshot-gaps: HEBELTRADER teasers rarely target Japan, so no ADR/Xetra fallback is applied."
+  ],
+  "accepted_snapshot_gaps": {
+    "as_of": "2026-10-30",
+    "japan_tse_primary": [
+      "8035.TSE",
+      "6146.TSE",
+      "6857.TSE",
+      "6326.TSE",
+      "6954.TSE",
+      "6861.TSE",
+      "6506.TSE",
+      "6367.TSE"
+    ],
+    "insufficient_history": ["ANSS"],
+    "decision": "Leave Japan .TSE unchanged; do not substitute ADR or EU dual listings."
+  }
  }
 }
