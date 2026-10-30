@@ -1,0 +1,88 @@
+{
+  "case_id": "HT-023",
+  "kind": "original_named_issuer_baseline",
+  "cutoff_publication_at": "2026-06-08T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "ABBV",
+      "name": "AbbVie",
+      "title": "AbbVie SEC 10-Q 2026-05-08",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000017/abbv-20260331.htm",
+      "chars": 10824,
+      "filing_date": "2026-05-08",
+      "mentions_skyrizi": true,
+      "mentions_rinvoq": true
+    },
+    {
+      "ticker": "ABBV",
+      "name": "AbbVie",
+      "title": "AbbVie SEC 8-K 2026-05-12",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551152/000110465926059484/tm2614276d1_8k.htm",
+      "chars": 4574,
+      "filing_date": "2026-05-12",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    },
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "title": "Johnson & Johnson SEC 10-Q 2026-04-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/200406/000020040626000087/jnj-20260329.htm",
+      "chars": 10000,
+      "filing_date": "2026-04-22",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly",
+      "title": "Eli Lilly SEC 10-Q 2026-04-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000045/lly-20260331.htm",
+      "chars": 10000,
+      "filing_date": "2026-04-30",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    },
+    {
+      "ticker": "MRK",
+      "name": "Merck",
+      "title": "Merck SEC 10-Q 2026-05-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/310158/000162828026029802/mrk-20260331.htm",
+      "chars": 10000,
+      "filing_date": "2026-05-04",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    },
+    {
+      "ticker": "PFE",
+      "name": "Pfizer",
+      "title": "Pfizer SEC 10-Q 2026-05-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/78003/000007800326000054/pfe-20260329.htm",
+      "chars": 10000,
+      "filing_date": "2026-05-05",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    },
+    {
+      "ticker": "AMGN",
+      "name": "Amgen",
+      "title": "Amgen SEC 10-Q 2026-05-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/318154/000031815426000057/amgn-20260331.htm",
+      "chars": 10000,
+      "filing_date": "2026-05-01",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    },
+    {
+      "ticker": "BMY",
+      "name": "Bristol-Myers Squibb",
+      "title": "Bristol-Myers Squibb SEC 10-Q 2026-04-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/14272/000001427226000010/bmy-20260331.htm",
+      "chars": 10000,
+      "filing_date": "2026-04-30",
+      "mentions_skyrizi": false,
+      "mentions_rinvoq": false
+    }
+  ],
+  "note": "Original teaser is headline-only and already names AbbVie; no second native anchor."
+}
