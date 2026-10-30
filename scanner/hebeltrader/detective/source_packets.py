@@ -43,9 +43,7 @@ def validate_document(doc, *, index=0):
             problems.append(f"doc[{index}]: missing required field '{field}'")
     kind = doc.get("source_kind")
     if kind and kind not in ALLOWED_SOURCE_KINDS:
-        problems.append(
-            f"doc[{index}]: source_kind '{kind}' not in {sorted(ALLOWED_SOURCE_KINDS)}"
-        )
+        problems.append(f"doc[{index}]: source_kind '{kind}' not in {sorted(ALLOWED_SOURCE_KINDS)}")
     evidence = doc.get("availability_evidence")
     if evidence is not None:
         if not isinstance(evidence, dict):
@@ -53,9 +51,7 @@ def validate_document(doc, *, index=0):
         else:
             for field in ("basis", "source_url", "observed_at", "content_sha256"):
                 if not evidence.get(field):
-                    problems.append(
-                        f"doc[{index}]: availability_evidence missing '{field}'"
-                    )
+                    problems.append(f"doc[{index}]: availability_evidence missing '{field}'")
             if doc.get("raw_sha256") and evidence.get("content_sha256"):
                 if doc["raw_sha256"] != evidence["content_sha256"]:
                     problems.append(
