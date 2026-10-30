@@ -28,11 +28,15 @@ war noch nicht eingefroren.
   publication_date wird als Leakage abgelehnt.
 
 ## 4. Offen (nächste Schritte)
-**A. Auflösung 202/26** nach Report-Kauf: Position der Lösung in structure-/market-Hypothesen
-dokumentieren, ohne Logik nachzuziehen.
+**A. Auflösung 202/26** nach Report-Kauf: Position der Lösung dokumentieren, ohne Nachziehen.
 
-**B. Abnahme:** Suite grün; Token nur Secret/`.env`; PR #51 mergen wenn gewünscht.
+**B. Abnahme** neuer PR (Active-Call-Ausschluss); Suite grün.
 
-Diagnose-Notizen (ohne Retuning): `docs/examples/reference-27-pit-diagnosis-notes-2026-10-30.md`.
-Web-UI zeigt EODHD-Tageskontingent unter `/api/hebeltrader/runtime` (ohne PII).
+### Active-Call-Ausschluss (neu)
+`featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
+innerhalb **180 Tagen** vor `publication_date` werden aus Offline-/Market-Hypothesen entfernt
+(Annahme: kein Zweit-Call solange der alte läuft). Scan liest **nicht** `teaser-cases.json`.
+Blind 202/26 PIT+Exclude: ADI/SNPS raus; Market-Top u. a. LLY, HNR1, IBE, KOG, LMT, MA, NXPI, NOVN.
+
+Diagnose-Notizen: `docs/examples/reference-27-pit-diagnosis-notes-2026-10-30.md`.
 Japan-Lücken: bewusst akzeptiert (`accepted_snapshot_gaps`).

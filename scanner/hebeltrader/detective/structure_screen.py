@@ -27,7 +27,9 @@ def sectors_in(text):
     return [label for pattern, label in SECTORS if re.search(pattern, clean, re.I)]
 
 
-def screen(text, *, limit=8, per_layer=2, universe=None):
+def screen(text, *, limit=8, per_layer=2, universe=None, blocked=None):
+    from .featured_calls import is_blocked
+
     sectors = sectors_in(text)
     if not sectors:
         return []
@@ -38,6 +40,8 @@ def screen(text, *, limit=8, per_layer=2, universe=None):
     seen = set()
     for asset in universe if universe is not None else load_universe():
         if asset["sector"] not in sectors or asset["name"] in seen:
+            continue
+        if is_blocked(asset, blocked):
             continue
         seen.add(asset["name"])
         weight = STRUCTURE_WEIGHT.get(asset["structure"], 0)

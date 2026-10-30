@@ -54,8 +54,10 @@ def match_score(features, clues):
     return score
 
 
-def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True):
+def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True, blocked=None):
     """Rank universe assets with a snapshot; the sector filter applies only if a sector is named."""
+    from .featured_calls import is_blocked
+
     clues = teaser_chart_clues(text)
     sectors = sectors_in(text) if sector_filter else []
     ranked = []
@@ -63,6 +65,8 @@ def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True):
         ticker = asset.get("ticker")
         features = snapshots.get(ticker) if ticker else None
         if not features or (sectors and asset["sector"] not in sectors):
+            continue
+        if is_blocked(asset, blocked):
             continue
         ranked.append(
             {
