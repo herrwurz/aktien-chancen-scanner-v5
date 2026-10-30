@@ -275,6 +275,7 @@ _LEGAL_ABBREV_PERIOD = re.compile(
     r"\b(Inc|Corp|Ltd|LLC|Co|plc|AG|SE|SA|N\.?V\.?|GmbH)\.",
     re.I,
 )
+_ISSUER_ANAPHORA = r"(?:the company|the registrant|\bwe\b)"
 
 
 def _match_text(raw):
@@ -282,6 +283,24 @@ def _match_text(raw):
     text = html.unescape(raw or "")
     # "Inc." / "Corp." must not act as sentence boundaries in subject windows.
     return _LEGAL_ABBREV_PERIOD.sub(r"\1", text)
+
+
+def _fact_claim_subject(company, context, pattern, term):
+    """Issuer name or SEC self-reference must own the relation before the named term."""
+    subjects = []
+    if company:
+        subjects.append(re.escape(company))
+    subjects.append(_ISSUER_ANAPHORA)
+    subject_alt = "(?:" + "|".join(subjects) + ")"
+    return re.search(
+        subject_alt
+        + r"(?P<link>[^.!?]{0,320})\b(?:"
+        + pattern
+        + r")\b(?:\s+(?:of|from))?[^.!?]{0,280}"
+        + re.escape(term),
+        context,
+        re.I,
+    )
 
 
 def _evidence(document, clues, cutoff, *, allow_undated=False):
@@ -321,23 +340,11 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
             match = re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I)
             if not match:
                 continue
-            # Wider window: SEC prose often places the issuer name one clause before the target.
-            context = text[max(0, match.start() - 220) : match.end() + 120]
+            # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
+            context = text[max(0, match.start() - 400) : match.end() + 120]
             pattern = _RELATIONS[relation]
             company = document.get("company_name", "")
-            subject = (
-                re.search(
-                    re.escape(company)
-                    + r"(?P<link>[^.!?]{0,180})\b(?:"
-                    + pattern
-                    + r")\b[^.!?]{0,100}"
-                    + re.escape(term),
-                    context,
-                    re.I,
-                )
-                if company
-                else None
-            )
+            subject = _fact_claim_subject(company, context, pattern, term)
             if subject and not re.search(
                 r"\b(?:competitor|konkurrent|according|says|said)\b", subject.group("link"), re.I
             ):

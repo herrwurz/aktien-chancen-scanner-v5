@@ -342,3 +342,37 @@ def test_issuer_legal_abbrev_and_html_entities_still_confirm_named_acquisition(t
         cell.get("quote") == "Clario" and cell.get("status") == "confirmed"
         for cell in leader["evidence_matrix"]
     )
+
+
+def test_sec_issuer_anaphora_confirms_second_named_acquisition(tmp_path):
+    docs = packet()
+    docs[-1]["company_name"] = "Thermo Fisher Scientific"
+    docs[-1]["ticker"] = "TMO"
+    docs[-1]["source_kind"] = "regulator"
+    docs[-1]["text"] = (
+        "On March 24, 2026, the company acquired Clario Holdings, Inc. "
+        "On September 1, 2025, the company acquired, within the Life Sciences Solutions "
+        "segment, our filtration and separation business from Solventum Corporation."
+    )
+    report = Investigator(tmp_path, clock=lambda: NOW).analyze(
+        InvestigationRequest(
+            teaser_text=(
+                "Mit der Übernahme von Clario und der Übernahme von Solventum "
+                "baut der Konzern seine Position aus."
+            ),
+            publication_at=NOW,
+        ),
+        documents=docs,
+    )
+    leader = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "TMO")
+    quotes = {
+        cell.get("quote")
+        for cell in leader["evidence_matrix"]
+        if cell.get("status") == "confirmed" and cell.get("category") == "fact_claims"
+    }
+    assert quotes >= {"Clario", "Solventum"}
+    assert len(leader["confirmed_specific_clues"]) >= 2
+    # Offline packet scans stay not_identified (falsification/live gate), but the
+    # two named primary clues already yield a ranked plausible hypothesis.
+    assert report["decision"]["status"] == "plausible_hypothesis"
+    assert report["identification"]["status"] == "not_identified"

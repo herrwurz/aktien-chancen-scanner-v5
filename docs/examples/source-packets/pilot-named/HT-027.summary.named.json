@@ -1,6 +1,6 @@
 {
   "label": "named",
-  "ranking_sha256": "0010aa9d56cd5601f90aac272b4a39b31930ba003bf01cb37e059b0e479262f2",
+  "ranking_sha256": "086e9a0fe96a424599cd31c731454f19353445a7a0b8d79e054815c3bd82c97c",
   "identification": {
     "label": "Nicht identifiziert",
     "requires_manual_review": true,
@@ -16,10 +16,11 @@
     {
       "name": "Thermo Fisher Scientific",
       "ticker": "TMO",
-      "evidence_score": 53,
-      "confirmed_specific_clues": 1,
+      "evidence_score": 105,
+      "confirmed_specific_clues": 2,
       "confirmed_fact_quotes": [
-        "Clario"
+        "Clario",
+        "Solventum"
       ]
     },
     {
@@ -41,10 +42,11 @@
     {
       "name": "Thermo Fisher Scientific",
       "ticker": "TMO",
-      "evidence_score": 53,
-      "confirmed_specific_clues": 1,
+      "evidence_score": 105,
+      "confirmed_specific_clues": 2,
       "confirmed_fact_quotes": [
-        "Clario"
+        "Clario",
+        "Solventum"
       ]
     },
     {
@@ -103,14 +105,15 @@
   ],
   "limitations": [
     "fewer_than_five_countercandidates",
-    "active_falsification_not_performed",
-    "insufficient_specific_primary_evidence"
+    "active_falsification_not_performed"
   ],
   "criteria": [
     "Künstliche Intelligenz",
+    "40",
     "2000",
     "acquisition_or_stake",
-    "acquisition|clario"
+    "acquisition|clario",
+    "acquisition|solventum"
   ],
   "source_timing": {
     "eligibility": [

@@ -62,9 +62,9 @@ Erster Real-Pilot (SEC 10-Q, HT-001): `docs/examples/source-packets/pilot/` — 
 SEC-Binding: 6 checked Identitäten, aber weiterhin
 `insufficient_specific_primary_evidence` (Teaser ohne Eigenamen).
 
-Named-Clue-Pilot (HT-027 / Clario): `docs/examples/source-packets/pilot-named/` —
-mit Eigenamen bestätigt TMO den Kernhinweis `acquisition|clario` (1/2 nötig) →
-`plausible_hypothesis`, noch nicht `identified`.
+Named-Clue-Pilot (HT-027 / Clario+Solventum): `docs/examples/source-packets/pilot-named/` —
+zwei bestätigte Kernhinweise (`Clario`, `Solventum`, Score 105) →
+`plausible_hypothesis`. Offline bleibt `not_identified` (Falsifikations-/Gegenkandidaten-Gate).
 
 ## Operator-Checkliste (nächster echter Fall)
 
