@@ -8,6 +8,9 @@ Chart-/Sektor-Hypothesen allein reichen nicht (Pool-PIT: Blind 202/26 Residual
 **B_chart_rank**; 27er Market Top-8 nur ~7/25). Identifikation braucht **datierte
 Primärbelege** gegen Teaser-Hinweise — nicht Score-Retuning.
 
+Ergebnis-Stufen: `docs/hebeltrader-path-to-ticker.md` — Offline liefert
+`packet_evidence` (Ticker-Hypothese); `identified` braucht Live-Falsifikation.
+
 ## Harte Voraussetzungen
 
 | Bedingung | Status 27er-Refs |

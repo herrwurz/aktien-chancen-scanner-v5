@@ -55,6 +55,74 @@ def apply_tie_labels(ranked):
     return tied
 
 
+_LIVE_ID_BLOCKS = frozenset(
+    {
+        "active_falsification_not_performed",
+        "fewer_than_five_countercandidates",
+        "new_leader_needs_falsification",
+        "new_top3_candidate_needs_falsification",
+    }
+)
+
+
+def packet_evidence_result(ranked, *, offline, limits):
+    """Ticker hypothesis from primary evidence — separate from live ``identified`` gates.
+
+    Offline packet scans never set ``identification.status=identified`` (falsification
+    required). This field answers: do we already have a ticker from dated packets?
+    """
+    live_blocks = [item for item in limits if item in _LIVE_ID_BLOCKS]
+    if not ranked:
+        return {
+            "status": "no_candidates",
+            "label": "Keine Kandidaten aus Primärquellen",
+            "ticker": None,
+            "name": None,
+            "confirmed_specific_clues": 0,
+            "evidence_score": None,
+            "score_margin": None,
+            "next_step": "named_anchors_in_teaser_plus_dated_packet",
+            "blocks_full_identification": live_blocks,
+        }
+    leader = ranked[0]
+    identity = leader.get("identity") or {}
+    n_specific = len(leader.get("confirmed_specific_clues") or [])
+    score = int(leader.get("evidence_score") or 0)
+    margin = score - int(ranked[1]["evidence_score"] if len(ranked) > 1 else 0)
+    base = {
+        "ticker": identity.get("ticker"),
+        "name": identity.get("name"),
+        "confirmed_specific_clues": n_specific,
+        "evidence_score": score,
+        "score_margin": margin,
+        "blocks_full_identification": live_blocks,
+    }
+    if (
+        n_specific >= 2
+        and margin >= 35
+        and not leader.get("hard_contradictions")
+        and identity.get("ticker")
+    ):
+        return base | {
+            "status": "ticker_hypothesis_ready",
+            "label": "Ticker-Hypothese aus Primärevidenz",
+            "next_step": "live_falsification" if offline or live_blocks else "manual_review",
+        }
+    if n_specific >= 1 and identity.get("ticker"):
+        return base | {
+            "status": "partial_evidence",
+            "label": "Teil-Evidenz — zweiter Kernhinweis oder Vorsprung fehlt",
+            "next_step": "second_specific_anchor_or_stronger_margin",
+        }
+    return base | {
+        "status": "insufficient_evidence",
+        "label": "Keine bestätigten Kernhinweise",
+        "ticker": None if n_specific < 1 else base["ticker"],
+        "name": None if n_specific < 1 else base["name"],
+        "next_step": "named_anchors_in_teaser_plus_dated_packet",
+    }
+
+
 def evidence_source_kind(document):
     """Map packet/live source_kind onto EvidenceRecord primary kinds."""
     kind = document.get("source_kind", "unknown")
@@ -860,6 +928,7 @@ class Investigator:
             and not errors
             and (len(ranked) < 2 or ranked[0]["evidence_score"] - ranked[1]["evidence_score"] >= 35)
         )
+        evidence_outcome = packet_evidence_result(ranked, offline=offline, limits=limits)
         report = {
             "schema_version": 4,
             "case_id": case_id or run_id,
@@ -893,6 +962,7 @@ class Investigator:
                 "score_is_probability": False,
                 "requires_manual_review": True,
             },
+            "packet_evidence": evidence_outcome,
             "candidates": ranked[:3],
             "checked_candidates": ranked,
             "countercandidate_count": counter_count,

@@ -31,6 +31,7 @@ Headline: `AbbVie: …`. Paket: AbbVie 10-Q/8-K + Pharma-Peers.
 | `source_packet_status` | provided |
 | checked | 7 |
 | Top-1 | **ABBV** (Score 54, Quote `AbbVie`) |
+| `packet_evidence` | `partial_evidence` → ABBV |
 | Entscheidung | `plausible_hypothesis` |
 | `identified` | nein (1/2 Kernhinweise + Offline-Gates) |
 

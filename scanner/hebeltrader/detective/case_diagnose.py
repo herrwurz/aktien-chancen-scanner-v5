@@ -31,9 +31,12 @@ def diagnose_report(report):
     offline = [_compact_hypothesis(item) for item in report.get("offline_hypotheses") or []]
     market = [_compact_hypothesis(item) for item in report.get("market_hypotheses") or []]
     identification = report.get("identification") or {}
+    packet_evidence = report.get("packet_evidence") or {}
     return {
         "case_id": report.get("case_id"),
         "identification_status": identification.get("status"),
+        "packet_evidence_status": packet_evidence.get("status"),
+        "packet_evidence_ticker": packet_evidence.get("ticker"),
         "input_completeness": report.get("reference_input_completeness"),
         "source_packet_status": report.get("source_packet_status"),
         "chart_clues": list(meta.get("clues") or []),
@@ -46,7 +49,8 @@ def diagnose_report(report):
         "ranked_before_limit": meta.get("ranked_before_limit"),
         "market_hypotheses": market,
         "interpretation": (
-            "Unverified local hypotheses only; chart/sector matches are not identifications."
+            "Unverified local hypotheses only; chart/sector matches are not identifications. "
+            "packet_evidence is the dated-primary ticker hypothesis (if any)."
         ),
     }
 
