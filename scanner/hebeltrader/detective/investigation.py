@@ -4,6 +4,7 @@ import hashlib
 import re
 import uuid
 from datetime import UTC, date, datetime
+from itertools import zip_longest
 from pathlib import Path
 from time import perf_counter
 
@@ -13,6 +14,8 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 from scanner.research import AssetIdentity, EvidenceRecord
 
+from .chart_check import chart_score
+from .chart_check import check as chart_check
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
 from .research_plan import build_queries
@@ -20,6 +23,7 @@ from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
 from .sources import UnavailableResearchSource
+from .structure_screen import screen_queries, ticker_for
 from .temporal import assess_document, timestamp
 from .verification import verify_candidates
 
@@ -139,7 +143,7 @@ def _entities(text):
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
-SEARCH_LOGIC_VERSION = "2026-10-30-search-v5"
+SEARCH_LOGIC_VERSION = "2026-10-31-search-v6"
 _LEGAL_WORDS = re.compile(
     r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag|se|sa|nv|n v|holding|holdings"
     r"|co|company|group|the)\b"
@@ -206,6 +210,30 @@ def _clues(text, spans):
             (c.category, c.normalized, c.value, c.unit, c.period, c.polarity): c for c in normalized
         }.values()
     )
+
+
+def _apply_chart(ranked, top=6):
+    # Chart clues (long uptrend, breakout) are checked with market data, not web text.
+    for row in ranked[:top]:
+        identity = row["identity"]
+        data = identity if isinstance(identity, dict) else identity.model_dump()
+        ticker = data.get("ticker") or ticker_for(data.get("name") or "")
+        result = chart_check(ticker) if ticker else {"status": "no_ticker"}
+        row["chart"] = result
+        if result["status"] == "ok":
+            row["evidence_score"] += chart_score(result)
+    ranked.sort(
+        key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
+    )
+
+
+def _interleave(planned, screened, fallback, cap=10):
+    # Alternate AI-planned and structure-screened queries so the shared request budget
+    # reaches every value-chain layer instead of being spent on the first few queries.
+    merged = []
+    for pair in zip_longest(planned[:5], screened[:5]):
+        merged.extend(q for q in pair if q)
+    return list(dict.fromkeys(merged + planned[5:] + fallback))[:cap]
 
 
 def _queries(text, clues, spans):
@@ -406,7 +434,7 @@ class Investigator:
                             extraction_method="ai_literal_quote_requires_manual_review",
                         )
                     )
-                queries = list(dict.fromkeys(planned["queries"] + queries))[:10]
+                queries = _interleave(planned["queries"], screen_queries(text), queries)
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"source": "ai_planner", "error": str(exc)[:120]})
 
@@ -423,7 +451,11 @@ class Investigator:
                 ]
                 fetch_many = getattr(self.web, "fetch_many", None)
                 if fetch_many:
-                    limit = 3 if getattr(self.web, "phase", None) == "discovery" else len(hits)
+                    limit = (
+                        (2 if len(queries) > 8 else 3)
+                        if getattr(self.web, "phase", None) == "discovery"
+                        else len(hits)
+                    )
                     documents_batch, batch_errors = fetch_many([hit["url"] for hit in hits[:limit]])
                     fetched.extend(documents_batch)
                     errors.extend(batch_errors)
@@ -647,6 +679,8 @@ class Investigator:
             return result
 
         ranked = compare()
+        if not offline:
+            _apply_chart(ranked)
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",

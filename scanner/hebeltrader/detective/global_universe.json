@@ -1,0 +1,749 @@
+{
+ "schema_version": 1,
+ "kind": "curated_global_sector_universe",
+ "note": "Sector/layer/market-structure tags only. No teaser solutions; used to build hypotheses.",
+ "assets": [
+  {
+   "name": "ASML Holding",
+   "sector": "semiconductor",
+   "layer": "lithography",
+   "structure": "monopoly",
+   "ticker": "ASML"
+  },
+  {
+   "name": "Lam Research",
+   "sector": "semiconductor",
+   "layer": "wafer-fab-equipment",
+   "structure": "oligopoly",
+   "ticker": "LRCX"
+  },
+  {
+   "name": "Applied Materials",
+   "sector": "semiconductor",
+   "layer": "wafer-fab-equipment",
+   "structure": "oligopoly",
+   "ticker": "AMAT"
+  },
+  {
+   "name": "Tokyo Electron",
+   "sector": "semiconductor",
+   "layer": "wafer-fab-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "KLA Corporation",
+   "sector": "semiconductor",
+   "layer": "inspection-metrology",
+   "structure": "duopoly",
+   "ticker": "KLAC"
+  },
+  {
+   "name": "Synopsys",
+   "sector": "semiconductor",
+   "layer": "chip-design-software",
+   "structure": "duopoly",
+   "ticker": "SNPS"
+  },
+  {
+   "name": "Cadence Design Systems",
+   "sector": "semiconductor",
+   "layer": "chip-design-software",
+   "structure": "duopoly",
+   "ticker": "CDNS"
+  },
+  {
+   "name": "Arm Holdings",
+   "sector": "semiconductor",
+   "layer": "chip-ip",
+   "structure": "monopoly",
+   "ticker": "ARM"
+  },
+  {
+   "name": "TSMC",
+   "sector": "semiconductor",
+   "layer": "foundry",
+   "structure": "oligopoly",
+   "ticker": "TSM"
+  },
+  {
+   "name": "Samsung Electronics",
+   "sector": "semiconductor",
+   "layer": "foundry",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Nvidia",
+   "sector": "semiconductor",
+   "layer": "ai-processors",
+   "structure": "oligopoly",
+   "ticker": "NVDA"
+  },
+  {
+   "name": "Advanced Micro Devices",
+   "sector": "semiconductor",
+   "layer": "ai-processors",
+   "structure": "oligopoly",
+   "ticker": "AMD"
+  },
+  {
+   "name": "Broadcom",
+   "sector": "semiconductor",
+   "layer": "ai-processors",
+   "structure": "oligopoly",
+   "ticker": "AVGO"
+  },
+  {
+   "name": "Micron Technology",
+   "sector": "semiconductor",
+   "layer": "memory",
+   "structure": "oligopoly",
+   "ticker": "MU"
+  },
+  {
+   "name": "SK Hynix",
+   "sector": "semiconductor",
+   "layer": "memory",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Texas Instruments",
+   "sector": "semiconductor",
+   "layer": "analog-mcu",
+   "structure": "fragmented",
+   "ticker": "TXN"
+  },
+  {
+   "name": "Analog Devices",
+   "sector": "semiconductor",
+   "layer": "analog-mcu",
+   "structure": "fragmented",
+   "ticker": "ADI"
+  },
+  {
+   "name": "Infineon Technologies",
+   "sector": "semiconductor",
+   "layer": "analog-mcu",
+   "structure": "fragmented"
+  },
+  {
+   "name": "NXP Semiconductors",
+   "sector": "semiconductor",
+   "layer": "analog-mcu",
+   "structure": "fragmented",
+   "ticker": "NXPI"
+  },
+  {
+   "name": "STMicroelectronics",
+   "sector": "semiconductor",
+   "layer": "analog-mcu",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Entegris",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly",
+   "ticker": "ENTG"
+  },
+  {
+   "name": "Disco Corporation",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Advantest",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "BE Semiconductor Industries",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "ASM International",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Siltronic",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Soitec",
+   "sector": "semiconductor",
+   "layer": "materials-components",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "SAP",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Microsoft",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly",
+   "ticker": "MSFT"
+  },
+  {
+   "name": "Oracle",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly",
+   "ticker": "ORCL"
+  },
+  {
+   "name": "Salesforce",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly",
+   "ticker": "CRM"
+  },
+  {
+   "name": "ServiceNow",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly",
+   "ticker": "NOW"
+  },
+  {
+   "name": "Adobe",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly",
+   "ticker": "ADBE"
+  },
+  {
+   "name": "Intuit",
+   "sector": "software",
+   "layer": "enterprise-software",
+   "structure": "oligopoly",
+   "ticker": "INTU"
+  },
+  {
+   "name": "Dassault Systemes",
+   "sector": "software",
+   "layer": "engineering-software",
+   "structure": "duopoly"
+  },
+  {
+   "name": "Autodesk",
+   "sector": "software",
+   "layer": "engineering-software",
+   "structure": "duopoly",
+   "ticker": "ADSK"
+  },
+  {
+   "name": "PTC",
+   "sector": "software",
+   "layer": "engineering-software",
+   "structure": "duopoly",
+   "ticker": "PTC"
+  },
+  {
+   "name": "Ansys",
+   "sector": "software",
+   "layer": "engineering-software",
+   "structure": "duopoly",
+   "ticker": "ANSS"
+  },
+  {
+   "name": "Palo Alto Networks",
+   "sector": "software",
+   "layer": "cybersecurity",
+   "structure": "fragmented",
+   "ticker": "PANW"
+  },
+  {
+   "name": "CrowdStrike",
+   "sector": "software",
+   "layer": "cybersecurity",
+   "structure": "fragmented",
+   "ticker": "CRWD"
+  },
+  {
+   "name": "Fortinet",
+   "sector": "software",
+   "layer": "cybersecurity",
+   "structure": "fragmented",
+   "ticker": "FTNT"
+  },
+  {
+   "name": "Palantir Technologies",
+   "sector": "software",
+   "layer": "data-analytics",
+   "structure": "fragmented",
+   "ticker": "PLTR"
+  },
+  {
+   "name": "Snowflake",
+   "sector": "software",
+   "layer": "data-analytics",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Datadog",
+   "sector": "software",
+   "layer": "data-analytics",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Intuitive Surgical",
+   "sector": "healthcare",
+   "layer": "medtech",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Stryker",
+   "sector": "healthcare",
+   "layer": "medtech",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Boston Scientific",
+   "sector": "healthcare",
+   "layer": "medtech",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Medtronic",
+   "sector": "healthcare",
+   "layer": "medtech",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Siemens Healthineers",
+   "sector": "healthcare",
+   "layer": "medtech",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Sartorius",
+   "sector": "healthcare",
+   "layer": "medtech",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Novo Nordisk",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Eli Lilly",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Novartis",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Roche",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Merck & Co",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "AstraZeneca",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Lonza",
+   "sector": "pharmaceutical",
+   "layer": "pharma",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Thermo Fisher Scientific",
+   "sector": "pharmaceutical",
+   "layer": "life-science-tools",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Danaher",
+   "sector": "pharmaceutical",
+   "layer": "life-science-tools",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Illumina",
+   "sector": "pharmaceutical",
+   "layer": "life-science-tools",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Rheinmetall",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Lockheed Martin",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "RTX",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Northrop Grumman",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "BAE Systems",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Hensoldt",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Renk Group",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Kongsberg Gruppen",
+   "sector": "defense",
+   "layer": "defense",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Siemens Energy",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Schneider Electric",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "ABB",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Eaton",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Vertiv",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "GE Vernova",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Prysmian",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Nexans",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Hubbell",
+   "sector": "power infrastructure",
+   "layer": "grid-equipment",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "NextEra Energy",
+   "sector": "power infrastructure",
+   "layer": "utility",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Iberdrola",
+   "sector": "power infrastructure",
+   "layer": "utility",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Constellation Energy",
+   "sector": "power infrastructure",
+   "layer": "utility",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Vistra",
+   "sector": "power infrastructure",
+   "layer": "utility",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Costco Wholesale",
+   "sector": "retail",
+   "layer": "retail",
+   "structure": "oligopoly",
+   "ticker": "COST"
+  },
+  {
+   "name": "Walmart",
+   "sector": "retail",
+   "layer": "retail",
+   "structure": "oligopoly",
+   "ticker": "WMT"
+  },
+  {
+   "name": "Amazon",
+   "sector": "retail",
+   "layer": "retail",
+   "structure": "oligopoly",
+   "ticker": "AMZN"
+  },
+  {
+   "name": "Home Depot",
+   "sector": "retail",
+   "layer": "retail",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Inditex",
+   "sector": "retail",
+   "layer": "retail",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Zalando",
+   "sector": "retail",
+   "layer": "retail",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Visa",
+   "sector": "financial services",
+   "layer": "payments",
+   "structure": "duopoly",
+   "ticker": "V"
+  },
+  {
+   "name": "Mastercard",
+   "sector": "financial services",
+   "layer": "payments",
+   "structure": "duopoly",
+   "ticker": "MA"
+  },
+  {
+   "name": "London Stock Exchange Group",
+   "sector": "financial services",
+   "layer": "exchanges-data",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "S&P Global",
+   "sector": "financial services",
+   "layer": "exchanges-data",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Moody's",
+   "sector": "financial services",
+   "layer": "exchanges-data",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Deutsche Boerse",
+   "sector": "financial services",
+   "layer": "exchanges-data",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "CME Group",
+   "sector": "financial services",
+   "layer": "exchanges-data",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "JPMorgan Chase",
+   "sector": "financial services",
+   "layer": "banks",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Goldman Sachs",
+   "sector": "financial services",
+   "layer": "banks",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Allianz",
+   "sector": "financial services",
+   "layer": "banks",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Munich Re",
+   "sector": "financial services",
+   "layer": "banks",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Hannover Rueck",
+   "sector": "financial services",
+   "layer": "banks",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Berkshire Hathaway",
+   "sector": "financial services",
+   "layer": "banks",
+   "structure": "fragmented"
+  },
+  {
+   "name": "Deere & Company",
+   "sector": "agricultural machinery",
+   "layer": "machinery",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "CNH Industrial",
+   "sector": "agricultural machinery",
+   "layer": "machinery",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "AGCO",
+   "sector": "agricultural machinery",
+   "layer": "machinery",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Kubota",
+   "sector": "agricultural machinery",
+   "layer": "machinery",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Munich Re",
+   "sector": "insurance",
+   "layer": "reinsurance",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Swiss Re",
+   "sector": "insurance",
+   "layer": "reinsurance",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Hannover Rueck",
+   "sector": "insurance",
+   "layer": "reinsurance",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "SLB",
+   "sector": "oilfield services",
+   "layer": "oilfield",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Halliburton",
+   "sector": "oilfield services",
+   "layer": "oilfield",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Baker Hughes",
+   "sector": "oilfield services",
+   "layer": "oilfield",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Fanuc",
+   "sector": "robotics",
+   "layer": "automation",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Keyence",
+   "sector": "robotics",
+   "layer": "automation",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Yaskawa Electric",
+   "sector": "robotics",
+   "layer": "automation",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Rockwell Automation",
+   "sector": "robotics",
+   "layer": "automation",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Vertiv",
+   "sector": "cooling",
+   "layer": "hvac",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Carrier Global",
+   "sector": "cooling",
+   "layer": "hvac",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Trane Technologies",
+   "sector": "cooling",
+   "layer": "hvac",
+   "structure": "oligopoly"
+  },
+  {
+   "name": "Daikin Industries",
+   "sector": "cooling",
+   "layer": "hvac",
+   "structure": "oligopoly"
+  }
+ ]
+}

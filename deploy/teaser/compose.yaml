@@ -18,6 +18,7 @@ services:
       TEASER_STATE_DIR: /data
       DETECTIVE_PUBLIC_ALLOW_NETWORK: 'true'
       DETECTIVE_PUBLIC_MAX_REQUESTS: '70'
+      EODHD_API_TOKEN: ${EODHD_API_TOKEN:-}
     secrets: [password, token]
     volumes: [./state:/data]
     logging:
