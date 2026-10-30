@@ -42,8 +42,17 @@ Gewinnzahlen). Chart/`above_gd200` allein reicht laut 27er-PIT-Diagnose nicht f�
 ## Maßnahmen (ohne Fall-Retuning)
 
 1. Deutsche Bank als featured call **202/26** in die Blocklist aufnehmen (künftige Ausschlüsse).
-2. Universumslücke EU-Banken als Folgeauftrag führen — Erweiterung erst nach Bestätigung,
-   nicht als nachträgliche „Gewinnerregel“ für 202/26.
+2. Universumslücke über Index-Pool v1 geschlossen (SPX/NDX/DAX/MDAX/SX5E/SXXP/ATX) — nicht als
+   nachträgliche „Gewinnerregel“ für den Freeze, sondern für künftige Fälle.
 3. Algorithmus-Scores und Market-Ranking dieses Falls bleiben eingefroren.
+
+## Post-hoc Pool-PIT (2026-10-30, kein Retuning)
+
+Diagnose auf Remap-Pool-PIT: `DBK.XETRA` ist kandidierbar (Klasse A geschlossen), landet aber
+**nicht** in Top-8 (`match_score=10`, Rang ~622; 112 Namen mit Score 23). Residual:
+**B_chart_rank**. Freeze-SHA und eingefrorene Top-8 unverändert.
+
+Details: [examples/blind-202-26-pool-pit-diagnosis-notes-2026-10-30.md](examples/blind-202-26-pool-pit-diagnosis-notes-2026-10-30.md),
+[examples/blind-202-26-pool-pit-posthoc.json](examples/blind-202-26-pool-pit-posthoc.json).
 
 Strukturierte Felder: [hebeltrader-202-26-resolution.json](hebeltrader-202-26-resolution.json).

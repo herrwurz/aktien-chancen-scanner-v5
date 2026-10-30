@@ -57,11 +57,20 @@ Voll-JSON gitignored unter `reports/`. Spot-Checks ok: `DBK.XETRA`, `ASSA-B.ST`,
 Ticker-Remap v1: `index_pool_ticker_remap_v1.json` (~76 Korrekturen).  
 Restlücken: Japan `.TSE`, Italien `.MI` ohne Venue, delistete/illiquide Namen.
 
+## Diagnose auf Pool-PIT (2026-10-30)
+
+| Corpus | Market Top1/3/8 | Lesart |
+|---|---|---|
+| 27er Refs | 2 / 3 / 7 (graded 25) | Coverage ↑↑, Treffer nur leicht ↑ vs kuratiert PIT |
+| Blind 202/26 | DBK kandidierbar, **nicht** Top-8 | Klasse A zu; Residual **B_chart_rank** (Score 10) |
+
+Kein Score-Retuning. Details: `docs/examples/*-pool-pit-diagnosis-notes-2026-10-30.md`.
+
 ## Budget / nächste Schritte
 
-1. Pool + Remap + PIT-Coverage ↑ → **0 € Extra**.
-2. Diagnose Refs/Blind auf Pool-PIT (ohne Score-Retuning von 202/26).
-3. Evidenz-Kanal (Quellenpakete) vor teuren API-Upgrades.
+1. Pool + Remap + PIT-Diagnose → **0 € Extra**.
+2. Evidenz-Kanal (Quellenpakete) vor teuren API-Upgrades.
+3. Optional: Pool+Overlay-Dedup.
 4. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
 
 Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning).
