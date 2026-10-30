@@ -294,3 +294,62 @@ Zeitreihe als Rekord bestätigen; Chartdurchbruch am exakten Handelstag prüfen;
 abgeschlossene Rückkäufe von neuen Ankündigungen unterscheiden. Gewinnername und
 Call-Werbepotenzial dürfen keine Produktions-Rankingregel werden. Diese Dokumentation
 enthält Testanforderungen, keine neu ausgeführten Produkttests.
+
+
+## Auflösung HT-20226 / HT-028 und Gesamtbilanz (30.10.2026)
+
+**Nutzerbestätigung nach der Erstprognose:** „Es ist die Deutsche Bank.“
+Damit ist der vorher dokumentierte Rang-1-Tipp Deutsche Bank richtig. Rangfolge
+Deutsche Bank → Commerzbank → UBS bleibt unverändert. Bestätigungsart:
+Nutzerauflösung, kein neu vorliegender Originalreport. Original-Call-WKN und
+Produktparameter weiterhin unbekannt. Keine autonome Scanneridentifikation.
+
+Allgemeine Lehren:
+1. Seltene, überprüfbare Ergebnisfolgen („drittes Rekordquartal in Folge“) als
+   Ereignisfingerabdruck in zeitnahen Unternehmensmeldungen suchen.
+2. Periodenspezifische Rekorde von sequenziell steigenden absoluten Gewinnen
+   unterscheiden; berichtet/bereinigt und Vorsteuer-/Nettogewinn nicht vermischen.
+3. Ertragswachstum, Kapitalquote und Ausschüttungspläne gemeinsam prüfen.
+   Allgemeine Comeback-/Chartwörter allein sind keine belastbare Identifikation.
+4. Chartdurchbruch an Handelstag, Börsenplatz und Datenreihe binden. Bereits
+   durchgeführte Rückkäufe nicht als erstmals bevorstehende Ausschüttung ausgeben.
+5. Trotz starkem Ereignisfingerabdruck fünf Gegenkandidaten prüfen. Kein Gewinnername
+   als feste Rankingregel; keine Prozentwahrscheinlichkeit ohne Kalibrierung.
+
+### Registerabgleich und unveränderte Erstversuche
+
+Der strukturierte Fall HT-019 (198/26) war noch ungelöst, obwohl weiter oben die
+SLB-Erstprognose und spätere Originalreport-Bestätigung bereits dokumentiert sind.
+Diese Nachführung ist **derselbe Fall**, kein zusätzlicher neuer Test:
+SLB / VY95PV, Rang 1 richtig. Frühere strukturierte Werte sind in resolution_history
+erhalten. Der neue Deutsche-Bank-Fall trägt die strukturierte ID HT-028; HT-20226
+bleibt der Alias für die ursprüngliche Dokumentation. Keine neue Doppelzählung.
+
+### Statistik mit getrennten Nennern
+
+- Historische 18 Fälle unverändert: 10 richtig, 7 falsch, Williams ungelöst.
+- Zusätzlich assistentengestützt bestätigt: SLB und Deutsche Bank, beide Rang 1 richtig.
+- Vergleichbare Gesprächsbilanz: **20 Fälle = 12 richtig + 7 falsch + 1 ungelöst**.
+  Aufgelöste Fälle: 12/19 = **63,2 %**; alle 20 Fälle: 12/20 = **60,0 %**.
+- Synopsys / MN9WA9 separat: bekanntes Label, Rang 1 im Lauf, aber keine
+  Identifikation freigegeben (not_identified). Kein ausgesprochener Treffer.
+- Sieben weitere Referenzen ohne dokumentierten Ersttipp: BP, Constellation Energy,
+  AbbVie, Eni, Adidas, Carrier Global, Thermo Fisher. Nicht als Treffer zählen.
+- Insgesamt **28 unterschiedliche Referenzfälle**: 12 correct, 7 wrong,
+  1 unresolved, 1 not_identified, 7 not_tested. Davon 21 Fälle mit dokumentiertem
+  Versuch einschließlich Synopsys; 20 davon haben bekannte Auflösung.
+  Einschließlich dieser Enthaltung: 12/20 = **60,0 %** Identifikationserfolg auf
+  aufgelösten versuchten Fällen; 12/21 = **57,1 %** auf allen versuchten Fällen.
+- Kein Zusammenwerfen mit dem ungelösten Maydorn-/Krypto-RSS-Fall; anderer Autor,
+  anderer Gegenstand. Keine unabhängige Benchmarkquote oder statistisch
+  nachgewiesene Qualitätssteigerung aus zwei zusätzlichen Treffern ableiten.
+
+Quelle: aktuelle strukturierte Referenzsammlung, bereits protokollierte SLB-Auflösung,
+Git-gespeicherte Deutsche-Bank-Erstprognose und anschließende Nutzerbestätigung.
+
+Regressionen: tests/hebeltrader/test_reference_resolution_summary.py prüft
+unveränderte historische Bilanz, getrennte Enthaltung/Referenzfälle, Originalrangfolge,
+unbekannte Call-WKN und Ausschluss von Auflösungsfeldern aus Scannerinputs.
+Drei Tests mit unittest lokal bestanden. pytest ist in der aktuellen Prüfumgebung
+nicht installiert; die gesamte Produktsuite wurde nicht ausgeführt. Der bestehende
+Referenztest wurde auf 28 Einträge und den nachgeführten SLB-Status angepasst.
