@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-pending-pdf-packet-batch-manifest-v1",
+  "note": "HT-003/HT-012 lack publisher PDFs 192/26 and 137/26. publication_at is provisional (featured_date + corpus Stand 08:15). HT-016 still blocked (no issue/date). Do not treat as PDF-confirmed cutoff until operator upload.",
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "cutoff": "2026-10-16T08:15:00+01:00",
+      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+      "featured_issue": "192/26",
+      "lead": "COST:0000909832:Costco",
+      "peers": [
+        "WMT:0000104169:Walmart",
+        "TGT:0000027419:Target",
+        "BJ:0001531152:BJs Wholesale",
+        "DG:0000029534:Dollar General",
+        "DLTR:0000935703:Dollar Tree"
+      ],
+      "needles": [
+        "Kirkland",
+        "membership",
+        "warehouse"
+      ],
+      "issuer_display": "Costco",
+      "named_products": [
+        "Kirkland"
+      ],
+      "named_acquisitions": []
+    },
+    {
+      "case_id": "HT-012",
+      "cutoff": "2026-07-31T08:15:00+01:00",
+      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+      "featured_issue": "137/26",
+      "lead_ticker": "BAS",
+      "lead_name": "BASF",
+      "lead_url": "https://www.basf.com/global/en/media/news-releases/2026/06/p-26-096",
+      "lead_published_at": "2026-07-09T15:38:10+00:00",
+      "peers": [
+        "DOW:00029915:Dow",
+        "DD:0001666700:DuPont",
+        "LYB:0001489393:LyondellBasell",
+        "EMN:0000915389:Eastman",
+        "CE:0001306830:Celanese"
+      ],
+      "needles": [
+        "Oppanol",
+        "Ultrason",
+        "battery"
+      ],
+      "issuer_display": "BASF",
+      "named_products": [
+        "Oppanol"
+      ],
+      "named_acquisitions": []
+    }
+  ]
+}

@@ -22,6 +22,9 @@ Pilots:
 - `batch-eu-sec/` — EU/FPI with SEC listings (SAP/BP/Eni); **3/3 named identified**
 - `batch-eu-ir-wayback/` — EU ohne SEC-CIK (Zurich/Thales/Leonardo/Adidas);
   Wayback-IR-Lead + SEC-Peers; **4/4 named identified**
+- `batch-pending-pdf/` — Costco/BASF with **provisional** `publication_at`
+  (featured_date + corpus Stand 08:15; PDFs 192/26 & 137/26 still missing);
+  **2/2 named identified**. HT-016 still blocked. Shared 27er refs untouched.
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

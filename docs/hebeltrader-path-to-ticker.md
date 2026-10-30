@@ -74,8 +74,12 @@ Prospective freeze SHA `3fff83e1…` untouched.
 `batch-eu-sec/`: **3/3 named identified** (SAP, BP, Eni/E).
 
 `batch-eu-ir-wayback/`: **4/4 named identified** (ZURN, HO, LDO, ADS) via Wayback
-IR lead + SEC peers (`archived_snapshot`). Costco / BASF still lack
-`publication_at` (HT-003 / HT-012 / HT-016).
+IR lead + SEC peers (`archived_snapshot`).
+
+`batch-pending-pdf/`: **2/2 named identified** (COST, BAS) on **provisional**
+cutoffs (`featured_date` + corpus Stand 08:15) while PDFs 192/26 & 137/26 are
+missing. Shared `reference-27-inputs-with-publication-at.json` stays null for
+those cases until operator upload. **HT-016** still blocked (no issue/date).
 
 ## Korpus-Grenze
 
