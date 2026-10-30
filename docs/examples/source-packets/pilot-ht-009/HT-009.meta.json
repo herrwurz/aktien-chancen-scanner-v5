@@ -1,0 +1,90 @@
+{
+  "case_id": "HT-009",
+  "kind": "pfizer_product_literal_packet",
+  "cutoff_publication_at": "2026-08-11T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "PFE",
+      "name": "Pfizer",
+      "form": "10-Q",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/78003/000007800326000095/pfe-20260628.htm",
+      "chars": 12063,
+      "mentions": {
+        "Eliquis": true,
+        "Prevnar": true,
+        "Paxlovid": true,
+        "Comirnaty": true
+      }
+    },
+    {
+      "ticker": "PFE",
+      "name": "Pfizer",
+      "form": "8-K",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/78003/000007800326000094/pfe-20260804.htm",
+      "chars": 4530,
+      "mentions": {
+        "Eliquis": false,
+        "Prevnar": false,
+        "Paxlovid": false,
+        "Comirnaty": false
+      }
+    },
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/200406/000020040626000153/jnj-20260628.htm",
+      "chars": 20000,
+      "mentions": {}
+    },
+    {
+      "ticker": "MRK",
+      "name": "Merck",
+      "form": "10-Q",
+      "filing_date": "2026-08-07",
+      "url": "https://www.sec.gov/Archives/edgar/data/310158/000031015826000212/mrk-20260630.htm",
+      "chars": 20000,
+      "mentions": {}
+    },
+    {
+      "ticker": "ABBV",
+      "name": "AbbVie",
+      "form": "10-Q",
+      "filing_date": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000026/abbv-20260630.htm",
+      "chars": 20000,
+      "mentions": {}
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000081/lly-20260630.htm",
+      "chars": 20000,
+      "mentions": {}
+    },
+    {
+      "ticker": "AMGN",
+      "name": "Amgen",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/318154/000031815426000126/amgn-20260630.htm",
+      "chars": 20000,
+      "mentions": {}
+    },
+    {
+      "ticker": "BMY",
+      "name": "Bristol-Myers Squibb",
+      "form": "10-Q",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/14272/000001427226000020/bmy-20260630.htm",
+      "chars": 20000,
+      "mentions": {}
+    }
+  ],
+  "note": "PFE 10-Q focus windows prefer revenue prose for Eliquis/Prevnar/Paxlovid/Comirnaty; peers are countercandidates."
+}

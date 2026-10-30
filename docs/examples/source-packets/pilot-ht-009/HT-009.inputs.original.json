@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-009 original teaser (Pfizer Comeback); no issuer/product names. financial_metric only.",
+  "cases": [
+    {
+      "case_id": "HT-009",
+      "headline": "Diese Comeback-Aktie könnte jetzt alles in den Schatten stellen!",
+      "teaser_text": "Diese Comeback-Aktie könnte jetzt alles in den Schatten stellen!\nDiese Turnaround-Story hat das Zeug zur Kursrakete: Ein schwer abgestrafter Mega-Cap aus dem Gesundheitssektor sendet plötzlich wieder starke Signale – operativ, charttechnisch und fundamental. Besonders brisant: Die Aktie ist mit einem 2026er-KGV von nur 9 bewertet, Analysten erwarten einen Gewinnsprung von rund 120 Prozent, dazu lockt eine Dividendenrendite von über 6 Prozent. Genau solche Konstellationen können explosive Neubewertungen auslösen. Und das Beste: Mit dem empfohlenen Hebelpapier wären im Optimalfall sogar bis zu 2.631 Prozent drin. Mehr Hebel auf eine mögliche Neubewertung geht kaum.",
+      "publication_date": "2026-08-11",
+      "publication_at": "2026-08-11T08:15:00+01:00"
+    }
+  ]
+}

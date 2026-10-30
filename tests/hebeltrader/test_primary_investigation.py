@@ -378,6 +378,39 @@ def test_teaser_product_literals_plus_issuer_name_identify_historically(tmp_path
     assert report["decision"]["status"] == "likely_identified"
 
 
+def test_product_literal_confirms_on_issuer_revenue_table_without_nearby_we(tmp_path):
+    docs = packet()
+    docs[-1]["company_name"] = "Pfizer"
+    docs[-1]["ticker"] = "PFE"
+    docs[-1]["source_kind"] = "regulator"
+    docs[-1]["text"] = (
+        "GLOBAL BIOPHARMACEUTICALS BUSINESS Primary Care "
+        "Prevnar family QTD $1,337 Worldwide revenues $3,364 up 6% operationally. "
+        "Paxlovid QTD $261 Total revenues declined for COVID-19 products."
+    )
+    report = Investigator(tmp_path, clock=lambda: NOW).analyze(
+        InvestigationRequest(
+            teaser_text=(
+                "Comeback-Aktie!\n"
+                "Zusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): "
+                "Konzern Pfizer — Wachstumstreiber Prevnar und Paxlovid heben den Umsatz."
+            ),
+            publication_at=NOW,
+        ),
+        documents=docs,
+        historical_blind=True,
+    )
+    leader = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "PFE")
+    quotes = {
+        cell.get("quote")
+        for cell in leader["evidence_matrix"]
+        if cell.get("status") == "confirmed" and cell.get("category") == "fact_claims"
+    }
+    assert quotes >= {"Pfizer", "Prevnar", "Paxlovid"}
+    assert report["identification"]["status"] == "identified"
+    assert report["packet_evidence"]["ticker"] == "PFE"
+
+
 def test_teaser_issuer_literal_binds_only_matching_candidate(tmp_path):
     docs = packet()
     docs[-1]["company_name"] = "AbbVie"

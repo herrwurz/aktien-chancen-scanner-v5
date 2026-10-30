@@ -24,9 +24,12 @@ Live-Falsifikation bleibt für den öffentlichen Web-Pfad.**
 python3 -m scanner.hebeltrader.detective.evidence_batch \
   --inputs docs/examples/source-packets/pilot/HT-001.inputs.json \
             docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.original.json \
+            docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.named.json \
             docs/examples/source-packets/pilot-named/HT-027.inputs.original.json \
             docs/examples/source-packets/pilot-named/HT-027.inputs.named.json \
-  --source-packets /path/to/packets \
+            docs/examples/source-packets/pilot-ht-009/HT-009.inputs.original.json \
+            docs/examples/source-packets/pilot-ht-009/HT-009.inputs.named.json \
+  --source-packets /path/to/combined-packets \
   --snapshots reports/snapshots-pit-pool-v1-remap-2026-10-30.json \
   --summary docs/examples/source-packets/evidence-batch-pilots-2026-10-30.json
 ```
@@ -40,12 +43,14 @@ Ergebnis (Freeze `evidence-batch-pilots-2026-10-30.json`):
 | HT-023 named (Skyrizi/Rinvoq) | ready → **ABBV** | **identified** (packet) |
 | HT-027 original | insufficient | not_identified |
 | HT-027 named (Clario+Solventum) | ready → **TMO** | **identified** (packet) |
+| HT-009 original | insufficient | not_identified |
+| HT-009 named (Pfizer/Prevnar/Paxlovid) | ready → **PFE** | **identified** (packet) |
 
-SEC-Paket bauen: `python3 -m scanner.hebeltrader.detective.build_sec_packet`.
+**3/7 identified** via `historical_source_packet`. SEC-Paket: `build_sec_packet`.
 
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
-reichere Teaser oder bewusste Diagnose-Anreicherung (wie HT-027 named).
+reichere Teaser oder bewusste Diagnose-Anreicherung (wie HT-009/023/027 named).
 
 Blind 202/26 und Chart-Scores unangetastet.

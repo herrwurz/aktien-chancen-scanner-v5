@@ -1,0 +1,66 @@
+{
+  "case_id": "HT-009",
+  "source_packet_status": "provided",
+  "packet_evidence": {
+    "blocks_full_identification": [
+      "fewer_than_five_countercandidates",
+      "active_falsification_not_performed"
+    ],
+    "confirmed_specific_clues": 3,
+    "evidence_score": 156,
+    "label": "Ticker-Hypothese aus Primärevidenz",
+    "name": "Pfizer",
+    "next_step": "manual_review",
+    "score_margin": 156,
+    "status": "ticker_hypothesis_ready",
+    "ticker": "PFE"
+  },
+  "identification": {
+    "basis": "historical_source_packet",
+    "label": "Identifiziert (historisches Quellenpaket), manuell prüfen",
+    "packet_peer_count": 6,
+    "requires_manual_review": true,
+    "score_is_probability": false,
+    "status": "identified"
+  },
+  "decision": {
+    "label": "Wahrscheinlich identifiziert",
+    "status": "likely_identified"
+  },
+  "leader": {
+    "asset_type": "stock",
+    "cik": null,
+    "country": null,
+    "exchange": null,
+    "instrument_type": "unknown",
+    "instrument_type_evidence": null,
+    "instrument_type_status": "unknown",
+    "isin": null,
+    "lei": null,
+    "mic": null,
+    "name": "Pfizer",
+    "quality_status": "candidate",
+    "retrieved_at": "2026-10-30T20:59:45.004813Z",
+    "sector": null,
+    "source_available_at": null,
+    "source_id": "public_company_document",
+    "ticker": "PFE",
+    "valid_from": null,
+    "valid_to": null,
+    "wkn": null
+  },
+  "confirmed_specific_clues": [
+    "a9d08c3e1121398d032652ae312a8a9b9818f0787b5ba65f3c342765803565ee",
+    "1747db1a1a7d367b800c8fe54655c4e1336ca5b2b508eb73efa25d5120095429",
+    "654b56141e83a880188bc92308b36be3e62f774dbe48de909b42637bd9280d11"
+  ],
+  "limitations": [
+    "fewer_than_five_countercandidates",
+    "active_falsification_not_performed"
+  ],
+  "confirmed_fact_quotes": [
+    "Pfizer",
+    "Prevnar",
+    "Paxlovid"
+  ]
+}
