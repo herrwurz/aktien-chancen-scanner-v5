@@ -14,3 +14,15 @@ def test_focus_text_prefers_prose_product_token_over_xbrl_member_tag():
     assert "Rinvoq sales" in focused
     # Prose token is kept even when an XBRL *Member tag also contains the letters.
     assert "SKYRIZIMember" in focused or "Skyrizi" in focused
+
+
+def test_focus_text_prefers_revenue_hit_over_glossary_definition():
+    raw = (
+        b"<html><body>"
+        b"Prevnar family Includes Prevnar 20 and Prevnar 13 for immunization glossary. "
+        b"Worldwide revenues for the Prevnar family were $3.3 billion, up 6% operationally."
+        b"</body></html>"
+    )
+    focused = _focus_text(raw, ("Prevnar",))
+    assert "$3.3 billion" in focused
+    assert "up 6% operationally" in focused

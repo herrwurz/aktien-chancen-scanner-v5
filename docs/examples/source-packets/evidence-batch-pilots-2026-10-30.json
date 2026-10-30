@@ -1,38 +1,50 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-evidence-batch-v1",
-  "packets": "data/hebeltrader/source-packets/ + docs/examples/source-packets/pilot/",
+  "packets": "(combined pilot packets)",
   "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
-  "root": "(local batch root; rankings sha256 in freezes[])",
+  "root": "(batch root)",
   "freezes": [
     {
       "inputs": "docs/examples/source-packets/pilot/HT-001.inputs.json",
-      "root": "batch/00-HT-001.inputs",
-      "ranking_sha256": "64c6122fe0843a0402d6e12847bfa331de56f34a5b96de757f060ce1a15b51b8",
+      "root": "00-HT-001.inputs",
+      "ranking_sha256": "28dc2ef034f7184d9a730a4bf94e299de8b694aae96bea76138d79f368ee296e",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.original.json",
-      "root": "batch/01-HT-023.inputs.original",
-      "ranking_sha256": "240b80e02acc0a9f2056b074dd7b1ff484690e5f4497385fabefac0ed716c461",
+      "root": "01-HT-023.inputs.original",
+      "ranking_sha256": "88a56fdc5c85f778feeab0d3f555fbd44e05ba87ea9e73649199837b4aaa789b",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/pilot-original-anchors/HT-023.inputs.named.json",
-      "root": "batch/02-HT-023.inputs.named",
-      "ranking_sha256": "b70502302beff4c82cf7f8e77a923e9b181d1afc2cd88cffc6c0891455cf51e1",
+      "root": "02-HT-023.inputs.named",
+      "ranking_sha256": "4dbc646440084bca2c2d0fb7781136b14663148fe9264d776e7dd80bf0f7701c",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.original.json",
-      "root": "batch/03-HT-027.inputs.original",
-      "ranking_sha256": "708da385bcdceb0d6fe93758604fc60f726b9165b838e64ce3d4b72e586f9989",
+      "root": "03-HT-027.inputs.original",
+      "ranking_sha256": "8e23cc7007aec2ae87e69c57be22ae8c56a1cd252ed53dc54d08b8e2ecc55b99",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.named.json",
-      "root": "batch/04-HT-027.inputs.named",
-      "ranking_sha256": "19d651c54ae9e051c4f7ed29ed0017942e5c11c7c4f0dae12de7fb83c720884f",
+      "root": "04-HT-027.inputs.named",
+      "ranking_sha256": "92d92dc834e35b319841fb3b8db3fa00b0a5e73f977f80f52cc9262b70a24976",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.original.json",
+      "root": "05-HT-009.inputs.original",
+      "ranking_sha256": "a1234b22ebd795cde19d00448230ebeff5548735287dcbcb6ecfec1a0714bad1",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.named.json",
+      "root": "06-HT-009.inputs.named",
+      "ranking_sha256": "82d83364e76227e7343a4963ba4531d50aad406d71dd01798e86205676cd7acd",
       "cases": 1
     }
   ],
@@ -151,13 +163,59 @@
       ],
       "next_step": "manual_review",
       "inputs": "docs/examples/source-packets/pilot-named/HT-027.inputs.named.json"
+    },
+    {
+      "case_id": "HT-009",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "JNJ",
+      "leader_name": "Johnson & Johnson",
+      "checked_candidates": 7,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.original.json"
+    },
+    {
+      "case_id": "HT-009",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "PFE",
+      "packet_evidence_name": "Pfizer",
+      "confirmed_specific_clues": 3,
+      "evidence_score": 156,
+      "score_margin": 156,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "PFE",
+      "leader_name": "Pfizer",
+      "checked_candidates": 7,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.named.json"
     }
   ],
   "counts": {
-    "cases": 5,
-    "ticker_hypothesis_ready": 2,
+    "cases": 7,
+    "ticker_hypothesis_ready": 3,
     "partial_evidence": 1,
-    "identified": 2,
-    "identified_from_packet": 2
+    "identified": 3,
+    "identified_from_packet": 3
   }
 }

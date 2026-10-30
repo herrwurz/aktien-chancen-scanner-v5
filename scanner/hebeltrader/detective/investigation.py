@@ -221,6 +221,13 @@ def _entities(text):
     ):
         if _relation(text, match.start(1)) != "unknown_relation" or " " in match.group(1):
             found.append(match.group(1))
+    # Issuer names after an explicit issuer cue (Title Case, not only CamelCase).
+    for match in re.finditer(
+        r"\b(?:Emittent|Konzern|Unternehmen|Firma|Issuer|Company)\b"
+        r"[:\s]+([A-Z][A-Za-z0-9&-]{2,}(?:\s+[A-Z][A-Za-z0-9&-]{2,}){0,2})",
+        text,
+    ):
+        found.append(match.group(1).strip(" ,"))
     # Product/drug names after an explicit product cue (often Title Case, not CamelCase).
     for match in re.finditer(
         r"\b(?:Wachstumstreiber|Medikamente?|Blockbuster|Wirkstoffe?|Produkte?|"
@@ -443,24 +450,40 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                     facts["support_quotes"][clue.clue_id] = company
                 continue
             if relation == "product_literal":
-                # Teaser names an issuer product/drug; confirm only on this issuer's filing
-                # when the product appears near company/self-reference (not a peer name-drop).
-                match = re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I)
-                if not match:
-                    continue
-                context = text[max(0, match.start() - 280) : match.end() + 120]
-                owned = bool(
-                    re.search(r"\b(?:the company|the registrant|\bwe\b|our)\b", context, re.I)
-                    or (
-                        company
-                        and re.search(r"(?<!\w)" + re.escape(company) + r"(?!\w)", context, re.I)
+                # Teaser names an issuer product/drug; confirm on this issuer's filing when
+                # the product appears near self-reference, the company name, or revenue
+                # prose on a document already tagged with company_name (10-Q product tables
+                # often omit "we/our" beside the product line).
+                confirmed = None
+                for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
+                    context = text[max(0, match.start() - 400) : match.end() + 160]
+                    if re.search(
+                        r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
+                    ):
+                        continue
+                    self_ref = bool(
+                        re.search(r"\b(?:the company|the registrant|\bwe\b|our)\b", context, re.I)
+                        or (
+                            company
+                            and re.search(
+                                r"(?<!\w)" + re.escape(company) + r"(?!\w)", context, re.I
+                            )
+                        )
                     )
-                )
-                if owned and not re.search(
-                    r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
-                ):
+                    revenue_on_issuer_doc = bool(
+                        company
+                        and re.search(
+                            r"\b(?:revenue|revenues|sales|million|billion|operational(?:ly)?)\b|\$",
+                            context,
+                            re.I,
+                        )
+                    )
+                    if self_ref or revenue_on_issuer_doc:
+                        confirmed = context
+                        break
+                if confirmed:
                     facts["fact_claims"].append(value)
-                    facts["support_quotes"][clue.clue_id] = context
+                    facts["support_quotes"][clue.clue_id] = confirmed
                 continue
             if relation not in _RELATIONS:
                 continue

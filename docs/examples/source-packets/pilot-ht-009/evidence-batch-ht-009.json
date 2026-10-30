@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "docs/examples/source-packets/pilot-ht-009",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "/tmp/ht-009-batch",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.original.json",
+      "root": "/tmp/ht-009-batch/00-HT-009.inputs.original",
+      "ranking_sha256": "251e029017ddcb01605251454dca08275175e6bad2cd1a619beccce9fdff393b",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.named.json",
+      "root": "/tmp/ht-009-batch/01-HT-009.inputs.named",
+      "ranking_sha256": "0bf4b5d8f79dcbaf85e8e726217547da8a5f0aafb467cbae2f6afa0da3b78b61",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "HT-009",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "JNJ",
+      "leader_name": "Johnson & Johnson",
+      "checked_candidates": 7,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.original.json"
+    },
+    {
+      "case_id": "HT-009",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "PFE",
+      "packet_evidence_name": "Pfizer",
+      "confirmed_specific_clues": 3,
+      "evidence_score": 156,
+      "score_margin": 156,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "PFE",
+      "leader_name": "Pfizer",
+      "checked_candidates": 7,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/pilot-ht-009/HT-009.inputs.named.json"
+    }
+  ],
+  "counts": {
+    "cases": 2,
+    "ticker_hypothesis_ready": 1,
+    "partial_evidence": 0,
+    "identified": 1,
+    "identified_from_packet": 1
+  }
+}

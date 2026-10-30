@@ -16,7 +16,11 @@ import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 
-UA = "AktienChancenScanner/0.1 (research; source-packet-builder)"
+# SEC fair-access policy requires a descriptive UA with contact.
+UA = (
+    "AktienChancenScanner/0.1 "
+    "(research; source-packet-builder; contact@aktien-chancen-scanner.local)"
+)
 
 
 def _get(url: str) -> bytes:
@@ -25,16 +29,40 @@ def _get(url: str) -> bytes:
         return response.read()
 
 
+_REVENUE_HINT = re.compile(
+    r"\b(?:revenue|revenues|sales|million|billion|operational(?:ly)?|grew|increase|decrease)\b|\$",
+    re.I,
+)
+
+
+def _best_needle_span(text: str, needle: str) -> tuple[int, int] | None:
+    """Pick the needle hit nearest revenue/sales prose (skip glossary-first traps)."""
+    # Prefer prose tokens (Skyrizi), not XBRL tags (SKYRIZIMember).
+    pattern = re.compile(rf"(?<![A-Za-z0-9]){re.escape(needle)}(?![A-Za-z0-9])", re.I)
+    best = None
+    best_score = -1
+    for match in pattern.finditer(text):
+        ctx = text[max(0, match.start() - 160) : match.end() + 220]
+        score = len(_REVENUE_HINT.findall(ctx))
+        # Glossary/definition lines are weak ownership anchors.
+        if re.search(r"\b(?:includes?|means?|refers to|formerly|abbreviation)\b", ctx, re.I):
+            score -= 2
+        if score > best_score:
+            best_score = score
+            best = match
+    if best is None:
+        return None
+    return (max(0, best.start() - 500), min(len(text), best.end() + 1500))
+
+
 def _focus_text(raw: bytes, needles: tuple[str, ...] = ()) -> str:
     text = html.unescape(re.sub(r"<[^>]+>", " ", raw.decode("utf-8", "replace")))
     text = re.sub(r"\s+", " ", text).strip()
     windows = [(0, 6000)]
     for needle in needles:
-        # Prefer prose tokens (Skyrizi), not XBRL tags (SKYRIZIMember).
-        pattern = re.compile(rf"(?<![A-Za-z0-9]){re.escape(needle)}(?![A-Za-z0-9])", re.I)
-        match = pattern.search(text)
-        if match:
-            windows.append((max(0, match.start() - 500), min(len(text), match.end() + 1500)))
+        span = _best_needle_span(text, needle)
+        if span:
+            windows.append(span)
     windows.sort()
     merged: list[list[int]] = []
     for start, end in windows:

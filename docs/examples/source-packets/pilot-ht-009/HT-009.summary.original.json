@@ -1,0 +1,60 @@
+{
+  "case_id": "HT-009",
+  "source_packet_status": "provided",
+  "packet_evidence": {
+    "blocks_full_identification": [
+      "fewer_than_five_countercandidates",
+      "active_falsification_not_performed"
+    ],
+    "confirmed_specific_clues": 0,
+    "evidence_score": 0,
+    "label": "Keine bestätigten Kernhinweise",
+    "name": null,
+    "next_step": "named_anchors_in_teaser_plus_dated_packet",
+    "score_margin": 0,
+    "status": "insufficient_evidence",
+    "ticker": null
+  },
+  "identification": {
+    "basis": null,
+    "label": "Nicht identifiziert",
+    "packet_peer_count": 6,
+    "requires_manual_review": true,
+    "score_is_probability": false,
+    "status": "not_identified"
+  },
+  "decision": {
+    "label": "Keine eindeutige Rangfolge",
+    "status": "ambiguous_tie"
+  },
+  "leader": {
+    "asset_type": "stock",
+    "cik": null,
+    "country": null,
+    "exchange": null,
+    "instrument_type": "unknown",
+    "instrument_type_evidence": null,
+    "instrument_type_status": "unknown",
+    "isin": null,
+    "lei": null,
+    "mic": null,
+    "name": "Johnson & Johnson",
+    "quality_status": "candidate",
+    "retrieved_at": "2026-10-30T20:59:44.629649Z",
+    "sector": null,
+    "source_available_at": null,
+    "source_id": "public_company_document",
+    "ticker": "JNJ",
+    "valid_from": null,
+    "valid_to": null,
+    "wkn": null
+  },
+  "confirmed_specific_clues": [],
+  "limitations": [
+    "fewer_than_five_countercandidates",
+    "active_falsification_not_performed",
+    "insufficient_specific_primary_evidence",
+    "ambiguous_leading_candidates"
+  ],
+  "confirmed_fact_quotes": []
+}

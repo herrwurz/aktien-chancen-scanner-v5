@@ -14,6 +14,7 @@ Pilots:
 - `pilot/` — HT-001 SEC 10-Q (no named teaser clues)
 - `pilot-named/` — HT-027 Clario+Solventum → **identified** via historical packet
 - `pilot-original-anchors/` — corpus gap + HT-023 AbbVie (`issuer_literal` + `product_literal` → identified)
-- `evidence-batch-pilots-2026-10-30.json` — five-case batch freeze (2× identified: ABBV, TMO)
+- `pilot-ht-009/` — HT-009 Pfizer (`issuer_literal` + `product_literal` → identified)
+- `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.
