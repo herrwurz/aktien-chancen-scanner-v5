@@ -75,20 +75,20 @@ def screen_queries(text, **options):
     ]
 
 
-def _key(value):
-    return re.sub(r"[^a-z0-9]", "", value.casefold())
+def _tokens(value):
+    return re.findall(r"[a-z0-9]+", (value or "").casefold())
 
 
 def find_asset(name):
-    """Match a candidate name to the universe: exact, legal-form suffix or alias."""
-    key = _key(name or "")
-    if not key:
-        return None
+    """Match a candidate name to the universe on whole leading words (longest match wins)."""
+    tokens = _tokens(name)
+    best, best_len = None, 0
     for asset in load_universe():
-        names = [asset["name"], *asset.get("aliases", [])]
-        if any(key == _key(n) or key.startswith(_key(n)) for n in names):
-            return asset
-    return None
+        for alias in [asset["name"], *asset.get("aliases", [])]:
+            parts = _tokens(alias)
+            if parts and tokens[: len(parts)] == parts and len(parts) > best_len:
+                best, best_len = asset, len(parts)
+    return best
 
 
 def ticker_for(name):

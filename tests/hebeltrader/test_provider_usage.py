@@ -289,3 +289,21 @@ def test_openai_usage_sums_valid_archives_and_ignores_malformed_files(tmp_path):
         ],
         "balance_available_via_project_key": False,
     }
+
+
+def test_tavily_paygo_without_plan_limit_is_available():
+    from scanner.hebeltrader.detective.provider_usage import TavilyUsageMonitor
+
+    payload = {
+        "key": {"usage": 5, "limit": None, "search_usage": 5},
+        "account": {
+            "current_plan": "Pay as you go",
+            "plan_usage": 40,
+            "plan_limit": None,
+            "paygo_usage": 40,
+            "paygo_limit": None,
+        },
+    }
+    result = TavilyUsageMonitor(getter=lambda *a, **k: Response(payload)).snapshot("tvly-x")
+    assert result["status"] == "available"
+    assert result["plan_remaining"] is None and result["paygo_usage"] == 40

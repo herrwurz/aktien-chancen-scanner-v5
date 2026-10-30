@@ -668,19 +668,7 @@
    "structure": "oligopoly"
   },
   {
-   "name": "Munich Re",
-   "sector": "insurance",
-   "layer": "reinsurance",
-   "structure": "oligopoly"
-  },
-  {
    "name": "Swiss Re",
-   "sector": "insurance",
-   "layer": "reinsurance",
-   "structure": "oligopoly"
-  },
-  {
-   "name": "Hannover Rueck",
    "sector": "insurance",
    "layer": "reinsurance",
    "structure": "oligopoly"
@@ -725,12 +713,6 @@
    "name": "Rockwell Automation",
    "sector": "robotics",
    "layer": "automation",
-   "structure": "oligopoly"
-  },
-  {
-   "name": "Vertiv",
-   "sector": "cooling",
-   "layer": "hvac",
    "structure": "oligopoly"
   },
   {
