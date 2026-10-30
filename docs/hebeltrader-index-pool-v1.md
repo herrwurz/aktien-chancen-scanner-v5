@@ -47,35 +47,21 @@ INDEX_POOL_NDX_JSON=/tmp/ndx_nasdaq.json python3 scripts/build_index_pool_v1.py
 
 ## PIT-Export (Pool)
 
-Meta: [`docs/examples/snapshots-pit-pool-v1-2026-10-30.meta.json`](examples/snapshots-pit-pool-v1-2026-10-30.meta.json)  
-Voll-JSON: gitignored `reports/snapshots-pit-pool-v1-2026-10-30.json`.
+| Lauf | Succeeded | Coverage / as_of | Meta |
+|---|---:|---:|---|
+| vor Remap | 919/1045 | 904–906 | `snapshots-pit-pool-v1-2026-10-30.meta.json` |
+| **nach Remap v1** | **994/1044** | **979–981** | `snapshots-pit-pool-v1-remap-2026-10-30.meta.json` |
 
-| Kennzahl | Wert |
-|---|---:|
-| Attempted | 1045 |
-| Succeeded bars | 919 |
-| Coverage / as_of | 904–906 |
-| as_of dates | 27 |
-| Status | partial |
+Voll-JSON gitignored unter `reports/`. Spot-Checks ok: `DBK.XETRA`, `ASSA-B.ST`, `CAP.PA`, `ENI.XETRA`, ATX.
 
-Spot-Checks ok: `DBK.XETRA`, ATX (`EBS.VI`, `BG.VI`, `POST.VI`, …).  
-Ticker-Remap v1: `index_pool_ticker_remap_v1.json` (~76 EODHD-verifizierte Korrekturen,
-z. B. `ASSAB.ST`→`ASSA-B.ST`, `CAPP.PA`→`CAP.PA`, `ENI.MI`→`ENI.XETRA`).  
-Restlücken: Japan `.TSE` (bewusst), Italien `.MI` ohne EODHD-Venue (teilweise XETRA/US-Fallback).
-
-```bash
-python3 -m scanner.hebeltrader.detective.market_screen export-pit \
-  reports/snapshots-pit-pool-v1-2026-10-30.json \
-  --inputs docs/examples/reference-27-inputs.json
-```
+Ticker-Remap v1: `index_pool_ticker_remap_v1.json` (~76 Korrekturen).  
+Restlücken: Japan `.TSE`, Italien `.MI` ohne Venue, delistete/illiquide Namen.
 
 ## Budget / nächste Schritte
 
-1. Pool + ATX committed → **0 € Extra**.
-2. PIT-Meta committed; Voll-JSON lokal unter `reports/`.
-3. Ticker-Normalisierung für Share-Classes verbessern (Coverage ↑).
-4. EODHD Fundamentals (~60 $/Mo) erst wenn automatischer Constituent-Refresh den
-   manuellen Quartals-Rebuild klar schlägt.
+1. Pool + Remap + PIT-Coverage ↑ → **0 € Extra**.
+2. Diagnose Refs/Blind auf Pool-PIT (ohne Score-Retuning von 202/26).
+3. Evidenz-Kanal (Quellenpakete) vor teuren API-Upgrades.
+4. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
 
-Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning). Der Pool behebt die
-Universums-Lücke für **künftige** Fälle.
+Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning).
