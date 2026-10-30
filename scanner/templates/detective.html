@@ -43,12 +43,13 @@
       <p><strong>OpenAI</strong><br><span id="openai-cost">–</span></p>
       <p><strong>Verfügbar</strong><br><span id="remaining-cost">–</span></p>
     </div>
-    <p class="muted">Interner Sicherheitszähler: höchstens 0,01 € je API-Aufruf, keine Rechnung der Anbieter. Tavily-Credits und OpenAI-Tokenkosten stehen darunter; fehlgeschlagene Aufrufe werden im Sicherheitszähler mitgezählt.</p>
+    <p class="muted">Interner Sicherheitszähler: höchstens 0,01 € je API-Aufruf, keine Rechnung der Anbieter. Tavily-Credits und OpenAI-Tokenkosten stehen darunter; fehlgeschlagene Aufrufe werden im Sicherheitszähler mitgezählt. EODHD-Tageskontingent steht separat darunter (nicht im EUR-Zähler).</p>
     <h3>Verbleibende Anbieter-Credits</h3>
     <p id="tavily-credits">Tavily-Kontostand wird geladen …</p>
     <p id="openai-usage">OpenAI-Verbrauch wird geladen …</p>
-    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche, Pay-as-you-go 0,008 $ je Credit. OpenAI GPT-4.1 mini = 0,40/1,60 USD und GPT-4.1 = 2,00/8,00 USD je Mio. Eingabe-/Ausgabetokens. Unbekannte Modellpreise werden nicht geschätzt. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1" target="_blank" rel="noopener noreferrer">OpenAI-Tarife</a>.</p>
-    <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>.</p>
+    <p id="eodhd-usage">EODHD-Kontostand wird geladen …</p>
+    <p class="muted">Verwendete Tarife: Tavily Basic = 1 Credit je Suche, Pay-as-you-go 0,008 $ je Credit. OpenAI GPT-4.1 mini = 0,40/1,60 USD und GPT-4.1 = 2,00/8,00 USD je Mio. Eingabe-/Ausgabetokens. Unbekannte Modellpreise werden nicht geschätzt. <a href="https://docs.tavily.com/documentation/api-credits" target="_blank" rel="noopener noreferrer">Tavily-Tarife</a> · <a href="https://developers.openai.com/api/docs/models/gpt-4.1" target="_blank" rel="noopener noreferrer">OpenAI-Tarife</a> · <a href="https://eodhd.com/pricing" target="_blank" rel="noopener noreferrer">EODHD-Tarife</a>.</p>
+    <p class="muted">Ein normaler OpenAI-Projektschlüssel darf den verbleibenden Konto- oder Gratisbetrag nicht auslesen. Den verbindlichen Stand zeigt das <a href="https://platform.openai.com/settings/organization/billing/overview" target="_blank" rel="noopener noreferrer">OpenAI Billing-Dashboard</a>. EODHD meldet Tagesaufrufe und Limit über die User-API (ohne Name/E-Mail).</p>
     <button type="button" id="refresh-api-costs">Kostenstand aktualisieren</button>
   </section>{% endif %}
   <form id="form">
@@ -141,6 +142,18 @@ const loadApiCosts=async()=>{
     const usd=openai.estimated_usd==null?'Gesamtkosten nicht vollständig bestimmbar':Number(openai.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6});
     const modelUsage=(openai.models||[]).map(row=>`${row.model}: ${row.input_tokens}/${row.output_tokens} Tokens · ${row.estimated_usd==null?'Preis unbekannt':Number(row.estimated_usd).toLocaleString('de-AT',{style:'currency',currency:'USD',minimumFractionDigits:4,maximumFractionDigits:6})}`).join(' | ');
     document.querySelector('#openai-usage').textContent=`OpenAI ${openai.month||''}: ${openai.input_tokens||0} Eingabe- und ${openai.output_tokens||0} Ausgabetokens · ${openai.estimated_usd==null?usd:`lokal geschätzt ${usd}`}. ${modelUsage} Verbleibendes Guthaben nur im Billing-Dashboard.`;
+    const eodhd=data.provider_credits?.eodhd||{};
+    const eodhdErrors={authentication_failed:'Authentifizierung fehlgeschlagen – EODHD-Token prüfen.',
+      access_forbidden:'Der EODHD-Token darf den User-Endpunkt nicht lesen.',
+      daily_limit_exceeded:'EODHD-Tageslimit erreicht (HTTP 402).',
+      rate_limited:'EODHD-Usage-Abfrage ist vorübergehend rate-limitiert.',
+      network_error:'EODHD ist vom Server derzeit nicht erreichbar.',
+      invalid_response:'EODHD lieferte ein unbekanntes Usage-Format.',
+      provider_unavailable:'Der EODHD-Usage-Dienst ist vorübergehend nicht verfügbar.',
+      request_rejected:'EODHD hat die Usage-Abfrage abgelehnt.'};
+    document.querySelector('#eodhd-usage').textContent=eodhd.status==='available'
+      ? `EODHD ${eodhd.subscription_mode}/${eodhd.subscription_type}: ${eodhd.api_requests} von ${eodhd.daily_rate_limit+(eodhd.extra_limit||0)} API-Aufrufen heute (${eodhd.api_requests_date}), ${eodhd.remaining} verbleibend.`+(eodhd.extra_limit?` Extra-Limit ${eodhd.extra_limit}.`:'')
+      : eodhd.status==='not_configured'?'EODHD: kein API-Token konfiguriert (EODHD_API_TOKEN).':(eodhdErrors[eodhd.reason]||'EODHD-Kontostand derzeit nicht abrufbar.');
   }catch(error){status.textContent='Kostenstand derzeit nicht verfügbar.';}
 };
 if(costButton){costButton.addEventListener('click',loadApiCosts);loadApiCosts();}

@@ -48,6 +48,7 @@ def create_web_app():
     from scanner.hebeltrader.detective import provider_usage
 
     tavily_usage = provider_usage.TavilyUsageMonitor()
+    eodhd_usage = provider_usage.EodhdUsageMonitor()
 
     @app.get("/api/hebeltrader/runtime")
     def runtime_status():
@@ -62,6 +63,7 @@ def create_web_app():
             if settings.detective_search_api_key
             else ""
         )
+        eodhd_token = os.environ.get("EODHD_API_TOKEN", "").strip()
         return {
             "public_research_enabled": settings.detective_public_allow_network,
             "peer_research_supported": True,
@@ -83,6 +85,7 @@ def create_web_app():
                 settings.detective_source_ai_api_key
                 and settings.detective_source_ai_api_key.get_secret_value().strip()
             ),
+            "eodhd_key_configured": bool(eodhd_token),
             "monthly_reservation_limit_eur": settings.detective_api_monthly_budget_eur,
             "api_costs": {
                 "month": budget["month"],
@@ -102,6 +105,7 @@ def create_web_app():
                 "openai": provider_usage.summarize_openai_usage(
                     settings.detective_public_root / "api-audit"
                 ),
+                "eodhd": eodhd_usage.snapshot(eodhd_token),
             },
         }
 

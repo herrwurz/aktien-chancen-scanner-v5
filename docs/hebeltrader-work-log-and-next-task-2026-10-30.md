@@ -17,24 +17,22 @@ war noch nicht eingefroren.
   **kein** ADR-/Xetra-Fallback (`ticker_policy.accepted_snapshot_gaps`). Ansys: zu kurze Historie.
 - **Snapshots (global):** `market_screen export` → 106/115
   (`docs/examples/snapshots-2026-10-30.meta.json`).
-- **PIT-Snapshots:** `export-pit` → `by_as_of` je `publication_date`
-  (`docs/examples/snapshots-pit-2026-10-30.meta.json`). Basis: letzter Close ≤ Datum
-  (`publication_date_eod`). Aktuelles Token liefert ~1 Jahr Historie → vor ~2026-08-20 oft
-  `insufficient_history_at_as_of` (GD200 braucht ≥200 Sessions). Für volle PIT-Tiefe:
-  **EOD Historical All-World**.
-- **Blindfall PIT:** `docs/examples/blind-202-26-freeze-pit/` (SHA `ba738555…`).
-- **27er-Referenz PIT:** `docs/examples/reference-27-freeze-pit/` + Evaluate
-  (Market unverified: Top1=3, Top3=3, Top8=6 bei 16 suggestion_cases; 10 insufficient history,
-  1 ohne publication_date).
+- **PIT-Snapshots (Paid EOD):** `export-pit` → Coverage **106–107/115** auf allen 27
+  as_of-Daten (`docs/examples/snapshots-pit-2026-10-30.meta.json`). Basis:
+  `publication_date_eod`. Lücken: 8× Japan `.TSE` (bewusst), Ansys teils.
+- **Blindfall PIT:** `docs/examples/blind-202-26-freeze-pit/` (SHA `3bb716e5…`).
+- **27er-Referenz PIT:** `docs/examples/reference-27-freeze-pit/` (SHA `150d8562…`) +
+  Evaluate (Market unverified: Top1=2, Top3=2, Top8=5 bei 26 suggestion_cases; 1 ohne
+  publication_date).
 - **`case_diagnose`**, **`reference_evaluate`** mit Market-Coverage; Single-as_of nach
   publication_date wird als Leakage abgelehnt.
 
 ## 4. Offen (nächste Schritte)
-**A. EOD-Historie** auf All-World (30+ Jahre) prüfen/upgraden, dann PIT-Export + Freeze für
-May–Jul-2026-Fälle wiederholen.
+**A. Auflösung 202/26** nach Report-Kauf: Position der Lösung in structure-/market-Hypothesen
+dokumentieren, ohne Logik nachzuziehen.
 
-**B. Auflösung 202/26** nach Report-Kauf: Position der Lösung dokumentieren, ohne Nachziehen.
+**B. Abnahme:** Suite grün; Token nur Secret/`.env`; PR #51 mergen wenn gewünscht.
 
-**C. Abnahme:** Suite grün; Token nur Secret/`.env`.
-
+Diagnose-Notizen (ohne Retuning): `docs/examples/reference-27-pit-diagnosis-notes-2026-10-30.md`.
+Web-UI zeigt EODHD-Tageskontingent unter `/api/hebeltrader/runtime` (ohne PII).
 Japan-Lücken: bewusst akzeptiert (`accepted_snapshot_gaps`).
