@@ -5,9 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-FREEZE = Path(
-    "docs/examples/source-packets/batch-eu-ir-wayback/evidence-batch-eu-ir-wayback.json"
-)
+FREEZE = Path("docs/examples/source-packets/batch-eu-ir-wayback/evidence-batch-eu-ir-wayback.json")
 MANIFEST = Path("docs/examples/source-packets/batch-eu-ir-wayback/manifest.json")
 
 EXPECTED = {

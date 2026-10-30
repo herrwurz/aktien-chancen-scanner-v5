@@ -27,9 +27,7 @@ UA = (
 
 
 def _get(url: str) -> bytes:
-    req = urllib.request.Request(
-        url, headers={"User-Agent": UA, "Accept-Encoding": "identity"}
-    )
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Encoding": "identity"})
     with urllib.request.urlopen(req, timeout=90) as response:
         data = response.read()
     if data[:2] == b"\x1f\x8b":
@@ -173,8 +171,7 @@ def build_hybrid_packet(
             "chars": len(lead_doc["text"]),
             "raw_path": str(path),
             "needles_hit": {
-                n: html.unescape(lead_doc["text"]).casefold().count(n.casefold())
-                for n in needles
+                n: html.unescape(lead_doc["text"]).casefold().count(n.casefold()) for n in needles
             },
         }
     ]
