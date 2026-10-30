@@ -53,20 +53,29 @@ def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True):
     sectors = sectors_in(text) if sector_filter else []
     ranked = []
     for asset in universe if universe is not None else load_universe():
-        features = snapshots.get(asset.get("ticker"))
+        ticker = asset.get("ticker")
+        features = snapshots.get(ticker) if ticker else None
         if not features or (sectors and asset["sector"] not in sectors):
             continue
         ranked.append(
             {
                 "name": asset["name"],
-                "ticker": asset["ticker"],
+                "ticker": ticker,
                 "sector": asset["sector"],
+                "layer": asset.get("layer"),
+                "structure": asset.get("structure"),
                 "score": match_score(features, clues),
                 "features": features,
             }
         )
     ranked.sort(key=lambda item: (-item["score"], item["name"]))
-    return {"clues": clues, "sectors": sectors, "ranking": ranked[:limit]}
+    return {
+        "clues": clues,
+        "sectors": sectors,
+        "snapshot_coverage": len(snapshots),
+        "ranked_before_limit": len(ranked),
+        "ranking": ranked[:limit],
+    }
 
 
 def export_snapshots(*, universe=None, fetch=None, today=None):

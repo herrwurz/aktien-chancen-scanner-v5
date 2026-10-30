@@ -1,0 +1,8 @@
+{
+  "case_id": "BLIND-202-26",
+  "ranking_sha256": "4914bd882e6da13b8f541d8b47c747acd940390bafa641b88bbfb9ee27e6e27e",
+  "status": "not_identified",
+  "offline_hypotheses": 0,
+  "market_status": "snapshots_not_provided",
+  "note": "Frozen before solution; do not retune after resolution."
+}
