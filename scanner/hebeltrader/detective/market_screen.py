@@ -6,8 +6,10 @@ ranked offline, so a ranking can be frozen before any solution is known.
 """
 
 import json
+import os
 import re
 import sys
+import time
 from datetime import UTC, date, datetime
 from pathlib import Path
 
@@ -78,34 +80,131 @@ def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True):
     }
 
 
-def export_snapshots(*, universe=None, fetch=None, today=None):
-    """Fetch closes per universe ticker; ``fetch(ticker)`` returns closes or None."""
+def export_snapshots(
+    *,
+    universe=None,
+    fetch=None,
+    today=None,
+    pause_seconds=0.15,
+    progress=None,
+):
+    """Fetch closes per universe ticker; ``fetch(ticker)`` returns closes or None.
+
+    Returns a payload with ``snapshots`` plus ``export_meta`` describing coverage and
+    failures. Missing ``EODHD_API_TOKEN`` (when using the live fetcher) is recorded in
+    meta and yields empty snapshots rather than inventing prices.
+    """
     from .chart_check import fetch_closes
 
     fetch = fetch or fetch_closes
-    snapshots = {}
-    for asset in universe if universe is not None else load_universe():
+    as_of = today or date.today()
+    assets = list(universe if universe is not None else load_universe())
+    tickers = []
+    seen = set()
+    for asset in assets:
         ticker = asset.get("ticker")
-        if not ticker or ticker in snapshots:
+        if not ticker or ticker in seen:
             continue
-        features = trend_features(fetch(ticker) or [])
-        if features:
+        seen.add(ticker)
+        tickers.append(ticker)
+
+    token_present = bool(os.environ.get("EODHD_API_TOKEN"))
+    # Custom fetch callables (tests) do not require a live token.
+    live_fetch = fetch is fetch_closes
+    if live_fetch and not token_present:
+        return {
+            "as_of": as_of.isoformat(),
+            "exported_at": datetime.now(UTC).isoformat(),
+            "snapshots": {},
+            "export_meta": {
+                "status": "missing_token",
+                "token_present": False,
+                "attempted": 0,
+                "succeeded": 0,
+                "failed": 0,
+                "insufficient_history": 0,
+                "universe_tickers": len(tickers),
+                "failures": [],
+            },
+        }
+
+    snapshots = {}
+    failures = []
+    insufficient = 0
+    for index, ticker in enumerate(tickers, 1):
+        if progress is not None:
+            progress(index, len(tickers), ticker)
+        closes = fetch(ticker) or []
+        if not closes:
+            failures.append({"ticker": ticker, "reason": "fetch_empty_or_error"})
+            if pause_seconds and live_fetch:
+                time.sleep(pause_seconds)
+            continue
+        features = trend_features(closes)
+        if not features:
+            insufficient += 1
+            failures.append({"ticker": ticker, "reason": "insufficient_history"})
+        else:
             snapshots[ticker] = features
+        if pause_seconds and live_fetch:
+            time.sleep(pause_seconds)
+
+    succeeded = len(snapshots)
+    status = "ok" if succeeded else "no_snapshots"
+    if failures and succeeded:
+        status = "partial"
     return {
-        "as_of": (today or date.today()).isoformat(),
+        "as_of": as_of.isoformat(),
         "exported_at": datetime.now(UTC).isoformat(),
         "snapshots": snapshots,
+        "export_meta": {
+            "status": status,
+            "token_present": token_present if live_fetch else None,
+            "attempted": len(tickers),
+            "succeeded": succeeded,
+            "failed": len(failures) - insufficient,
+            "insufficient_history": insufficient,
+            "universe_tickers": len(tickers),
+            "failures": failures,
+        },
     }
 
 
 def main(argv):
-    if len(argv) != 2 or argv[0] != "export":
-        print("usage: python -m scanner.hebeltrader.detective.market_screen export OUT.json")
+    if not argv or argv[0] != "export" or len(argv) < 2:
+        print(
+            "usage: python -m scanner.hebeltrader.detective.market_screen "
+            "export OUT.json [--as-of YYYY-MM-DD]",
+            file=sys.stderr,
+        )
         return 2
-    payload = export_snapshots()
-    Path(argv[1]).write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-    print(f"{len(payload['snapshots'])} snapshots written to {argv[1]}")
-    return 0
+    out = Path(argv[1])
+    as_of = None
+    if len(argv) == 4 and argv[2] == "--as-of":
+        as_of = date.fromisoformat(argv[3])
+    elif len(argv) != 2:
+        print(
+            "usage: python -m scanner.hebeltrader.detective.market_screen "
+            "export OUT.json [--as-of YYYY-MM-DD]",
+            file=sys.stderr,
+        )
+        return 2
+
+    def progress(index, total, ticker):
+        print(f"[{index}/{total}] {ticker}", file=sys.stderr)
+
+    payload = export_snapshots(today=as_of, progress=progress)
+    meta = payload["export_meta"]
+    if meta["status"] == "missing_token":
+        print("EODHD_API_TOKEN is not set; refusing live export.", file=sys.stderr)
+        return 1
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    print(
+        f"{meta['succeeded']}/{meta['attempted']} snapshots written to {out} "
+        f"(status={meta['status']})"
+    )
+    return 0 if meta["succeeded"] else 1
 
 
 if __name__ == "__main__":

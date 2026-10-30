@@ -39,12 +39,19 @@ def evaluate(rankings, references):
                     rank = i
                     break
         hypothesis_rank = None
+        market_rank = None
         if label["actual_company"]:
             for i, candidate in enumerate(report.get("offline_hypotheses", []), 1):
                 if (
                     label["actual_ticker"] and candidate.get("ticker") == label["actual_ticker"]
                 ) or _company(candidate.get("name")) == _company(label["actual_company"]):
                     hypothesis_rank = i
+                    break
+            for i, candidate in enumerate(report.get("market_hypotheses", []), 1):
+                if (
+                    label["actual_ticker"] and candidate.get("ticker") == label["actual_ticker"]
+                ) or _company(candidate.get("name")) == _company(label["actual_company"]):
+                    market_rank = i
                     break
         results.append(
             {
@@ -56,6 +63,9 @@ def evaluate(rankings, references):
                 "offline_hypothesis_rank": hypothesis_rank,
                 "offline_hypotheses": report.get("offline_hypotheses", []),
                 "offline_hypothesis_status": report.get("offline_hypothesis_status"),
+                "market_hypothesis_rank": market_rank,
+                "market_hypotheses": report.get("market_hypotheses", []),
+                "market_hypothesis_meta": report.get("market_hypothesis_meta"),
                 "abstained": report["identification"]["status"] == "not_identified",
                 "countercandidate_count": report.get("countercandidate_count"),
                 "input_completeness": report.get("reference_input_completeness"),
@@ -95,6 +105,29 @@ def evaluate(rankings, references):
                 "identifications or an independent benchmark."
             ),
         },
+        "market_hypothesis_coverage": {
+            "graded_cases": sum(label["actual_company"] is not None for label in labels.values()),
+            "suggestion_cases": sum(bool(r.get("market_hypotheses")) for r in reports),
+            "snapshots_not_provided": sum(
+                (r.get("market_hypothesis_meta") or {}).get("status") == "snapshots_not_provided"
+                for r in reports
+            ),
+            "solution_in_first_suggestion": sum(
+                result["market_hypothesis_rank"] == 1 for result in results
+            ),
+            "solution_in_top3_suggestions": sum(
+                result["market_hypothesis_rank"] is not None
+                and result["market_hypothesis_rank"] <= 3
+                for result in results
+            ),
+            "solution_in_top8_suggestions": sum(
+                result["market_hypothesis_rank"] is not None for result in results
+            ),
+            "interpretation": (
+                "Unverified chart-universe suggestions only; not evidence-backed "
+                "identifications or an independent benchmark."
+            ),
+        },
         "missing_full_text_count": sum(c["teaser_text"] is None for c in reference["cases"]),
         "independent_real_blind_tests": 0,
         "cases": results,
@@ -104,6 +137,7 @@ def evaluate(rankings, references):
             "No identification quality proven without authentic dated candidate-source packets.",
             "The original 10/7/1 history is not the performance of this new scan.",
             "New reference cases are development regressions, not independent blind tests.",
+            "Market hypotheses require an external snapshot export and remain unverified.",
         ],
     }
 

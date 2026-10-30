@@ -46,6 +46,9 @@ def test_scan_all_references_without_reading_solutions_then_evaluate(tmp_path, m
     assert result["offline_hypothesis_coverage"]["solution_in_top3_suggestions"] == 4
     assert result["offline_hypothesis_coverage"]["solution_in_top8_suggestions"] == 6
     assert result["cases"][0]["offline_hypothesis_rank"] == 1
+    assert result["market_hypothesis_coverage"]["snapshots_not_provided"] == 27
+    assert result["market_hypothesis_coverage"]["suggestion_cases"] == 0
+    assert result["cases"][0]["market_hypothesis_rank"] is None
 
 
 def test_scan_rejects_solution_fields_even_in_export(tmp_path):

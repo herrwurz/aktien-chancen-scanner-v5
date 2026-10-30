@@ -6,35 +6,33 @@ Wahrscheinlichkeit unter den Top 3 stehen. Der Nutzer kauft nur stichprobenartig
 (ca. 10 EUR) zum Vergleich. Eine belastbare Quote liefern nur prospektive Blindtests.
 
 ## 2. Review-Ergebnis (Copilot-`main`)
-Siehe [Code-Review](hebeltrader-code-review-2026-10-30.md). Kurz: Suite grün (498+ Tests),
-Evidenz-Scanner ohne Quellenpakete bei 0 Identifikationen, Universum hatte nur 34/115 Ticker,
-Blindtest 202/26 war noch nicht eingefroren.
+Siehe [Code-Review](hebeltrader-code-review-2026-10-30.md). Kurz: Suite grün, Evidenz-Scanner
+ohne Quellenpakete bei 0 Identifikationen, Universum hatte nur 34/115 Ticker, Blindtest 202/26
+war noch nicht eingefroren.
 
 ## 3. In diesem Fortsetzungsbranch erledigt
-- **Ticker-Abdeckung:** alle 115 Universumsnamen haben Primärlisting-Ticker (EODHD-Suffixe für
-  Nicht-US). Kriterien dokumentiert in `global_universe.json` (`ticker_policy`); keine
-  lösungsgetriebenen Namens-Erweiterungen.
-- **Blindfall:** [`docs/examples/blind-202-26-inputs.json`](examples/blind-202-26-inputs.json)
-  + eingefrorenes Ranking unter `docs/examples/blind-202-26-freeze/` und Meta
-  [`hebeltrader-blind-202-26-freeze.json`](hebeltrader-blind-202-26-freeze.json)
-  (SHA in der Datei). Lösung unbekannt; nach Auflösung nicht nachkalibrieren.
-- **`reference_scan --snapshots`:** optional Chart-Hypothesen aus `market_screen`-Export;
-  bleibt von `candidates` und Identifikationsstatus getrennt.
-- Ohne Snapshots: Blindfall weiter `not_identified`, 0 Sektor-Hypothesen (kein Branchenwort).
+- **Ticker-Abdeckung:** alle 115 Universumsnamen haben Listing-Ticker; EODHD-Codes für Roche
+  (`RO.SW`), Renk (`R3NK.XETRA`), Prysmian (`AEU.XETRA`) korrigiert. Acht Tokyo-`.TSE`-Namen
+  bleiben Snapshot-Lücken (Japan-EOD auf dem aktiven Plan nicht verfügbar). Ansys: zu kurze
+  Historie (Übernahme).
+- **Snapshots:** Live-Export `market_screen export` → 106/115 Features
+  (`docs/examples/snapshots-2026-10-30.meta.json`; Rohdatei unter gitignore
+  `reports/hebeltrader/snapshots-2026-10-30.json`).
+- **Blindfall mit Charts:** `docs/examples/blind-202-26-freeze-snapshots/`
+  (SHA `6a777229…`); Clue `above_gd200`; Market-Top unverified; weiterhin `not_identified`.
+- **27er-Referenz mit Charts:** `docs/examples/reference-27-freeze-snapshots/` + Diagnose +
+  Evaluate (`market_hypothesis_coverage`: Top1=1, Top3=2, Top8=5 bei 25 graded — unverified).
+- **`case_diagnose`:** lösungsfreie Ausgabe Hinweise/Coverage/Top-8 (JSON+Markdown).
+- **`reference_evaluate`:** `market_hypothesis_rank` / `market_hypothesis_coverage`.
 
 ## 4. Offen (nächste Schritte)
-**A. Snapshots mit EODHD** (Umgebung mit Token in `.env`, Token nie committen, rotieren):
-```
-set -a; . ./.env; set +a
-PYTHONPATH=. python -m scanner.hebeltrader.detective.market_screen export \
-  reports/hebeltrader/snapshots-2026-10-30.json
-```
-Ziel: ≥100 Snapshots bei 115 Tickern. Danach Blindfall und 27er-Referenz mit
-`--snapshots` erneut einfrieren (neuer Output-Ordner).
+**A. Japan-EOD** erst nach Plan mit TSE-Zugang oder bewusster ADR-/Xetra-Fallback-Politik.
 
-**B. Kalibrierung** nur mit Kursen ≤ Veröffentlichungsdatum der Referenzfälle.
+**B. PIT-Kalibrierung** nur mit Kursen ≤ Veröffentlichungsdatum der Referenzfälle
+(`--as-of` je Fall, nicht Global-as-of).
 
 **C. Auflösung 202/26** nach Report-Kauf: Position der Lösung in structure-/market-Hypothesen
 dokumentieren, ohne Logik auf diesen Fall zuzuschneiden.
 
-**D. Abnahme:** `PYTHONPATH=. pytest -q tests/hebeltrader` grün; keine Lösungsfelder im Scan-Input.
+**D. Abnahme:** `PYTHONPATH=. pytest -q tests/hebeltrader` grün; keine Lösungsfelder im Scan-Input;
+Token nur als Cursor-Secret / `.env`, nie committen.

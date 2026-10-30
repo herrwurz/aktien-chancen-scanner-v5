@@ -385,7 +385,7 @@
    "sector": "pharmaceutical",
    "layer": "pharma",
    "structure": "oligopoly",
-   "ticker": "ROG.SW"
+   "ticker": "RO.SW"
   },
   {
    "name": "Merck & Co",
@@ -476,7 +476,7 @@
    "sector": "defense",
    "layer": "defense",
    "structure": "oligopoly",
-   "ticker": "RENK.XETRA"
+   "ticker": "R3NK.XETRA"
   },
   {
    "name": "Kongsberg Gruppen",
@@ -532,7 +532,7 @@
    "sector": "power infrastructure",
    "layer": "grid-equipment",
    "structure": "oligopoly",
-   "ticker": "PRY.MI"
+   "ticker": "AEU.XETRA"
   },
   {
    "name": "Nexans",
@@ -818,6 +818,11 @@
  "ticker_policy": {
   "version": 1,
   "as_of": "2026-10-30",
-  "rule": "Identifiers only for names already present; no solution-driven additions."
+  "rule": "Identifiers only for names already present; no solution-driven additions.",
+  "eodhd_notes": [
+    "US bare symbols resolve to .US at fetch.",
+    "Roche uses RO.SW (EODHD code); Renk uses R3NK.XETRA; Prysmian uses AEU.XETRA (Xetra dual listing) because MI/MIL returned 404 on the active plan.",
+    "Tokyo .TSE primary listings are unavailable on the active EODHD package (exchange-symbol-list/TSE 404); eight JP names keep primary .TSE codes and remain snapshot-gaps until a plan with Japan EOD is enabled."
+  ]
  }
 }
