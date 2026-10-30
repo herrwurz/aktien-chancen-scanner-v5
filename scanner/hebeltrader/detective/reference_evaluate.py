@@ -10,7 +10,13 @@ from .reference_cases import historical_summary, load_references
 
 
 def _company(value):
-    return re.sub(r"[^a-z0-9]", "", value.casefold()) if value else ""
+    value = value.casefold() if value else ""
+    value = re.sub(
+        r"\b(?:incorporated|inc|corporation|corp|limited|ltd|plc|ag|se|sa|nv|spa)\b",
+        " ",
+        value,
+    )
+    return re.sub(r"[^a-z0-9]", "", value)
 
 
 def evaluate(rankings, references):
@@ -18,8 +24,8 @@ def evaluate(rankings, references):
     reference = load_references(references)
     labels = {c["case_id"]: c for c in reference["cases"]}
     reports = frozen["report"]["cases"]
-    if len(reports) != 18 or {r["case_id"] for r in reports} != set(labels):
-        raise ValueError("A complete unique set of the 18 frozen reference cases is required")
+    if len(reports) != len(labels) or {r["case_id"] for r in reports} != set(labels):
+        raise ValueError("A complete unique set of frozen reference cases is required")
     results = []
     for report in reports:
         label = labels[report["case_id"]]
@@ -32,6 +38,14 @@ def evaluate(rankings, references):
                 ) or _company(identity.get("name")) == _company(label["actual_company"]):
                     rank = i
                     break
+        hypothesis_rank = None
+        if label["actual_company"]:
+            for i, candidate in enumerate(report.get("offline_hypotheses", []), 1):
+                if (
+                    label["actual_ticker"] and candidate.get("ticker") == label["actual_ticker"]
+                ) or _company(candidate.get("name")) == _company(label["actual_company"]):
+                    hypothesis_rank = i
+                    break
         results.append(
             {
                 "case_id": label["case_id"],
@@ -39,6 +53,9 @@ def evaluate(rankings, references):
                 "historical_outcome": label["outcome"],
                 "new_top3": report.get("candidates", [])[:3],
                 "correct_rank": rank,
+                "offline_hypothesis_rank": hypothesis_rank,
+                "offline_hypotheses": report.get("offline_hypotheses", []),
+                "offline_hypothesis_status": report.get("offline_hypothesis_status"),
                 "abstained": report["identification"]["status"] == "not_identified",
                 "countercandidate_count": report.get("countercandidate_count"),
                 "input_completeness": report.get("reference_input_completeness"),
@@ -51,12 +68,32 @@ def evaluate(rankings, references):
         "historical_conversation": historical_summary(reference),
         "regression": {
             "cases": len(results),
+            "graded_cases": sum(label["actual_company"] is not None for label in labels.values()),
             "abstentions": sum(c["abstained"] for c in results),
             "candidate_top1_hits": sum(c["correct_rank"] == 1 for c in results),
             "candidate_top3_hits": sum(c["correct_rank"] is not None for c in results),
             "top1_rate": None,
             "top3_rate": None,
             "rate_status": "known_development_cases_not_independent_benchmark",
+        },
+        "offline_hypothesis_coverage": {
+            "graded_cases": sum(label["actual_company"] is not None for label in labels.values()),
+            "suggestion_cases": sum(bool(r.get("offline_hypotheses")) for r in reports),
+            "solution_in_first_suggestion": sum(
+                result["offline_hypothesis_rank"] == 1 for result in results
+            ),
+            "solution_in_top3_suggestions": sum(
+                result["offline_hypothesis_rank"] is not None
+                and result["offline_hypothesis_rank"] <= 3
+                for result in results
+            ),
+            "solution_in_top8_suggestions": sum(
+                result["offline_hypothesis_rank"] is not None for result in results
+            ),
+            "interpretation": (
+                "Unverified local sector-universe suggestions only; not evidence-backed "
+                "identifications or an independent benchmark."
+            ),
         },
         "missing_full_text_count": sum(c["teaser_text"] is None for c in reference["cases"]),
         "independent_real_blind_tests": 0,
@@ -65,7 +102,8 @@ def evaluate(rankings, references):
             "Headline-only inputs are not complete original teasers.",
             "No exact publication times are present in this reconstruction.",
             "No identification quality proven without authentic dated candidate-source packets.",
-            "The 10/7/1 history is not the performance of this new scan.",
+            "The original 10/7/1 history is not the performance of this new scan.",
+            "New reference cases are development regressions, not independent blind tests.",
         ],
     }
 

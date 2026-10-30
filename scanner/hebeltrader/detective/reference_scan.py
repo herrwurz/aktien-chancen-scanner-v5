@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .history import freeze_analysis
 from .investigation import InvestigationRequest, Investigator
+from .structure_screen import screen
 
 _FIELDS = {"case_id", "headline", "teaser_text", "publication_date", "publication_at"}
 
@@ -50,6 +51,15 @@ def run_scan(inputs, root, source_packets=None):
         )
         report["reference_input_completeness"] = (
             "complete" if case["teaser_text"] else "headline_only"
+        )
+        report["offline_hypotheses"] = screen(
+            "\n".join(part for part in (case["headline"], case["teaser_text"]) if part),
+            limit=8,
+        )
+        report["offline_hypothesis_status"] = (
+            "unverified_sector_universe_suggestions"
+            if report["offline_hypotheses"]
+            else "no_local_sector_hypotheses"
         )
         report["source_packet_status"] = (
             "no_exact_cutoff" if not case["publication_at"] else "provided" if docs else "missing"

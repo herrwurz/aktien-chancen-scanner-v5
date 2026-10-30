@@ -106,7 +106,7 @@ def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_pa
     response = client.post("/api/hebeltrader/references/import", auth=("admin", "private-password"))
     assert response.status_code == 200
     data = response.json()
-    assert len(data["cases"]) == 18
+    assert len(data["cases"]) == 27
     assert data["summary"]["correct"] == 10
     assert data["summary"]["wrong"] == 7
     assert data["summary"]["unresolved"] == 1

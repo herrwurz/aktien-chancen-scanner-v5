@@ -13,17 +13,18 @@ ROOT = Path(__file__).parents[2]
 DATA = ROOT / "data/hebeltrader/teaser-cases.json"
 
 
-def test_eighteen_user_cases_preserve_wrong_guesses_and_unknown_williams():
+def test_original_eighteen_user_cases_preserve_wrong_guesses_and_unknown_williams():
     data = load_references(DATA)
-    assert len(data["cases"]) == 18
-    by = {c["reference_number"]: c for c in data["cases"]}
+    assert len(data["cases"]) == 27
+    by = {c["reference_number"]: c for c in data["cases"] if c["reference_number"] <= 18}
+    assert len(by) == 18
     assert by[3]["first_prediction"] == "UnitedHealth Group"
     assert by[8]["first_prediction"] == "Zebra Technologies"
     assert by[9]["first_prediction"] == "Oracle"
     assert by[13]["first_prediction"] == "Thales"
     assert by[2]["actual_company"] is None and by[2]["actual_ticker"] is None
     assert by[2]["outcome"] == "unresolved"
-    assert by[16]["publication_date"] is None
+    assert by[16]["publication_date"] == "2026-10-19"
     assert by[16]["resolution_date"] == "2026-10-19"
     assert by[18]["first_prediction_confidence"] == 95
     summary = historical_summary(data)
@@ -31,10 +32,21 @@ def test_eighteen_user_cases_preserve_wrong_guesses_and_unknown_williams():
     assert summary["independent_benchmark"] is False
 
 
+def test_extended_cases_do_not_change_original_historical_summary():
+    data = load_references(DATA)
+    summary = historical_summary(data)
+    assert summary["total"] == 18
+    assert summary["missing_full_teasers"] == ["HT-016"]
+    extended = {c["reference_number"]: c for c in data["cases"] if c["reference_number"] > 18}
+    assert extended[20]["outcome"] == "not_identified"
+    assert extended[21]["outcome"] == "not_tested"
+    assert extended[19]["outcome"] == "unresolved"
+
+
 def test_scan_export_has_no_solutions_or_original_guesses(tmp_path):
     export_inputs(DATA, tmp_path / "inputs.json")
     exported = json.loads((tmp_path / "inputs.json").read_text())
-    assert len(exported["cases"]) == 18
+    assert len(exported["cases"]) == 27
     allowed = {"case_id", "headline", "teaser_text", "publication_date", "publication_at"}
     assert all(set(case) == allowed for case in exported["cases"])
     original = next(c for c in exported["cases"] if c["case_id"] == "HT-001")
@@ -44,7 +56,7 @@ def test_scan_export_has_no_solutions_or_original_guesses(tmp_path):
         for value in ["Analog Devices", "Lattice", "Empower", "Alif", "MN84GA"]
     )
     assert original["publication_at"] is None
-    assert all(c["teaser_text"] is None for c in exported["cases"] if c["case_id"] != "HT-001")
+    assert sum(bool(c["teaser_text"]) for c in exported["cases"]) == 23
     with pytest.raises(FileExistsError):
         export_inputs(DATA, tmp_path / "inputs.json")
 
@@ -67,7 +79,7 @@ def test_markdown_and_current_inventory_follow_structured_reference():
     markdown = (ROOT / "docs/hebeltrader-identification-rules.md").read_text()
     assert markdown_table(data) in markdown
     inventory = inventory_history(ROOT / "docs/hebeltrader-identification-rules.md")
-    assert sum(c["original_text_available"] for c in inventory["cases"]) == 1
+    assert sum(c["original_text_available"] for c in inventory["cases"]) == 17
     adi = next(c for c in inventory["cases"] if c["case_id"] == "HT-001")
     assert adi["first_prediction"] == "Lattice Semiconductor"
     assert "Zukäufe" in adi["original_text"]

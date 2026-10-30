@@ -28,24 +28,40 @@ REQUIRED = {
 INPUT_FIELDS = ("case_id", "headline", "teaser_text", "publication_date", "publication_at")
 
 
+def _historical_cases(data):
+    return [case for case in data["cases"] if 1 <= case["reference_number"] <= 18]
+
+
 def load_references(path):
     data = json.loads(Path(path).read_text())
     cases = data.get("cases", [])
-    if len(cases) != 18 or len({c.get("case_id") for c in cases}) != 18:
-        raise ValueError("Expected 18 uniquely identified historical cases")
-    if {c.get("reference_number") for c in cases} != set(range(1, 19)):
-        raise ValueError("Reference numbering must be complete")
+    if not cases or len({c.get("case_id") for c in cases}) != len(cases):
+        raise ValueError("Expected uniquely identified reference cases")
+    numbers = [c.get("reference_number") for c in cases]
+    if any(not isinstance(number, int) or number < 1 for number in numbers):
+        raise ValueError("Reference numbers must be positive integers")
+    if len(set(numbers)) != len(numbers):
+        raise ValueError("Reference numbers must be unique")
+    historical_numbers = {number for number in numbers if number <= 18}
+    if historical_numbers != set(range(1, 19)):
+        raise ValueError("The original 18-case reference numbering must be complete")
     for case in cases:
         if not REQUIRED.issubset(case):
             raise ValueError("Reference missing required field")
-        if case["outcome"] not in {"correct", "wrong", "unresolved"}:
+        if case["outcome"] not in {
+            "correct",
+            "wrong",
+            "unresolved",
+            "not_tested",
+            "not_identified",
+        }:
             raise ValueError("Unknown historical outcome")
         if case["outcome"] == "unresolved" and any(
             case[k] is not None for k in ("actual_company", "actual_ticker", "derivative_wkn")
         ):
             raise ValueError("An unresolved case cannot have a claimed resolution")
-        if case["outcome"] != "unresolved" and not case["actual_company"]:
-            raise ValueError("Resolved case needs reported actual company")
+        if case["outcome"] in {"correct", "wrong"} and not case["actual_company"]:
+            raise ValueError("Scored case needs reported actual company")
         if case["publication_date"] is not None:
             date.fromisoformat(case["publication_date"])
         if case["text_completeness"] == "headline_only" and case["teaser_text"] is not None:
@@ -56,7 +72,7 @@ def load_references(path):
 
 
 def historical_summary(data):
-    cases = data["cases"]
+    cases = _historical_cases(data)
     counts = Counter(c["outcome"] for c in cases)
     return {
         "total": len(cases),
@@ -92,7 +108,10 @@ def export_inputs(source, destination):
     payload = {
         "schema_version": 1,
         "evaluation_class": "development_regression",
-        "cases": [{key: c.get(key) for key in INPUT_FIELDS} for c in data["cases"]],
+        "cases": [
+            {key: c.get(key) for key in INPUT_FIELDS}
+            for c in sorted(data["cases"], key=lambda row: row["reference_number"])
+        ],
     }
     with Path(destination).open("x", encoding="utf-8") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2)
@@ -100,6 +119,7 @@ def export_inputs(source, destination):
 
 
 def markdown_table(data):
+    cases = _historical_cases(data)
     lines = [
         (
             "| ID | Teaser / Kontext | Aktie / Ticker | Call-WKN | Status / Beleg | "
@@ -107,19 +127,23 @@ def markdown_table(data):
         ),
         "|---|---|---|---|---|---|",
     ]
-    for c in sorted(data["cases"], key=lambda row: row["case_id"]):
+    for c in sorted(cases, key=lambda row: row["case_id"]):
         context = f"„{c['headline']}“"
         if c["publication_issue"]:
             context += f"; HEBELTRADER {c['publication_issue']}"
         if c["publication_date"]:
             context += "; " + date.fromisoformat(c["publication_date"]).strftime("%d.%m.%Y")
-        company = c["actual_company"] or "Auflösung unbekannt; Verdacht: " + c["suspected_company"]
+        company = c["actual_company"] or (
+            "Auflösung unbekannt; Verdacht: " + (c["suspected_company"] or "unbekannt")
+        )
         if c["actual_ticker"]:
             company += f" ({c['actual_ticker']})"
         status = {
             "correct": "RICHTIG (Nutzerrekonstruktion)",
             "wrong": "FALSCH (Nutzerrekonstruktion)",
             "unresolved": "Ungelöst",
+            "not_tested": "Nicht getestet",
+            "not_identified": "Nicht identifiziert",
         }[c["outcome"]]
         notes = f"Ersttipp: {c['first_prediction']}. Nutzerfall {c['reference_number']:02d}. "
         if c["first_prediction_confidence"] is not None:
@@ -129,7 +153,7 @@ def markdown_table(data):
             " Volltext vorhanden." if c["teaser_text"] else " Vollständiger Originalteaser fehlt."
         )
         if c["resolution_date"]:
-            notes += f" Auflösung am {c['resolution_date']}; kein Publikationsdatum."
+            notes += f" Auflösung am {c['resolution_date']}."
         values = [c["case_id"], context, company, c["derivative_wkn"] or "unbekannt", status, notes]
         lines.append(
             "| " + " | ".join(v.replace("|", "\\|").replace("\n", " ") for v in values) + " |"
