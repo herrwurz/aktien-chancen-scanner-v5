@@ -8,7 +8,7 @@
       "name": "AbbVie",
       "title": "AbbVie SEC 10-Q 2026-05-08",
       "url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000017/abbv-20260331.htm",
-      "chars": 10824,
+      "chars": 10112,
       "filing_date": "2026-05-08",
       "mentions_skyrizi": true,
       "mentions_rinvoq": true
@@ -84,5 +84,5 @@
       "mentions_rinvoq": false
     }
   ],
-  "note": "Original teaser is headline-only and already names AbbVie; no second native anchor."
+  "note": "ABBV 10-Q keeps Skyrizi/Rinvoq revenue prose; peers are countercandidates."
 }

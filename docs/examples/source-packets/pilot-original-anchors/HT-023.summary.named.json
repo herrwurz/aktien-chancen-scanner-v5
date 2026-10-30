@@ -1,0 +1,140 @@
+{
+  "label": "named_products",
+  "ranking_sha256": "b70502302beff4c82cf7f8e77a923e9b181d1afc2cd88cffc6c0891455cf51e1",
+  "identification": {
+    "basis": "historical_source_packet",
+    "label": "Identifiziert (historisches Quellenpaket), manuell prüfen",
+    "packet_peer_count": 6,
+    "requires_manual_review": true,
+    "score_is_probability": false,
+    "status": "identified"
+  },
+  "decision": {
+    "label": "Wahrscheinlich identifiziert",
+    "status": "likely_identified"
+  },
+  "packet_evidence": {
+    "blocks_full_identification": [
+      "fewer_than_five_countercandidates",
+      "active_falsification_not_performed"
+    ],
+    "confirmed_specific_clues": 3,
+    "evidence_score": 156,
+    "label": "Ticker-Hypothese aus Primärevidenz",
+    "name": "AbbVie",
+    "next_step": "manual_review",
+    "score_margin": 156,
+    "status": "ticker_hypothesis_ready",
+    "ticker": "ABBV"
+  },
+  "source_packet_status": "provided",
+  "candidates": [
+    {
+      "name": "AbbVie",
+      "ticker": "ABBV",
+      "evidence_score": 156,
+      "confirmed_specific_clues": 3,
+      "confirmed_fact_quotes": [
+        "AbbVie",
+        "Skyrizi",
+        "Rinvoq"
+      ]
+    },
+    {
+      "name": "Johnson & Johnson",
+      "ticker": "JNJ",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Amgen",
+      "ticker": "AMGN",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    }
+  ],
+  "checked_candidates": [
+    {
+      "name": "AbbVie",
+      "ticker": "ABBV",
+      "evidence_score": 156,
+      "confirmed_specific_clues": 3,
+      "confirmed_fact_quotes": [
+        "AbbVie",
+        "Skyrizi",
+        "Rinvoq"
+      ]
+    },
+    {
+      "name": "Johnson & Johnson",
+      "ticker": "JNJ",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Amgen",
+      "ticker": "AMGN",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Pfizer",
+      "ticker": "PFE",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Bristol-Myers Squibb",
+      "ticker": "BMY",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Eli Lilly",
+      "ticker": "LLY",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    },
+    {
+      "name": "Merck",
+      "ticker": "MRK",
+      "evidence_score": 0,
+      "confirmed_specific_clues": 0,
+      "confirmed_fact_quotes": []
+    }
+  ],
+  "checked_count": 7,
+  "market_top3": [
+    {
+      "name": "ASML Holding",
+      "ticker": "ASML",
+      "score": 17
+    },
+    {
+      "name": "AbbVie",
+      "ticker": "ABBV",
+      "score": 17
+    },
+    {
+      "name": "Applied Materials",
+      "ticker": "AMAT",
+      "score": 17
+    }
+  ],
+  "limitations": [
+    "fewer_than_five_countercandidates",
+    "active_falsification_not_performed"
+  ],
+  "criteria": [
+    "issuer_literal|abbvie",
+    "product_literal|skyrizi",
+    "product_literal|rinvoq"
+  ]
+}
