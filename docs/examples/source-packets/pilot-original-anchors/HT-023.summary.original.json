@@ -1,6 +1,6 @@
 {
   "label": "original_headline_issuer_literal",
-  "ranking_sha256": "887e45780f34fc81530dcdde6946695af5b81081e41b99bb0188ac1e7e6657f6",
+  "ranking_sha256": "367d319d6bce2983aafea0093403f89270138ebe61fd7f36d39233667c1dbba4",
   "identification": {
     "label": "Nicht identifiziert",
     "requires_manual_review": true,
@@ -10,6 +10,20 @@
   "decision": {
     "label": "Plausible Hypothese",
     "status": "plausible_hypothesis"
+  },
+  "packet_evidence": {
+    "blocks_full_identification": [
+      "fewer_than_five_countercandidates",
+      "active_falsification_not_performed"
+    ],
+    "confirmed_specific_clues": 1,
+    "evidence_score": 54,
+    "label": "Teil-Evidenz — zweiter Kernhinweis oder Vorsprung fehlt",
+    "name": "AbbVie",
+    "next_step": "second_specific_anchor_or_stronger_margin",
+    "score_margin": 54,
+    "status": "partial_evidence",
+    "ticker": "ABBV"
   },
   "source_packet_status": "provided",
   "candidates": [
@@ -115,13 +129,5 @@
   ],
   "criteria": [
     "issuer_literal|abbvie"
-  ],
-  "source_timing": {
-    "eligibility": [
-      "eligible"
-    ],
-    "availability_basis": [
-      "sec_edgar_filing_date_binding"
-    ]
-  }
+  ]
 }

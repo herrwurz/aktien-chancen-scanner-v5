@@ -1,6 +1,6 @@
 {
   "label": "original",
-  "ranking_sha256": "44307b1ac1e35f39360322eb14c3bc2c8a221accec824ea4dbd7ce0349398df3",
+  "ranking_sha256": "3c47aca227553d79da45b676d58552b7aa261042b529fd460687b7d40ffb32c2",
   "identification": {
     "label": "Nicht identifiziert",
     "requires_manual_review": true,
@@ -10,6 +10,20 @@
   "decision": {
     "label": "Keine eindeutige Rangfolge",
     "status": "ambiguous_tie"
+  },
+  "packet_evidence": {
+    "blocks_full_identification": [
+      "fewer_than_five_countercandidates",
+      "active_falsification_not_performed"
+    ],
+    "confirmed_specific_clues": 0,
+    "evidence_score": 0,
+    "label": "Keine bestätigten Kernhinweise",
+    "name": null,
+    "next_step": "named_anchors_in_teaser_plus_dated_packet",
+    "score_margin": 0,
+    "status": "insufficient_evidence",
+    "ticker": null
   },
   "source_packet_status": "provided",
   "candidates": [
@@ -107,13 +121,5 @@
     "Künstliche Intelligenz",
     "40",
     "2000"
-  ],
-  "source_timing": {
-    "eligibility": [
-      "eligible"
-    ],
-    "availability_basis": [
-      "sec_edgar_filing_date_binding"
-    ]
-  }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "label": "named",
-  "ranking_sha256": "086e9a0fe96a424599cd31c731454f19353445a7a0b8d79e054815c3bd82c97c",
+  "ranking_sha256": "49afda8b15eb8c56e966fde7ca19fb85814b81daaa411790ec42891445c73f1d",
   "identification": {
     "label": "Nicht identifiziert",
     "requires_manual_review": true,
@@ -10,6 +10,20 @@
   "decision": {
     "label": "Plausible Hypothese",
     "status": "plausible_hypothesis"
+  },
+  "packet_evidence": {
+    "blocks_full_identification": [
+      "fewer_than_five_countercandidates",
+      "active_falsification_not_performed"
+    ],
+    "confirmed_specific_clues": 2,
+    "evidence_score": 105,
+    "label": "Ticker-Hypothese aus Primärevidenz",
+    "name": "Thermo Fisher Scientific",
+    "next_step": "live_falsification",
+    "score_margin": 105,
+    "status": "ticker_hypothesis_ready",
+    "ticker": "TMO"
   },
   "source_packet_status": "provided",
   "candidates": [
@@ -114,13 +128,5 @@
     "acquisition_or_stake",
     "acquisition|clario",
     "acquisition|solventum"
-  ],
-  "source_timing": {
-    "eligibility": [
-      "eligible"
-    ],
-    "availability_basis": [
-      "sec_edgar_filing_date_binding"
-    ]
-  }
+  ]
 }

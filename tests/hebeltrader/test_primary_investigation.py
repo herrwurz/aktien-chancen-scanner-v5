@@ -365,6 +365,8 @@ def test_teaser_issuer_literal_binds_only_matching_candidate(tmp_path):
     )
     assert report["candidates"][0]["identity"]["ticker"] == "ABBV"
     assert report["decision"]["status"] == "plausible_hypothesis"
+    assert report["packet_evidence"]["status"] == "partial_evidence"
+    assert report["packet_evidence"]["ticker"] == "ABBV"
     # Peers must not inherit the issuer-literal confirmation.
     assert all(
         not c["confirmed_specific_clues"]
@@ -402,6 +404,10 @@ def test_sec_issuer_anaphora_confirms_second_named_acquisition(tmp_path):
     assert quotes >= {"Clario", "Solventum"}
     assert len(leader["confirmed_specific_clues"]) >= 2
     # Offline packet scans stay not_identified (falsification/live gate), but the
-    # two named primary clues already yield a ranked plausible hypothesis.
+    # two named primary clues already yield a ranked plausible hypothesis and a
+    # ticker hypothesis from packet evidence.
     assert report["decision"]["status"] == "plausible_hypothesis"
     assert report["identification"]["status"] == "not_identified"
+    assert report["packet_evidence"]["status"] == "ticker_hypothesis_ready"
+    assert report["packet_evidence"]["ticker"] == "TMO"
+    assert report["packet_evidence"]["next_step"] == "live_falsification"
