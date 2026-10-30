@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-sec-packet-batch-result-v1",
+  "manifest": "docs/examples/source-packets/batch-us-rest/manifest.json",
+  "out_dir": "docs/examples/source-packets/batch-us-rest/packets",
+  "built": 6,
+  "reused": 1,
+  "errors": [],
+  "results": [
+    {
+      "case_id": "HT-008",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-008.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-017",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-017.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-018",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-018.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-019",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-019.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-020",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-020.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-022",
+      "status": "built",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-022.json",
+      "documents": 7
+    },
+    {
+      "case_id": "HT-027",
+      "status": "reused",
+      "path": "docs/examples/source-packets/batch-us-rest/packets/HT-027.json",
+      "reused_from": "docs/examples/source-packets/pilot-named/HT-027.json",
+      "documents": 7
+    }
+  ]
+}

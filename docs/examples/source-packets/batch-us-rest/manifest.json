@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-sec-packet-batch-v1",
+  "note": "Remaining US SEC cases from the 27er (after batch-10). Named enrichments are developmental diagnosis. Call-PDFs remain resolution-only. Same quality gates: ≥2 clues, margin≥35, ≥5 peers, no peer hard-clue leakage.",
+  "cases": [
+    {
+      "case_id": "HT-008",
+      "cutoff": "2026-08-14T08:15:00+01:00",
+      "lead": "KKR:0001404912:KKR & Co.:extra8k",
+      "peers": [
+        "BX:0001393818:Blackstone",
+        "APO:0001858681:Apollo Global Management",
+        "CG:0001527166:Carlyle Group",
+        "ARES:0001176948:Ares Management",
+        "BAM:0001937926:Brookfield Asset Management"
+      ],
+      "needles": [
+        "Arctos"
+      ],
+      "named_products": [],
+      "named_acquisitions": [
+        "Arctos"
+      ],
+      "issuer_display": "KKR"
+    },
+    {
+      "case_id": "HT-017",
+      "cutoff": "2026-10-19T08:15:00+01:00",
+      "lead": "JPM:0000019617:JPMorgan Chase:extra8k",
+      "peers": [
+        "BAC:0000070858:Bank of America",
+        "WFC:0000072971:Wells Fargo",
+        "C:0000831001:Citigroup",
+        "GS:0000886982:Goldman Sachs",
+        "MS:0000895421:Morgan Stanley"
+      ],
+      "needles": [
+        "First Republic Bank"
+      ],
+      "named_products": [],
+      "named_acquisitions": [
+        "First Republic Bank"
+      ],
+      "issuer_display": "JPMorgan Chase"
+    },
+    {
+      "case_id": "HT-018",
+      "cutoff": "2026-10-21T08:15:00+01:00",
+      "lead": "JNJ:0000200406:Johnson & Johnson:extra8k",
+      "peers": [
+        "PFE:0000078003:Pfizer",
+        "ABBV:0001551152:AbbVie",
+        "MRK:0000310158:Merck",
+        "LLY:0000059478:Eli Lilly",
+        "BMY:0000014272:Bristol-Myers Squibb"
+      ],
+      "needles": [
+        "STELARA",
+        "Darzalex",
+        "Tremfya"
+      ],
+      "named_products": [
+        "Stelara",
+        "Darzalex"
+      ],
+      "named_acquisitions": [],
+      "issuer_display": "Johnson & Johnson"
+    },
+    {
+      "case_id": "HT-019",
+      "cutoff": "2026-10-26T08:15:00+01:00",
+      "lead": "SLB:0000087347:SLB:extra8k",
+      "peers": [
+        "HAL:0000045012:Halliburton",
+        "BKR:0001701605:Baker Hughes",
+        "NOV:0001021860:NOV",
+        "FTI:0001681459:TechnipFMC",
+        "WFRD:0001603923:Weatherford"
+      ],
+      "needles": [
+        "ChampionX"
+      ],
+      "named_products": [],
+      "named_acquisitions": [
+        "ChampionX"
+      ],
+      "issuer_display": "SLB"
+    },
+    {
+      "case_id": "HT-020",
+      "cutoff": "2026-10-29T08:15:00+01:00",
+      "lead": "SNPS:0000883241:Synopsys:extra8k",
+      "peers": [
+        "CDNS:0000813672:Cadence Design Systems",
+        "KLAC:0000319201:KLA",
+        "INTC:0000050863:Intel",
+        "AVGO:0001730168:Broadcom",
+        "AMD:0000002488:Advanced Micro Devices"
+      ],
+      "needles": [
+        "Ansys"
+      ],
+      "named_products": [],
+      "named_acquisitions": [
+        "Ansys"
+      ],
+      "issuer_display": "Synopsys"
+    },
+    {
+      "case_id": "HT-022",
+      "cutoff": "2026-09-10T08:15:00+01:00",
+      "lead": "CEG:0001868275:Constellation Energy:extra8k",
+      "peers": [
+        "VST:0001692819:Vistra",
+        "NRG:0001013871:NRG Energy",
+        "EXC:0001109357:Exelon",
+        "D:0000715957:Dominion Energy",
+        "DUK:0001326160:Duke Energy"
+      ],
+      "needles": [
+        "Calpine"
+      ],
+      "named_products": [],
+      "named_acquisitions": [
+        "Calpine"
+      ],
+      "issuer_display": "Constellation Energy"
+    },
+    {
+      "case_id": "HT-027",
+      "cutoff": "2026-07-07T08:15:00+01:00",
+      "lead": "TMO:0000097745:Thermo Fisher Scientific:extra8k",
+      "peers": [
+        "DHR:0000313616:Danaher",
+        "A:0001090872:Agilent Technologies",
+        "IQV:0001478242:IQVIA",
+        "WAT:0001000697:Waters",
+        "MTD:0001037646:Mettler-Toledo"
+      ],
+      "needles": [
+        "Clario",
+        "Solventum"
+      ],
+      "reuse_packet": "docs/examples/source-packets/pilot-named/HT-027.json",
+      "named_products": [],
+      "named_acquisitions": [
+        "Clario",
+        "Solventum"
+      ],
+      "issuer_display": "Thermo Fisher Scientific"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-020",
+  "cutoff_publication_at": "2026-10-29T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "SNPS",
+      "name": "Synopsys",
+      "form": "10-Q",
+      "filing_date": "2026-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/883241/000088324126000025/snps-20260731.htm",
+      "chars": 8014,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/SNPS-2026-08-26-18c1543b.htm"
+    },
+    {
+      "ticker": "SNPS",
+      "name": "Synopsys",
+      "form": "8-K",
+      "filing_date": "2026-10-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/883241/000119312526413359/d830308d8k.htm",
+      "chars": 3026,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/SNPS-2026-10-05-733fc495.htm"
+    },
+    {
+      "ticker": "CDNS",
+      "name": "Cadence Design Systems",
+      "form": "10-Q",
+      "filing_date": "2026-10-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/813672/000081367226000121/cdns-20260930.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/CDNS-2026-10-28-69390822.htm"
+    },
+    {
+      "ticker": "KLAC",
+      "name": "KLA",
+      "form": "10-Q",
+      "filing_date": "2026-04-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/319201/000031920126000016/klac-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/KLAC-2026-04-30-fe32f7e1.htm"
+    },
+    {
+      "ticker": "INTC",
+      "name": "Intel",
+      "form": "10-Q",
+      "filing_date": "2026-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/50863/000005086326000157/intc-20260627.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/INTC-2026-07-24-3695f48c.htm"
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "form": "10-Q",
+      "filing_date": "2026-09-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000173016826000080/avgo-20260802.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/AVGO-2026-09-10-ef13046d.htm"
+    },
+    {
+      "ticker": "AMD",
+      "name": "Advanced Micro Devices",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000123/amd-20260627.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-020/AMD-2026-08-05-8444d5d0.htm"
+    }
+  ],
+  "needles": [
+    "Ansys"
+  ]
+}

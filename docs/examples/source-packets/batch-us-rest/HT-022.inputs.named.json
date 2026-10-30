@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-022 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-022",
+      "headline": "Constellation Energy: Der Strom-Champion der KI-Revolution!",
+      "teaser_text": "Constellation Energy: Der Strom-Champion der KI-Revolution!\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Constellation Energy — Mit der Übernahme von Calpine.",
+      "publication_date": "2026-09-10",
+      "publication_at": "2026-09-10T08:15:00+01:00"
+    }
+  ]
+}

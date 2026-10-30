@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-017 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-017",
+      "headline": "Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!",
+      "teaser_text": "Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!\nStille im Handelsraum. Dann ein Signal, das alles verändert. Während die Märkte zögern, zieht ein Finanzschwergewicht still und leise davon: Gewinne im Aufwind, Erträge im Sprung, Ertragskraft auf Rekordniveau. Die Kursrücksetzer? Für Eingeweihte ein Geschenk. Unsere Experten haben den Schachzug durchkalkuliert: ein Call-Optionsschein mit Hebel, klarer Stoppplan und eine Strategie, die Gewinne sichert. Das erste Ziel bringt ein Plus von 426 Prozent. Und der eigentliche Showdown? Bis zu plus 1.705 Prozent am zweiten Kursziel.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern JPMorgan Chase — Mit der Übernahme von First Republic Bank.",
+      "publication_date": "2026-10-19",
+      "publication_at": "2026-10-19T08:15:00+01:00"
+    }
+  ]
+}

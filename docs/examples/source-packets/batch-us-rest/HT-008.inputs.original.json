@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-008 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-008",
+      "headline": "KI, Infrastruktur, Milliarden – diese Aktie hat den perfekten Mix!",
+      "teaser_text": "KI, Infrastruktur, Milliarden – diese Aktie hat den perfekten Mix!\nDiese Aktie könnte jetzt zu den explosivsten Comeback-Chancen im Markt zählen: Nach einer brutalen Korrektur mehren sich die Signale für eine kraftvolle Trendwende – und fundamental zieht das Wachstum spürbar an. Milliarden an frischem Kapital, stark steigende Erträge, gewaltige Reserven für neue Deals und zusätzliche Fantasie durch den Boom rund um KI-Infrastruktur machen das Setup brandgefährlich. Besonders spektakulär: Das empfohlene Derivat eröffnet im Idealfall ein Renditepotenzial von bis zu 1.737 Prozent.",
+      "publication_date": "2026-08-14",
+      "publication_at": "2026-08-14T08:15:00+01:00"
+    }
+  ]
+}

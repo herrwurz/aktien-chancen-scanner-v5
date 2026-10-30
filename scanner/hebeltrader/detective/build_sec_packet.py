@@ -44,6 +44,22 @@ def _best_needle_span(text: str, needle: str) -> tuple[int, int] | None:
     for match in pattern.finditer(text):
         ctx = text[max(0, match.start() - 160) : match.end() + 220]
         score = len(_REVENUE_HINT.findall(ctx))
+        # Prefer acquisition/merger narrative over bare XBRL label hits.
+        if re.search(
+            r"\b(?:acquisition of|acquired|completed|merger)\b",
+            ctx,
+            re.I,
+        ):
+            score += 3
+        if re.search(r"\b(?:the company|the registrant|\bwe\b|our)\b", ctx, re.I):
+            score += 2
+        # Strong ownership: "which we acquired" / "KKR completed the … acquisition".
+        if re.search(
+            r"\bwe\s+acquired\b|\bcompleted\s+the\b.{0,40}\bacquisition\b",
+            ctx,
+            re.I,
+        ):
+            score += 6
         # Glossary/definition lines are weak ownership anchors.
         if re.search(r"\b(?:includes?|means?|refers to|formerly|abbreviation)\b", ctx, re.I):
             score -= 2
@@ -85,7 +101,9 @@ def list_filings(cik: str, *, cutoff_date: str, since: str = "2025-01-01"):
         if form not in {"10-Q", "10-K", "8-K"}:
             continue
         filed = recent["filingDate"][index]
-        if filed > cutoff_date or filed < since:
+        # Exclude same calendar day as the teaser: EDGAR timestamps are often
+        # afternoon UTC while teasers publish in the morning local time.
+        if filed >= cutoff_date or filed < since:
             continue
         accession = recent["accessionNumber"][index]
         acc = accession.replace("-", "")

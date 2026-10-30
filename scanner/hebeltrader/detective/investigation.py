@@ -221,10 +221,11 @@ def _entities(text):
     ):
         if _relation(text, match.start(1)) != "unknown_relation" or " " in match.group(1):
             found.append(match.group(1))
-    # Issuer names after an explicit issuer cue (Title Case, not only CamelCase).
+    # Issuer names after an explicit issuer cue (Title Case; allow "Johnson & Johnson").
     for match in re.finditer(
         r"\b(?:Emittent|Konzern|Unternehmen|Firma|Issuer|Company)\b"
-        r"[:\s]+([A-Z][A-Za-z0-9&-]{2,}(?:\s+[A-Z][A-Za-z0-9&-]{2,}){0,2})",
+        r"[:\s]+([A-Z][A-Za-z0-9&-]{2,}"
+        r"(?:\s+(?:&|and|[A-Z][A-Za-z0-9&-]{2,})){0,4})",
         text,
     ):
         found.append(match.group(1).strip(" ,"))
@@ -535,16 +536,18 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
             contradicted = False
             for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
                 # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
-                context = text[max(0, match.start() - 400) : match.end() + 120]
+                # Merger write-ups also need a wider window for issuer self-reference.
+                window = 1200 if relation == "acquisition" else 400
+                context = text[max(0, match.start() - window) : match.end() + 120]
                 subject = _fact_claim_subject(company, context, pattern, term)
-                # Also accept SEC headlines: "Acquisition of Target" / "Target Acquisition"
-                # when the filing already carries this issuer's company_name.
+                # SEC headlines ("Acquisition of Target" / "Target Acquisition|Merger")
+                # still need issuer self-reference (blocks "Other Corp acquired X").
                 sec_headline = bool(
                     relation == "acquisition"
                     and company
                     and re.search(
-                        rf"(?:acquisition of|acquired)\s+{re.escape(term)}"
-                        rf"|{re.escape(term)}\s+Acquisition",
+                        rf"(?:\bacquisition of\b|\bacquired\b)\s+{re.escape(term)}"
+                        rf"|{re.escape(term)}\s+(?:Acquisitions?|Merger)",
                         context,
                         re.I,
                     )

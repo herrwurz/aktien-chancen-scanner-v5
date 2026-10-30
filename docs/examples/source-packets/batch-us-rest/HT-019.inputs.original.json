@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-019 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-019",
+      "headline": "Achtung, Kursexplosion voraus – KI-Boom trifft Ölgeschäft!",
+      "teaser_text": "Achtung, Kursexplosion voraus – KI-Boom trifft Ölgeschäft!\nEin Konzern, der sich seit Jahrzehnten im Hintergrund der Förderung bewegt, hat sich neu erfunden und sitzt jetzt im Rechenzentrum. Die Spuren führen zu KI-Kühltechnik, zu einer Digitalsparte mit wiederkehrenden Milliardenerlösen und zu einem Quartalsbericht, der selbst Skeptiker verstummen ließ. Die Charttechnik zeigt ein eindeutiges Muster: Nach der Korrektur hat die Aktie die 200-Tage-Linie erneut verteidigt. Wer hier den Hebel ansetzt, hat ein Motiv: Der Call-Optionsschein könnte bei Erreichen des ersten Kursziels um bis zu 421 Prozent zulegen, bei einer Fortsetzung der Rally sogar um 1.464 Prozent.",
+      "publication_date": "2026-10-26",
+      "publication_at": "2026-10-26T08:15:00+01:00"
+    }
+  ]
+}

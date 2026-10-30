@@ -56,6 +56,12 @@ Ergebnis (Freeze `evidence-batch-pilots-2026-10-30.json`):
 Freeze `batch-10/evidence-batch-10.json`: **10/10 named identified**
 (ADI, CRM, MU, UNH, VRT, PFE, AVGO, DHR, ABBV, CARR); Original weiter 0/10.
 
+## US-Rest-Batch
+
+`batch-us-rest/`: **7/7 named identified** (KKR, JPM, JNJ, SLB, SNPS, CEG, TMO).
+Zusammen mit batch-10: **17/17** US-SEC named. Same-day EDGAR filings excluded
+(PIT). Gates unverändert.
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
