@@ -1,12 +1,15 @@
-# 18 HEBELTRADER-Referenzfälle – Stand 28.10.2026
+# HEBELTRADER-Referenzfälle – Stand 30.10.2026
 
 ## Datenbestand und Herkunft
 
 Die kanonische Sammlung liegt in [teaser-cases.json](../data/hebeltrader/teaser-cases.json).
-Alle 18 vom Nutzer rekonstruierten Fälle sind enthalten. Bestehende HT-IDs bleiben stabil;
-`reference_number` bezeichnet die Nummer im neuen Nutzerauftrag. Fehlende Angaben bleiben
-`null`. Die [zentrale Wissensbasis](hebeltrader-identification-rules.md) enthält dieselben
-Tabellenwerte. Ihr früherer Tabellenstand bleibt im [Archiv](archive/hebeltrader-register-before-reference-refresh-2026-10-28.md).
+Der Datensatz enthält 27 Fälle: die ursprünglichen 18 Nutzerrekonstruktionen und neun
+Erweiterungen. Bestehende HT-IDs bleiben stabil; `reference_number` bezeichnet die Nummer
+im Nutzerauftrag. Nur Fälle 1–18 bilden die historische 10/7/1-Bilanz. Erweiterte Fälle
+haben getrennte Statuswerte wie `not_tested` und `not_identified`. Fehlende Angaben bleiben
+`null`. Die [zentrale Wissensbasis](hebeltrader-identification-rules.md) enthält das
+historische 18-Fälle-Register. Ihr früherer Tabellenstand bleibt im
+[Archiv](archive/hebeltrader-register-before-reference-refresh-2026-10-28.md).
 
 Die Auflösungen sind überwiegend Nutzerangaben aus Gesprächsrekonstruktionen, keine neu
 unabhängig geprüften Emittentenbelege. Call-WKNs sind Produktkennungen, keine Aktienkennungen.
@@ -64,18 +67,33 @@ Eingabe. Ohne belegten exakten Veröffentlichungszeitpunkt wird kein historische
 erraten und kein Paket als damalige Evidenz verwendet. Die aktuelle Sammlung enthält
 keine solchen Zeitpunkte; ein Datum allein wird nicht zu einer Uhrzeit umgedeutet.
 
+Zusätzlich erzeugt der Offline-Lauf aus dem anonymen Teasertext höchstens acht
+`offline_hypotheses` aus dem lokalen Sektor-/Unternehmensuniversum. Diese sind unbestätigte
+Suchvorschläge, keine belegten Scanner-Kandidaten; sie bleiben getrennt von `candidates`
+und ändern den Identifikationsstatus nicht. Erst das eingefrorene Ranking wird mit den
+Lösungen verglichen. Die Auswertung weist die Treffer dieser Vorschlagsliste separat aus
+und kennzeichnet sie als Entwicklungsdiagnostik, nicht als unabhängigen Benchmark.
+
 ## Tatsächliche Prüfung
 
-- Vollständige lokale Testsuite: **761 bestanden, 8 PostgreSQL-Tests übersprungen**;
-  eine bestehende Starlette/AnyIO-Deprecation-Warnung. Ruff erfolgreich.
-- Isolierter Docker-Lauf mit allen 18 bereinigten Eingaben erfolgreich.
-- Ergebnis: **18 ungelöst, 0 belegte Identifikationen**. Keine historischen Quellenpakete
-  verfügbar; dies prüft Datenfluss, Einfrieren, Trennung und ehrliches Enthalten.
-- [Eingefrorenes Ranking](hebeltrader-reference-rankings.json) und
-  [maschinenlesbare Auswertung](hebeltrader-reference-evaluation.json) sind archiviert.
-- Ranking-SHA-256: `1dcc3c5bb7ab1b240332090db39c1ad20042fa3632e3f776cc86af4f21eb7c9d`.
-- **0 neue unabhängig ausgewertete Blindtests** in diesem Auftrag. Der frühere manuelle
-  SLB-Fall ist separat dokumentiert und wird diesen 18 Fällen nicht zugerechnet.
+Der archivierte 18-Fälle-Lauf ist ein früherer quellenloser Regressionstest; sein
+[eingefrorenes Ranking](hebeltrader-reference-rankings.json), seine
+[Auswertung](hebeltrader-reference-evaluation.json) und der dort dokumentierte Hash
+gehören zu genau diesem alten Lauf.
+
+Der aktuelle lokale Hypothesen-Baseline-Lauf verarbeitet alle 27 Fälle, ohne Referenz-
+oder Lösungsdaten im Scanprozess zu lesen. Für die 25 Fälle mit bekannter Lösung enthält
+die unbelegte Vorschlagsliste den Zielnamen in **6 Fällen** (2 auf Vorschlag 1, 4 in den
+ersten 3, 6 in den ersten 8); 17 Fälle erzeugen überhaupt Vorschläge. Der evidenzbasierte
+Scanner identifiziert weiterhin **0 Fälle**, da keine historischen Quellenpakete oder
+exakten Veröffentlichungszeitpunkte vorliegen. Diese Zahlen sind Entwicklungsdiagnostik,
+keine Scanner-Trefferquote und kein unabhängiger Benchmark.
+
+Der Lauf ist reproduzierbar archiviert: [eingefrorene Vorschläge](hebeltrader-reference-proposals-2026-10-30-rankings.json),
+[separate Auswertung](hebeltrader-reference-proposals-2026-10-30-evaluation.json);
+Ranking-SHA-256: `2ca665081c7adff5cab72a6ee4e276cb139043092dbefc9f4d6395a8d77d593c`.
+
+**0 unabhängige Blindtests.** Der frühere manuelle SLB-Fall bleibt separat dokumentiert.
 
 Das ist eine überprüfte Entwicklungsreferenz, keine fachliche Abnahme eines zuverlässig
 identifizierenden autonomen Detektivs. Fünf echte Gegenkandidaten wurden in diesem
@@ -83,15 +101,13 @@ quellenlosen Referenzlauf nicht recherchiert; es werden keine erfundenen Kandida
 
 ## Fehlende Originale und nächster Schritt
 
-Vollständiger Originaltext liegt nur für **HT-001 / Fall 18 (ADI)** vor. Für die folgenden
-17 Fälle fehlt er: Costco, Williams, Zurich, Salesforce, Micron, UnitedHealth, Vertiv,
-Danaher, SAP, KKR, Pfizer, Broadcom, Leonardo, Thales, BASF, JPMorgan und Johnson & Johnson.
-
-Das Veröffentlichungsdatum fehlt bei Williams, SAP, Pfizer, BASF, JPMorgan und J&J.
-Die Auflösungsdaten von JPMorgan und J&J werden nicht als Teaserdaten ausgegeben.
-Alle 18 exakten Veröffentlichungszeitpunkte und alle ursprünglichen vollständigen
-Top-3-Rangfolgen fehlen. Die beiden zusätzlichen damaligen JPMorgan-Gegenkandidaten
-bleiben ohne erfundene Reihenfolge gespeichert. Das Thales-Datum ist ausdrücklich ungeprüft.
+Vollständiger Originaltext liegt für **23 von 27 Fällen** vor. Er fehlt bei HT-016
+(Williams, ungelöst), HT-022 (Constellation Energy), HT-023 (AbbVie) und HT-025 (Adidas).
+Das Veröffentlichungsdatum fehlt bei HT-016. Die Auflösungsdaten von JPMorgan und J&J
+werden nicht als Teaserdaten ausgegeben. Alle 27 exakten Veröffentlichungszeitpunkte und
+alle ursprünglichen vollständigen Top-3-Rangfolgen fehlen. Die beiden zusätzlichen
+damaligen JPMorgan-Gegenkandidaten bleiben ohne erfundene Reihenfolge gespeichert.
+Das Thales-Datum ist ausdrücklich ungeprüft.
 
 Für belastbare historische Identifikationsprüfungen werden rechtmäßig bereitgestellte
 Originalteaser sowie zeitlich belegte Unternehmensquellen benötigt. Danach einen zuvor

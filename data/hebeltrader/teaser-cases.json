@@ -15,11 +15,484 @@
   },
   "cases": [
     {
+      "case_id": "HT-027",
+      "reference_number": 27,
+      "headline": "Hier lauert die nächste Chance auf spektakuläre Gewinne!",
+      "publisher_headline": "Thermo Fisher: Dieser Qualitäts-Riese steht vor der nächsten Wachstumswelle!",
+      "teaser_text": "Hier lauert die nächste Chance auf spektakuläre Gewinne!\nKaum ein Unternehmen profitiert derzeit so stark von den Megatrends Künstliche Intelligenz, Biotechnologie und Präzisionsmedizin. Der Weltmarktführer seiner Branche überzeugt mit einer dominanten Marktstellung, zweistelligen Gewinnperspektiven und einer Bewertung, die nach der jüngsten Konsolidierung wieder attraktiv erscheint. Analysten erwarten für 2026 einen Gewinnsprung von mehr als 40 Prozent, während die charttechnische Ausgangslage ebenfalls immer bullisher wird. Das von uns ausgewählte Hebelprodukt setzt noch einen drauf: Im Idealfall winkt eine Performance von über 2.000 Prozent!",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-07-07",
+      "publication_issue": "119/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "Thermo Fisher Scientific",
+      "actual_ticker": "TMO",
+      "derivative_wkn": "SY7B4G",
+      "outcome": "not_tested",
+      "source_status": "user_supplied_teaser_and_publisher_pdf",
+      "key_clues": [
+        "Leading global provider of laboratory equipment, analytics, diagnostics and research services",
+        "Exposure to AI-enabled research, automated laboratories and biopharma investment",
+        "Clario acquisition expands clinical-trial services",
+        "Recovery above the 200-day average after a multi-year consolidation"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "The supplied teaser headline differs from the publisher headline; both are kept separately. No scanner result is recorded.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 119/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-119_Thermo.pdf",
+          "sha256": "ece24412340b0f353750f6271765036c683775fd8d9baeb9ada7dcde527ce8ce",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Thermo Fisher as underlying and call WKN SY7B4G; page 2 states 514% target-1 and 2,096% target-2 potential, 62% stop risk and CRV 21.1."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies Thermo Fisher as the underlying and SY7B4G as the call.",
+        "At the stated entry price, the PDF lists 514% potential at target 1 and 2,096% at target 2."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 2096,
+      "advertised_return_targets_percent": [514, 2096],
+      "advertised_loss_risk_percent": 62,
+      "risk_reward_ratio": 21.1
+    },
+    {
+      "case_id": "HT-026",
+      "reference_number": 26,
+      "headline": "Die nächste KI-Gewinnerstory nimmt gerade Fahrt auf!",
+      "publisher_headline": "Carrier Global sitzt beim KI-Kühlungs-Boom in der ersten Reihe!",
+      "teaser_text": "Die nächste KI-Gewinnerstory nimmt gerade Fahrt auf!\nDie meisten Anleger jagen weiterhin die bekannten KI-Gewinner. Doch die wirklich spannende Chance könnte in einem Bereich liegen, den kaum jemand auf dem Radar hat. Der heutige Top-Kandidat liefert eine Schlüsseltechnologie, ohne die die nächste Generation von KI-Infrastruktur gar nicht betrieben werden kann. Die Nachfrage explodiert bereits, die Auftragseingänge schießen durch die Decke und Analysten erwarten einen Gewinnsprung von mehr als 60 Prozent. Gleichzeitig steht die Aktie unmittelbar vor einem charttechnischen Befreiungsschlag. Das Besondere: Das empfohlene Hebelprodukt eröffnet im Erfolgsfall die Chance auf einen Gewinn von fast 1.500 Prozent!",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-06-11",
+      "publication_issue": "101/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "Carrier Global",
+      "actual_ticker": "CARR",
+      "derivative_wkn": "JY0TWR",
+      "outcome": "not_tested",
+      "source_status": "user_supplied_teaser_and_publisher_pdf",
+      "key_clues": [
+        "Key cooling technology for next-generation AI infrastructure",
+        "Data-center orders rose by more than 500 percent",
+        "Rapidly growing backlog",
+        "Recovery above the 200-day average and breakout above resistance"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "The supplied teaser headline differs from the publisher headline; both are retained separately. No scanner result is recorded.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 101/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-101_Carrier.pdf",
+          "sha256": "185b3420eb14a37b1b4b467bce265f0e66f8bcae0d4d9a71350339371eac2bec",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Carrier Global as underlying and call WKN JY0TWR; page 2 states 376% target-1 and 1,494% target-2 potential, 71% stop risk and CRV 13.3."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies Carrier Global as the underlying and JY0TWR as the call.",
+        "At the stated entry price, the PDF lists 376% potential at target 1 and 1,494% at target 2."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1494,
+      "advertised_return_targets_percent": [376, 1494],
+      "advertised_loss_risk_percent": 71,
+      "risk_reward_ratio": 13.3
+    },
+    {
+      "case_id": "HT-025",
+      "reference_number": 25,
+      "headline": "Adidas: Der WM-Turbo springt an!",
+      "teaser_text": null,
+      "text_completeness": "headline_only",
+      "publication_date": "2026-05-29",
+      "publication_issue": "93/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "Adidas",
+      "actual_ticker": "ADS",
+      "derivative_wkn": "DU0UHF",
+      "outcome": "not_tested",
+      "source_status": "publisher_pdf_only",
+      "key_clues": [
+        "2026 FIFA World Cup sponsorship and expected additional sales",
+        "Operational turnaround and improving profitability",
+        "Online sales growth and market-share gains",
+        "Break above the 200-day average and long-term downtrend"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "Original teaser text was not supplied; publisher PDF establishes the featured company and product, but no scanner result is recorded.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-93.pdf",
+          "sha256": "a6621fe098c49c1d398e3c926748b954e70ee62fd08db61cc387c1eaf46cb0f7",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Adidas as underlying and call WKN DU0UHF."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies Adidas as the underlying and DU0UHF as the call."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 2853,
+      "advertised_return_targets_percent": [632, 2853],
+      "advertised_loss_risk_percent": 63,
+      "risk_reward_ratio": 27.6
+    },
+    {
+      "case_id": "HT-022",
+      "reference_number": 22,
+      "headline": "Constellation Energy: Der Strom-Champion der KI-Revolution!",
+      "teaser_text": null,
+      "text_completeness": "headline_only",
+      "publication_date": "2026-09-10",
+      "publication_issue": "166/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "Constellation Energy",
+      "actual_ticker": "CEG",
+      "derivative_wkn": "VH4VNA",
+      "outcome": "not_tested",
+      "source_status": "publisher_pdf_only",
+      "key_clues": [
+        "Largest US nuclear fleet and around-the-clock carbon-free baseload power",
+        "Calpine acquisition added gas, geothermal and storage capacity",
+        "AI data-center electricity demand and long-term power contracts"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "Original teaser text was not supplied; publisher PDF establishes the featured company and product, but no scanner result is recorded.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-166.pdf",
+          "sha256": "4c0e025c624cfb332ac80932818820a9cf18d29414b1ca3eba36ff482596d40a",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Constellation Energy as underlying and call WKN VH4VNA."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies Constellation Energy as the underlying and VH4VNA as the call."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1354,
+      "advertised_return_targets_percent": [418, 1354],
+      "advertised_loss_risk_percent": 48,
+      "risk_reward_ratio": 18.37
+    },
+    {
+      "case_id": "HT-023",
+      "reference_number": 23,
+      "headline": "AbbVie: Die nächste Milliarden-Wachstumsstory nimmt Fahrt auf!",
+      "teaser_text": null,
+      "text_completeness": "headline_only",
+      "publication_date": "2026-06-08",
+      "publication_issue": "98/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "AbbVie",
+      "actual_ticker": "ABBV",
+      "derivative_wkn": "PJ9RC8",
+      "outcome": "not_tested",
+      "source_status": "publisher_pdf_only",
+      "key_clues": [
+        "Humira patent-expiry concerns offset by new blockbuster medicines",
+        "Skyrizi and Rinvoq gaining market share",
+        "Raised full-year earnings guidance and growth pipeline"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "Original teaser text was not supplied; publisher PDF establishes the featured company and product, but no scanner result is recorded.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-98.pdf",
+          "sha256": "39f4669c1057d79600fce565a241faf8f1ed0bac7f6b149734e0cfd3eb839e63",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms AbbVie as underlying and call WKN PJ9RC8."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies AbbVie as the underlying and PJ9RC8 as the call."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 2814,
+      "advertised_return_targets_percent": [576, 2814],
+      "advertised_loss_risk_percent": 71,
+      "risk_reward_ratio": 23.7
+    },
+    {
+      "case_id": "HT-024",
+      "reference_number": 24,
+      "headline": "Die Börse liebt Geschichten wie diese ...",
+      "publisher_headline": "Eni: Dividendenperle mit Milliarden-Power!",
+      "teaser_text": "Die Börse liebt Geschichten wie diese ...\nEin finanzstarker Konzern, der Milliarden an seine Aktionäre zurückgibt, gleichzeitig in Zukunftsmärkte investiert und dabei mit einer überraschend günstigen Bewertung aufwartet. Genau jetzt verdichten sich die Anzeichen, dass die mehrmonatige Konsolidierung endet und die nächste Aufwärtswelle beginnt. Analysten erwarten einen massiven Gewinnsprung, während das passende Hebelprodukt im Erfolgsfall Renditen von über 1.400 Prozent ermöglicht!",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-06-02",
+      "publication_issue": "95/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "Eni",
+      "actual_ticker": "ENI",
+      "derivative_wkn": "DU8WQY",
+      "outcome": "not_tested",
+      "source_status": "user_supplied_teaser_and_publisher_pdf",
+      "key_clues": [
+        "Billions returned to shareholders through buybacks and distributions",
+        "Investment in battery storage, battery technologies and renewable fuels",
+        "Financial strength and comparatively low valuation"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "The supplied teaser wording differs from the publisher article text in the PDF; both headlines/texts are kept distinct. No scanner result is recorded.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 95/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-95_ENI.pdf",
+          "sha256": "56c34f7beec04959ca0c4e3620355a182c2ca99eecb9fb52e00e8b1e4e7c7ed7",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Eni as underlying and call WKN DU8WQY; page 2 states 1,434% target-2 potential, 61% stop risk and CRV 13.9."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies Eni as the underlying and DU8WQY as the call.",
+        "The publisher article states 1,434% potential at target 2."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1434,
+      "advertised_return_targets_percent": [270, 1434],
+      "advertised_loss_risk_percent": 61,
+      "risk_reward_ratio": 13.9
+    },
+    {
+      "case_id": "HT-021",
+      "reference_number": 21,
+      "headline": "Ölpreis-Rückenwind trifft auf massive Unterbewertung!",
+      "publisher_headline": "BP: Der Öl-Gigant vor der Neubewertung!",
+      "teaser_text": "Ölpreis-Rückenwind trifft auf massive Unterbewertung!\nCashflow steigt, Schulden sinken, die Bewertung ist niedrig: Bei diesem Turnaround-Kandidaten verdichten sich die Kaufsignale. Fundamental hellt sich das Bild sichtbar auf, während steigende Energiepreise die Gewinnkraft zusätzlich befeuern könnten. Anleger erhalten zudem eine attraktive Dividende und die Chance auf eine deutliche Neubewertung. Besonders spekulativ wird es mit dem empfohlenen Derivat, das bei einer erfolgreichen Kursentwicklung ein außergewöhnliches Gewinnpotenzial von mehr als 1.200 Prozent bietet.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-09-11",
+      "publication_issue": "167/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "BP plc",
+      "actual_ticker": "BP",
+      "derivative_wkn": "PM03B1",
+      "outcome": "not_tested",
+      "source_status": "user_supplied_teaser_and_publisher_pdf",
+      "key_clues": [
+        "Steigender Ölpreis und mögliche Gewinnhebelwirkung",
+        "Starker operativer Cashflow und sinkende Nettoverschuldung",
+        "Niedrige Bewertung gegenüber US-Wettbewerbern",
+        "Dividendenrendite über 4,5 Prozent"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": null,
+      "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 167/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-167.pdf",
+          "sha256": "64bc9d704e254f6feb563b982c350d5be7c44cd5bb41a3f5f33c2b8c93480174",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms BP plc as underlying, call WKN PM03B1, and product targets and risk figures."
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": [
+        "Publisher PDF identifies BP plc as the underlying and PM03B1 as the call.",
+        "At the stated entry price, the PDF lists 344% potential at target 1 and 1,225% at target 2."
+      ],
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "publisher_pdf_verified",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1225,
+      "advertised_return_targets_percent": [344, 1225],
+      "advertised_loss_risk_percent": 56,
+      "risk_reward_ratio": 13.94
+    },
+    {
+      "case_id": "HT-020",
+      "reference_number": 20,
+      "headline": "Der heimliche Herrscher über die globale Chipindustrie!",
+      "teaser_text": "Der heimliche Herrscher über die globale Chipindustrie!\nStellen Sie sich vor, ein Unternehmen wird in der Branche so unverzichtbar, dass seine Kunden kaum noch eine Wahl haben. Genau dieses Geheimnis steckt hinter einer Aktie, die seit Jahren kontinuierlich nach oben marschiert. Die Bilanz glänzt, die Gewinne wachsen im Eiltempo, und selbst die Kritiker müssen zugeben: Hier arbeitet jemand mit System. Doch der Chart verrät jetzt den entscheidenden Moment. Wer beim Ausbruch dabei ist, kann mit dem passenden Optionsschein Call außergewöhnliche Renditen erzielen: Beim ersten Kursziel warten 315 Prozent, beim zweiten sogar bis zu 1.269 Prozent.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-10-29",
+      "publication_issue": "201/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": "Synopsys",
+      "actual_ticker": "SNPS",
+      "derivative_wkn": "MN9WA9",
+      "outcome": "not_identified",
+      "source_status": "user_supplied_teaser_and_prior_case_resolution",
+      "key_clues": [
+        "Unverzichtbare Stellung in der globalen Chipindustrie",
+        "Kunden haben kaum Alternativen",
+        "Jahrelanger Aufwärtstrend",
+        "Stark wachsende Gewinne",
+        "Chart-Ausbruch"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": "Der Lauf setzte Synopsys auf Rang 1, bestätigte aber keine Hinweise und meldete die Identifikation als nicht erfolgt. Wegen der gezielten Entwicklung an diesem Fall ist dies kein unabhängiger Blindtreffer.",
+      "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 201/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_reconstructed_resolution",
+          "reference": "Earlier case discussion identified Synopsys and call WKN MN9WA9; not an independent benchmark",
+          "verified_primary_source": false
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": null,
+      "original_top3": [
+        "Synopsys",
+        "KLA Corporation",
+        "Arm Holdings"
+      ],
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "user_supplied",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1269,
+      "advertised_return_targets_percent": [315, 1269]
+    },
+    {
+      "case_id": "HT-019",
+      "reference_number": 19,
+      "headline": "Achtung, Kursexplosion voraus – KI-Boom trifft Ölgeschäft!",
+      "teaser_text": "Achtung, Kursexplosion voraus – KI-Boom trifft Ölgeschäft!\nEin Konzern, der sich seit Jahrzehnten im Hintergrund der Förderung bewegt, hat sich neu erfunden und sitzt jetzt im Rechenzentrum. Die Spuren führen zu KI-Kühltechnik, zu einer Digitalsparte mit wiederkehrenden Milliardenerlösen und zu einem Quartalsbericht, der selbst Skeptiker verstummen ließ. Die Charttechnik zeigt ein eindeutiges Muster: Nach der Korrektur hat die Aktie die 200-Tage-Linie erneut verteidigt. Wer hier den Hebel ansetzt, hat ein Motiv: Der Call-Optionsschein könnte bei Erreichen des ersten Kursziels um bis zu 421 Prozent zulegen, bei einer Fortsetzung der Rally sogar um 1.464 Prozent.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-10-26",
+      "publication_issue": "198/26",
+      "publication_at": null,
+      "first_prediction": null,
+      "first_prediction_confidence": null,
+      "confidence_status": null,
+      "actual_company": null,
+      "actual_ticker": null,
+      "derivative_wkn": null,
+      "outcome": "unresolved",
+      "source_status": "user_supplied_teaser",
+      "key_clues": [
+        "Ölgeschäft und jahrzehntelange Tätigkeit im Förderumfeld",
+        "KI-Kühltechnik und Rechenzentren",
+        "Digitalsparte mit wiederkehrenden Milliardenerlösen",
+        "Verteidigung der 200-Tage-Linie nach einer Korrektur"
+      ],
+      "contradicting_clues": null,
+      "failure_analysis": null,
+      "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 198/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        }
+      ],
+      "resolution_date": null,
+      "resolution_clues": null,
+      "original_top3": null,
+      "other_reported_candidates": null,
+      "suspected_company": null,
+      "suspected_ticker": null,
+      "date_status": "user_supplied",
+      "evaluation_class": "development_regression",
+      "independent_benchmark": false,
+      "advertised_return_percent": 1464,
+      "advertised_return_targets_percent": [421, 1464]
+    },
+    {
       "case_id": "HT-003",
       "reference_number": 1,
       "headline": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!\nAufholjagd im Handel! Ein etablierter Branchenführer verbindet hohe Kundenloyalität mit stabilen Einnahmen, starker Ertragskraft und zusätzlichen Wachstumschancen im digitalen Geschäft. Zwar ist die Bewertung ambitioniert, doch die operative Qualität rechtfertigt einen genaueren Blick. Nach der jüngsten Korrektur sendet auch der Chart wieder ein klares Signal: Eine zentrale Trendlinie wurde zurückerobert, der Weg zu neuen Höchstständen ist frei. Der passende Call verleiht der Story zusätzlichen Schub und bietet bei voller Zielerreichung eine maximale Performance von bis zu 1.438 Prozent.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-10-16",
       "publication_issue": "192/26",
       "publication_at": null,
@@ -36,6 +509,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 192/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -47,10 +525,10 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1438
     },
     {
       "case_id": "HT-016",
@@ -94,10 +572,11 @@
       "case_id": "HT-002",
       "reference_number": 3,
       "headline": "Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "publisher_headline": "Zurich Insurance: 96 Prozent Trefferquote – Angriff auf neues Dekadenhoch!",
+      "teaser_text": "Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!\nTurnaround-Alarm im Versicherungssektor! Ein etablierter Branchenwert liefert robuste Geschäftszahlen, gewinnt durch strategische Expansion neue Wachstumsperspektiven und verfügt über eine starke fundamentale Basis. Nach dem charttechnischen Befreiungsschlag könnte nun die nächste Aufwärtswelle starten. Zusätzlichen Rückenwind liefert eine historisch starke Saisonphase. Der empfohlene Call verwandelt eine moderate Erholung in eine echte Hebelstory und bietet bei voller Zielerreichung eine maximale Performance von bis zu 1.433 Prozent.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-10-14",
-      "publication_issue": null,
+      "publication_issue": "190/26",
       "publication_at": null,
       "first_prediction": "UnitedHealth Group",
       "first_prediction_confidence": null,
@@ -112,6 +591,18 @@
       "failure_analysis": "Allgemeine Gewinn- und defensive Branchenhinweise waren nicht spezifisch genug.",
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 190/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-190_ZUR.pdf",
+          "sha256": "dc641a6800c4108a1b44d0533d3f8ac94baf911d6e741e73bcf2b9c855bc5275",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Zurich Insurance as underlying and call WKN UN6E7X; page 2 states 408% target-1 and 1,433% target-2 potential, 56% stop risk and CRV 16.46."
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -123,17 +614,20 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1433,
+      "advertised_return_targets_percent": [408, 1433],
+      "advertised_loss_risk_percent": 56,
+      "risk_reward_ratio": 16.46
     },
     {
       "case_id": "HT-004",
       "reference_number": 4,
       "headline": "Comeback mit Ansage: Dieser Tech-Titel startet durch!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Comeback mit Ansage: Dieser Tech-Titel startet durch!\nTotgesagte leben länger – und manchmal kehren sie mit solcher Wucht zurück, dass selbst Skeptiker nervös werden. Bei einem Technologiewert verdichten sich die Signale für einen spektakulären Turnaround. Das Geschäft zieht an, die Profitabilität überzeugt, der freie Cashflow gibt Rückenwind und die KI-Offensive eröffnet neue Erlösquellen. Noch scheint der Markt das Comeback nicht vollständig einzupreisen. Genau hier setzt unsere Analyse an: Sie zeigt die entscheidenden charttechnischen Marken, die fundamentalen Kurstreiber und das enorme Potenzial eines passenden Call-Optionsscheins. Im Idealfall kann das Derivat eine Performance von bis zu 1.717 Prozent erreichen.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-09-24",
       "publication_issue": "176/26",
       "publication_at": null,
@@ -150,6 +644,11 @@
       "failure_analysis": "Generisches Tech-Comeback-Narrativ überbewertet.",
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 176/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -161,7 +660,7 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1717
@@ -170,8 +669,8 @@
       "case_id": "HT-005",
       "reference_number": 5,
       "headline": "Gewinnsprung voraus: Der unterschätzte KI-Profiteur!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Gewinnsprung voraus: Der unterschätzte KI-Profiteur!\nDer nächste große KI-Profiteur steht offenbar vor dem Comeback! Nach einer scharfen Korrektur verdichten sich die Signale für eine kraftvolle Trendwende. Gleichzeitig überzeugt der führende Halbleiterkonzern mit einer beeindruckenden fundamentalen Perspektive: Die Gewinne sollen geradezu explodieren, während die Bewertung gemessen an den erwarteten Erträgen überraschend attraktiv erscheint. Rückenwind liefern der anhaltende KI-Boom, eine hohe Nachfrage und die Aussicht auf eine nachhaltige Verbesserung der Margen. Gelingt der charttechnische Ausbruch, könnte eine dynamische Neubewertung starten. Für risikobereite Anleger wurde ein Derivat ausgewählt, das ein Gewinnpotenzial von bis zu 1.091 Prozent bietet.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-09-21",
       "publication_issue": "173/26",
       "publication_at": null,
@@ -192,6 +691,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 173/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -203,19 +707,19 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1091
     },
     {
       "case_id": "HT-006",
       "reference_number": 6,
       "headline": "Gesundheitsriese vor der Neubewertung!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Gesundheitsriese vor der Neubewertung!\nDieser Gesundheitskoloss meldet sich eindrucksvoll zurück. Nach der heftigen Talfahrt greifen die Bullen wieder an und haben die entscheidende Abwärtstrendgerade überwunden. Gleichzeitig wirkt die operative Wende: Die medizinische Kostenquote sinkt, das integrierte Geschäftsmodell liefert neue Ertragskraft und das Management hebt die Prognose an. Auch milliardenschwere Aktienrückkäufe unterstreichen das Vertrauen in das Comeback. Zündet die Rally jetzt die nächste Stufe, könnte der ausgewählte Call am ersten Kursziel bereits 495 Prozent zulegen. Im Best Case eröffnet das zweite Kursziel sogar ein Potenzial von bis zu 2.252 Prozent. Dem steht ein mögliches Verlustrisiko von 62 Prozent gegenüber. Das Chance-Risiko-Verhältnis von 22,2 macht dieses Comeback zu einem Hebel-Setup mit Seltenheitswert.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-09-03",
-      "publication_issue": null,
+      "publication_issue": "161/26",
       "publication_at": null,
       "first_prediction": "UnitedHealth",
       "first_prediction_confidence": null,
@@ -230,6 +734,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 161/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -241,19 +750,22 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 2252,
+      "advertised_return_targets_percent": [495, 2252],
+      "advertised_loss_risk_percent": 62,
+      "risk_reward_ratio": 22.2
     },
     {
       "case_id": "HT-007",
       "reference_number": 7,
       "headline": "Cloud, Strom und Kühlung: Hier liegt der Schlüssel zum nächsten KI-Schub!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Cloud, Strom und Kühlung: Hier liegt der Schlüssel zum nächsten KI-Schub!\nDieser KI-Infrastruktur-Profiteur steht vor dem nächsten Ausbruch! Während viele Anleger nur auf die großen Namen blicken, läuft bei diesem spezialisierten Technologiekonzern die Wachstumsmaschine auf Hochtouren. Der Umsatz legte zuletzt kräftig zu, der bereinigte Gewinn je Aktie schoss sogar noch deutlich stärker nach oben. Auch die operative Marge verbesserte sich spürbar, während der freie Cashflow ein beeindruckendes Niveau erreichte. Für das kommende Geschäftsjahr wird erneut ein dynamisches Umsatz- und Gewinnwachstum angepeilt. Charttechnisch steht die Aktie nach einer kräftigen Korrektur vor der entscheidenden Wende. Gelingt der Ausbruch, könnte das empfohlene Derivat im Best-Case zum Vervielfacher werden: Beim ersten Kursziel winkt ein Gewinnpotenzial von 361 Prozent, beim zweiten Kursziel sogar ein beeindruckendes Plus von 1.169 Prozent.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-08-28",
-      "publication_issue": null,
+      "publication_issue": "157/26",
       "publication_at": null,
       "first_prediction": "Vertiv",
       "first_prediction_confidence": null,
@@ -273,6 +785,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 157/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -284,17 +801,18 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1169,
+      "advertised_return_targets_percent": [361, 1169]
     },
     {
       "case_id": "HT-013",
       "reference_number": 8,
       "headline": "Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!\nStillstand war gestern. Nach rund vier Jahren Seitwärtsphase könnte bei einem etablierten Qualitätswert jetzt der Turbo zünden. Die Zutaten für eine Neubewertung sind vorhanden: wieder anziehendes Wachstum, ein kräftiger freier Cashflow, steigende Gewinne und ein Forward-KGV unter dem historischen Durchschnitt. Analysten rechnen für die kommenden Jahre mit jährlichen Gewinnzuwächsen von über 10 Prozent. Wer den möglichen Ausbruch nicht verpassen will, sollte auch den Hebel im Blick behalten: Das empfohlene Derivat könnte im Idealfall bis zu 2.205 Prozent zulegen. Das CRV von 21,9 macht daraus ein Setup mit Seltenheitswert.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-08-25",
       "publication_issue": "154/26",
       "publication_at": null,
@@ -311,6 +829,11 @@
       "failure_analysis": "Allgemeine fundamentale und charttechnische Aussagen reichten nicht zur eindeutigen Identifikation.",
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 154/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -322,19 +845,20 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 2205,
+      "risk_reward_ratio": 21.9
     },
     {
       "case_id": "HT-014",
       "reference_number": 9,
       "headline": "Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
-      "publication_issue": null,
+      "teaser_text": "Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!\nLange abgestraft, jetzt plötzlich wieder brandgefährlich: Bei diesem Softwarewert könnte gerade eine neue Aufwärtswelle anlaufen. Die operative Basis stimmt, denn das Cloud-Geschäft wächst mit Wucht, die Erlöse ziehen an und der Auftragsbestand liefert starke Rückendeckung. Gleichzeitig hat der Markt begonnen, den KI-Hebel neu zu bewerten. Genau diese Mischung aus Comeback, Cloud-Dynamik und charttechnischer Trendwende macht die Story jetzt so spannend. Für spekulative Anleger besonders reizvoll: Das empfohlene Derivat bringt im Idealfall eine rekordverdächtige Gewinnchance von mehr als 3.700 Prozent ins Spiel.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-08-20",
+      "publication_issue": "151/26",
       "publication_at": null,
       "first_prediction": "Oracle",
       "first_prediction_confidence": null,
@@ -349,6 +873,11 @@
       "failure_analysis": "Oracle statt SAP; direkte Software-Wettbewerber und konkrete Geschäftszahlen gegeneinander prüfen.",
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 151/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -360,19 +889,19 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "unknown",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 3700
     },
     {
       "case_id": "HT-008",
       "reference_number": 10,
       "headline": "KI, Infrastruktur, Milliarden – diese Aktie hat den perfekten Mix!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "KI, Infrastruktur, Milliarden – diese Aktie hat den perfekten Mix!\nDiese Aktie könnte jetzt zu den explosivsten Comeback-Chancen im Markt zählen: Nach einer brutalen Korrektur mehren sich die Signale für eine kraftvolle Trendwende – und fundamental zieht das Wachstum spürbar an. Milliarden an frischem Kapital, stark steigende Erträge, gewaltige Reserven für neue Deals und zusätzliche Fantasie durch den Boom rund um KI-Infrastruktur machen das Setup brandgefährlich. Besonders spektakulär: Das empfohlene Derivat eröffnet im Idealfall ein Renditepotenzial von bis zu 1.737 Prozent.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-08-14",
-      "publication_issue": null,
+      "publication_issue": "147/26",
       "publication_at": null,
       "first_prediction": "KKR",
       "first_prediction_confidence": null,
@@ -391,6 +920,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 147/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -402,19 +936,19 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1737
     },
     {
       "case_id": "HT-009",
       "reference_number": 11,
       "headline": "Diese Comeback-Aktie könnte jetzt alles in den Schatten stellen!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
-      "publication_issue": null,
+      "teaser_text": "Diese Comeback-Aktie könnte jetzt alles in den Schatten stellen!\nDiese Turnaround-Story hat das Zeug zur Kursrakete: Ein schwer abgestrafter Mega-Cap aus dem Gesundheitssektor sendet plötzlich wieder starke Signale – operativ, charttechnisch und fundamental. Besonders brisant: Die Aktie ist mit einem 2026er-KGV von nur 9 bewertet, Analysten erwarten einen Gewinnsprung von rund 120 Prozent, dazu lockt eine Dividendenrendite von über 6 Prozent. Genau solche Konstellationen können explosive Neubewertungen auslösen. Und das Beste: Mit dem empfohlenen Hebelpapier wären im Optimalfall sogar bis zu 2.631 Prozent drin. Mehr Hebel auf eine mögliche Neubewertung geht kaum.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-08-11",
+      "publication_issue": "144/26",
       "publication_at": null,
       "first_prediction": "Pfizer",
       "first_prediction_confidence": null,
@@ -429,6 +963,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 144/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -440,19 +979,19 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "unknown",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 2631
     },
     {
       "case_id": "HT-010",
       "reference_number": 12,
       "headline": "Ausbruchsalarm bei einem Hightech-Schwergewicht!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Ausbruchsalarm bei einem Hightech-Schwergewicht!\nHier braut sich eine der explosivsten Chancen im Technologiesektor zusammen. Ein Schwergewicht aus der digitalen Infrastruktur liefert bärenstarke Zahlen, profitiert von einer regelrecht entfesselten Nachfrage und könnte operativ vor dem nächsten Gewinnschub stehen. Umsatz, Profitabilität und Cashflow ziehen kräftig an, dazu kommt ein Chartbild, das nach der Korrektur wieder auf Angriff schaltet. Besonders heiß: Das empfohlene Hebelprodukt bietet im Idealfall ein Gewinnpotenzial von mehr als 1.500 Prozent.",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-08-10",
-      "publication_issue": null,
+      "publication_issue": "143/26",
       "publication_at": null,
       "first_prediction": "Broadcom",
       "first_prediction_confidence": null,
@@ -467,6 +1006,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 143/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -478,17 +1022,17 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1500
     },
     {
       "case_id": "HT-015",
       "reference_number": 13,
       "headline": "Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
+      "teaser_text": "Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!\nDieser europäische Hightech- und Rüstungstitel könnte vor der nächsten explosiven Aufwärtsbewegung stehen. Rekordaufträge, steigende Profitabilität, verbesserter Cashflow und eine starke Position in mehreren Zukunftsmärkten liefern ein fundamental starkes Gesamtbild. Gleichzeitig verdichten sich charttechnisch die Signale für einen neuen Kursschub. Für besonders spekulative Anleger wird es noch spannender: Das empfohlene Derivat eröffnet im Best Case die Chance auf einen Gewinn von bis zu 2.769 Prozent!",
+      "text_completeness": "full_teaser",
       "publication_date": "2026-08-06",
       "publication_issue": "141/26",
       "publication_at": null,
@@ -505,6 +1049,11 @@
       "failure_analysis": "Thales statt Leonardo; konkrete Aufträge, Ereignisse und Kennzahlen müssen zwischen europäischen Rüstungskonzernen entscheiden.",
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 141/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -516,19 +1065,19 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 2769
     },
     {
       "case_id": "HT-011",
       "reference_number": 14,
       "headline": "Hightech-Konzern vor neuem Rekordhoch!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": "2026-08-06",
-      "publication_issue": null,
+      "teaser_text": "Hightech-Konzern vor neuem Rekordhoch!\nHier entsteht gerade ein Ausnahme-Setup für spekulative Anleger: Ein europäischer Hightech-Konzern profitiert massiv von einem strukturellen Boommarkt, überzeugt mit starkem Auftragseingang, soliden Margen und hoher Planungssicherheit. Gleichzeitig deutet charttechnisch vieles auf den möglichen Ausbruch auf ein neues Rekordhoch hin. Besonders brisant: Das empfohlene Derivat hat bereits enorme Dynamik gezeigt – und im Idealfall winkt sogar eine Gewinnchance von bis zu 2.617 Prozent.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-08-05",
+      "publication_issue": "140/26",
       "publication_at": null,
       "first_prediction": "Thales",
       "first_prediction_confidence": null,
@@ -543,6 +1092,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 140/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -554,18 +1108,18 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_in_earlier_overview_issue_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 2617
     },
     {
       "case_id": "HT-012",
       "reference_number": 15,
       "headline": "Hier steckt eine irrwitzige Turnaround-Chance drin!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
+      "teaser_text": "Hier steckt eine irrwitzige Turnaround-Chance drin!\nHier entsteht gerade eine hochspannende Turnaround-Story mit echtem Nachholpotenzial. Ein internationaler Branchenriese hat seinen Umbau spürbar beschleunigt, die Profitabilität verbessert, Kosten gesenkt und sendet mit milliardenschweren Aktienrückkäufen ein klares Signal. Auch fundamental verdichtet sich das Bild: steigende Gewinne, attraktive Dividendenrendite und neue Fantasie durch strategische Werte, die der Markt bislang nur unzureichend einpreist. Für spekulative Anleger wird es mit dem empfohlenen Hebelprodukt besonders explosiv: Im Idealfall winkt eine Renditechance von bis zu 1.900 Prozent.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-07-31",
       "publication_issue": "137/26",
       "publication_at": null,
       "first_prediction": "BASF",
@@ -581,6 +1135,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 137/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -592,19 +1151,19 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "unknown",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1900
     },
     {
       "case_id": "HT-017",
       "reference_number": 16,
       "headline": "Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
-      "publication_issue": null,
+      "teaser_text": "Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!\nStille im Handelsraum. Dann ein Signal, das alles verändert. Während die Märkte zögern, zieht ein Finanzschwergewicht still und leise davon: Gewinne im Aufwind, Erträge im Sprung, Ertragskraft auf Rekordniveau. Die Kursrücksetzer? Für Eingeweihte ein Geschenk. Unsere Experten haben den Schachzug durchkalkuliert: ein Call-Optionsschein mit Hebel, klarer Stoppplan und eine Strategie, die Gewinne sichert. Das erste Ziel bringt ein Plus von 426 Prozent. Und der eigentliche Showdown? Bis zu plus 1.705 Prozent am zweiten Kursziel.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-10-19",
+      "publication_issue": "193/26",
       "publication_at": null,
       "first_prediction": "Goldman Sachs",
       "first_prediction_confidence": 60,
@@ -618,6 +1177,11 @@
       "contradicting_clues": null,
       "failure_analysis": "Zu frühe Festlegung auf Goldman Sachs aufgrund allgemeiner Rallye-Hinweise; unkalibrierte 60-%-Angabe.",
       "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 193/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
         {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
@@ -633,19 +1197,20 @@
       ],
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "unknown",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1705,
+      "advertised_return_targets_percent": [426, 1705]
     },
     {
       "case_id": "HT-018",
       "reference_number": 17,
       "headline": "Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
-      "publication_issue": null,
+      "teaser_text": "Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!\nEin Gesundheitsriese mit prall gefüllter Kasse steht vor dem Befreiungsschlag. Umsatz im Aufwind, Innovationen in der Pipeline, Ertragskraft auf Rekordniveau. Die Korrektur der letzten Wochen? Für Eingeweihte eine Tür, die sich gerade öffnet. Unsere Experten haben das Szenario durchkalkuliert: ein Call-Optionsschein mit starkem Hebel, klarer Stoppplan und eine Strategie, die Gewinne sichert. Der Showdown: bis zu plus 1.761 Prozent am zweiten Kursziel.",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-10-21",
+      "publication_issue": "195/26",
       "publication_at": null,
       "first_prediction": "Johnson & Johnson",
       "first_prediction_confidence": 55,
@@ -660,6 +1225,11 @@
       "failure_analysis": null,
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 195/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -671,10 +1241,10 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "unknown",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1761
     },
     {
       "case_id": "HT-001",
@@ -706,6 +1276,11 @@
       "failure_analysis": "Ankereffekt und Bestätigungssuche nach frühem Lattice-Tipp; spezifische Unternehmensereignisse hätten stärker geprüft werden müssen; unkalibrierte 95-%-Angabe.",
       "evidence_sources": [
         {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 200/26, supplied 2026-10-30",
+          "verified_primary_source": false
+        },
+        {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
@@ -727,7 +1302,7 @@
       "other_reported_candidates": null,
       "suspected_company": null,
       "suspected_ticker": null,
-      "date_status": "reported_date_unverified",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1191

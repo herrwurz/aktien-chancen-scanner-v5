@@ -1,0 +1,1082 @@
+{
+  "ranking_sha256": "2ca665081c7adff5cab72a6ee4e276cb139043092dbefc9f4d6395a8d77d593c",
+  "historical_conversation": {
+    "total": 18,
+    "correct": 10,
+    "wrong": 7,
+    "unresolved": 1,
+    "resolved": 17,
+    "historical_conversation_percent": 58.8,
+    "independent_benchmark": false,
+    "missing_full_teasers": [
+      "HT-016"
+    ],
+    "missing_dates": [
+      "HT-016"
+    ],
+    "missing_exact_timestamps": [
+      "HT-003",
+      "HT-016",
+      "HT-002",
+      "HT-004",
+      "HT-005",
+      "HT-006",
+      "HT-007",
+      "HT-013",
+      "HT-014",
+      "HT-008",
+      "HT-009",
+      "HT-010",
+      "HT-015",
+      "HT-011",
+      "HT-012",
+      "HT-017",
+      "HT-018",
+      "HT-001"
+    ],
+    "missing_original_top3": [
+      "HT-003",
+      "HT-016",
+      "HT-002",
+      "HT-004",
+      "HT-005",
+      "HT-006",
+      "HT-007",
+      "HT-013",
+      "HT-014",
+      "HT-008",
+      "HT-009",
+      "HT-010",
+      "HT-015",
+      "HT-011",
+      "HT-012",
+      "HT-017",
+      "HT-018",
+      "HT-001"
+    ],
+    "wrong_cases": [
+      {
+        "case_id": "HT-002",
+        "first_prediction": "UnitedHealth Group",
+        "actual_company": "Zurich Insurance Group",
+        "failure_analysis": "Allgemeine Gewinn- und defensive Branchenhinweise waren nicht spezifisch genug."
+      },
+      {
+        "case_id": "HT-004",
+        "first_prediction": "Zoom",
+        "actual_company": "Salesforce",
+        "failure_analysis": "Generisches Tech-Comeback-Narrativ überbewertet."
+      },
+      {
+        "case_id": "HT-013",
+        "first_prediction": "Zebra Technologies",
+        "actual_company": "Danaher",
+        "failure_analysis": "Allgemeine fundamentale und charttechnische Aussagen reichten nicht zur eindeutigen Identifikation."
+      },
+      {
+        "case_id": "HT-014",
+        "first_prediction": "Oracle",
+        "actual_company": "SAP",
+        "failure_analysis": "Oracle statt SAP; direkte Software-Wettbewerber und konkrete Geschäftszahlen gegeneinander prüfen."
+      },
+      {
+        "case_id": "HT-015",
+        "first_prediction": "Thales",
+        "actual_company": "Leonardo S.p.A.",
+        "failure_analysis": "Thales statt Leonardo; konkrete Aufträge, Ereignisse und Kennzahlen müssen zwischen europäischen Rüstungskonzernen entscheiden."
+      },
+      {
+        "case_id": "HT-017",
+        "first_prediction": "Goldman Sachs",
+        "actual_company": "JPMorgan Chase",
+        "failure_analysis": "Zu frühe Festlegung auf Goldman Sachs aufgrund allgemeiner Rallye-Hinweise; unkalibrierte 60-%-Angabe."
+      },
+      {
+        "case_id": "HT-001",
+        "first_prediction": "Lattice Semiconductor",
+        "actual_company": "Analog Devices",
+        "failure_analysis": "Ankereffekt und Bestätigungssuche nach frühem Lattice-Tipp; spezifische Unternehmensereignisse hätten stärker geprüft werden müssen; unkalibrierte 95-%-Angabe."
+      }
+    ]
+  },
+  "regression": {
+    "cases": 27,
+    "graded_cases": 25,
+    "abstentions": 27,
+    "candidate_top1_hits": 0,
+    "candidate_top3_hits": 0,
+    "top1_rate": null,
+    "top3_rate": null,
+    "rate_status": "known_development_cases_not_independent_benchmark"
+  },
+  "offline_hypothesis_coverage": {
+    "graded_cases": 25,
+    "suggestion_cases": 17,
+    "solution_in_first_suggestion": 2,
+    "solution_in_top3_suggestions": 4,
+    "solution_in_top8_suggestions": 6,
+    "interpretation": "Unverified local sector-universe suggestions only; not evidence-backed identifications or an independent benchmark."
+  },
+  "missing_full_text_count": 4,
+  "independent_real_blind_tests": 0,
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "original_historical_prediction": "Costco",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": 1,
+      "offline_hypotheses": [
+        {
+          "layer": "retail",
+          "name": "Costco Wholesale",
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "COST"
+        },
+        {
+          "layer": "retail",
+          "name": "Walmart",
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "WMT"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.009,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-016",
+      "original_historical_prediction": "Williams",
+      "historical_outcome": "unresolved",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "grid-equipment",
+          "name": "Siemens Energy",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "NextEra Energy",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        },
+        {
+          "layer": "grid-equipment",
+          "name": "Schneider Electric",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "Iberdrola",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-002",
+      "original_historical_prediction": "UnitedHealth Group",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "reinsurance",
+          "name": "Swiss Re",
+          "sector": "insurance",
+          "structure": "oligopoly"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-004",
+      "original_historical_prediction": "Zoom",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.004,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-005",
+      "original_historical_prediction": "Micron",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": 8,
+      "offline_hypotheses": [
+        {
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "layer": "wafer-fab-equipment",
+          "name": "Lam Research",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "LRCX"
+        },
+        {
+          "layer": "inspection-metrology",
+          "name": "KLA Corporation",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "KLAC"
+        },
+        {
+          "layer": "chip-design-software",
+          "name": "Synopsys",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "SNPS"
+        },
+        {
+          "layer": "chip-ip",
+          "name": "Arm Holdings",
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ARM"
+        },
+        {
+          "aliases": [
+            "Taiwan Semiconductor Manufacturing"
+          ],
+          "layer": "foundry",
+          "name": "TSMC",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "TSM"
+        },
+        {
+          "aliases": [
+            "NVIDIA"
+          ],
+          "layer": "ai-processors",
+          "name": "Nvidia",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "NVDA"
+        },
+        {
+          "layer": "memory",
+          "name": "Micron Technology",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "MU"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-006",
+      "original_historical_prediction": "UnitedHealth",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "medtech",
+          "name": "Intuitive Surgical",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "medtech",
+          "name": "Stryker",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-007",
+      "original_historical_prediction": "Vertiv",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "grid-equipment",
+          "name": "Siemens Energy",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "NextEra Energy",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        },
+        {
+          "layer": "grid-equipment",
+          "name": "Schneider Electric",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "Iberdrola",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-013",
+      "original_historical_prediction": "Zebra Technologies",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-014",
+      "original_historical_prediction": "Oracle",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": 1,
+      "offline_hypotheses": [
+        {
+          "layer": "enterprise-software",
+          "name": "SAP",
+          "sector": "software",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "engineering-software",
+          "name": "Dassault Systemes",
+          "sector": "software",
+          "structure": "duopoly"
+        },
+        {
+          "layer": "cybersecurity",
+          "name": "Palo Alto Networks",
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "PANW"
+        },
+        {
+          "layer": "data-analytics",
+          "name": "Palantir Technologies",
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "PLTR"
+        },
+        {
+          "layer": "enterprise-software",
+          "name": "Microsoft",
+          "sector": "software",
+          "structure": "oligopoly",
+          "ticker": "MSFT"
+        },
+        {
+          "layer": "engineering-software",
+          "name": "Autodesk",
+          "sector": "software",
+          "structure": "duopoly",
+          "ticker": "ADSK"
+        },
+        {
+          "layer": "cybersecurity",
+          "name": "CrowdStrike",
+          "sector": "software",
+          "structure": "fragmented",
+          "ticker": "CRWD"
+        },
+        {
+          "layer": "data-analytics",
+          "name": "Snowflake",
+          "sector": "software",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-008",
+      "original_historical_prediction": "KKR",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-009",
+      "original_historical_prediction": "Pfizer",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "medtech",
+          "name": "Intuitive Surgical",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "medtech",
+          "name": "Stryker",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-010",
+      "original_historical_prediction": "Broadcom",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.002,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-015",
+      "original_historical_prediction": "Thales",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "defense",
+          "name": "Rheinmetall",
+          "sector": "defense",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "defense",
+          "name": "Lockheed Martin",
+          "sector": "defense",
+          "structure": "oligopoly"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-011",
+      "original_historical_prediction": "Thales",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.002,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-012",
+      "original_historical_prediction": "BASF",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-017",
+      "original_historical_prediction": "Goldman Sachs",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": 4,
+      "offline_hypotheses": [
+        {
+          "layer": "retail",
+          "name": "Costco Wholesale",
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "COST"
+        },
+        {
+          "layer": "payments",
+          "name": "Visa",
+          "sector": "financial services",
+          "structure": "duopoly",
+          "ticker": "V"
+        },
+        {
+          "layer": "exchanges-data",
+          "name": "London Stock Exchange Group",
+          "sector": "financial services",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "banks",
+          "name": "JPMorgan Chase",
+          "sector": "financial services",
+          "structure": "fragmented"
+        },
+        {
+          "layer": "retail",
+          "name": "Walmart",
+          "sector": "retail",
+          "structure": "oligopoly",
+          "ticker": "WMT"
+        },
+        {
+          "layer": "payments",
+          "name": "Mastercard",
+          "sector": "financial services",
+          "structure": "duopoly",
+          "ticker": "MA"
+        },
+        {
+          "layer": "exchanges-data",
+          "name": "S&P Global",
+          "sector": "financial services",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "banks",
+          "name": "Goldman Sachs",
+          "sector": "financial services",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-018",
+      "original_historical_prediction": "Johnson & Johnson",
+      "historical_outcome": "correct",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "medtech",
+          "name": "Intuitive Surgical",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "medtech",
+          "name": "Stryker",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.002,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-001",
+      "original_historical_prediction": "Lattice Semiconductor",
+      "historical_outcome": "wrong",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "layer": "wafer-fab-equipment",
+          "name": "Lam Research",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "LRCX"
+        },
+        {
+          "layer": "inspection-metrology",
+          "name": "KLA Corporation",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "KLAC"
+        },
+        {
+          "layer": "chip-design-software",
+          "name": "Synopsys",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "SNPS"
+        },
+        {
+          "layer": "chip-ip",
+          "name": "Arm Holdings",
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ARM"
+        },
+        {
+          "aliases": [
+            "Taiwan Semiconductor Manufacturing"
+          ],
+          "layer": "foundry",
+          "name": "TSMC",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "TSM"
+        },
+        {
+          "aliases": [
+            "NVIDIA"
+          ],
+          "layer": "ai-processors",
+          "name": "Nvidia",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "NVDA"
+        },
+        {
+          "layer": "memory",
+          "name": "Micron Technology",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "MU"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-019",
+      "original_historical_prediction": null,
+      "historical_outcome": "unresolved",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-020",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_identified",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": 3,
+      "offline_hypotheses": [
+        {
+          "layer": "lithography",
+          "name": "ASML Holding",
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ASML"
+        },
+        {
+          "layer": "inspection-metrology",
+          "name": "KLA Corporation",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "KLAC"
+        },
+        {
+          "layer": "chip-design-software",
+          "name": "Synopsys",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "SNPS"
+        },
+        {
+          "layer": "chip-design-software",
+          "name": "Cadence Design Systems",
+          "sector": "semiconductor",
+          "structure": "duopoly",
+          "ticker": "CDNS"
+        },
+        {
+          "layer": "chip-ip",
+          "name": "Arm Holdings",
+          "sector": "semiconductor",
+          "structure": "monopoly",
+          "ticker": "ARM"
+        },
+        {
+          "layer": "wafer-fab-equipment",
+          "name": "Lam Research",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "LRCX"
+        },
+        {
+          "aliases": [
+            "Taiwan Semiconductor Manufacturing"
+          ],
+          "layer": "foundry",
+          "name": "TSMC",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "TSM"
+        },
+        {
+          "aliases": [
+            "NVIDIA"
+          ],
+          "layer": "ai-processors",
+          "name": "Nvidia",
+          "sector": "semiconductor",
+          "structure": "oligopoly",
+          "ticker": "NVDA"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-021",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "grid-equipment",
+          "name": "Siemens Energy",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "NextEra Energy",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        },
+        {
+          "layer": "grid-equipment",
+          "name": "Schneider Electric",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "Iberdrola",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.002,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-022",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "grid-equipment",
+          "name": "Siemens Energy",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "NextEra Energy",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        },
+        {
+          "layer": "grid-equipment",
+          "name": "Schneider Electric",
+          "sector": "power infrastructure",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "utility",
+          "name": "Iberdrola",
+          "sector": "power infrastructure",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-023",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-024",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [
+        {
+          "layer": "payments",
+          "name": "Visa",
+          "sector": "financial services",
+          "structure": "duopoly",
+          "ticker": "V"
+        },
+        {
+          "layer": "exchanges-data",
+          "name": "London Stock Exchange Group",
+          "sector": "financial services",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "banks",
+          "name": "JPMorgan Chase",
+          "sector": "financial services",
+          "structure": "fragmented"
+        },
+        {
+          "layer": "payments",
+          "name": "Mastercard",
+          "sector": "financial services",
+          "structure": "duopoly",
+          "ticker": "MA"
+        },
+        {
+          "layer": "exchanges-data",
+          "name": "S&P Global",
+          "sector": "financial services",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "banks",
+          "name": "Goldman Sachs",
+          "sector": "financial services",
+          "structure": "fragmented"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.002,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-025",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "headline_only",
+      "analysis_seconds": 0.001,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-026",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": null,
+      "offline_hypotheses": [],
+      "offline_hypothesis_status": "no_local_sector_hypotheses",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.003,
+      "evaluation_class": "development_regression"
+    },
+    {
+      "case_id": "HT-027",
+      "original_historical_prediction": null,
+      "historical_outcome": "not_tested",
+      "new_top3": [],
+      "correct_rank": null,
+      "offline_hypothesis_rank": 3,
+      "offline_hypotheses": [
+        {
+          "layer": "medtech",
+          "name": "Intuitive Surgical",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "pharma",
+          "name": "Novo Nordisk",
+          "sector": "pharmaceutical",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "life-science-tools",
+          "name": "Thermo Fisher Scientific",
+          "sector": "pharmaceutical",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "medtech",
+          "name": "Stryker",
+          "sector": "healthcare",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "pharma",
+          "name": "Eli Lilly",
+          "sector": "pharmaceutical",
+          "structure": "oligopoly"
+        },
+        {
+          "layer": "life-science-tools",
+          "name": "Danaher",
+          "sector": "pharmaceutical",
+          "structure": "oligopoly"
+        }
+      ],
+      "offline_hypothesis_status": "unverified_sector_universe_suggestions",
+      "abstained": true,
+      "countercandidate_count": 0,
+      "input_completeness": "complete",
+      "analysis_seconds": 0.002,
+      "evaluation_class": "development_regression"
+    }
+  ],
+  "limitations": [
+    "Headline-only inputs are not complete original teasers.",
+    "No exact publication times are present in this reconstruction.",
+    "No identification quality proven without authentic dated candidate-source packets.",
+    "The original 10/7/1 history is not the performance of this new scan.",
+    "New reference cases are development regressions, not independent blind tests."
+  ]
+}

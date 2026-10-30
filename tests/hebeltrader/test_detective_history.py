@@ -23,8 +23,8 @@ def test_history_complete_and_honest():
     assert "Zoom" in cases["HT-004"]["notes"]
     assert "Goldman Sachs" in cases["HT-017"]["notes"]
     assert "Johnson & Johnson" in cases["HT-018"]["reported_identity"]
-    assert cases["HT-002"]["original_text"] is None
-    assert cases["HT-017"]["publication_date"] is None
+    assert "Turnaround-Alarm im Versicherungssektor" in cases["HT-002"]["original_text"]
+    assert cases["HT-017"]["publication_date"] == "2026-10-19"
     assert cases["HT-001"]["publication_date"] == "2026-10-28"
     assert all(c["historical_top3"] is None for c in cases.values())
     assert all(c["evaluation_class"] == "development_regression" for c in cases.values())
