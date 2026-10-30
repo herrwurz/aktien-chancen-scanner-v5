@@ -82,3 +82,22 @@ def ticker_for(name):
         if asset.get("ticker") and re.sub(r"[^a-z0-9]", "", asset["name"].casefold()) in (key,):
             return asset["ticker"]
     return None
+
+
+def screened_names(text, **options):
+    return [asset["name"] for asset in screen(text, **options)]
+
+
+def structure_bonus(name, text):
+    """Bonus when the teaser says 'customers have no choice' and the layer is concentrated."""
+    if not re.search(CHOICE, stock_text(text), re.I):
+        return None
+    key = re.sub(r"[^a-z0-9]", "", name.casefold())
+    for asset in load_universe():
+        if key and key == re.sub(r"[^a-z0-9]", "", asset["name"].casefold()):
+            return {
+                "layer": asset["layer"],
+                "structure": asset["structure"],
+                "bonus": {"monopoly": 15, "duopoly": 15, "oligopoly": 2}.get(asset["structure"], 0),
+            }
+    return None
