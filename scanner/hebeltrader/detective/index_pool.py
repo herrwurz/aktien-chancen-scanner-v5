@@ -18,7 +18,9 @@ from pathlib import Path
 from .structure_screen import load_universe as load_curated_universe
 
 POOL_PATH = Path(__file__).resolve().parent / "index_pool_v1.json"
+REMAP_PATH = Path(__file__).resolve().parent / "index_pool_ticker_remap_v1.json"
 POOL_FORMAT = "hebeltrader-index-pool-v1"
+_NORDIC_EXCHANGES = frozenset({"ST", "CO", "HE", "OL"})
 
 # Wikipedia / publisher suffixes → EODHD exchange codes used by chart_check.
 _SUFFIX_MAP = {
@@ -109,38 +111,99 @@ def normalize_sector(raw: str | None) -> str | None:
     return text.casefold()
 
 
+def _nordic_share_class(base: str) -> str:
+    """ASSAB / ERICB → ASSA-B / ERIC-B (EODHD Nordic class form)."""
+    if "-" in base:
+        return base
+    match = re.fullmatch(r"([A-Z]{2,})([ABC])", base)
+    if match:
+        return f"{match.group(1)}-{match.group(2)}"
+    return base
+
+
 def normalize_eodhd_ticker(
     symbol: str | None,
     *,
     country: str | None = None,
     default_exchange: str | None = None,
 ) -> str | None:
-    """Return an EODHD-ready ticker (US bare, else CODE.EXCHANGE)."""
+    """Return an EODHD-ready ticker (US bare, else CODE.EXCHANGE).
+
+    Preserves Nordic ``ASSA-B.ST`` hyphens. Maps US share classes ``BF.B`` → ``BF-B``.
+    Collapses publisher forms like ``NDA.FI`` + Finland into ``NDA-FI.HE``.
+    """
     if not symbol:
         return None
     raw = str(symbol).strip().upper().replace(" ", "")
-    raw = raw.replace("-", ".")
     if not raw or raw in {".", ".."}:
         return None
-    if "." in raw:
-        base, suffix = raw.rsplit(".", 1)
-        if not base:
-            return None
-        mapped = _SUFFIX_MAP.get(suffix, suffix)
-        if mapped == "US":
-            return base
-        return f"{base}.{mapped}"
-    exchange = None
+
+    country_exchange = None
     if country:
-        exchange = _COUNTRY_SUFFIX.get(country.strip().casefold())
-    exchange = exchange or default_exchange
+        country_exchange = _COUNTRY_SUFFIX.get(country.strip().casefold())
+    country_exchange = country_exchange or default_exchange
+
+    # Share class without venue: BF.B → BF-B; BT.A + UK → BT-A.LSE.
+    if re.fullmatch(r"[A-Z]{1,5}\.[A-Z]", raw):
+        base = raw.replace(".", "-")
+        if not country_exchange or country_exchange == "US":
+            return base
+        return f"{base}.{country_exchange}"
+
+    exchange = None
+    base = raw
+    if "." in raw:
+        parts = raw.split(".")
+        if len(parts) == 2:
+            base, suffix = parts
+            if suffix in _SUFFIX_MAP:
+                exchange = _SUFFIX_MAP[suffix]
+            elif suffix.isalpha() and len(suffix) <= 3:
+                # Publisher tag, not a venue: NDA.FI → NDA-FI (+ country → .HE).
+                base = f"{base}-{suffix}"
+            else:
+                exchange = suffix
+        elif len(parts) >= 3:
+            # NDA.FI.HE → NDA-FI.HE
+            if parts[-1] in _SUFFIX_MAP:
+                exchange = _SUFFIX_MAP[parts[-1]]
+                base = "-".join(parts[:-1])
+            else:
+                base = "-".join(parts)
+        else:
+            return None
+
+    if not base:
+        return None
+
+    exchange = exchange or country_exchange
+    if exchange in _NORDIC_EXCHANGES:
+        base = _nordic_share_class(base)
+
     if not exchange or exchange == "US":
-        return raw
-    return f"{raw}.{exchange}"
+        return base
+    return f"{base}.{exchange}"
 
 
 def _company_key(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", (name or "").casefold())
+
+
+@lru_cache(maxsize=1)
+def load_ticker_remaps(path: str | None = None) -> dict[str, str]:
+    target = Path(path) if path else REMAP_PATH
+    if not target.is_file():
+        return {}
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    remaps = payload.get("remaps") or {}
+    return {str(key): str(value) for key, value in remaps.items()}
+
+
+def apply_ticker_remap(ticker: str | None, remaps: dict[str, str] | None = None) -> str | None:
+    if not ticker:
+        return None
+    table = remaps if remaps is not None else load_ticker_remaps()
+    return table.get(ticker, ticker)
 
 
 @lru_cache(maxsize=1)
@@ -153,7 +216,17 @@ def load_pool_document(path: str | None = None) -> dict:
 
 
 def load_pool_assets(path: str | None = None) -> list[dict]:
-    return list(load_pool_document(path)["assets"])
+    remaps = load_ticker_remaps()
+    assets = []
+    for raw in load_pool_document(path)["assets"]:
+        asset = dict(raw)
+        ticker = asset.get("ticker")
+        mapped = apply_ticker_remap(ticker, remaps)
+        if mapped and mapped != ticker:
+            asset.setdefault("ticker_original", ticker)
+            asset["ticker"] = mapped
+        assets.append(asset)
+    return assets
 
 
 def _overlay_curated(pool_assets: list[dict], curated: list[dict] | None = None) -> list[dict]:

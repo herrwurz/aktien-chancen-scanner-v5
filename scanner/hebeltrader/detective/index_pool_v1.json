@@ -2,7 +2,7 @@
  "format": "hebeltrader-index-pool-v1",
  "schema_version": 1,
  "built_at": "2026-10-30T13:29:14.244561+00:00",
- "note": "Index-union identity pool for market hypotheses. Membership from public constituent lists only. Curated structure tags are overlaid at load time. Not a solution list.",
+ "note": "Index-union identity pool for market hypotheses. Membership from public constituent lists only. Curated structure tags are overlaid at load time. Not a solution list. Ticker remaps v1 applied for EODHD compatibility.",
  "indexes": [
   "spx",
   "ndx",
@@ -198,7 +198,7 @@
   },
   {
    "name": "Adevinta",
-   "ticker": "ADH.OL",
+   "ticker": "ADEA",
    "sector": "consumer products and services",
    "sector_raw": "Consumer Products and Services",
    "sources": [
@@ -206,7 +206,8 @@
    ],
    "countries": [
     "Norway"
-   ]
+   ],
+   "ticker_original": "ADH.OL"
   },
   {
    "name": "Adidas",
@@ -467,7 +468,7 @@
   },
   {
    "name": "Aker BP",
-   "ticker": "AKERBP.OL",
+   "ticker": "AKRBP.OL",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -475,7 +476,8 @@
    ],
    "countries": [
     "Norway"
-   ]
+   ],
+   "ticker_original": "AKERBP.OL"
   },
   {
    "name": "AkzoNobel",
@@ -567,7 +569,7 @@
   },
   {
    "name": "Allfunds Group",
-   "ticker": "ALLFG.MC",
+   "ticker": "ALLFG.AS",
    "sector": "financial services",
    "sector_raw": "Financial Services",
    "sources": [
@@ -575,7 +577,8 @@
    ],
    "countries": [
     "Spain"
-   ]
+   ],
+   "ticker_original": "ALLFG.MC"
   },
   {
    "name": "Alliant Energy",
@@ -695,7 +698,7 @@
   },
   {
    "name": "Ambu",
-   "ticker": "AMBUB.CO",
+   "ticker": "AMBU-B.CO",
    "sector": "healthcare",
    "sector_raw": "Health Care",
    "sources": [
@@ -703,7 +706,8 @@
    ],
    "countries": [
     "Denmark"
-   ]
+   ],
+   "ticker_original": "AMBUB.CO"
   },
   {
    "name": "Amcor",
@@ -874,7 +878,7 @@
   },
   {
    "name": "ams OSRAM",
-   "ticker": "AMS.VI",
+   "ticker": "AMS2.VI",
    "sector": "technology",
    "sector_raw": "Technology",
    "sources": [
@@ -882,7 +886,8 @@
    ],
    "countries": [
     "Austria"
-   ]
+   ],
+   "ticker_original": "AMS.VI"
   },
   {
    "name": "Analog Devices",
@@ -1076,7 +1081,7 @@
   },
   {
    "name": "ArcelorMittal",
-   "ticker": "MT.XETRA",
+   "ticker": "MT.AS",
    "sector": "basic resources",
    "sector_raw": "Basic Resources",
    "sources": [
@@ -1084,7 +1089,8 @@
    ],
    "countries": [
     "Luxembourg"
-   ]
+   ],
+   "ticker_original": "MT.XETRA"
   },
   {
    "name": "Arch Capital Group",
@@ -1240,7 +1246,7 @@
   },
   {
    "name": "Assa Abloy",
-   "ticker": "ASSAB.ST",
+   "ticker": "ASSA-B.ST",
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
@@ -1248,7 +1254,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "ASSAB.ST"
   },
   {
    "name": "Associated British Foods",
@@ -1338,7 +1345,7 @@
   },
   {
    "name": "Atlas Copco",
-   "ticker": "ATCOA.ST",
+   "ticker": "ATCO-A.ST",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -1346,7 +1353,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "ATCOA.ST"
   },
   {
    "name": "Atmos Energy",
@@ -1363,7 +1371,7 @@
   },
   {
    "name": "Atos",
-   "ticker": "ATOS.PA",
+   "ticker": "ATO.PA",
    "sector": "technology",
    "sector_raw": "Technology",
    "sources": [
@@ -1371,7 +1379,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "ATOS.PA"
   },
   {
    "name": "Aurubis",
@@ -1598,7 +1607,7 @@
   },
   {
    "name": "Balder",
-   "ticker": "BALDB.ST",
+   "ticker": "BALD-B.ST",
    "sector": "real estate",
    "sector_raw": "Real Estate",
    "sources": [
@@ -1606,7 +1615,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "BALDB.ST"
   },
   {
    "name": "Balfour Beatty",
@@ -1872,7 +1882,7 @@
   },
   {
    "name": "Belimo",
-   "ticker": "BEB.SW",
+   "ticker": "BEAN.SW",
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
@@ -1880,7 +1890,8 @@
    ],
    "countries": [
     "Switzerland"
-   ]
+   ],
+   "ticker_original": "BEB.SW"
   },
   {
    "name": "Berkeley Group Holdings",
@@ -2264,7 +2275,7 @@
   },
   {
    "name": "Brown–Forman",
-   "ticker": "BF.B",
+   "ticker": "BF-B",
    "sector": "retail",
    "sector_raw": "Consumer Staples",
    "sources": [
@@ -2273,7 +2284,8 @@
    "countries": [
     "United States"
    ],
-   "gics_sub": "Distillers & Vintners"
+   "gics_sub": "Distillers & Vintners",
+   "ticker_original": "BF.B"
   },
   {
    "name": "Brunello Cucinelli",
@@ -2289,7 +2301,7 @@
   },
   {
    "name": "BT Group",
-   "ticker": "BT.A",
+   "ticker": "BT-A.LSE",
    "sector": "telecommunications",
    "sector_raw": "Telecommunications",
    "sources": [
@@ -2297,7 +2309,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "BT.A"
   },
   {
    "name": "Bunge Global",
@@ -2438,7 +2451,7 @@
   },
   {
    "name": "Capgemini",
-   "ticker": "CAPP.PA",
+   "ticker": "CAP.PA",
    "sector": "technology",
    "sector_raw": "Technology",
    "sources": [
@@ -2446,7 +2459,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "CAPP.PA"
   },
   {
    "name": "Capital One",
@@ -2502,7 +2516,7 @@
   },
   {
    "name": "Carrefour",
-   "ticker": "CARR.PA",
+   "ticker": "CA.PA",
    "sector": "retail",
    "sector_raw": "Retail",
    "sources": [
@@ -2510,7 +2524,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "CARR.PA"
   },
   {
    "name": "Carrier Global",
@@ -2975,7 +2990,7 @@
   },
   {
    "name": "Coca-Cola HBC",
-   "ticker": "CCH.SW",
+   "ticker": "CCH.LSE",
    "sector": "food, beverage and tobacco",
    "sector_raw": "Food, Beverage and Tobacco",
    "sources": [
@@ -2983,7 +2998,8 @@
    ],
    "countries": [
     "Switzerland"
-   ]
+   ],
+   "ticker_original": "CCH.SW"
   },
   {
    "name": "Cognizant",
@@ -3404,7 +3420,7 @@
   },
   {
    "name": "Crédit Agricole",
-   "ticker": "CAGR.PA",
+   "ticker": "ACA.PA",
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
@@ -3412,7 +3428,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "CAGR.PA"
   },
   {
    "name": "CSX Corporation",
@@ -4026,7 +4043,7 @@
   },
   {
    "name": "DSM-Firmenich",
-   "ticker": "DSM.SW",
+   "ticker": "DSFIR.AS",
    "sector": "chemicals",
    "sector_raw": "Chemicals",
    "sources": [
@@ -4034,7 +4051,8 @@
    ],
    "countries": [
     "Switzerland"
-   ]
+   ],
+   "ticker_original": "DSM.SW"
   },
   {
    "name": "DTE Energy",
@@ -4216,7 +4234,7 @@
   },
   {
    "name": "Eiffage",
-   "ticker": "EFGI.PA",
+   "ticker": "FGR.PA",
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
@@ -4224,11 +4242,12 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "EFGI.PA"
   },
   {
    "name": "Electrolux",
-   "ticker": "ELUX.B",
+   "ticker": "ELUX-B.ST",
    "sector": "consumer products and services",
    "sector_raw": "Consumer Products and Services",
    "sources": [
@@ -4236,7 +4255,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "ELUX.B"
   },
   {
    "name": "Elevance Health",
@@ -4339,7 +4359,7 @@
   },
   {
    "name": "Enel",
-   "ticker": "ENEL.MI",
+   "ticker": "ENL.XETRA",
    "sector": "power infrastructure",
    "sector_raw": "Utilities",
    "sources": [
@@ -4348,7 +4368,8 @@
    ],
    "countries": [
     "Italy"
-   ]
+   ],
+   "ticker_original": "ENEL.MI"
   },
   {
    "name": "Engie",
@@ -4365,7 +4386,7 @@
   },
   {
    "name": "Eni",
-   "ticker": "ENI.MI",
+   "ticker": "ENI.XETRA",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -4374,7 +4395,8 @@
    ],
    "countries": [
     "Italy"
-   ]
+   ],
+   "ticker_original": "ENI.MI"
   },
   {
    "name": "Entain",
@@ -4416,7 +4438,7 @@
   },
   {
    "name": "Epiroc",
-   "ticker": "EPIA.ST",
+   "ticker": "EPI-A.ST",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -4424,7 +4446,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "EPIA.ST"
   },
   {
    "name": "EQT Corporation",
@@ -4467,7 +4490,7 @@
   },
   {
    "name": "Ericsson",
-   "ticker": "ERICB.ST",
+   "ticker": "ERIC-B.ST",
    "sector": "telecommunications",
    "sector_raw": "Telecommunications",
    "sources": [
@@ -4475,7 +4498,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "ERICB.ST"
   },
   {
    "name": "Erie Indemnity",
@@ -4544,7 +4568,7 @@
   },
   {
    "name": "Euronext",
-   "ticker": "ENX.AS",
+   "ticker": "ENX.PA",
    "sector": "financial services",
    "sector_raw": "Financial Services",
    "sources": [
@@ -4552,7 +4576,8 @@
    ],
    "countries": [
     "Netherlands"
-   ]
+   ],
+   "ticker_original": "ENX.AS"
   },
   {
    "name": "Everest Group",
@@ -4923,7 +4948,7 @@
   },
   {
    "name": "Ferrari",
-   "ticker": "RACE.MI",
+   "ticker": "RACE",
    "sector": "retail",
    "sector_raw": "Consumer Discretionary",
    "sources": [
@@ -4933,7 +4958,8 @@
    "countries": [
     "Italy",
     "Netherlands"
-   ]
+   ],
+   "ticker_original": "RACE.MI"
   },
   {
    "name": "Ferrovial",
@@ -5051,7 +5077,7 @@
   },
   {
    "name": "Flutter Entertainment",
-   "ticker": "FLTR.IR",
+   "ticker": "FLUT",
    "sector": "travel and leisure",
    "sector_raw": "Travel and Leisure",
    "sources": [
@@ -5059,7 +5085,8 @@
    ],
    "countries": [
     "Ireland"
-   ]
+   ],
+   "ticker_original": "FLTR.IR"
   },
   {
    "name": "Ford Motor Company",
@@ -5630,7 +5657,7 @@
   },
   {
    "name": "Grafton Group",
-   "ticker": "GFT.IR",
+   "ticker": "GFTU.LSE",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -5638,11 +5665,12 @@
    ],
    "countries": [
     "Ireland"
-   ]
+   ],
+   "ticker_original": "GFT.IR"
   },
   {
    "name": "Greggs",
-   "ticker": "GREG.LSE",
+   "ticker": "GRG.LSE",
    "sector": "retail",
    "sector_raw": "Retail",
    "sources": [
@@ -5650,7 +5678,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "GREG.LSE"
   },
   {
    "name": "Grifols",
@@ -5690,7 +5719,7 @@
   },
   {
    "name": "H&M",
-   "ticker": "HMB.ST",
+   "ticker": "HM-B.ST",
    "sector": "retail",
    "sector_raw": "Retail",
    "sources": [
@@ -5698,11 +5727,12 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "HMB.ST"
   },
   {
    "name": "Haleon",
-   "ticker": "HLI.LSE",
+   "ticker": "HLN.LSE",
    "sector": "consumer products and services",
    "sector_raw": "Consumer Products and Services",
    "sources": [
@@ -5710,7 +5740,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "HLI.LSE"
   },
   {
    "name": "Halliburton",
@@ -5979,7 +6010,7 @@
   },
   {
    "name": "Hiscox",
-   "ticker": "HSX",
+   "ticker": "HSX.LSE",
    "sector": "insurance",
    "sector_raw": "Insurance",
    "sources": [
@@ -5987,7 +6018,8 @@
    ],
    "countries": [
     "Bermuda"
-   ]
+   ],
+   "ticker_original": "HSX"
   },
   {
    "name": "Hochtief",
@@ -6219,7 +6251,7 @@
   },
   {
    "name": "Husqvarna",
-   "ticker": "HUSQB.ST",
+   "ticker": "HUSQ-B.ST",
    "sector": "consumer products and services",
    "sector_raw": "Consumer Products and Services",
    "sources": [
@@ -6227,7 +6259,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "HUSQB.ST"
   },
   {
    "name": "Iberdrola",
@@ -6295,7 +6328,7 @@
   },
   {
    "name": "IG Group",
-   "ticker": "IGGI.LSE",
+   "ticker": "IGG.LSE",
    "sector": "financial services",
    "sector_raw": "Financial Services",
    "sources": [
@@ -6303,7 +6336,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "IGGI.LSE"
   },
   {
    "name": "Illinois Tool Works",
@@ -6483,7 +6517,7 @@
   },
   {
    "name": "InPost",
-   "ticker": "INPST.XETRA",
+   "ticker": "INPST.AS",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -6491,7 +6525,8 @@
    ],
    "countries": [
     "Luxembourg"
-   ]
+   ],
+   "ticker_original": "INPST.XETRA"
   },
   {
    "name": "Insulet Corporation",
@@ -6571,7 +6606,7 @@
   },
   {
    "name": "Intermediate Capital Group",
-   "ticker": "ICP.LSE",
+   "ticker": "ICG.LSE",
    "sector": "financial services",
    "sector_raw": "Financial Services",
    "sources": [
@@ -6579,7 +6614,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "ICP.LSE"
   },
   {
    "name": "International Airlines Group",
@@ -6721,7 +6757,7 @@
   },
   {
    "name": "Investec",
-   "ticker": "INP.LSE",
+   "ticker": "INVP.LSE",
    "sector": "financial services",
    "sector_raw": "Financial Services",
    "sources": [
@@ -6729,7 +6765,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "INP.LSE"
   },
   {
    "name": "Invitation Homes",
@@ -6758,7 +6795,7 @@
   },
   {
    "name": "Ipsos",
-   "ticker": "IPX.PA",
+   "ticker": "IPS.PA",
    "sector": "media",
    "sector_raw": "Media",
    "sources": [
@@ -6766,7 +6803,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "IPX.PA"
   },
   {
    "name": "IQVIA",
@@ -7498,7 +7536,7 @@
   },
   {
    "name": "Liberty Global",
-   "ticker": "LII.LSE",
+   "ticker": "LBTYA",
    "sector": "telecommunications",
    "sector_raw": "Telecommunications",
    "sources": [
@@ -7506,7 +7544,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "LII.LSE"
   },
   {
    "name": "LifeCo",
@@ -7738,7 +7777,7 @@
   },
   {
    "name": "Lundin Energy",
-   "ticker": "LUN.ST",
+   "ticker": "LUMI.ST",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -7746,7 +7785,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "LUN.ST"
   },
   {
    "name": "LVMH",
@@ -7812,7 +7852,7 @@
   },
   {
    "name": "Maersk",
-   "ticker": "MAERSKB.CO",
+   "ticker": "MAERSK-B.CO",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -7820,7 +7860,8 @@
    ],
    "countries": [
     "Denmark"
-   ]
+   ],
+   "ticker_original": "MAERSKB.CO"
   },
   {
    "name": "MAN SE",
@@ -8179,7 +8220,7 @@
   },
   {
    "name": "Michelin",
-   "ticker": "MICP.PA",
+   "ticker": "ML.PA",
    "sector": "automobiles and parts",
    "sector_raw": "Automobiles and Parts",
    "sources": [
@@ -8187,7 +8228,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "MICP.PA"
   },
   {
    "name": "Microchip Technology",
@@ -8568,7 +8610,7 @@
   },
   {
    "name": "National Bank of Greece",
-   "ticker": "NAB",
+   "ticker": "ETE.AT",
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
@@ -8576,7 +8618,8 @@
    ],
    "countries": [
     "Greece"
-   ]
+   ],
+   "ticker_original": "NAB"
   },
   {
    "name": "National Grid",
@@ -8653,7 +8696,7 @@
   },
   {
    "name": "Neste",
-   "ticker": "NSN.HE",
+   "ticker": "NESTE.HE",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -8661,7 +8704,8 @@
    ],
    "countries": [
     "Finland"
-   ]
+   ],
+   "ticker_original": "NSN.HE"
   },
   {
    "name": "Nestlé",
@@ -8790,7 +8834,7 @@
   },
   {
    "name": "Nibe Industrier",
-   "ticker": "NIBEB.ST",
+   "ticker": "NIBE-B.ST",
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
@@ -8798,7 +8842,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "NIBEB.ST"
   },
   {
    "name": "Nike, Inc.",
@@ -8853,7 +8898,7 @@
   },
   {
    "name": "Nordea",
-   "ticker": "NDA.FI.HE",
+   "ticker": "NDA-FI.HE",
    "sector": "financial services",
    "sector_raw": "Financials",
    "sources": [
@@ -8862,7 +8907,8 @@
    ],
    "countries": [
     "Finland"
-   ]
+   ],
+   "ticker_original": "NDA.FI.HE"
   },
   {
    "name": "Nordex",
@@ -9219,7 +9265,7 @@
   },
   {
    "name": "Ontex",
-   "ticker": "ONT.BR",
+   "ticker": "ONTEX.BR",
    "sector": "personal care, drug and grocery stores",
    "sector_raw": "Personal Care, Drug and Grocery Stores",
    "sources": [
@@ -9227,7 +9273,8 @@
    ],
    "countries": [
     "Belgium"
-   ]
+   ],
+   "ticker_original": "ONT.BR"
   },
   {
    "name": "Oracle Corporation",
@@ -9369,7 +9416,7 @@
   },
   {
    "name": "Pandora",
-   "ticker": "PANDORA.CO",
+   "ticker": "PNDORA.CO",
    "sector": "consumer products and services",
    "sector_raw": "Consumer Products and Services",
    "sources": [
@@ -9377,7 +9424,8 @@
    ],
    "countries": [
     "Denmark"
-   ]
+   ],
+   "ticker_original": "PANDORA.CO"
   },
   {
    "name": "Parker Hannifin",
@@ -9530,7 +9578,7 @@
   },
   {
    "name": "Pernod Ricard",
-   "ticker": "PERP.PA",
+   "ticker": "RI.PA",
    "sector": "food, beverage and tobacco",
    "sector_raw": "Food, Beverage and Tobacco",
    "sources": [
@@ -9538,7 +9586,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "PERP.PA"
   },
   {
    "name": "Persimmon plc",
@@ -9895,7 +9944,7 @@
   },
   {
    "name": "Publicis",
-   "ticker": "PSN.PA",
+   "ticker": "PUB.PA",
    "sector": "media",
    "sector_raw": "Media",
    "sources": [
@@ -9903,7 +9952,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "PSN.PA"
   },
   {
    "name": "PulteGroup",
@@ -10911,7 +10961,7 @@
   },
   {
    "name": "Securitas AB",
-   "ticker": "SECUB.ST",
+   "ticker": "SECU-B.ST",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -10919,7 +10969,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SECUB.ST"
   },
   {
    "name": "Segro",
@@ -11073,7 +11124,7 @@
   },
   {
    "name": "SIG Group",
-   "ticker": "SIG.SW",
+   "ticker": "SIGN.SW",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -11081,7 +11132,8 @@
    ],
    "countries": [
     "Switzerland"
-   ]
+   ],
+   "ticker_original": "SIG.SW"
   },
   {
    "name": "Signify",
@@ -11146,7 +11198,7 @@
   },
   {
    "name": "Skandinaviska Enskilda Banken",
-   "ticker": "SEB.ST",
+   "ticker": "SEB-A.ST",
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
@@ -11154,11 +11206,12 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SEB.ST"
   },
   {
    "name": "Skanska",
-   "ticker": "SKAB.ST",
+   "ticker": "SKA-B.ST",
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
@@ -11166,11 +11219,12 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SKAB.ST"
   },
   {
    "name": "SKF",
-   "ticker": "SKF.B",
+   "ticker": "SKF-B.ST",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -11178,7 +11232,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SKF.B"
   },
   {
    "name": "Sky Group",
@@ -11565,7 +11620,7 @@
   },
   {
    "name": "Stellantis",
-   "ticker": "STLAM.AS",
+   "ticker": "STLA",
    "sector": "automobiles and parts",
    "sector_raw": "Automobiles and Parts",
    "sources": [
@@ -11573,7 +11628,8 @@
    ],
    "countries": [
     "Netherlands"
-   ]
+   ],
+   "ticker_original": "STLAM.AS"
   },
   {
    "name": "Steris",
@@ -11602,7 +11658,7 @@
   },
   {
    "name": "Stora Enso",
-   "ticker": "STER.HE",
+   "ticker": "STERV.HE",
    "sector": "basic resources",
    "sector_raw": "Basic Resources",
    "sources": [
@@ -11610,11 +11666,12 @@
    ],
    "countries": [
     "Finland"
-   ]
+   ],
+   "ticker_original": "STER.HE"
   },
   {
    "name": "Storebrand",
-   "ticker": "SRB.OL",
+   "ticker": "STB.OL",
    "sector": "insurance",
    "sector_raw": "Insurance",
    "sources": [
@@ -11622,7 +11679,8 @@
    ],
    "countries": [
     "Norway"
-   ]
+   ],
+   "ticker_original": "SRB.OL"
   },
   {
    "name": "Strabag",
@@ -11712,7 +11770,7 @@
   },
   {
    "name": "Svenska Handelsbanken",
-   "ticker": "SHBB.ST",
+   "ticker": "SHB-B.ST",
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
@@ -11720,7 +11778,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SHBB.ST"
   },
   {
    "name": "Swatch Group",
@@ -11736,7 +11795,7 @@
   },
   {
    "name": "Sweco",
-   "ticker": "SWECOB.ST",
+   "ticker": "SWEC-B.ST",
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
@@ -11744,11 +11803,12 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SWECOB.ST"
   },
   {
    "name": "Swedbank",
-   "ticker": "SWEDA.ST",
+   "ticker": "SWED-A.ST",
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
@@ -11756,7 +11816,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "SWEDA.ST"
   },
   {
    "name": "Swedish Match",
@@ -12035,7 +12096,7 @@
   },
   {
    "name": "Taylor Wimpey",
-   "ticker": "TJW.LSE",
+   "ticker": "TW.LSE",
    "sector": "consumer products and services",
    "sector_raw": "Consumer Products and Services",
    "sources": [
@@ -12043,7 +12104,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "TJW.LSE"
   },
   {
    "name": "TE Connectivity",
@@ -12073,7 +12135,7 @@
   },
   {
    "name": "TechnipFMC",
-   "ticker": "FTI.LSE",
+   "ticker": "FTI",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -12081,11 +12143,12 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "FTI.LSE"
   },
   {
    "name": "Tele2",
-   "ticker": "TEL2.B",
+   "ticker": "TEL2-B.ST",
    "sector": "telecommunications",
    "sector_raw": "Telecommunications",
    "sources": [
@@ -12093,11 +12156,12 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "TEL2.B"
   },
   {
    "name": "Telecom Plus",
-   "ticker": "TPG.LSE",
+   "ticker": "TEP.LSE",
    "sector": "telecommunications",
    "sector_raw": "Telecommunications",
    "sources": [
@@ -12105,7 +12169,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "TPG.LSE"
   },
   {
    "name": "Teledyne Technologies",
@@ -12257,7 +12322,7 @@
   },
   {
    "name": "Teva Pharmaceutical Industries",
-   "ticker": "TEV",
+   "ticker": "TEVA",
    "sector": "healthcare",
    "sector_raw": "Health Care",
    "sources": [
@@ -12265,7 +12330,8 @@
    ],
    "countries": [
     "Israel"
-   ]
+   ],
+   "ticker_original": "TEV"
   },
   {
    "name": "Texas Instruments",
@@ -12332,7 +12398,7 @@
   },
   {
    "name": "Thales",
-   "ticker": "THL.PA",
+   "ticker": "HO.PA",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -12340,7 +12406,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "THL.PA"
   },
   {
    "name": "Thermo Fisher Scientific",
@@ -12432,7 +12499,7 @@
   },
   {
    "name": "TomTom",
-   "ticker": "TOM.AS",
+   "ticker": "TOM2.AS",
    "sector": "technology",
    "sector_raw": "Technology",
    "sources": [
@@ -12440,7 +12507,8 @@
    ],
    "countries": [
     "Netherlands"
-   ]
+   ],
+   "ticker_original": "TOM.AS"
   },
   {
    "name": "TotalEnergies",
@@ -12496,7 +12564,7 @@
   },
   {
    "name": "Transocean",
-   "ticker": "RIGN.SW",
+   "ticker": "RIG",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -12504,7 +12572,8 @@
    ],
    "countries": [
     "Switzerland"
-   ]
+   ],
+   "ticker_original": "RIGN.SW"
   },
   {
    "name": "Traton",
@@ -12546,7 +12615,7 @@
   },
   {
    "name": "Trelleborg",
-   "ticker": "TRELB.ST",
+   "ticker": "TREL-B.ST",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -12554,7 +12623,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "TRELB.ST"
   },
   {
    "name": "Trimble Inc.",
@@ -12608,7 +12678,7 @@
   },
   {
    "name": "TUI Group",
-   "ticker": "TUI.XETRA",
+   "ticker": "TUI1.XETRA",
    "sector": "travel and leisure",
    "sector_raw": "Travel and Leisure",
    "sources": [
@@ -12616,7 +12686,8 @@
    ],
    "countries": [
     "Germany"
-   ]
+   ],
+   "ticker_original": "TUI.XETRA"
   },
   {
    "name": "Twilio",
@@ -12884,7 +12955,7 @@
   },
   {
    "name": "United Utilities",
-   "ticker": "UPW.LSE",
+   "ticker": "UU.LSE",
    "sector": "power infrastructure",
    "sector_raw": "Utilities",
    "sources": [
@@ -12892,7 +12963,8 @@
    ],
    "countries": [
     "United Kingdom"
-   ]
+   ],
+   "ticker_original": "UPW.LSE"
   },
   {
    "name": "UnitedHealth Group",
@@ -13160,7 +13232,7 @@
   },
   {
    "name": "Vestas",
-   "ticker": "VESTAS.CO",
+   "ticker": "VWS.CO",
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
@@ -13168,11 +13240,12 @@
    ],
    "countries": [
     "Denmark"
-   ]
+   ],
+   "ticker_original": "VESTAS.CO"
   },
   {
    "name": "Viaplay",
-   "ticker": "VPLAYB.ST",
+   "ticker": "VPLAY-B.ST",
    "sector": "media",
    "sector_raw": "Media",
    "sources": [
@@ -13180,7 +13253,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "VPLAYB.ST"
   },
   {
    "name": "Viatris",
@@ -13359,7 +13433,7 @@
   },
   {
    "name": "Volvo Group",
-   "ticker": "VOLVB.ST",
+   "ticker": "VOLV-B.ST",
    "sector": "industrial goods and services",
    "sector_raw": "Industrial Goods and Services",
    "sources": [
@@ -13367,7 +13441,8 @@
    ],
    "countries": [
     "Sweden"
-   ]
+   ],
+   "ticker_original": "VOLVB.ST"
   },
   {
    "name": "Vonovia",
@@ -13600,7 +13675,7 @@
   },
   {
    "name": "Wendel",
-   "ticker": "WEND.PA",
+   "ticker": "MF.PA",
    "sector": "financial services",
    "sector_raw": "Financial Services",
    "sources": [
@@ -13608,7 +13683,8 @@
    ],
    "countries": [
     "France"
-   ]
+   ],
+   "ticker_original": "WEND.PA"
   },
   {
    "name": "West Pharmaceutical Services",
@@ -13951,5 +14027,6 @@
     "Denmark"
    ]
   }
- ]
+ ],
+ "ticker_remap_applied": 76
 }

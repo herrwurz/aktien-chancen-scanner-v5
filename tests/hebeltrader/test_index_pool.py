@@ -1,7 +1,9 @@
 from scanner.hebeltrader.detective import market_screen as ms
 from scanner.hebeltrader.detective.chart_check import trend_features
 from scanner.hebeltrader.detective.index_pool import (
+    apply_ticker_remap,
     load_pool_assets,
+    load_ticker_remaps,
     market_universe_list,
     normalize_eodhd_ticker,
     normalize_sector,
@@ -15,6 +17,12 @@ def test_normalize_eodhd_ticker_maps_de_to_xetra_and_keeps_us_bare():
     assert normalize_eodhd_ticker("AIXA", country="Germany") == "AIXA.XETRA"
     assert normalize_eodhd_ticker("ZURN", country="Switzerland") == "ZURN.SW"
     assert normalize_eodhd_ticker("IMO1.F") == "IMO1.F"
+    assert normalize_eodhd_ticker("ASSAB", country="Sweden") == "ASSA-B.ST"
+    assert normalize_eodhd_ticker("ASSA-B.ST") == "ASSA-B.ST"
+    assert normalize_eodhd_ticker("AMBUB", country="Denmark") == "AMBU-B.CO"
+    assert normalize_eodhd_ticker("BF.B") == "BF-B"
+    assert normalize_eodhd_ticker("BT.A", country="United Kingdom") == "BT-A.LSE"
+    assert normalize_eodhd_ticker("NDA.FI", country="Finland") == "NDA-FI.HE"
 
 
 def test_normalize_sector_maps_financial_and_pharma():
@@ -44,6 +52,18 @@ def test_pool_v1_includes_atx_austria():
     assert by_name["Austrian Post"]["ticker"] == "POST.VI"
     assert by_name["Immofinanz"]["ticker"] == "IMO1.F"
     assert "Austria" in by_name["BAWAG Group"].get("countries", [])
+
+
+def test_ticker_remaps_cover_nordic_and_french_pit_misses():
+    remaps = load_ticker_remaps()
+    assert remaps["ASSAB.ST"] == "ASSA-B.ST"
+    assert remaps["CAPP.PA"] == "CAP.PA"
+    assert remaps["ENI.MI"] == "ENI.XETRA"
+    assert apply_ticker_remap("ASSAB.ST") == "ASSA-B.ST"
+    assets = {a["name"]: a for a in load_pool_assets()}
+    assert assets["Assa Abloy"]["ticker"] == "ASSA-B.ST"
+    assert assets["Capgemini"]["ticker"] == "CAP.PA"
+    assert assets["Eni"]["ticker"] == "ENI.XETRA"
 
 
 def test_market_universe_overlays_curated_and_keeps_pool_names():

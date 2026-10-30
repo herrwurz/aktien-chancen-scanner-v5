@@ -41,8 +41,12 @@ Merged: Index-Union SPX/NDX/DAX/MDAX/SX5E/SXXP/**ATX** (~1109 Namen). Market-Scr
 defaults darauf. PIT-Pool-Export: 919/1045 Bars, Coverage 904–906 / 27 as_of
 (`docs/examples/snapshots-pit-pool-v1-2026-10-30.meta.json`). DBK + ATX Spot-Checks ok.
 
-## 6. Offen (nächste Schritte)
-**A.** Share-Class/Lokal-Ticker-Normalisierung (~126 Misses im PIT-Export).
+## 6. Ticker-Remap v1 (2026-10-30)
+~76 PIT-Misses auf EODHD-taugliche Codes gemappt (Nordic Share-Classes, FR/UK-Korrekturen,
+IT→XETRA/US wo möglich). Datei: `index_pool_ticker_remap_v1.json`.
+
+## 7. Offen (nächste Schritte)
+**A.** Optional: Pool-PIT mit Remaps neu exportieren (Coverage-Messung).
 
 **B.** Optional: Refs/Blind mit Pool-PIT neu diagnostizieren (ohne Score-Retuning von 202/26).
 
