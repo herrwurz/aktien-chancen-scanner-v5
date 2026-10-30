@@ -40,7 +40,7 @@ def test_diagnose_inputs_reports_clues_and_market_top(tmp_path, monkeypatch):
     }
     in_path = tmp_path / "in.json"
     in_path.write_text(json.dumps(inputs), encoding="utf-8")
-    monkeypatch.setattr(ms, "load_universe", lambda: universe)
+    monkeypatch.setattr(ms, "market_universe_list", lambda: universe)
     import scanner.hebeltrader.detective.structure_screen as structure_mod
 
     monkeypatch.setattr(structure_mod, "load_universe", lambda: universe)

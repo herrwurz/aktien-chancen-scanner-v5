@@ -3,15 +3,15 @@ from datetime import date
 from pathlib import Path
 
 from scanner.hebeltrader.detective import market_screen as ms
+from scanner.hebeltrader.detective.index_pool import load_market_universe
 from scanner.hebeltrader.detective.reference_scan import run_scan
-from scanner.hebeltrader.detective.structure_screen import load_universe
 
 UP = [100 + i * 0.3 for i in range(300)]
 BLIND = Path("docs/examples/blind-202-26-inputs.json")
 
 
-def test_reference_scan_attaches_market_hypotheses_from_snapshots(tmp_path):
-    load_universe.cache_clear()
+def test_reference_scan_attaches_market_hypotheses_from_snapshots(tmp_path, monkeypatch):
+    load_market_universe.cache_clear()
     universe = [
         {
             "name": "Up Co",
@@ -48,12 +48,7 @@ def test_reference_scan_attaches_market_hypotheses_from_snapshots(tmp_path):
             }
         ],
     }
-    # Patch load_universe used by market_screen.rank default — pass via snapshots only;
-    # rank() uses load_universe() unless universe arg set. Inject by writing temp?
-    # Instead monkeypatch load_universe in market_screen.
-    import scanner.hebeltrader.detective.market_screen as market_mod
-
-    market_mod.load_universe = lambda: universe
+    monkeypatch.setattr(ms, "market_universe_list", lambda: universe)
     in_path = tmp_path / "in.json"
     in_path.write_text(json.dumps(inputs), encoding="utf-8")
     frozen = run_scan(in_path, tmp_path / "out", snapshots=snap_path)

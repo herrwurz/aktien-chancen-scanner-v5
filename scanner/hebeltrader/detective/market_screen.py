@@ -17,8 +17,9 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from .chart_check import chart_score, closes_through, trend_features
+from .index_pool import market_universe_list
 from .research_plan import stock_text
-from .structure_screen import load_universe, sectors_in
+from .structure_screen import sectors_in
 
 CLUES = (
     (
@@ -61,10 +62,11 @@ def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True, blocked
     clues = teaser_chart_clues(text)
     sectors = sectors_in(text) if sector_filter else []
     ranked = []
-    for asset in universe if universe is not None else load_universe():
+    for asset in universe if universe is not None else market_universe_list():
         ticker = asset.get("ticker")
         features = snapshots.get(ticker) if ticker else None
-        if not features or (sectors and asset["sector"] not in sectors):
+        asset_sector = asset.get("sector")
+        if not features or (sectors and asset_sector not in sectors):
             continue
         if is_blocked(asset, blocked):
             continue
@@ -72,7 +74,7 @@ def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True, blocked
             {
                 "name": asset["name"],
                 "ticker": ticker,
-                "sector": asset["sector"],
+                "sector": asset_sector,
                 "layer": asset.get("layer"),
                 "structure": asset.get("structure"),
                 "score": match_score(features, clues),
@@ -127,7 +129,7 @@ def export_snapshots(
     else:
         live_fetch = False
 
-    assets = list(universe if universe is not None else load_universe())
+    assets = list(universe if universe is not None else market_universe_list())
     tickers = _universe_tickers(assets)
 
     token_present = bool(os.environ.get("EODHD_API_TOKEN"))
@@ -232,7 +234,7 @@ def export_pit_snapshots(
     max_as_of = date.fromisoformat(dates[-1])
     from_date = min_as_of - timedelta(days=history_pad_days)
 
-    assets = list(universe if universe is not None else load_universe())
+    assets = list(universe if universe is not None else market_universe_list())
     tickers = _universe_tickers(assets)
     token_present = bool(os.environ.get("EODHD_API_TOKEN"))
     live_fetch = fetch_bars is None

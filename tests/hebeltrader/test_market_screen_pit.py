@@ -83,7 +83,7 @@ def test_reference_scan_uses_pit_bucket(tmp_path, monkeypatch):
     )
     snap_path = tmp_path / "pit.json"
     snap_path.write_text(__import__("json").dumps(pit), encoding="utf-8")
-    monkeypatch.setattr(ms, "load_universe", lambda: UNIVERSE)
+    monkeypatch.setattr(ms, "market_universe_list", lambda: UNIVERSE)
     inputs = {
         "schema_version": 1,
         "evaluation_class": "development_regression",
