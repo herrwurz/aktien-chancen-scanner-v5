@@ -228,18 +228,59 @@ def _entities(text):
         text,
     ):
         found.append(match.group(1).strip(" ,"))
-    # Product/drug names after an explicit product cue (often Title Case, not CamelCase).
+    # Product/drug names after an explicit product cue (Title Case; multi-word OK).
+    _product_token = r"[A-Z][A-Za-z0-9-]{2,}(?:\s+[A-Z][A-Za-z0-9-]{2,}){0,3}"
     for match in re.finditer(
         r"\b(?:Wachstumstreiber|Medikamente?|Blockbuster|Wirkstoffe?|Produkte?|"
         r"Pipeline|Therapien?|Umsatztreiber|Key products?|Flagship)\b"
-        r"[:\s]+([A-Z][A-Za-z0-9-]{2,}(?:\s+(?:und|&|,)\s+[A-Z][A-Za-z0-9-]{2,}){0,3})",
+        rf"[:\s]+({_product_token}(?:\s+(?:und|&|,)\s+{_product_token}){{0,3}})",
         text,
     ):
         for part in re.split(r"\s+(?:und|&|,)\s+", match.group(1)):
             token = part.strip(" ,")
-            if len(token) >= 3:
+            if _usable_product_token(token):
                 found.append(token)
     return list(dict.fromkeys(value.strip() for value in found))[:12]
+
+
+_GENERIC_PRODUCT_TOKENS = frozenset(
+    {
+        "data",
+        "cloud",
+        "platform",
+        "software",
+        "service",
+        "services",
+        "solution",
+        "solutions",
+        "digital",
+        "global",
+        "group",
+        "system",
+        "systems",
+        "network",
+        "networks",
+        "ai",
+        "app",
+        "apps",
+    }
+)
+
+
+def _usable_product_token(token: str) -> bool:
+    """Drop generic single words that leak across unrelated SEC filings."""
+    cleaned = token.strip(" ,")
+    if not cleaned:
+        return False
+    # Multi-word brands (Data Cloud) are kept; bare "Data"/"Cloud" are not.
+    if " " not in cleaned and cleaned.casefold() in _GENERIC_PRODUCT_TOKENS:
+        return False
+    # Short ALL-CAPS product codes (HBM, GPU) are OK; other short tokens are not.
+    if len(cleaned) < 4 and not cleaned.isupper():
+        return False
+    if len(cleaned) < 3:
+        return False
+    return True
 
 
 SEARCH_LOGIC_VERSION = "2026-10-31-search-v8"
@@ -454,6 +495,8 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 # the product appears near self-reference, the company name, or revenue
                 # prose on a document already tagged with company_name (10-Q product tables
                 # often omit "we/our" beside the product line).
+                if not _usable_product_token(term):
+                    continue
                 confirmed = None
                 for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
                     context = text[max(0, match.start() - 400) : match.end() + 160]

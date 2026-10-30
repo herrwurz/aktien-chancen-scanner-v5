@@ -411,6 +411,63 @@ def test_product_literal_confirms_on_issuer_revenue_table_without_nearby_we(tmp_
     assert report["packet_evidence"]["ticker"] == "PFE"
 
 
+def test_multiword_product_token_not_generic_data_leak(tmp_path):
+    from scanner.hebeltrader.detective.investigation import _clues, _entities
+
+    teaser = (
+        "Comeback!\n"
+        "Konzern Salesforce — Wachstumstreiber Data Cloud und Agentforce heben den Umsatz."
+    )
+    assert "Data Cloud" in _entities(teaser)
+    assert "Agentforce" in _entities(teaser)
+    assert "Data" not in _entities(teaser)
+    norms = {c.normalized for c in _clues(teaser, [])}
+    assert "product_literal|data cloud" in norms
+    assert "product_literal|agentforce" in norms
+    assert "product_literal|data" not in norms
+
+    docs = packet()
+    docs[-1]["company_name"] = "Oracle"
+    docs[-1]["ticker"] = "ORCL"
+    docs[-1]["source_kind"] = "regulator"
+    docs[-1]["text"] = (
+        "Interactive Data File required to be submitted pursuant to Rule 405. "
+        "Total revenues were $10 billion."
+    )
+    docs.append(
+        {
+            **docs[-1],
+            "company_name": "Salesforce",
+            "ticker": "CRM",
+            "text": (
+                "Salesforce Data Cloud ARR grew. Agentforce bookings increased. "
+                "Total revenues were $9 billion operationally."
+            ),
+        }
+    )
+    report = Investigator(tmp_path, clock=lambda: NOW).analyze(
+        InvestigationRequest(teaser_text=teaser, publication_at=NOW),
+        documents=docs,
+        historical_blind=True,
+    )
+    orcl = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "ORCL")
+    crm = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "CRM")
+    orcl_quotes = {
+        cell.get("quote")
+        for cell in orcl["evidence_matrix"]
+        if cell.get("status") == "confirmed" and cell.get("category") == "fact_claims"
+    }
+    crm_quotes = {
+        cell.get("quote")
+        for cell in crm["evidence_matrix"]
+        if cell.get("status") == "confirmed" and cell.get("category") == "fact_claims"
+    }
+    assert "Data" not in orcl_quotes
+    assert "Data Cloud" not in orcl_quotes
+    assert crm_quotes >= {"Salesforce", "Data Cloud", "Agentforce"}
+    assert report["packet_evidence"]["ticker"] == "CRM"
+
+
 def test_teaser_issuer_literal_binds_only_matching_candidate(tmp_path):
     docs = packet()
     docs[-1]["company_name"] = "AbbVie"

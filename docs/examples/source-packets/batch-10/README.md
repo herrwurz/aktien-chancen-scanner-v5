@@ -19,6 +19,13 @@ Ein Manifest → Pakete bauen → Evidence-Batch. Kein Einzelfall-Hopping.
 
 **10/10 named** → `historical_source_packet`. Original-Teaser: 0/10 identified (Korpus-Lücke).
 
+## Qualitätsgates (nicht gelockert)
+
+- ≥2 bestätigte Kernhinweise, Score-Margin ≥35, ≥5 Peer-Emittenten
+- Kein Peer mit denselben harten Fact-Clues (Leakage-Audit)
+- Generische Produkt-Tokens (`Data`, `Cloud`, …) werden verworfen; Multi-Word (`Data Cloud`) bleibt
+- Freeze-Tests: `tests/hebeltrader/test_batch_10_quality.py`
+
 ## Befehle
 
 ```bash

@@ -8,121 +8,121 @@
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-001.inputs.named.json",
       "root": "00-HT-001.inputs.named",
-      "ranking_sha256": "5c1b2d280a1cee99e16c64de1ae1182e15bc8f3195402f5f1626d62991eaa2cd",
+      "ranking_sha256": "562da4b31adcbca75a798aaf7ca68f47e2098a13aa681ee3a49490c9e38e94ee",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-001.inputs.original.json",
       "root": "01-HT-001.inputs.original",
-      "ranking_sha256": "4f1f4c9b438282cf2a55a753b7bb46c22f522c352c9031e869cb7c857ba016df",
+      "ranking_sha256": "f72d2159640cf0f2bfd8e83607dd9c94fc22a8aac792def70cd8874fd2ebda91",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-004.inputs.named.json",
       "root": "02-HT-004.inputs.named",
-      "ranking_sha256": "ad3dd506caa6b0cd163698ce818eac212d216035821ee2a0143196ef8e8e81c5",
+      "ranking_sha256": "f173a952162d37b13d77d0937b4700f662e14b99a001b846b57f688a9e9f82fa",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-004.inputs.original.json",
       "root": "03-HT-004.inputs.original",
-      "ranking_sha256": "068bfbf392b1c74afd7314b438b446ebdd63959eb3a3de5e8cf41e5c52add96b",
+      "ranking_sha256": "6b03dd9a58d9eb7514b5227fe118a6d95b16284e59bf154e8128d090283619fd",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-005.inputs.named.json",
       "root": "04-HT-005.inputs.named",
-      "ranking_sha256": "325f07ac6453062deb164322d421e1dff963c84102a1c57c405b090599bf99a4",
+      "ranking_sha256": "7a892e295c4f8b22f8542758112c95fceb9daad0faddf36e445735784e4c6c06",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-005.inputs.original.json",
       "root": "05-HT-005.inputs.original",
-      "ranking_sha256": "6ea11b6acb3cb22296426fc7c9af5d22b9264b2bc5cbffdb6957633bcdaaeacd",
+      "ranking_sha256": "1495055a3d041ebfcaf4f2a876b984cdc56c2e0a74cbc1ba0a4be0a23b92cc4e",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-006.inputs.named.json",
       "root": "06-HT-006.inputs.named",
-      "ranking_sha256": "1a7b24bcc2b614f9c6e96c58a7ac8b63fae1b6bcd40ede0768a54179565340be",
+      "ranking_sha256": "ffab87d22772697352eca81b301118d4b8b6ed92f3a19ce05fb455cbad9ad9f2",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-006.inputs.original.json",
       "root": "07-HT-006.inputs.original",
-      "ranking_sha256": "2fe4860d5fe6a9a486c736b6c8e73700858a47f3ec6cd8d616b8f3226e918ce9",
+      "ranking_sha256": "d8bc79ee51219e42e05f2ed79fc902bbf73d646460a89f857418a2b8c483732c",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-007.inputs.named.json",
       "root": "08-HT-007.inputs.named",
-      "ranking_sha256": "137a92840a22a7a32662c35120b26ba788950b8664de1742f0be0541afa18eb9",
+      "ranking_sha256": "15069bbd04dfbfc5b3af69477a252cf064d74cb53d38b8389811d90a8953ac6e",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-007.inputs.original.json",
       "root": "09-HT-007.inputs.original",
-      "ranking_sha256": "182695de25840145305c568308abee775fcf62c36c0533e8b9c4486af829eaa9",
+      "ranking_sha256": "ac5ceddaad35e8ef6fa1f3313ca4ef259bdbbf9aea153d4190003a30dbf2c3f6",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-009.inputs.named.json",
       "root": "10-HT-009.inputs.named",
-      "ranking_sha256": "c7f2874b3a13ba79f4e0088d07a324d4f4225f5297ba46142f279c47781bc0c1",
+      "ranking_sha256": "3ac687efbf95ca744e96105618132243709e87f5b5d36bbc25d8411d1c6e4575",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-009.inputs.original.json",
       "root": "11-HT-009.inputs.original",
-      "ranking_sha256": "d723cfa8db9b8d2778b1f6e5d93d8fd191ee8e12d1dc9b1577e5be2b77f04ec5",
+      "ranking_sha256": "9ad91ecd297bd6bd9e9db791acf9d8c7f29aede4e55bf3c07cfcc3e04320561d",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-010.inputs.named.json",
       "root": "12-HT-010.inputs.named",
-      "ranking_sha256": "6f483e6c68f88f50d9e066cb991e6b1e0b5f5dd162d67f18676a011afc85945b",
+      "ranking_sha256": "6f946c27de0ae63ec2fea530de3396ade2a8af34c9223b5bc7f245d0f4e36c5b",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-010.inputs.original.json",
       "root": "13-HT-010.inputs.original",
-      "ranking_sha256": "89e928917a5436ba1e7458a68041a4c2cb298f0996076143cde9a1edcd7a0d58",
+      "ranking_sha256": "ce8fc0686c85ac566f95bf7410902aff3bde6727c899516862a6c7fdd4ca70e6",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-013.inputs.named.json",
       "root": "14-HT-013.inputs.named",
-      "ranking_sha256": "daef62d8640ce43b744ff76fb66ede1eca3c9d74411d40c4f811edbe7379e379",
+      "ranking_sha256": "b255b00ecc5948a3b86f1a9377b8f431397e5482b6ad1a435e500e8c7efdcb11",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-013.inputs.original.json",
       "root": "15-HT-013.inputs.original",
-      "ranking_sha256": "84eb46dbc6637fd3095725891ba6d21786be0c434547958c366780b7c4902cda",
+      "ranking_sha256": "94b74fda821781c5f60a37c36e141752ed5c9b1dc8050cc80b31ba35c6e04648",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-023.inputs.named.json",
       "root": "16-HT-023.inputs.named",
-      "ranking_sha256": "76fb13dbb76037f3ef796eabf194e92ff95184f58d3ce36c191b3d6aa1dd4ee9",
+      "ranking_sha256": "d1c4d6ab0b3bdc60ac24f46b039551ef4a267476c492cfa908c34927846172c2",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-023.inputs.original.json",
       "root": "17-HT-023.inputs.original",
-      "ranking_sha256": "829a55e6f6bb8fd3620b5d5d064e5d630781da855a02056c7f2672fe1e36f7b7",
+      "ranking_sha256": "b7406b26dcd52c68bcda74575706b6e3d7f62e9ad8daaea53ff6d489658b94fd",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-026.inputs.named.json",
       "root": "18-HT-026.inputs.named",
-      "ranking_sha256": "e1b740dd332d9fe919d15f49010626228b3ae41007274ef26fe85f59c557a451",
+      "ranking_sha256": "0ebcdc32c71910a97ea58f6419b37ceaf8fb38bc106182fc4ca549263749c8a3",
       "cases": 1
     },
     {
       "inputs": "docs/examples/source-packets/batch-10/HT-026.inputs.original.json",
       "root": "19-HT-026.inputs.original",
-      "ranking_sha256": "b4e58206a79bca5a00b701316a5a80c6a78e34703f24f07193f54bd4a64a1e56",
+      "ranking_sha256": "47063a219b76765831df78f94577d406e5c860b81ecec5dac42dbe31c464a3f9",
       "cases": 1
     }
   ],
@@ -179,9 +179,9 @@
       "packet_evidence_status": "ticker_hypothesis_ready",
       "packet_evidence_ticker": "CRM",
       "packet_evidence_name": "Salesforce",
-      "confirmed_specific_clues": 2,
-      "evidence_score": 105,
-      "score_margin": 52,
+      "confirmed_specific_clues": 3,
+      "evidence_score": 156,
+      "score_margin": 156,
       "identification_status": "identified",
       "identification_basis": "historical_source_packet",
       "decision_status": "likely_identified",
@@ -226,8 +226,8 @@
       "packet_evidence_ticker": "MU",
       "packet_evidence_name": "Micron Technology",
       "confirmed_specific_clues": 2,
-      "evidence_score": 104,
-      "score_margin": 104,
+      "evidence_score": 105,
+      "score_margin": 105,
       "identification_status": "identified",
       "identification_basis": "historical_source_packet",
       "decision_status": "likely_identified",
