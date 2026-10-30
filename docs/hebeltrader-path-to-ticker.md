@@ -71,9 +71,11 @@ Prospective freeze SHA `3fff83e1…` untouched.
 
 ## EU-SEC Batch (FPI with EDGAR)
 
-`batch-eu-sec/`: **3/3 named identified** (SAP, BP, Eni/E). Zurich / Thales /
-Leonardo / Adidas have no SEC issuer CIK — deferred. Costco / BASF still lack
-`publication_at`.
+`batch-eu-sec/`: **3/3 named identified** (SAP, BP, Eni/E).
+
+`batch-eu-ir-wayback/`: **4/4 named identified** (ZURN, HO, LDO, ADS) via Wayback
+IR lead + SEC peers (`archived_snapshot`). Costco / BASF still lack
+`publication_at` (HT-003 / HT-012 / HT-016).
 
 ## Korpus-Grenze
 

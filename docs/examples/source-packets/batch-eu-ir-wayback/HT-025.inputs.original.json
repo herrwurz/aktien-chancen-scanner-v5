@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-025 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-025",
+      "headline": "Adidas: Der WM-Turbo springt an!",
+      "teaser_text": "Adidas: Der WM-Turbo springt an!",
+      "publication_date": "2026-05-29",
+      "publication_at": "2026-05-29T08:15:00+01:00"
+    }
+  ]
+}

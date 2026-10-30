@@ -20,6 +20,8 @@ Pilots:
 - `blind-202-26-sec6k/` — FPI **6-K** developmental packet (DB+peers); named → identified;
   prospective Blind freeze SHA untouched
 - `batch-eu-sec/` — EU/FPI with SEC listings (SAP/BP/Eni); **3/3 named identified**
+- `batch-eu-ir-wayback/` — EU ohne SEC-CIK (Zurich/Thales/Leonardo/Adidas);
+  Wayback-IR-Lead + SEC-Peers; **4/4 named identified**
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

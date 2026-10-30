@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-ir-wayback-packet-batch-manifest-v1",
+  "note": "EU issuers without SEC issuer CIK. Lead = Wayback IR capture (archived_snapshot); peers = SEC EDGAR. No guessed live IR URLs.",
+  "cases": [
+    {
+      "case_id": "HT-002",
+      "cutoff": "2026-10-14T08:15:00+01:00",
+      "lead_ticker": "ZURN",
+      "lead_name": "Zurich Insurance",
+      "lead_url": "https://www.zurich.com/beazleyoffer",
+      "lead_published_at": "2026-08-12T16:07:31+00:00",
+      "peers": [
+        "CB:0000896159:Chubb",
+        "MET:0001099219:MetLife",
+        "PRU:0001137774:Prudential Financial",
+        "AIG:0000005272:AIG",
+        "TRV:0000086312:Travelers"
+      ],
+      "needles": [
+        "Beazley",
+        "Specialty"
+      ],
+      "issuer_display": "Zurich Insurance",
+      "named_products": [
+        "Beazley"
+      ],
+      "named_acquisitions": []
+    },
+    {
+      "case_id": "HT-011",
+      "cutoff": "2026-08-05T08:15:00+01:00",
+      "lead_ticker": "HO",
+      "lead_name": "Thales",
+      "lead_url": "https://www.thalesgroup.com/en/news-centre/press-releases/thales-acquire-gorge-familys-stake-exailwith-view-launching-tender-offer",
+      "lead_published_at": "2026-08-01T23:35:15+00:00",
+      "peers": [
+        "LMT:0000936468:Lockheed Martin",
+        "RTX:0000101829:RTX",
+        "NOC:0001133421:Northrop Grumman",
+        "GD:0000040533:General Dynamics",
+        "HII:0001501585:Huntington Ingalls"
+      ],
+      "needles": [
+        "Exail",
+        "underwater"
+      ],
+      "issuer_display": "Thales",
+      "named_products": [],
+      "named_acquisitions": [
+        "Exail"
+      ]
+    },
+    {
+      "case_id": "HT-015",
+      "cutoff": "2026-08-06T08:15:00+01:00",
+      "lead_ticker": "LDO",
+      "lead_name": "Leonardo",
+      "lead_url": "https://www.leonardo.com/en/press-release-detail/-/detail/21-07-2026-leonardo-and-baykar-s-lba-systems-jv-achieves-full-operational-readiness",
+      "lead_published_at": "2026-07-21T16:28:55+00:00",
+      "peers": [
+        "LMT:0000936468:Lockheed Martin",
+        "RTX:0000101829:RTX",
+        "NOC:0001133421:Northrop Grumman",
+        "GD:0000040533:General Dynamics",
+        "HII:0001501585:Huntington Ingalls"
+      ],
+      "needles": [
+        "Baykar",
+        "LBA"
+      ],
+      "issuer_display": "Leonardo",
+      "named_products": [
+        "LBA"
+      ],
+      "named_acquisitions": [
+        "Baykar"
+      ]
+    },
+    {
+      "case_id": "HT-025",
+      "cutoff": "2026-05-29T08:15:00+01:00",
+      "lead_ticker": "ADS",
+      "lead_name": "Adidas",
+      "lead_url": "https://www.adidas-group.com/en/media/press-releases/adidas-records-strong-start-to-the-year-in-the-first-quarter-of-2026",
+      "lead_published_at": "2026-05-19T01:23:43+00:00",
+      "peers": [
+        "NKE:0000320187:Nike",
+        "LULU:0001397187:Lululemon",
+        "UAA:0001336917:Under Armour",
+        "DECK:0000910521:Deckers",
+        "VFC:0000103379:VF Corporation"
+      ],
+      "needles": [
+        "Trionda",
+        "Adizero",
+        "FIFA"
+      ],
+      "issuer_display": "Adidas",
+      "named_products": [
+        "Trionda",
+        "Adizero"
+      ],
+      "named_acquisitions": []
+    }
+  ]
+}
