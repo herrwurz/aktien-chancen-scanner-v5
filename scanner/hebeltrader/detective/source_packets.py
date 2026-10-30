@@ -89,7 +89,8 @@ def validate_packet_dir(root: Path):
             results.append({"path": str(path), "problems": [f"invalid JSON: {exc}"]})
             continue
         problems = validate_packet(payload)
-        results.append({"path": str(path), "problems": problems, "documents": len(payload) if isinstance(payload, list) else 0})
+        doc_count = len(payload) if isinstance(payload, list) else 0
+        results.append({"path": str(path), "problems": problems, "documents": doc_count})
     return results
 
 

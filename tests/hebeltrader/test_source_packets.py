@@ -14,7 +14,12 @@ def test_synthetic_example_packet_validates():
     docs = json.loads(EXAMPLE.read_text(encoding="utf-8"))
     assert validate_packet(docs) == []
     rows = validate_packet_dir(EXAMPLE.parent)
-    assert any(row["path"].endswith("SYNTHETIC-EXAMPLE.json") and not row["problems"] for row in rows)
+    ok = [
+        row
+        for row in rows
+        if row["path"].endswith("SYNTHETIC-EXAMPLE.json") and not row["problems"]
+    ]
+    assert ok
 
 
 def test_missing_required_field_is_reported():
