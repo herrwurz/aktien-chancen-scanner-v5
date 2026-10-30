@@ -10,7 +10,7 @@ UNIVERSE = [
     {"name": "Up Chip", "sector": "semiconductor", "ticker": "UPC"},
     {"name": "No Data", "sector": "financial services", "ticker": "NOD"},
 ]
-TEXT_202 = "Charttechnisch hat die Aktie die 200-Tage-Linie zurückerobert, ein zusätzliches Kaufsignal."
+TEXT_202 = "Die Aktie hat die 200-Tage-Linie zurückerobert, ein zusätzliches Kaufsignal."
 
 
 def test_clues_are_detected_from_teaser():

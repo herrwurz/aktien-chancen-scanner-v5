@@ -42,8 +42,7 @@ def evaluate(rankings, references):
         if label["actual_company"]:
             for i, candidate in enumerate(report.get("offline_hypotheses", []), 1):
                 if (
-                    label["actual_ticker"]
-                    and candidate.get("ticker") == label["actual_ticker"]
+                    label["actual_ticker"] and candidate.get("ticker") == label["actual_ticker"]
                 ) or _company(candidate.get("name")) == _company(label["actual_company"]):
                     hypothesis_rank = i
                     break

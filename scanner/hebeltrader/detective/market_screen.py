@@ -16,7 +16,10 @@ from .research_plan import stock_text
 from .structure_screen import load_universe, sectors_in
 
 CLUES = (
-    ("above_gd200", r"200[\s-]*tage[\s-]*linie\s+(?:\w+\s+){0,2}(?:zurückerobert|verteidigt|überwunden)"),
+    (
+        "above_gd200",
+        r"200[\s-]*tage[\s-]*linie\s+(?:\w+\s+){0,2}(?:zurückerobert|verteidigt|überwunden)",
+    ),
     ("breakout", r"ausbruch|befreiungsschlag|rallye|rally|kaufsignal"),
     ("correction", r"korrektur|rücksetzer|konsolidierung"),
     ("steady_uptrend", r"seit\s+jahren\s+(?:\w+\s+)?(?:kontinuierlich\s+)?nach\s+oben"),
@@ -45,7 +48,7 @@ def match_score(features, clues):
 
 
 def rank(text, snapshots, *, universe=None, limit=8, sector_filter=True):
-    """Rank universe assets that have a snapshot; the sector filter applies only if a sector is named."""
+    """Rank universe assets with a snapshot; the sector filter applies only if a sector is named."""
     clues = teaser_chart_clues(text)
     sectors = sectors_in(text) if sector_filter else []
     ranked = []
