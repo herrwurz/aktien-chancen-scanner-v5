@@ -35,11 +35,16 @@ Nicht in den eingefrorenen Top-8; fehlt im 115er-Universum. Freeze-SHA unveränd
 Dokumentation: [hebeltrader-202-26-resolution.md](hebeltrader-202-26-resolution.md).
 DB in `featured_calls.json` für künftige Ausschlüsse ergänzt. **Kein** Score-Retuning.
 
-## 5. Offen (nächste Schritte)
-**A. Universum:** kuratierte EU-Banken-Lücke schließen (DBK + sinnvolle Peers), ohne
-fallbezogene Gewinnerregel für 202/26 — erst nach Bestätigung.
+## 5. Index-Pool v1 + PIT (2026-10-30)
 
-**B.** Contingency/Budget-Plan (Miss-Klassen A–E, Go/No-Go) optional dokumentieren.
+Merged: Index-Union SPX/NDX/DAX/MDAX/SX5E/SXXP/**ATX** (~1109 Namen). Market-Screen
+defaults darauf. PIT-Pool-Export: 919/1045 Bars, Coverage 904–906 / 27 as_of
+(`docs/examples/snapshots-pit-pool-v1-2026-10-30.meta.json`). DBK + ATX Spot-Checks ok.
+
+## 6. Offen (nächste Schritte)
+**A.** Share-Class/Lokal-Ticker-Normalisierung (~126 Misses im PIT-Export).
+
+**B.** Optional: Refs/Blind mit Pool-PIT neu diagnostizieren (ohne Score-Retuning von 202/26).
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
