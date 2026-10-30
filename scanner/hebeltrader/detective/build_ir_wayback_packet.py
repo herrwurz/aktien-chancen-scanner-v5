@@ -12,7 +12,6 @@ import gzip
 import hashlib
 import html
 import json
-import re
 import time
 import urllib.parse
 import urllib.request
@@ -161,7 +160,8 @@ def build_hybrid_packet(
         needles=needles,
         observed_now=observed,
     )
-    path = raw_dir / f"{lead['ticker']}-wayback-{capture['timestamp']}-{lead_doc['raw_sha256'][:8]}.bin"
+    digest = lead_doc["raw_sha256"][:8]
+    path = raw_dir / f"{lead['ticker']}-wayback-{capture['timestamp']}-{digest}.bin"
     path.write_bytes(capture["raw"])
     meta = [
         {
