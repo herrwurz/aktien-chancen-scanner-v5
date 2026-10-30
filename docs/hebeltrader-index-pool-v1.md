@@ -66,7 +66,7 @@ Restlücken: Japan `.TSE`, Italien `.MI` ohne Venue, delistete/illiquide Namen.
 
 Kein Score-Retuning. Details: `docs/examples/*-pool-pit-diagnosis-notes-2026-10-30.md`.
 
-Laden dedupliziert nach Ticker (eine Market-Zeile je Symbol; Curated-Structure gewinnt).
+Market-Universum: **eine Zeile je Ticker** (SPX/NDX/Curated-Namen kollabieren; Structure/Layer vom Curated-Overlay gewinnen).
 
 ## Budget / nächste Schritte
 
