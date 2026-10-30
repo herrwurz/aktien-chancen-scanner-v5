@@ -344,6 +344,41 @@ def test_issuer_legal_abbrev_and_html_entities_still_confirm_named_acquisition(t
     )
 
 
+def test_teaser_product_literals_plus_issuer_name_identify_historically(tmp_path):
+    docs = packet()
+    docs[-1]["company_name"] = "AbbVie"
+    docs[-1]["ticker"] = "ABBV"
+    docs[-1]["source_kind"] = "regulator"
+    docs[-1]["text"] = (
+        "The following discussion of AbbVie's net revenues by product is presented "
+        "on a constant currency basis. Net revenues for Skyrizi increased 29 percent. "
+        "Rinvoq sales also increased for the three months ended March 31, 2026."
+    )
+    report = Investigator(tmp_path, clock=lambda: NOW).analyze(
+        InvestigationRequest(
+            teaser_text=(
+                "AbbVie: Wachstumsstory!\n"
+                "Die Wachstumstreiber Skyrizi und Rinvoq heben den Umsatz."
+            ),
+            publication_at=NOW,
+        ),
+        documents=docs,
+        historical_blind=True,
+    )
+    leader = next(c for c in report["checked_candidates"] if c["identity"]["ticker"] == "ABBV")
+    quotes = {
+        cell.get("quote")
+        for cell in leader["evidence_matrix"]
+        if cell.get("status") == "confirmed" and cell.get("category") == "fact_claims"
+    }
+    assert quotes >= {"AbbVie", "Skyrizi", "Rinvoq"}
+    assert len(leader["confirmed_specific_clues"]) >= 2
+    assert report["identification"]["status"] == "identified"
+    assert report["identification"]["basis"] == "historical_source_packet"
+    assert report["packet_evidence"]["ticker"] == "ABBV"
+    assert report["decision"]["status"] == "likely_identified"
+
+
 def test_teaser_issuer_literal_binds_only_matching_candidate(tmp_path):
     docs = packet()
     docs[-1]["company_name"] = "AbbVie"

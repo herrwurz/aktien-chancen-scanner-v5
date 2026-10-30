@@ -221,6 +221,17 @@ def _entities(text):
     ):
         if _relation(text, match.start(1)) != "unknown_relation" or " " in match.group(1):
             found.append(match.group(1))
+    # Product/drug names after an explicit product cue (often Title Case, not CamelCase).
+    for match in re.finditer(
+        r"\b(?:Wachstumstreiber|Medikamente?|Blockbuster|Wirkstoffe?|Produkte?|"
+        r"Pipeline|Therapien?|Umsatztreiber|Key products?|Flagship)\b"
+        r"[:\s]+([A-Z][A-Za-z0-9-]{2,}(?:\s+(?:und|&|,)\s+[A-Z][A-Za-z0-9-]{2,}){0,3})",
+        text,
+    ):
+        for part in re.split(r"\s+(?:und|&|,)\s+", match.group(1)):
+            token = part.strip(" ,")
+            if len(token) >= 3:
+                found.append(token)
     return list(dict.fromkeys(value.strip() for value in found))[:12]
 
 
@@ -258,16 +269,27 @@ def _relation(text, start):
     return max(candidates)[1] if candidates else "unknown_relation"
 
 
+_PRODUCT_CUE = re.compile(
+    r"\b(?:wachstumstreiber|medikamente?|blockbuster|wirkstoffe?|produkte?|"
+    r"pipeline|therapien?|umsatztreiber|key product|flagship)\b",
+    re.I,
+)
+
+
 def _clues(text, spans):
     clues = extract_atomic_clues(text, spans)
     for name in _entities(text):
         start = text.index(name)
         relation = _relation(text, start)
-        # Bare proper names (no acquisition/investment/partnership cue) are issuer-literal
-        # candidates: confirmed only when a packet/candidate company matches the name.
+        # Bare proper names: product cue → product_literal; else issuer_literal.
         if relation == "unknown_relation":
-            relation = "issuer_literal"
-            method = "teaser_issuer_literal_requires_candidate_name_match"
+            window = text[max(0, start - 100) : start]
+            if _PRODUCT_CUE.search(window):
+                relation = "product_literal"
+                method = "teaser_product_literal_requires_issuer_filing_mention"
+            else:
+                relation = "issuer_literal"
+                method = "teaser_issuer_literal_requires_candidate_name_match"
         else:
             method = "named_entity_literal_requires_transaction_context"
         target = relation + "|" + name.casefold()
@@ -419,6 +441,26 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 if company and canonical_company(company) == canonical_company(term):
                     facts["fact_claims"].append(value)
                     facts["support_quotes"][clue.clue_id] = company
+                continue
+            if relation == "product_literal":
+                # Teaser names an issuer product/drug; confirm only on this issuer's filing
+                # when the product appears near company/self-reference (not a peer name-drop).
+                match = re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I)
+                if not match:
+                    continue
+                context = text[max(0, match.start() - 280) : match.end() + 120]
+                owned = bool(
+                    re.search(r"\b(?:the company|the registrant|\bwe\b|our)\b", context, re.I)
+                    or (
+                        company
+                        and re.search(r"(?<!\w)" + re.escape(company) + r"(?!\w)", context, re.I)
+                    )
+                )
+                if owned and not re.search(
+                    r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
+                ):
+                    facts["fact_claims"].append(value)
+                    facts["support_quotes"][clue.clue_id] = context
                 continue
             if relation not in _RELATIONS:
                 continue

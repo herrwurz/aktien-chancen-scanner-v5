@@ -36,9 +36,12 @@ Ergebnis (Freeze `evidence-batch-pilots-2026-10-30.json`):
 | Inputs | `packet_evidence` | `identification` |
 |---|---|---|
 | HT-001 original | insufficient | not_identified |
-| HT-023 AbbVie headline | partial → **ABBV** | not_identified |
+| HT-023 original | partial → **ABBV** | not_identified |
+| HT-023 named (Skyrizi/Rinvoq) | ready → **ABBV** | **identified** (packet) |
 | HT-027 original | insufficient | not_identified |
-| HT-027 Clario+Solventum | ready → **TMO** | **identified** (packet) |
+| HT-027 named (Clario+Solventum) | ready → **TMO** | **identified** (packet) |
+
+SEC-Paket bauen: `python3 -m scanner.hebeltrader.detective.build_sec_packet`.
 
 ## Korpus-Grenze
 

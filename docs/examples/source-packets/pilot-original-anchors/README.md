@@ -22,22 +22,16 @@ entspricht (kein Filing-Body-Subject nötig).
 
 Das ist **kein** Chart-Score-Retuning und kein Call-PDF-Leak.
 
-## HT-023 Baseline (nach Issuer-Literal)
+## HT-023 (Issuer + Produkte)
 
-Headline: `AbbVie: …`. Paket: AbbVie 10-Q/8-K + Pharma-Peers.
+Paket: AbbVie 10-Q/8-K (Skyrizi/Rinvoq-Prosa) + Pharma-Peers.
 
-| Ergebnis | Wert |
-|---|---|
-| `source_packet_status` | provided |
-| checked | 7 |
-| Top-1 | **ABBV** (Score 54, Quote `AbbVie`) |
-| `packet_evidence` | `partial_evidence` → ABBV |
-| Entscheidung | `plausible_hypothesis` |
-| `identified` | nein (1/2 Kernhinweise + Offline-Gates) |
+| Inputs | `packet_evidence` | `identification` |
+|---|---|---|
+| original (Headline AbbVie) | partial → ABBV (1 Hinweis) | not_identified |
+| named (+ Wachstumstreiber Skyrizi/Rinvoq) | ready → ABBV (3 Hinweise, Score 156) | **identified** (`historical_source_packet`) |
 
-Vorher (ohne Issuer-Literal): Score 0 / `ambiguous_tie`.
-
-Call-PDF-Produkte (Skyrizi/Rinvoq) bleiben Resolutionsleak.
+Call-PDF bleibt Resolutionsleak; named ist Diagnose-Anreicherung.
 
 ## Dateien
 
@@ -46,8 +40,9 @@ Call-PDF-Produkte (Skyrizi/Rinvoq) bleiben Resolutionsleak.
 | `corpus-gap.json` | Zählung aller 27 Original-Teaser |
 | `HT-023.*` | Named-Issuer-Baseline-Scan |
 
-## Nächster Schritt
+## Status
 
-Zweiten Teaser-Anker ergänzen (dann greift `historical_source_packet` → `identified`
-wie bei HT-027 named). Blind 202/26 unverändert. Siehe Batch-Summary
+HT-023 named schließt den Offline-Identitätskanal (Stufe 3a) für dieses Paket.
+Nächster Hebel: weitere Original-Teaser mit Produkt-/Issuer-Ankern + SEC-Paket
+(`build_sec_packet`). Blind 202/26 unverändert. Batch:
 `../evidence-batch-pilots-2026-10-30.json`.
