@@ -231,3 +231,125 @@ Auch eine allein durch KI ergänzte Identität erlaubt keine automatische Bestä
 Keine bekannten Lösungen oder WKNs gelangen in die KI-Planung. Budget und Freigabe bleiben
 separat kontrolliert; ohne API-Zugänge ist die Live-Abnahme offen. Details:
 [Such-/KI-Anbindung](teaser-search-ai.md).
+
+
+## Neuer Fall HT-20226 – Erstprognose vom 30.10.2026
+
+- Originalüberschrift: „Vom Tief zum Triumph: Die Comeback-Story des Jahres!“
+- Nutzer lieferte den Teasertext einschließlich 1.311 % Call-Werbepotenzial; letzter Satz abgebrochen. Öffentlicher Suchindex ordnet denselben Text Rudolf Wittmer, HEBELTRADER 202/26, Erscheinungsdatum 30.10.2026 zu. Direkter Shopabruf war nicht verfügbar. Keine genaue Publikationsuhrzeit belegt.
+- Quelle: https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20226-5112.html
+- **Eingefrorene assistentengestützte Erstprognose:** 1. Deutsche Bank, 2. Commerzbank, 3. UBS. Rang 2/3 sind deutlich schwächere Vergleichskandidaten, keine gleichwertigen Identifikationen.
+- Favorit: Deutsche Bank AG, DBK, Aktien-WKN 514000, ISIN DE0005140008.
+- Status: starke, primärquellenbasierte Hypothese; Herausgeberauflösung noch nicht vorhanden. Original-Call-WKN unbekannt, Produktparameter ungeprüft.
+- Kein autonomer Scannerlauf und kein bestätigter unabhängiger Blindtest. Keine Prozent-Konfidenz. Keine Änderung der historischen 18-Fall-Bilanz.
+
+### Kernhinweise und aktive Gegenprüfung
+
+| Kriterium | Deutsche Bank | Commerzbank | UBS |
+|---|---|---|---|
+| Drittes Rekordquartal in Folge | Explizit in Unternehmensmeldung vom 28.10.2026 | Rekord-Halbjahr belegt; Q3 erst für 05.11.2026 terminiert; kein passender aktueller Nachweis | Q3-Nettogewinn 2,690 Mrd. USD nach 2,800 Mrd. in Q2; konkrete Dreier-Rekordformulierung nicht belegt |
+| Ertragswachstum | Q3 +4 % auf 8,3 Mrd. EUR | H1 +7 % auf 6,5 Mrd. EUR | Q3 13,350 Mrd. USD nach 12,760 Mrd. im Vorjahr |
+| Kapital/Ausschüttungen | CET1 14,0 %, Ausschüttungsquote 60 %; 1,5 Mrd. EUR Rückkäufe 2026 bereits abgeschlossen | CET1 14,4 %, geplanter Rückkauf bis 1,2 Mrd. EUR laut Augustmeldung | CET1 14,7 %, Rückkäufe/Dividendenwachstum vorgesehen |
+| 200-Tage-Linie | Sekundärdaten melden Kreuzung am 29.10.; Brokeranalyse vom 29.10. beschreibt Schluss vom 28.10. noch darunter. Keine eigene Neuberechnung | Nicht verifiziert | Nicht verifiziert |
+| Kurszielanhebungen | UBS 37→38 EUR, Originalstudie laut dpa vom 29.10.; Citi 31,70→32,80 EUR sekundär berichtet | Keine passende Serie in dieser Prüfung belegt | Keine passende Serie in dieser Prüfung belegt |
+
+Zusätzlich aktiv geprüfte Gegenkandidaten:
+- Barclays: Q3-Bericht mit CET1 14,2 %, neuem Rückkauf bis 500 Mio. GBP und wachsendem Ergebnis. Exakte dreimalige Rekordserie nicht belegt.
+- HSBC: Q3-Vorsteuergewinn 9,6 Mrd. USD berichtet; 10,0 Mrd. ohne Sondereffekte. Nicht vermischen. CET1 13,9 %, gegenüber Q2 um 0,2 Prozentpunkte gesunken: schwächerer Match zum Kapitalaufbau; kein Beleg der spezifischen Rekordserie.
+- Citigroup: Q3-Nettogewinn 5,2 Mrd. USD, Erträge +8 % zum Vorjahr, CET1 12,8 % unverändert zum Vorquartal, Ausschüttungen 4,1 Mrd. USD. Keine genaue Dreier-Rekordserie belegt.
+
+Falsifikation des Favoriten:
+- „Rekord“ bezeichnet hier periodenspezifische Quartalsrekorde, nicht zwingend drei nacheinander absolut steigende Quartalsgewinne.
+- „Ausschüttungen rücken näher“ ist unpräzise: Rückkäufe sind bei Deutsche Bank bereits erfolgt, nicht erstmals möglich.
+- „Kapitalbasis so stark wie lange nicht“ ist durch CET1 14,0 % am oberen Zielrand gestützt, aber kein geprüfter historischer Höchststand.
+- Chartinformationen hängen an Datum, Börsenplatz und Datenreihe; der Schluss vom 28.10. ist nicht gleich dem vom 29.10. Keine nachträgliche Chartbestätigung aus bloßer Teaserbehauptung.
+- Nicht bei jeder Alternative ist ein Gegenbeweis belegt. Ein fehlender Nachweis der Rekordserie bleibt unbekannt und wird nicht als bewiesene Widerlegung ausgegeben.
+
+### Quellen der Erstprüfung
+
+Unternehmens-/Regulatorquellen:
+- https://www.db.com/news/detail/20261028-deutsche-bank-veroeffentlicht-ergebnisse-zum-dritten-quartal-2026
+- https://www.eqs-news.com/de/news/corporate/commerzbank-erzielt-rekordergebnis-im-ersten-halbjahr-2026-ausblick-bestatigt/acd38764-866f-4f6a-a428-5676272652a9_de
+- https://investor-relations.commerzbank.com/de/quartalsergebnisse
+- https://www.ubs.com/global/en/investor-relations/press-releases/overview-news-display-ndp/en-20261028-3q26-quarterly-result.html
+- https://www.sec.gov/Archives/edgar/data/312069/000031206926000240/bplcq326resultsannouncement.htm
+- https://www.hsbc.com/investors/results-and-announcements/all-reporting/3q-2026-quick-read
+- https://www.sec.gov/Archives/edgar/data/831001/000110465926115323/c-ex99d1.htm
+
+Ergänzende Chart-/Analystenquellen, keine fundamentalen Primärbelege:
+- https://www.xtb.com/de/Marktanalysen/Trading-News/deutsche-bank-aktie-dax-spitzenreiter-nach-erholungsrallye-ein-signal-zum-aktien-kaufen
+- https://www.finanzen.net/aktien/deutsche_bank-aktie
+- https://www.wallstreet-online.de/nachricht/21609642-ubs-stuft-deutsche-bank-ag-buy
+- https://goldesel.de/aktien/news/deutsche-bank-aktie-citi-hebt-kursziel-nach-starken-quartalszahlen-auf-3280-euro
+
+Heute zugängliche Quellen sind keine authentifizierten historischen Inhaltsfassungen.
+Die Recherche ist vor einer hier vorliegenden Herausgeberauflösung erfolgt, aber ohne
+extern attestierten Freeze-Zeitpunkt und ohne vollständiges Rohdatenarchiv.
+
+### Regression für spätere Implementierung
+
+Periodenbezogene Quartalsrekorde nicht mit sequenziell steigendem Gewinn verwechseln;
+Vorsteuer-/Nettogewinn und berichtet/bereinigt getrennt halten; Kapitalstärke nicht ohne
+Zeitreihe als Rekord bestätigen; Chartdurchbruch am exakten Handelstag prüfen; bereits
+abgeschlossene Rückkäufe von neuen Ankündigungen unterscheiden. Gewinnername und
+Call-Werbepotenzial dürfen keine Produktions-Rankingregel werden. Diese Dokumentation
+enthält Testanforderungen, keine neu ausgeführten Produkttests.
+
+
+## Auflösung HT-20226 / HT-028 und Gesamtbilanz (30.10.2026)
+
+**Nutzerbestätigung nach der Erstprognose:** „Es ist die Deutsche Bank.“
+Damit ist der vorher dokumentierte Rang-1-Tipp Deutsche Bank richtig. Rangfolge
+Deutsche Bank → Commerzbank → UBS bleibt unverändert. Bestätigungsart:
+Nutzerauflösung, kein neu vorliegender Originalreport. Original-Call-WKN und
+Produktparameter weiterhin unbekannt. Keine autonome Scanneridentifikation.
+
+Allgemeine Lehren:
+1. Seltene, überprüfbare Ergebnisfolgen („drittes Rekordquartal in Folge“) als
+   Ereignisfingerabdruck in zeitnahen Unternehmensmeldungen suchen.
+2. Periodenspezifische Rekorde von sequenziell steigenden absoluten Gewinnen
+   unterscheiden; berichtet/bereinigt und Vorsteuer-/Nettogewinn nicht vermischen.
+3. Ertragswachstum, Kapitalquote und Ausschüttungspläne gemeinsam prüfen.
+   Allgemeine Comeback-/Chartwörter allein sind keine belastbare Identifikation.
+4. Chartdurchbruch an Handelstag, Börsenplatz und Datenreihe binden. Bereits
+   durchgeführte Rückkäufe nicht als erstmals bevorstehende Ausschüttung ausgeben.
+5. Trotz starkem Ereignisfingerabdruck fünf Gegenkandidaten prüfen. Kein Gewinnername
+   als feste Rankingregel; keine Prozentwahrscheinlichkeit ohne Kalibrierung.
+
+### Registerabgleich und unveränderte Erstversuche
+
+Der strukturierte Fall HT-019 (198/26) war noch ungelöst, obwohl weiter oben die
+SLB-Erstprognose und spätere Originalreport-Bestätigung bereits dokumentiert sind.
+Diese Nachführung ist **derselbe Fall**, kein zusätzlicher neuer Test:
+SLB / VY95PV, Rang 1 richtig. Frühere strukturierte Werte sind in resolution_history
+erhalten. Der neue Deutsche-Bank-Fall trägt die strukturierte ID HT-028; HT-20226
+bleibt der Alias für die ursprüngliche Dokumentation. Keine neue Doppelzählung.
+
+### Statistik mit getrennten Nennern
+
+- Historische 18 Fälle unverändert: 10 richtig, 7 falsch, Williams ungelöst.
+- Zusätzlich assistentengestützt bestätigt: SLB und Deutsche Bank, beide Rang 1 richtig.
+- Vergleichbare Gesprächsbilanz: **20 Fälle = 12 richtig + 7 falsch + 1 ungelöst**.
+  Aufgelöste Fälle: 12/19 = **63,2 %**; alle 20 Fälle: 12/20 = **60,0 %**.
+- Synopsys / MN9WA9 separat: bekanntes Label, Rang 1 im Lauf, aber keine
+  Identifikation freigegeben (not_identified). Kein ausgesprochener Treffer.
+- Sieben weitere Referenzen ohne dokumentierten Ersttipp: BP, Constellation Energy,
+  AbbVie, Eni, Adidas, Carrier Global, Thermo Fisher. Nicht als Treffer zählen.
+- Insgesamt **28 unterschiedliche Referenzfälle**: 12 correct, 7 wrong,
+  1 unresolved, 1 not_identified, 7 not_tested. Davon 21 Fälle mit dokumentiertem
+  Versuch einschließlich Synopsys; 20 davon haben bekannte Auflösung.
+  Einschließlich dieser Enthaltung: 12/20 = **60,0 %** Identifikationserfolg auf
+  aufgelösten versuchten Fällen; 12/21 = **57,1 %** auf allen versuchten Fällen.
+- Kein Zusammenwerfen mit dem ungelösten Maydorn-/Krypto-RSS-Fall; anderer Autor,
+  anderer Gegenstand. Keine unabhängige Benchmarkquote oder statistisch
+  nachgewiesene Qualitätssteigerung aus zwei zusätzlichen Treffern ableiten.
+
+Quelle: aktuelle strukturierte Referenzsammlung, bereits protokollierte SLB-Auflösung,
+Git-gespeicherte Deutsche-Bank-Erstprognose und anschließende Nutzerbestätigung.
+
+Regressionen: tests/hebeltrader/test_reference_resolution_summary.py prüft
+unveränderte historische Bilanz, getrennte Enthaltung/Referenzfälle, Originalrangfolge,
+unbekannte Call-WKN und Ausschluss von Auflösungsfeldern aus Scannerinputs.
+Drei Tests mit unittest lokal bestanden. pytest ist in der aktuellen Prüfumgebung
+nicht installiert; die gesamte Produktsuite wurde nicht ausgeführt. Der bestehende
+Referenztest wurde auf 28 Einträge und den nachgeführten SLB-Status angepasst.
