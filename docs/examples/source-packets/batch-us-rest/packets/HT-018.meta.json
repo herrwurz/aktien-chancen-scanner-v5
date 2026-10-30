@@ -1,0 +1,74 @@
+{
+  "case_id": "HT-018",
+  "cutoff_publication_at": "2026-10-21T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/200406/000020040626000153/jnj-20260628.htm",
+      "chars": 12049,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/JNJ-2026-07-23-5e5e4861.htm"
+    },
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "form": "8-K",
+      "filing_date": "2026-10-13",
+      "url": "https://www.sec.gov/Archives/edgar/data/200406/000020040626000189/jnj-20261013.htm",
+      "chars": 4288,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/JNJ-2026-10-13-eec7c846.htm"
+    },
+    {
+      "ticker": "PFE",
+      "name": "Pfizer",
+      "form": "10-Q",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/78003/000007800326000095/pfe-20260628.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/PFE-2026-08-04-43ec5d27.htm"
+    },
+    {
+      "ticker": "ABBV",
+      "name": "AbbVie",
+      "form": "10-Q",
+      "filing_date": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000026/abbv-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/ABBV-2026-08-03-1fa4eb8c.htm"
+    },
+    {
+      "ticker": "MRK",
+      "name": "Merck",
+      "form": "10-Q",
+      "filing_date": "2026-08-07",
+      "url": "https://www.sec.gov/Archives/edgar/data/310158/000031015826000212/mrk-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/MRK-2026-08-07-13c37ed7.htm"
+    },
+    {
+      "ticker": "LLY",
+      "name": "Eli Lilly",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/59478/000005947826000081/lly-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/LLY-2026-08-05-1ecf828f.htm"
+    },
+    {
+      "ticker": "BMY",
+      "name": "Bristol-Myers Squibb",
+      "form": "10-Q",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/14272/000001427226000020/bmy-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-018/BMY-2026-07-30-ca73f91d.htm"
+    }
+  ],
+  "needles": [
+    "STELARA",
+    "Darzalex",
+    "Tremfya"
+  ]
+}

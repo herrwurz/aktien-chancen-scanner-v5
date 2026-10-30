@@ -1,0 +1,424 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "docs/examples/source-packets/batch-us-rest/packets",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "(batch root)",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-008.inputs.named.json",
+      "root": "00-HT-008.inputs.named",
+      "ranking_sha256": "bcc3b4c51c17fcccd59ae2644709578606b02fbc67cc48b154da1098facb6a25",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-008.inputs.original.json",
+      "root": "01-HT-008.inputs.original",
+      "ranking_sha256": "5e77206f8ba42bcb26b6cedc5d4f58a19b1c56f95798a13110cc3c138e69425c",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-017.inputs.named.json",
+      "root": "02-HT-017.inputs.named",
+      "ranking_sha256": "03624d6507d3a64d0f6f254ae1028a26dff1a89399e7268eaa0d03a3491decd3",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-017.inputs.original.json",
+      "root": "03-HT-017.inputs.original",
+      "ranking_sha256": "a7b15ac4793d84a7c8a6605400b0ef59558ddc706e6fb28ff7ec2e79da981a94",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-018.inputs.named.json",
+      "root": "04-HT-018.inputs.named",
+      "ranking_sha256": "2d098db452aeab6dc532d7075f6ade4d8539212fb6e3521f0b2820af54a99616",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-018.inputs.original.json",
+      "root": "05-HT-018.inputs.original",
+      "ranking_sha256": "bbc17121d14bdf0662250a3a9d80dd269efce07563b86ff6169fe9a477928811",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-019.inputs.named.json",
+      "root": "06-HT-019.inputs.named",
+      "ranking_sha256": "3728d9f63f795a1c6389dc8f84e598f7d832682fe127d7ed30a59edd11e1d023",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-019.inputs.original.json",
+      "root": "07-HT-019.inputs.original",
+      "ranking_sha256": "b136b0a914226ed1c65537b2dc9ca099b8701ed03c2f125f163e1be54895b81a",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-020.inputs.named.json",
+      "root": "08-HT-020.inputs.named",
+      "ranking_sha256": "cdc669da3248f77cb85571fe642452d0f0da681fee6e09b353af9635ecb52b4c",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-020.inputs.original.json",
+      "root": "09-HT-020.inputs.original",
+      "ranking_sha256": "9cfe47b6cf521fdf4cd53d31dee74ad7b39efdc63bc7aa7f49f7a8877fe9946b",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-022.inputs.named.json",
+      "root": "10-HT-022.inputs.named",
+      "ranking_sha256": "319abaab8f40c83a00e6334aeff48d01b2d9024dd4ee88220a8f1e27f01e576d",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-022.inputs.original.json",
+      "root": "11-HT-022.inputs.original",
+      "ranking_sha256": "7ed2fa0558054a84477168557498dfc012abd973b463e978d9941f67fa6ef15d",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-027.inputs.named.json",
+      "root": "12-HT-027.inputs.named",
+      "ranking_sha256": "7cfea610b8ec845f0e0d1c1a50d375a3cb5f1d3a13231362dc0d01851f712ebc",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-027.inputs.original.json",
+      "root": "13-HT-027.inputs.original",
+      "ranking_sha256": "835c1491606cb63357ddf1a45d7952c5b2b7f1b526e3f31e91265f22e9755793",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "HT-008",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "KKR",
+      "packet_evidence_name": "KKR & Co.",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 105,
+      "score_margin": 105,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "KKR",
+      "leader_name": "KKR & Co.",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-008.inputs.named.json"
+    },
+    {
+      "case_id": "HT-008",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "APO",
+      "leader_name": "Apollo Global Management",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-008.inputs.original.json"
+    },
+    {
+      "case_id": "HT-017",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "JPM",
+      "packet_evidence_name": "JPMorgan Chase",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 105,
+      "score_margin": 105,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "JPM",
+      "leader_name": "JPMorgan Chase",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-017.inputs.named.json"
+    },
+    {
+      "case_id": "HT-017",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "BAC",
+      "leader_name": "Bank of America",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-017.inputs.original.json"
+    },
+    {
+      "case_id": "HT-018",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "JNJ",
+      "packet_evidence_name": "Johnson & Johnson",
+      "confirmed_specific_clues": 3,
+      "evidence_score": 156,
+      "score_margin": 156,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "JNJ",
+      "leader_name": "Johnson & Johnson",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-018.inputs.named.json"
+    },
+    {
+      "case_id": "HT-018",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "JNJ",
+      "leader_name": "Johnson & Johnson",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-018.inputs.original.json"
+    },
+    {
+      "case_id": "HT-019",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "SLB",
+      "packet_evidence_name": "SLB",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 105,
+      "score_margin": 105,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "SLB",
+      "leader_name": "SLB",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-019.inputs.named.json"
+    },
+    {
+      "case_id": "HT-019",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "NOV",
+      "leader_name": "NOV",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-019.inputs.original.json"
+    },
+    {
+      "case_id": "HT-020",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "SNPS",
+      "packet_evidence_name": "Synopsys",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 105,
+      "score_margin": 105,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "SNPS",
+      "leader_name": "Synopsys",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-020.inputs.named.json"
+    },
+    {
+      "case_id": "HT-020",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "SNPS",
+      "leader_name": "Synopsys",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-020.inputs.original.json"
+    },
+    {
+      "case_id": "HT-022",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "CEG",
+      "packet_evidence_name": "Constellation Energy",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 105,
+      "score_margin": 105,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "CEG",
+      "leader_name": "Constellation Energy",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-022.inputs.named.json"
+    },
+    {
+      "case_id": "HT-022",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "EXC",
+      "leader_name": "Exelon",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-022.inputs.original.json"
+    },
+    {
+      "case_id": "HT-027",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "TMO",
+      "packet_evidence_name": "Thermo Fisher Scientific",
+      "confirmed_specific_clues": 3,
+      "evidence_score": 156,
+      "score_margin": 156,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "TMO",
+      "leader_name": "Thermo Fisher Scientific",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-027.inputs.named.json"
+    },
+    {
+      "case_id": "HT-027",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "MTD",
+      "leader_name": "Mettler-Toledo International",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-us-rest/HT-027.inputs.original.json"
+    }
+  ],
+  "counts": {
+    "cases": 14,
+    "ticker_hypothesis_ready": 7,
+    "partial_evidence": 0,
+    "identified": 7,
+    "identified_from_packet": 7
+  }
+}

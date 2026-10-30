@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-019",
+  "cutoff_publication_at": "2026-10-26T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "SLB",
+      "name": "SLB",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/87347/000119312526322595/slb-20260630.htm",
+      "chars": 8018,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/SLB-2026-07-29-a15a5541.htm"
+    },
+    {
+      "ticker": "SLB",
+      "name": "SLB",
+      "form": "8-K",
+      "filing_date": "2026-10-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/87347/000119312526429435/d151271d8k.htm",
+      "chars": 3989,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/SLB-2026-10-23-f4c3ccab.htm"
+    },
+    {
+      "ticker": "HAL",
+      "name": "Halliburton",
+      "form": "10-Q",
+      "filing_date": "2026-10-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/45012/000004501226000074/hal-20260930.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/HAL-2026-10-23-f19ef6d4.htm"
+    },
+    {
+      "ticker": "BKR",
+      "name": "Baker Hughes",
+      "form": "10-Q",
+      "filing_date": "2026-07-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1701605/000170160526000023/bkr-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/BKR-2026-07-27-45a2cad6.htm"
+    },
+    {
+      "ticker": "NOV",
+      "name": "NOV",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1021860/000119312526322979/nov-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/NOV-2026-07-29-778b3f89.htm"
+    },
+    {
+      "ticker": "FTI",
+      "name": "TechnipFMC",
+      "form": "10-Q",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1681459/000168145926000045/fti-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/FTI-2026-07-30-ade8b539.htm"
+    },
+    {
+      "ticker": "WFRD",
+      "name": "Weatherford",
+      "form": "10-Q",
+      "filing_date": "2026-10-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1603923/000160392326000122/wfrd-20260930.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-019/WFRD-2026-10-21-30554cc9.htm"
+    }
+  ],
+  "needles": [
+    "ChampionX"
+  ]
+}

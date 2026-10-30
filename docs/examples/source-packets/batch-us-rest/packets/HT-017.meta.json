@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-017",
+  "cutoff_publication_at": "2026-10-19T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026054343/jpm-20260630.htm",
+      "chars": 8028,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/JPM-2026-08-06-33681bea.htm"
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase",
+      "form": "8-K",
+      "filing_date": "2026-10-13",
+      "url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026065616/jpm-20261013.htm",
+      "chars": 7166,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/JPM-2026-10-13-27d953c5.htm"
+    },
+    {
+      "ticker": "BAC",
+      "name": "Bank of America",
+      "form": "10-Q",
+      "filing_date": "2026-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/70858/000007085826000394/bac-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/BAC-2026-07-31-485530db.htm"
+    },
+    {
+      "ticker": "WFC",
+      "name": "Wells Fargo",
+      "form": "10-Q",
+      "filing_date": "2026-07-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/72971/000007297126000302/wfc-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/WFC-2026-07-28-f92176b4.htm"
+    },
+    {
+      "ticker": "C",
+      "name": "Citigroup",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/831001/000083100126000045/c-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/C-2026-08-06-1e8558c0.htm"
+    },
+    {
+      "ticker": "GS",
+      "name": "Goldman Sachs",
+      "form": "10-Q",
+      "filing_date": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/886982/000088698226000297/gs-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/GS-2026-08-03-d2ca07ae.htm"
+    },
+    {
+      "ticker": "MS",
+      "name": "Morgan Stanley",
+      "form": "10-Q",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/895421/000089542126000212/ms-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-017/MS-2026-08-04-25f08bbe.htm"
+    }
+  ],
+  "needles": [
+    "First Republic Bank"
+  ]
+}

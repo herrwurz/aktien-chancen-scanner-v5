@@ -16,6 +16,7 @@ Pilots:
 - `pilot-original-anchors/` — corpus gap + HT-023 AbbVie (`issuer_literal` + `product_literal` → identified)
 - `pilot-ht-009/` — HT-009 Pfizer (`issuer_literal` + `product_literal` → identified)
 - `batch-10/` — zehn Fälle parallel (`build_sec_packet_batch`); **10/10 named identified**
+- `batch-us-rest/` — restliche US-SEC der 27er; **7/7 named** (gesamt 17/17 US)
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

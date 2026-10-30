@@ -411,6 +411,14 @@ def test_product_literal_confirms_on_issuer_revenue_table_without_nearby_we(tmp_
     assert report["packet_evidence"]["ticker"] == "PFE"
 
 
+def test_issuer_cue_keeps_ampersand_company_names():
+    from scanner.hebeltrader.detective.investigation import _entities
+
+    assert "Johnson & Johnson" in _entities(
+        "Konzern Johnson & Johnson — Wachstumstreiber Stelara und Darzalex heben den Umsatz."
+    )
+
+
 def test_multiword_product_token_not_generic_data_leak(tmp_path):
     from scanner.hebeltrader.detective.investigation import _clues, _entities
 
