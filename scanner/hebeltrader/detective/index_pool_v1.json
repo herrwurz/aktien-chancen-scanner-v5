@@ -1,7 +1,7 @@
 {
  "format": "hebeltrader-index-pool-v1",
  "schema_version": 1,
- "built_at": "2026-10-30T13:17:08.561764+00:00",
+ "built_at": "2026-10-30T13:29:14.244561+00:00",
  "note": "Index-union identity pool for market hypotheses. Membership from public constituent lists only. Curated structure tags are overlaid at load time. Not a solution list.",
  "indexes": [
   "spx",
@@ -9,7 +9,8 @@
   "dax",
   "mdax",
   "sx5e",
-  "sxxp"
+  "sxxp",
+  "atx"
  ],
  "source_counts": {
   "spx": 500,
@@ -17,9 +18,10 @@
   "dax": 40,
   "mdax": 51,
   "sx5e": 50,
-  "sxxp": 464
+  "sxxp": 464,
+  "atx": 20
  },
- "asset_count": 1096,
+ "asset_count": 1109,
  "assets": [
   {
    "name": "3i",
@@ -908,6 +910,18 @@
    ]
   },
   {
+   "name": "Andritz",
+   "ticker": "ANDR.VI",
+   "sector": "industrial engineering & machinery",
+   "sector_raw": "Industrial Engineering & Machinery",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "Anglo American plc",
    "ticker": "AAL.LSE",
    "sector": "basic resources",
@@ -1298,6 +1312,18 @@
    ]
   },
   {
+   "name": "AT&S",
+   "ticker": "ATS.VI",
+   "sector": "electronics",
+   "sector_raw": "Electronics",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "AT&T",
    "ticker": "T",
    "sector": "communication services",
@@ -1357,6 +1383,18 @@
    ],
    "countries": [
     "Germany"
+   ]
+  },
+  {
+   "name": "Austrian Post",
+   "ticker": "POST.VI",
+   "sector": "transportation",
+   "sector_raw": "Transportation",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
    ]
   },
   {
@@ -1717,6 +1755,18 @@
    ],
    "countries": [
     "Germany"
+   ]
+  },
+  {
+   "name": "BAWAG Group",
+   "ticker": "BG.VI",
+   "sector": "financial services",
+   "sector_raw": "Banking",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
    ]
   },
   {
@@ -2323,6 +2373,18 @@
     "United States"
    ],
    "gics_sub": "Air Freight & Logistics"
+  },
+  {
+   "name": "CA Immo",
+   "ticker": "CAI.VI",
+   "sector": "real estate",
+   "sector_raw": "Real Estate",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
   },
   {
    "name": "Cadence Design Systems",
@@ -3824,6 +3886,18 @@
    ]
   },
   {
+   "name": "Do & Co",
+   "ticker": "DOC.VI",
+   "sector": "food, beverage & tobacco",
+   "sector_raw": "Food, Beverage & Tobacco",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "DocMorris",
    "ticker": "DOCM.SW",
    "sector": "healthcare",
@@ -4422,6 +4496,7 @@
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [
@@ -4530,6 +4605,18 @@
     "United States"
    ],
    "gics_sub": "Electric Utilities"
+  },
+  {
+   "name": "EVN",
+   "ticker": "EVN.VI",
+   "sector": "power infrastructure",
+   "sector_raw": "Electricity",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
   },
   {
    "name": "Evonik",
@@ -6257,6 +6344,18 @@
    ]
   },
   {
+   "name": "Immofinanz",
+   "ticker": "IMO1.F",
+   "sector": "real estate",
+   "sector_raw": "Real Estate",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "Imperial Brands",
    "ticker": "IMB.LSE",
    "sector": "food, beverage and tobacco",
@@ -7360,6 +7459,18 @@
     "United States"
    ],
    "gics_sub": "Building Products"
+  },
+  {
+   "name": "Lenzing",
+   "ticker": "LNZ.VI",
+   "sector": "chemicals",
+   "sector_raw": "Chemicals",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
   },
   {
    "name": "Leonardo",
@@ -9073,6 +9184,7 @@
    "sector": "energy",
    "sector_raw": "Energy",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [
@@ -9543,6 +9655,18 @@
    ]
   },
   {
+   "name": "Porr",
+   "ticker": "POS.VI",
+   "sector": "construction",
+   "sector_raw": "Construction",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "Porsche",
    "ticker": "P911.XETRA",
    "sector": "automobiles and parts",
@@ -9903,6 +10027,7 @@
    "sector": "financial services",
    "sector_raw": "Banks",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [
@@ -10698,6 +10823,18 @@
    ]
   },
   {
+   "name": "Schoeller-Bleckmann Oilfield Equipment",
+   "ticker": "SBO.VI",
+   "sector": "oil & gas",
+   "sector_raw": "Oil & Gas",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "Schroders",
    "ticker": "SDR.LSE",
    "sector": "financial services",
@@ -11488,6 +11625,18 @@
    ]
   },
   {
+   "name": "Strabag",
+   "ticker": "STR.VI",
+   "sector": "construction",
+   "sector_raw": "Construction",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "Strategy Inc Common Stock",
    "ticker": "MSTR",
    "sector": "information technology",
@@ -11735,7 +11884,7 @@
   },
   {
    "name": "Süss Microtec SE",
-   "ticker": "SMHN.XETRA",
+   "ticker": null,
    "sector": "semiconductor",
    "sector_raw": "Semiconductors",
    "sources": [
@@ -12659,6 +12808,18 @@
    ]
   },
   {
+   "name": "Uniqa Insurance Group",
+   "ticker": "UQA.VI",
+   "sector": "insurance",
+   "sector_raw": "Insurance",
+   "sources": [
+    "atx"
+   ],
+   "countries": [
+    "Austria"
+   ]
+  },
+  {
    "name": "Unite Group",
    "ticker": "UTG.LSE",
    "sector": "real estate",
@@ -12913,6 +13074,7 @@
    "sector": "power infrastructure",
    "sector_raw": "Utilities",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [
@@ -13064,6 +13226,7 @@
    "sector": "insurance",
    "sector_raw": "Insurance",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [
@@ -13175,6 +13338,7 @@
    "sector": "basic resources",
    "sector_raw": "Basic Resources",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [
@@ -13515,6 +13679,7 @@
    "sector": "construction and materials",
    "sector_raw": "Construction and Materials",
    "sources": [
+    "atx",
     "sxxp"
    ],
    "countries": [

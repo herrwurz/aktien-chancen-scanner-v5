@@ -297,6 +297,67 @@ def collect_sxxp(bucket):
     raise RuntimeError("STOXX Europe 600 constituents table not found")
 
 
+# Wikipedia ATX table has no tickers; map to EODHD Vienna (.VI) codes.
+# Preferred names align with SXXP/DAX-style labels so the union dedupes cleanly.
+_ATX_TICKERS = {
+    "erstebank": ("EBS.VI", "Erste Group"),
+    "verbund": ("VER.VI", "Verbund"),
+    "omv": ("OMV.VI", "OMV"),
+    "bawag": ("BG.VI", "BAWAG Group"),
+    "andritz": ("ANDR.VI", "Andritz"),
+    "wienerberger": ("WIE.VI", "Wienerberger"),
+    "voestalpine": ("VOE.VI", "Voestalpine"),
+    "raiffeiseninternational": ("RBI.VI", "Raiffeisen Bank International"),
+    "porr": ("POS.VI", "Porr"),
+    "caimmo": ("CAI.VI", "CA Immo"),
+    "evngroup": ("EVN.VI", "EVN"),
+    "ats": ("ATS.VI", "AT&S"),
+    "austrianpost": ("POST.VI", "Austrian Post"),
+    "viennainsurancegroup": ("VIG.VI", "Vienna Insurance Group"),
+    "lenzing": ("LNZ.VI", "Lenzing"),
+    "uniqainsurancegroup": ("UQA.VI", "Uniqa Insurance Group"),
+    "schoellerbleckmannoilfieldequipment": (
+        "SBO.VI",
+        "Schoeller-Bleckmann Oilfield Equipment",
+    ),
+    # Immofinanz: no Vienna common-stock row in EODHD VI list; Frankfurt works.
+    "immofinanz": ("IMO1.F", "Immofinanz"),
+    "strabag": ("STR.VI", "Strabag"),
+    "doco": ("DOC.VI", "Do & Co"),
+}
+
+
+def collect_atx(bucket):
+    html = _fetch_text("https://en.wikipedia.org/wiki/Austrian_Traded_Index")
+    for table in _tables(html):
+        if not table:
+            continue
+        header = [h.casefold() for h in table[0]]
+        if "company" in header and ("industry" in header or "sector" in header):
+            missing = []
+            for row in _rows_as_dicts(table):
+                company = row.get("Company") or ""
+                key = _company_key(company)
+                mapped = _ATX_TICKERS.get(key)
+                if not mapped:
+                    missing.append(company)
+                    continue
+                ticker, preferred = mapped
+                sector_raw = row.get("Sector") or row.get("Industry")
+                _add(
+                    bucket,
+                    name=preferred,
+                    ticker=ticker,
+                    sector_raw=sector_raw,
+                    source="atx",
+                    country="Austria",
+                )
+            if missing:
+                raise RuntimeError(f"ATX ticker map incomplete: {missing}")
+            return
+    raise RuntimeError("ATX constituents table not found")
+
+
 # Manual fixes when Wikipedia Symbol cells are empty / mis-parsed.
 _TICKER_OVERRIDES = {
     "sussmicrotecse": "SMHN.XETRA",
@@ -313,6 +374,7 @@ def build():
         ("mdax", collect_mdax),
         ("sx5e", collect_sx5e),
         ("sxxp", collect_sxxp),
+        ("atx", collect_atx),
     ]
     source_counts = {}
     for name, fn in collectors:
@@ -346,7 +408,7 @@ def build():
             "constituent lists only. Curated structure tags are overlaid at load time. "
             "Not a solution list."
         ),
-        "indexes": ["spx", "ndx", "dax", "mdax", "sx5e", "sxxp"],
+        "indexes": ["spx", "ndx", "dax", "mdax", "sx5e", "sxxp", "atx"],
         "source_counts": source_counts,
         "asset_count": len(assets),
         "assets": assets,

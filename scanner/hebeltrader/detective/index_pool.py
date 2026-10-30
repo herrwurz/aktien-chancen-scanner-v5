@@ -23,7 +23,8 @@ POOL_FORMAT = "hebeltrader-index-pool-v1"
 # Wikipedia / publisher suffixes → EODHD exchange codes used by chart_check.
 _SUFFIX_MAP = {
     "DE": "XETRA",
-    "F": "XETRA",
+    # Frankfurt stay .F (some AT names like Immofinanz have no Vienna EODHD listing).
+    "F": "F",
     "XETRA": "XETRA",
     "PA": "PA",
     "AS": "AS",

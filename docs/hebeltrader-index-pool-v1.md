@@ -20,9 +20,18 @@ Laden: `index_pool.market_universe_list()`. Market-Export/Rank defaults darauf.
 
 ## Indexe in der Union
 
-SPX, Nasdaq-100, DAX, MDAX, EURO STOXX 50, STOXX Europe 600.
+| Index | Markt |
+|---|---|
+| S&P 500 (SPX) | USA |
+| Nasdaq-100 (NDX) | USA |
+| DAX | Deutschland |
+| MDAX | Deutschland |
+| EURO STOXX 50 (SX5E) | Eurozone |
+| STOXX Europe 600 (SXXP) | Europa |
+| **ATX** | **Österreich** |
 
 Mitgliedschaft aus **öffentlichen** Constituent-Listen (Wikipedia / Nasdaq.com API).
+ATX-Tickers: Wikipedia-Namen → EODHD Vienna (`.VI`; Immofinanz über Frankfurt `IMO1.F`).
 Kein Tiingo. Kein EODHD-Fundamentals-Abo für die Mitgliedschaft.
 EODHD bleibt der Kursprovider (EOD / PIT) für Tickers im Pool.
 

@@ -14,6 +14,7 @@ def test_normalize_eodhd_ticker_maps_de_to_xetra_and_keeps_us_bare():
     assert normalize_eodhd_ticker("AAPL") == "AAPL"
     assert normalize_eodhd_ticker("AIXA", country="Germany") == "AIXA.XETRA"
     assert normalize_eodhd_ticker("ZURN", country="Switzerland") == "ZURN.SW"
+    assert normalize_eodhd_ticker("IMO1.F") == "IMO1.F"
 
 
 def test_normalize_sector_maps_financial_and_pharma():
@@ -25,13 +26,24 @@ def test_normalize_sector_maps_financial_and_pharma():
 def test_pool_v1_includes_deutsche_bank_and_index_union_size():
     stats = pool_stats()
     assert stats["asset_count"] >= 1000
-    assert set(stats["indexes"]) >= {"spx", "ndx", "dax", "mdax", "sx5e", "sxxp"}
+    assert set(stats["indexes"]) >= {"spx", "ndx", "dax", "mdax", "sx5e", "sxxp", "atx"}
     assets = load_pool_assets()
     deutsche = [a for a in assets if a["name"] == "Deutsche Bank"]
     assert len(deutsche) == 1
     assert deutsche[0]["ticker"] == "DBK.XETRA"
     assert "dax" in deutsche[0]["sources"]
     assert deutsche[0]["sector"] == "financial services"
+
+
+def test_pool_v1_includes_atx_austria():
+    assets = load_pool_assets()
+    atx = [a for a in assets if "atx" in (a.get("sources") or [])]
+    assert len(atx) >= 20
+    by_name = {a["name"]: a for a in atx}
+    assert by_name["BAWAG Group"]["ticker"] == "BG.VI"
+    assert by_name["Austrian Post"]["ticker"] == "POST.VI"
+    assert by_name["Immofinanz"]["ticker"] == "IMO1.F"
+    assert "Austria" in by_name["BAWAG Group"].get("countries", [])
 
 
 def test_market_universe_overlays_curated_and_keeps_pool_names():
