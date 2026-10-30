@@ -9,8 +9,11 @@ bestätigbaren spezifischen Ankern für den Evidenzkanal. Tooling (SEC-Binding,
 Issuer-Anaphora, Gewinnsprung-Extraktion) ist nicht der Engpass — **Teaser-
 Anonymität** ist es.
 
-Details und HT-023-Baseline:
-`docs/examples/source-packets/pilot-original-anchors/`.
+Wenn der Teaser den Emittenten **wörtlich** nennt (HT-023 AbbVie), bindet der
+`issuer_literal`-Kanal den Namen an das passende Paket → Top-1 / 
+`plausible_hypothesis` (weiterhin 1/2 Kernhinweise, Offline nicht `identified`).
+
+Details: `docs/examples/source-packets/pilot-original-anchors/`.
 
 ## Abgrenzung
 
@@ -20,6 +23,7 @@ Details und HT-023-Baseline:
 | Entwicklungs-Anreicherung (Clario/Solventum) | beweist Matcher, nicht Korpus |
 | Call-PDF-Produkte/Übernahmen | Resolutionsleak — verboten als Paket |
 | Original-Teaser ≥2 Named-Facts | **0/27** |
+| Emittentenname im Teaser (`issuer_literal`) | HT-023: ABBV Top-1, Score 54 |
 
 ## Operator-Checkliste für den nächsten echten Fall
 

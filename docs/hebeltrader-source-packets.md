@@ -67,8 +67,8 @@ zwei bestätigte Kernhinweise (`Clario`, `Solventum`, Score 105) →
 `plausible_hypothesis`. Offline bleibt `not_identified` (Falsifikations-/Gegenkandidaten-Gate).
 
 Original-Anker-Lücke: `docs/examples/source-packets/pilot-original-anchors/` —
-**0/27** Refs mit ≥2 nativen spezifischen Ankern; HT-023 (AbbVie im Headline)
-lädt Pakete, bestätigt aber 0 Kernhinweise (`unknown_relation` zählt nicht).
+**0/27** Refs mit ≥2 nativen spezifischen Ankern. HT-023 (AbbVie im Headline)
+über `issuer_literal` → ABBV Top-1 / `plausible_hypothesis` (1/2 Hinweise).
 
 ## Operator-Checkliste (nächster echter Fall)
 

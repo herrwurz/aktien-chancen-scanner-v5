@@ -195,6 +195,13 @@ def _clues(text, spans):
     for name in _entities(text):
         start = text.index(name)
         relation = _relation(text, start)
+        # Bare proper names (no acquisition/investment/partnership cue) are issuer-literal
+        # candidates: confirmed only when a packet/candidate company matches the name.
+        if relation == "unknown_relation":
+            relation = "issuer_literal"
+            method = "teaser_issuer_literal_requires_candidate_name_match"
+        else:
+            method = "named_entity_literal_requires_transaction_context"
         target = relation + "|" + name.casefold()
         clues.append(
             AtomicClue(
@@ -207,7 +214,7 @@ def _clues(text, spans):
                 start=start,
                 end=start + len(name),
                 instrument_scope="stock",
-                extraction_method="named_entity_literal_requires_transaction_context",
+                extraction_method=method,
             )
         )
     quarters = set(re.findall(r"\bQ[1-4]\s+20\d{2}\b", text, re.I))
@@ -335,7 +342,17 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
         if clue.category == "fact_claims":
             value = clue.value or clue.normalized
             relation, separator, term = value.partition("|")
-            if not separator or relation not in _RELATIONS:
+            if not separator:
+                continue
+            company = document.get("company_name", "")
+            if relation == "issuer_literal":
+                # Teaser names the issuer; bind to this candidate via canonical company match.
+                # No filing-body subject window required (SEC prose often says "the company").
+                if company and canonical_company(company) == canonical_company(term):
+                    facts["fact_claims"].append(value)
+                    facts["support_quotes"][clue.clue_id] = company
+                continue
+            if relation not in _RELATIONS:
                 continue
             match = re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I)
             if not match:
@@ -343,7 +360,6 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
             # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
             context = text[max(0, match.start() - 400) : match.end() + 120]
             pattern = _RELATIONS[relation]
-            company = document.get("company_name", "")
             subject = _fact_claim_subject(company, context, pattern, term)
             if subject and not re.search(
                 r"\b(?:competitor|konkurrent|according|says|said)\b", subject.group("link"), re.I
