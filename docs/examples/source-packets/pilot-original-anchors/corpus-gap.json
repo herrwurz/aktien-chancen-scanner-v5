@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "kind": "original_teaser_named_anchor_gap",
+  "recorded_note": "Counts only original teaser/headline text — no Call-PDF leak, no developmental enrichment.",
+  "summary": {
+    "cases": 27,
+    "with_publication_at": 24,
+    "with_ge_2_specific_anchors": 0,
+    "with_ge_1_named_relation_fact": 0,
+    "with_ge_1_financial_metric": 3,
+    "with_any_entity": 1
+  },
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "publication_at": false,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-016",
+      "publication_at": false,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-002",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-004",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-005",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-006",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-007",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-013",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [
+        "net_income_increase"
+      ],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-014",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-008",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-009",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 1,
+      "entities": [],
+      "native_specific_anchor_count": 1
+    },
+    {
+      "case_id": "HT-010",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-015",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-011",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-012",
+      "publication_at": false,
+      "named_relation_facts": [],
+      "other_fact_claims": [
+        "net_income_increase"
+      ],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-017",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-018",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-001",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-019",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-020",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-021",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-022",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-023",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [
+        "unknown_relation|abbvie"
+      ],
+      "financial_metrics": 0,
+      "entities": [
+        "AbbVie"
+      ],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-024",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-025",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 0,
+      "entities": [],
+      "native_specific_anchor_count": 0
+    },
+    {
+      "case_id": "HT-026",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 1,
+      "entities": [],
+      "native_specific_anchor_count": 1
+    },
+    {
+      "case_id": "HT-027",
+      "publication_at": true,
+      "named_relation_facts": [],
+      "other_fact_claims": [],
+      "financial_metrics": 1,
+      "entities": [],
+      "native_specific_anchor_count": 1
+    }
+  ]
+}
