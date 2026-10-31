@@ -20,6 +20,7 @@ from .chart_check import check as chart_check
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
+from .metric_fingerprint import apply_metric_fingerprints
 from .research_plan import build_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
@@ -38,6 +39,12 @@ def clue_specificity(text):
         value,
     ):
         return 12
+    if re.search(
+        r"\barr\b|annualized recurring|wiederkehrend\w*\s+(?:erl[öo]se|umsatz)|"
+        r"operative[rn]?\s+marge|operating margin|indexgesch[äa]ft",
+        value,
+    ):
+        return 10
     if re.search(r"übernahm|übernahme|acquisition|großauftrag|partnerschaft|zulassung", value):
         return 8
     if re.search(r"bruttomarge|cashflow|umsatz|gewinn|marge|revenue|earnings", value):
@@ -45,6 +52,23 @@ def clue_specificity(text):
     if re.search(r"chart|kursziel|rendite|ausbruch|rally", value):
         return 0
     return 2
+
+
+def _documents_by_asset(fetched):
+    grouped = {}
+    for doc in fetched or []:
+        name = doc.get("company_name")
+        if not name:
+            continue
+        asset_id = "company:" + hashlib.sha256(
+            canonical_company(name, doc.get("ticker")).encode()
+        ).hexdigest()
+        grouped.setdefault(asset_id, []).append(doc)
+    return grouped
+
+
+def _apply_metric_fingerprints(ranked, fetched):
+    return apply_metric_fingerprints(ranked, _documents_by_asset(fetched))
 
 
 def apply_tie_labels(ranked):
@@ -980,6 +1004,7 @@ class Investigator:
         ranked = compare()
         chart_cache = {}
         earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
+        metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}
         if not offline:
             _apply_chart(ranked, chart_cache, text)
             earnings_pit = apply_earnings_pit(
@@ -989,6 +1014,7 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
+            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -1013,6 +1039,7 @@ class Investigator:
                     lookup=self.earnings_lookup,
                     ath_bars_fetcher=self.ath_bars_fetcher,
                 )
+                metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
             peer_comparison.update(
                 status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
                 queries=peer_queries,
@@ -1059,7 +1086,9 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
+            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
             falsification["earnings_pit"] = earnings_pit
+            falsification["metric_fingerprints"] = metric_fingerprints
         reasoning_review = {
             "status": "not_available_offline" if offline else "not_performed_no_candidates",
             "changes_deterministic_ranking": False,

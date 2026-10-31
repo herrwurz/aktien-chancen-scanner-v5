@@ -138,6 +138,16 @@ When the teaser already claims reported quarterly results or an all-time high,
 python3 -m pytest tests/hebeltrader/test_earnings_pit.py -q
 ```
 
+## Metric fingerprint (199/26 lesson)
+
+After earnings docs are fetched, rank by rare numeric combos — not generic
+fintech/ATH overlap. Nasdaq’s decisive fingerprint was index growth ~39%, ARR
+~USD 3.4bn, adjusted operating margin ~57% (`metric_fingerprint`).
+
+```bash
+python3 -m pytest tests/hebeltrader/test_metric_fingerprint.py -q
+```
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder

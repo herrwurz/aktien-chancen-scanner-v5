@@ -82,6 +82,17 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 - **Ursache noch nicht hinreichend belegt:** vermutlich zu frühe Gewichtung des generischen „Comeback“-Narrativs; genaue damalige Quellen und Ranking rekonstruieren, nicht rückwirkend erfinden.
 - **Regressionstest:** Originalteaser 176/26 unverändert prüfen und Salesforce mit mindestens fünf Alternativen vergleichen.
 
+### OK-001 – Nasdaq statt generischer Fintech-Peers (199/26, 27.10.2026)
+- **Eingefrorene Blind-Top-3 vor Report:** NDAQ → DB1 → LSEG (Hypothese, `not_identified`).
+- **Nutzerauflösung / Call-PDF:** Nasdaq, Inc.; Call **JY7FDN**; Stand 27.10.2026 08:15.
+- **Lernregel:** Nicht „Fintech + Quartalszahlen + Allzeithoch“ allein ranken. Der entscheidende
+  Fingerabdruck in den Primärzahlen war die **Kombination** Indexgeschäft ~**+39 %**, ARR
+  ~**USD 3,4 Mrd.**, bereinigte operative Marge ~**57 %**. Peers ohne diese Kombi (DB1/LSEG/CME/ICE)
+  dürfen NDAQ nicht überholen, sobald die Earnings-Texte vorliegen.
+- **Härte im Code:** `metric_fingerprint` + PIT Earnings/ATH (`earnings_pit`); Regression
+  `tests/hebeltrader/test_metric_fingerprint.py`.
+- **Hinweis:** Entwicklungsfall nach Auflösung — kein unabhängiger Blindtest mehr.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.

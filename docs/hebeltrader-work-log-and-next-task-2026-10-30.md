@@ -122,6 +122,14 @@ Neu: `scanner/hebeltrader/detective/earnings_pit.py` + Hook in `Investigator`
 (hard contradictions, Score −100, Earnings-Date-Queries in Falsifikation).
 Replay: MA/V/PYPL demoted; NDAQ/DB1 bleiben ohne Quartals-Widerspruch.
 
+## 19. HT 199/26 aufgelöst + Metric-Fingerprint (2026-10-31)
+Call-PDF: **Nasdaq / JY7FDN**, Stand 08:15. Blind-Tipp NDAQ war Rang 1.
+Härte: `metric_fingerprint` — ARR + operative Marge + Segmentwachstum (Index +39 %,
+ARR 3,4 Mrd., Marge 57 %) schlägt generische Fintech-Peers. Register OK-001.
+
+**Weiter:** Nächsten echten Teaser mit PIT+Fingerprint live; HT-016 Issue/PDF;
+keine Schwellen-Absenkung.
+
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
 innerhalb **180 Tagen** vor `publication_date` werden aus Offline-/Market-Hypothesen entfernt
