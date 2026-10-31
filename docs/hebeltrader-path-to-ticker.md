@@ -78,19 +78,16 @@ IR lead + SEC peers (`archived_snapshot`).
 
 `batch-pending-pdf/`: **2/2 named identified** (COST, BAS) with **PDF Stand Uhr**
 cutoffs after operator upload of 192/26 & 137/26 (2026-10-31). Shared
-`reference-27-inputs-with-publication-at.json` filled. **HT-016** still blocked
-(no issue/date).
+`reference-27-inputs-with-publication-at.json` filled.
 
 ## Corpus-v1 (vereinigt)
 
-`corpus-v1/`: **26/26 named identified** via `historical_source_packet`
-(alle Batches außer HT-016). Original-Teaser weiter **0/26**. Freeze
-`evidence-batch-corpus-v1.json`. Scorecard:
-`python3 -m scanner.hebeltrader.detective.corpus_report`.
+`corpus-v1/`: **26/26 named identified** via `historical_source_packet`.
+Original-Teaser weiter **0/26**. Freeze `evidence-batch-corpus-v1.json`.
+Scorecard: `python3 -m scanner.hebeltrader.detective.corpus_report`.
 
-`ht-016-blocked/`: Williams SEC scaffold (WMB + peers, Transco / Northwest
-Pipeline needles). **Dev only** — no issue/date, not in the freeze. Unlock
-requires operator issue binding + Call-PDF Stand Uhr.
+**HT-016** (Williams / Nutzerfall 02) was **dropped** from the active register
+on 2026-10-31; historical freezes that still mention it are archival only.
 
 Costco/BASF cutoffs promoted (`publisher_pdf_stand_uhr`). PIT history pad
 default is **800** days (`market_screen export-pit --history-pad-days`).

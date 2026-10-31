@@ -32,10 +32,10 @@ Shared `reference-27-inputs-with-publication-at.json` now carries these cutoffs.
 - HT-003: SEC 10-Q Costco + WMT/TGT/BJ/DG/DLTR peers
 - HT-012: Wayback IR (Oppanol N PLUS PR) + DOW/DD/LYB/EMN/CE peers
 
-## Still blocked
+## Note
 
-**HT-016** — no `publication_issue`, no featured date. Scaffold under
-`ht-016-blocked/` only.
+**HT-016** Williams was dropped from the active register (2026-10-31);
+this batch never included it.
 
 ## Gates
 

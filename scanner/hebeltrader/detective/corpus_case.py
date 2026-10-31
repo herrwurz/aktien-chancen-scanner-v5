@@ -7,7 +7,6 @@ from datetime import date, datetime
 from pathlib import Path
 
 DEFAULT_CORPUS_DIR = Path("docs/examples/source-packets/corpus-v1")
-BLOCKED_CASES = frozenset({"HT-016"})
 
 
 def corpus_paths(
@@ -19,10 +18,6 @@ def corpus_paths(
     if variant not in {"named", "original"}:
         raise ValueError("variant must be named or original")
     case_id = case_id.upper()
-    if case_id in BLOCKED_CASES:
-        raise ValueError(
-            f"{case_id} is blocked (no publication_at); see ht-016-blocked/, not corpus-v1"
-        )
     inputs = corpus_dir / f"{case_id}.inputs.{variant}.json"
     packet = corpus_dir / "packets" / f"{case_id}.json"
     if not inputs.exists():

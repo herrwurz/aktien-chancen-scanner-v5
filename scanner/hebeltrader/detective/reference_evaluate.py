@@ -135,7 +135,7 @@ def evaluate(rankings, references):
             "Headline-only inputs are not complete original teasers.",
             "No exact publication times are present in this reconstruction.",
             "No identification quality proven without authentic dated candidate-source packets.",
-            "The original 10/7/1 history is not the performance of this new scan.",
+            "The original 10/7 history (HT-016 dropped) is not the performance of this new scan.",
             "New reference cases are development regressions, not independent blind tests.",
             "Market hypotheses require an external snapshot export and remain unverified.",
         ],

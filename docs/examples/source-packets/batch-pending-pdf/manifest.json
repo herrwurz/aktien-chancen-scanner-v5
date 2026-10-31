@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-pending-pdf-packet-batch-manifest-v1",
-  "note": "HT-003/HT-012 lack publisher PDFs 192/26 and 137/26. publication_at is provisional (featured_date + corpus Stand 08:15). HT-016 still blocked (no issue/date). Do not treat as PDF-confirmed cutoff until operator upload.",
+  "note": "HT-003/HT-012 publication_at confirmed via publisher PDF Stand Uhr (192/26 & 137/26). HT-016 dropped from active register 2026-10-31.",
   "cases": [
     {
       "case_id": "HT-003",

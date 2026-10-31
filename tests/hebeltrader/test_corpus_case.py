@@ -21,8 +21,8 @@ def test_load_corpus_case_named_has_packet_and_pub_at():
     assert "Analog Devices" in case["teaser_text"] or "Empower" in case["teaser_text"]
 
 
-def test_load_corpus_case_blocks_ht016():
-    with pytest.raises(ValueError, match="blocked"):
+def test_load_corpus_case_rejects_dropped_ht016():
+    with pytest.raises(FileNotFoundError, match="HT-016"):
         load_corpus_case("HT-016")
 
 

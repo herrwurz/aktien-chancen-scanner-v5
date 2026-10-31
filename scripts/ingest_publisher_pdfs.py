@@ -139,7 +139,7 @@ def _load_case_index():
 
 
 def _reference_gaps(public_rows: list[dict]) -> dict[str, str]:
-    """Remaining Ref-27 PDF gaps after this ingest (HT-016 stays issue-less)."""
+    """Remaining active-register PDF gaps after this ingest."""
     by_case = {
         row["mapped_case_id"]: row
         for row in public_rows
@@ -156,7 +156,6 @@ def _reference_gaps(public_rows: list[dict]) -> dict[str, str]:
         gaps["HT-012"] = "BASF 137/26 not in upload set"
     elif not basf.get("publication_at_guess"):
         gaps["HT-012"] = "BASF 137/26 present but Stand Uhr missing"
-    gaps["HT-016"] = "no publication_issue / no PDF"
     return gaps
 
 

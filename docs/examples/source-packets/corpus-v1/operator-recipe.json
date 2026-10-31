@@ -12,7 +12,7 @@
   "evidence_batch": "python3 -m scanner.hebeltrader.detective.evidence_batch \\\n  --inputs docs/examples/source-packets/corpus-v1/HT-*.inputs.*.json \\\n  --source-packets docs/examples/source-packets/corpus-v1/packets \\\n  --snapshots reports/snapshots-pit-pool-v1-pad800-2026-10-31.json \\\n  --summary docs/examples/source-packets/corpus-v1/evidence-batch-corpus-v1.json",
   "notes": [
     "Named freeze is already committed; re-run only after packet edits.",
-    "HT-016 stays out until operator issue + PDF Stand.",
+    "HT-016 Williams was dropped from the active register (2026-10-31).",
     "Stufe 3b live web needs Tavily/OpenAI; use simulated_falsification offline."
   ]
 }

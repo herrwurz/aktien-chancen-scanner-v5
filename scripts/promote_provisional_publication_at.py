@@ -7,7 +7,7 @@ PDFs appear in the inventory with a ``publication_at_guess``, this script
 rewrites the provisional overlay and (with ``--apply-shared-refs``) fills
 ``reference-27-inputs-with-publication-at.json``.
 
-HT-016 remains blocked (no issue / no date) and is never promoted here.
+HT-016 was dropped from the active register (2026-10-31) and is not promoted here.
 
 Default is dry-run. Pass ``--apply`` to write files.
 """
@@ -34,9 +34,7 @@ PENDING = {
     },
 }
 
-BLOCKED = {
-    "HT-016": "no_publication_issue_no_featured_date_unresolved_identity",
-}
+BLOCKED: dict[str, str] = {}
 
 INVENTORY = ROOT / "docs" / "hebeltrader-publisher-pdf-inventory.json"
 PROVISIONAL_REFS = (

@@ -26,6 +26,8 @@ REQUIRED = {
     "evidence_sources",
 }
 INPUT_FIELDS = ("case_id", "headline", "teaser_text", "publication_date", "publication_at")
+# HT-016 Williams (Nutzerfall 02) removed from the active register 2026-10-31.
+DROPPED_HISTORICAL_REFERENCE_NUMBERS = frozenset({2})
 
 
 def _historical_cases(data):
@@ -43,8 +45,12 @@ def load_references(path):
     if len(set(numbers)) != len(numbers):
         raise ValueError("Reference numbers must be unique")
     historical_numbers = {number for number in numbers if number <= 18}
-    if historical_numbers != set(range(1, 19)):
-        raise ValueError("The original 18-case reference numbering must be complete")
+    expected = set(range(1, 19)) - DROPPED_HISTORICAL_REFERENCE_NUMBERS
+    if historical_numbers != expected:
+        raise ValueError(
+            "The original 18-case reference numbering must be complete "
+            f"(allowing dropped refs {sorted(DROPPED_HISTORICAL_REFERENCE_NUMBERS)})"
+        )
     for case in cases:
         if not REQUIRED.issubset(case):
             raise ValueError("Reference missing required field")
