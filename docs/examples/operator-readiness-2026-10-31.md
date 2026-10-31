@@ -21,7 +21,7 @@ python3 -m scanner.hebeltrader.detective.corpus_report readiness
 
 | Item | Status |
 |---|---|
-| HT-016 | no issue/date (scaffold only) |
+| HT-016 | 191/26 bound 15.10.2026; awaiting Call-PDF Stand |
 | Original teasers | **0/26** with ≥2 native named anchors |
 | Live Stufe 3b | needs Tavily/OpenAI |
 

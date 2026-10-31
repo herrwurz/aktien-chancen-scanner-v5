@@ -28,6 +28,7 @@ Börsenuhr; für historische Blind-Pakete weiterhin Operator-Bestätigung nötig
 
 ## Lücken
 
-- HT-016 — kein PDF / keine Issue im Archiv (HT-003 Costco **192/26** und
-  HT-012 BASF **137/26** seit 2026-10-31 im lokalen Archiv; Stand → shared refs)
+- HT-016 — Issue **191/26** (15.10.2026) operator-bound; Call-PDF / Stand Uhr
+  fehlt noch im Archiv (HT-003 Costco **192/26** und HT-012 BASF **137/26**
+  seit 2026-10-31 im lokalen Archiv; Stand → shared refs)
   (Costco **70/26** liegt separat vor, ist ein anderer Call).

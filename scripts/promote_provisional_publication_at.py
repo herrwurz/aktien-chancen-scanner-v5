@@ -7,7 +7,8 @@ PDFs appear in the inventory with a ``publication_at_guess``, this script
 rewrites the provisional overlay and (with ``--apply-shared-refs``) fills
 ``reference-27-inputs-with-publication-at.json``.
 
-HT-016 remains blocked (no issue / no date) and is never promoted here.
+HT-016 remains blocked (issue 191/26 bound; Call-PDF Stand Uhr still missing)
+and is never promoted here.
 
 Default is dry-run. Pass ``--apply`` to write files.
 """
@@ -35,7 +36,7 @@ PENDING = {
 }
 
 BLOCKED = {
-    "HT-016": "no_publication_issue_no_featured_date_unresolved_identity",
+    "HT-016": "issue_191_26_bound_awaiting_pdf_stand_unresolved_identity",
 }
 
 INVENTORY = ROOT / "docs" / "hebeltrader-publisher-pdf-inventory.json"

@@ -2,25 +2,26 @@
 
 **Not part of the identification freeze.** Corpus-v1 stays **26/26** without HT-016.
 
-## Why blocked
+## Binding (operator 2026-10-31)
 
 | Field | Value |
 |---|---|
 | Case | HT-016 |
 | Headline | Dieser Branchenführer profitiert vom Stromhunger der Zukunft! |
-| Text | full teaser in `HT-016.inputs.original.json` (operator 2026-10-31) |
-| `publication_issue` | null — Ausgabe laut Operator nicht mehr verfügbar |
-| `publication_date` / `publication_at` | null |
+| Text | full teaser in `HT-016.inputs.original.json` |
+| `publication_issue` | **191/26** |
+| `publication_date` | **2026-10-15** |
+| `publication_at` | `2026-10-15T08:15:00+01:00` — **provisional** (`featured_date_plus_corpus_stand_0815_pdf_pending`) |
 | Outcome | unresolved (suspected WMB / Williams Companies) |
+| Status | `blocked_awaiting_pdf_stand` |
 
-Without an operator-bound issue + Stand Uhr there is no historical cutoff.
-Blind / ID-freeze use of this packet is **forbidden**. Full text alone does
-**not** unlock identification.
+Issue + featured date are bound. Exact publisher Stand Uhr still needs the Call-PDF.
+Blind / ID-freeze use of this packet remains **forbidden** until Stand is PDF-confirmed
+and the packet is re-cut.
 
 ## What this directory holds
 
-Developmental SEC scaffold so the day a real `publication_at` lands we do not
-rebuild peers from scratch:
+Developmental SEC scaffold so peers are ready once Stand Uhr lands:
 
 | Role | Ticker | CIK |
 |---|---|---|
@@ -31,18 +32,18 @@ rebuild peers from scratch:
 | Peer | ET | 0001276187 |
 | Peer | LNG | 0000003570 |
 
-Lead needles (product / system literals): `Transco`, `Northwest Pipeline`,
-`Transmission`. Research as-of used for the fetch:
-`2026-10-30T08:15:00+01:00` — **provisional research cutoff only**, not a
-publisher Stand.
+Lead needles: `Transco`, `Northwest Pipeline`, `Transmission`.
 
-Lead filing in the scaffold: WMB 10-Q filed 2026-08-03
-(`sec_edgar_filing_date`). Rebuild:
+Research cutoff used for the packet rebuild:
+`2026-10-15T08:15:00+01:00` (same provisional Stand). Filings after that
+date (e.g. prior KMI/OKE/LNG Q3 10-Qs) are excluded.
+
+Rebuild:
 
 ```bash
 python3 -m scanner.hebeltrader.detective.build_sec_packet \
   --case-id HT-016 \
-  --cutoff '2026-10-30T08:15:00+01:00' \
+  --cutoff '2026-10-15T08:15:00+01:00' \
   --issuer 'WMB:0000107263:Williams' \
   --issuer 'KMI:0001506307:Kinder Morgan' \
   --issuer 'OKE:0001039684:ONEOK' \
@@ -56,14 +57,12 @@ python3 -m scanner.hebeltrader.detective.build_sec_packet \
   --raw-dir data/hebeltrader/source-packet-raw/HT-016
 ```
 
-## Operator unlock
+## Operator unlock (remaining)
 
-1. Bind HT-016 to a Hebeltrader issue (or confirm it stays unresolved).
-2. Upload the matching Call-PDF; run `scripts/ingest_publisher_pdfs.py`.
-3. Set real `publication_at` from the PDF `Stand: … um … Uhr` line.
-4. Re-cut the packet with that cutoff; only then consider corpus promotion.
-5. Shared `reference-27-inputs-with-publication-at.json` stays untouched until
-   then.
+1. Upload Call-PDF for 191/26; run `scripts/ingest_publisher_pdfs.py`.
+2. Confirm `publication_at` from the PDF `Stand: … um … Uhr` line.
+3. Re-cut the packet with that cutoff; only then consider corpus promotion.
+4. Shared `reference-27-inputs-with-publication-at.json` stays untouched until then.
 
 Related: `scripts/promote_provisional_publication_at.py` (Costco 192/26,
-BASF 137/26). HT-016 is listed there as still blocked.
+BASF 137/26). HT-016 stays blocked there until PDF Stand.

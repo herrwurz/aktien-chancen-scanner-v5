@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-live-ranking-freeze-v1",
+  "case_id": "HT-016",
+  "publication_issue": "191/26",
+  "publication_at": "2026-10-15T08:15:00+01:00",
+  "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+  "frozen_at": "2026-10-31T12:28:50.222052+00:00",
+  "identification": {
+    "status": "not_identified",
+    "label": "Nicht identifiziert",
+    "basis": null,
+    "score_is_probability": false,
+    "requires_manual_review": true,
+    "packet_peer_count": 7
+  },
+  "decision": {
+    "status": "insufficient_evidence",
+    "label": "Nicht ausreichend identifizierbar"
+  },
+  "ranking_status": "ranked",
+  "falsification_status": "performed_with_source_gaps",
+  "ranked_before_resolution": [
+    {
+      "rank": 1,
+      "name": "NextEra Energy",
+      "ticker": "NEE",
+      "evidence_score": 38,
+      "ranking_reason": "Rang 1: 0 bestätigte Kernhinweise, 0 harte Widersprüche, Score 38; Widersprüche zuerst, danach spezifische Primärevidenz. 5 vorläufige KI-Belegstellen; keine unabhängige Primärbestätigung.",
+      "metric_fingerprint": {
+        "arr_billions": 50.0,
+        "operating_margin_pct": null,
+        "segment_growth": {
+          "segment": "market",
+          "pct": 1.0
+        },
+        "components": 2,
+        "bonus": 36
+      },
+      "chart": {
+        "status": "ok",
+        "breakout": false,
+        "above_gd50": true,
+        "above_gd200": false,
+        "near_high_pct": -13.2
+      }
+    },
+    {
+      "rank": 2,
+      "name": "Iberdrola",
+      "ticker": null,
+      "evidence_score": 17,
+      "ranking_reason": "Rang 2: 0 bestätigte Kernhinweise, 0 harte Widersprüche, Score 17; Widersprüche zuerst, danach spezifische Primärevidenz.",
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": null,
+        "segment_growth": null,
+        "components": 0,
+        "bonus": 0
+      },
+      "chart": {
+        "status": "ok",
+        "breakout": true,
+        "above_gd50": true,
+        "above_gd200": true,
+        "near_high_pct": 0.0
+      }
+    },
+    {
+      "rank": 3,
+      "name": "Enel SpA",
+      "ticker": "ENEL",
+      "evidence_score": 16,
+      "ranking_reason": "Rang 3: 0 bestätigte Kernhinweise, 0 harte Widersprüche, Score 16; Widersprüche zuerst, danach spezifische Primärevidenz. 1 vorläufige KI-Belegstellen; keine unabhängige Primärbestätigung.",
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": 18.0,
+        "segment_growth": {
+          "segment": "markets",
+          "pct": 18.0
+        },
+        "components": 2,
+        "bonus": 16
+      },
+      "chart": {
+        "status": null,
+        "breakout": null,
+        "above_gd50": null,
+        "above_gd200": null,
+        "near_high_pct": null
+      }
+    },
+    {
+      "rank": 4,
+      "name": "Schneider Electric",
+      "ticker": null,
+      "evidence_score": 2,
+      "ranking_reason": null,
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": null,
+        "segment_growth": null,
+        "components": 0,
+        "bonus": 0
+      },
+      "chart": {
+        "status": "ok",
+        "breakout": false,
+        "above_gd50": false,
+        "above_gd200": false,
+        "near_high_pct": -23.6
+      }
+    },
+    {
+      "rank": 5,
+      "name": "RWE AG",
+      "ticker": null,
+      "evidence_score": 0,
+      "ranking_reason": null,
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": null,
+        "segment_growth": null,
+        "components": 0,
+        "bonus": 0
+      },
+      "chart": {
+        "status": "no_ticker",
+        "breakout": null,
+        "above_gd50": null,
+        "above_gd200": null,
+        "near_high_pct": null
+      }
+    },
+    {
+      "rank": 6,
+      "name": "Equinix",
+      "ticker": null,
+      "evidence_score": 0,
+      "ranking_reason": null,
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": null,
+        "segment_growth": null,
+        "components": 0,
+        "bonus": 0
+      },
+      "chart": {
+        "status": "no_ticker",
+        "breakout": null,
+        "above_gd50": null,
+        "above_gd200": null,
+        "near_high_pct": null
+      }
+    },
+    {
+      "rank": 7,
+      "name": "Enel",
+      "ticker": null,
+      "evidence_score": 0,
+      "ranking_reason": null,
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": null,
+        "segment_growth": null,
+        "components": 0,
+        "bonus": 0
+      },
+      "chart": {
+        "status": "no_ticker",
+        "breakout": null,
+        "above_gd50": null,
+        "above_gd200": null,
+        "near_high_pct": null
+      }
+    },
+    {
+      "rank": 8,
+      "name": "Siemens Energy",
+      "ticker": null,
+      "evidence_score": 0,
+      "ranking_reason": null,
+      "metric_fingerprint": {
+        "arr_billions": null,
+        "operating_margin_pct": null,
+        "segment_growth": null,
+        "components": 0,
+        "bonus": 0
+      },
+      "chart": {
+        "status": null,
+        "breakout": null,
+        "above_gd50": null,
+        "above_gd200": null,
+        "near_high_pct": null
+      }
+    }
+  ],
+  "note": "Frozen before Call-PDF resolution. WMB suspected only; not identified. Not in corpus-v1."
+}

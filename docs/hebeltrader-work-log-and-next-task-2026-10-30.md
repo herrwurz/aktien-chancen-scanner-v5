@@ -127,8 +127,15 @@ Call-PDF: **Nasdaq / JY7FDN**, Stand 08:15. Blind-Tipp NDAQ war Rang 1.
 Härte: `metric_fingerprint` — ARR + operative Marge + Segmentwachstum (Index +39 %,
 ARR 3,4 Mrd., Marge 57 %) schlägt generische Fintech-Peers. Register OK-001.
 
-**Weiter:** Nächsten echten Teaser mit PIT+Fingerprint live; HT-016 Issue/PDF;
-keine Schwellen-Absenkung.
+## 17. HT-016 → 191/26 (2026-10-31)
+
+Operator bind: **HEBELTRADER 191/26**, featured **15.10.2026**. Scaffold status
+`blocked_awaiting_pdf_stand`; provisional `publication_at`
+`2026-10-15T08:15:00+01:00`. SEC packet re-cut for that cutoff. Still out of
+corpus-v1 until Call-PDF Stand Uhr.
+
+**Weiter:** Call-PDF 191/26 Stand; live Ranking für Stromhunger mit PIT 15.10.;
+keine Schwellen-Absenkung; WMB bleibt Verdacht.
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls

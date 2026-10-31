@@ -534,10 +534,10 @@
       "case_id": "HT-016",
       "reference_number": 2,
       "headline": "Dieser Branchenführer profitiert vom Stromhunger der Zukunft!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
-      "publication_issue": null,
+      "teaser_text": "Dieser Branchenführer profitiert vom Stromhunger der Zukunft!\n\nEnergie-Alarm im KI-Zeitalter! Der Stromhunger moderner Rechenzentren eröffnet einem etablierten Branchenführer gewaltige neue Chancen. Solide Cashflows, langfristige Verträge und zusätzliche Wachstumsperspektiven schaffen ein starkes Fundament. Nun liefert auch der Chart ein klares Signal: Die Aktie hat sich nach der Korrektur stabilisiert und nimmt den nächsten Ausbruch ins Visier. Springt der Kurs über den entscheidenden Widerstand, könnte die Rally deutlich an Tempo gewinnen. Der empfohlene Call macht aus dieser Erholung eine echte Hebelstory – mit einer maximalen Performance von bis zu 1.453 Prozent bei voller Zielerreichung.\n",
+      "text_completeness": "full_teaser",
+      "publication_date": "2026-10-15",
+      "publication_issue": "191/26",
       "publication_at": null,
       "first_prediction": "Williams",
       "first_prediction_confidence": null,
@@ -546,11 +546,16 @@
       "actual_ticker": null,
       "derivative_wkn": null,
       "outcome": "unresolved",
-      "source_status": "user_reconstructed_conversation",
+      "source_status": "user_supplied_teaser_issue_bound",
       "key_clues": null,
       "contradicting_clues": null,
       "failure_analysis": null,
       "evidence_sources": [
+        {
+          "type": "user_supplied_teaser",
+          "reference": "HEBELTRADER 191/26, supplied 2026-10-31",
+          "verified_primary_source": false
+        },
         {
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
@@ -563,10 +568,10 @@
       "other_reported_candidates": null,
       "suspected_company": "Williams Companies",
       "suspected_ticker": "WMB",
-      "date_status": "unknown",
+      "date_status": "user_supplied",
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
-      "advertised_return_percent": null
+      "advertised_return_percent": 1453
     },
     {
       "case_id": "HT-002",

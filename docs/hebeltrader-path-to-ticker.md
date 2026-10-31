@@ -78,8 +78,8 @@ IR lead + SEC peers (`archived_snapshot`).
 
 `batch-pending-pdf/`: **2/2 named identified** (COST, BAS) with **PDF Stand Uhr**
 cutoffs after operator upload of 192/26 & 137/26 (2026-10-31). Shared
-`reference-27-inputs-with-publication-at.json` filled. **HT-016** still blocked
-(no issue/date).
+`reference-27-inputs-with-publication-at.json` filled. **HT-016** issue **191/26**
+(15.10.2026) bound; still blocked pending Call-PDF Stand Uhr.
 
 ## Corpus-v1 (vereinigt)
 
@@ -89,7 +89,8 @@ cutoffs after operator upload of 192/26 & 137/26 (2026-10-31). Shared
 `python3 -m scanner.hebeltrader.detective.corpus_report`.
 
 `ht-016-blocked/`: Williams SEC scaffold (WMB + peers, Transco / Northwest
-Pipeline needles). **Dev only** — no issue/date, not in the freeze. Unlock
+Pipeline needles). **Dev only** — 191/26 bound, provisional Stand 08:15, not in
+the freeze. Unlock
 requires operator issue binding + Call-PDF Stand Uhr.
 
 Costco/BASF cutoffs promoted (`publisher_pdf_stand_uhr`). PIT history pad

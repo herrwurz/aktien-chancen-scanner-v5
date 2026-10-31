@@ -18,23 +18,23 @@
       "ticker": "KMI",
       "name": "Kinder Morgan",
       "form": "10-Q",
-      "filing_date": "2026-10-23",
-      "url": "https://www.sec.gov/Archives/edgar/data/1506307/000150630726000132/kmi-20260930.htm",
-      "primary": "kmi-20260930.htm",
+      "filing_date": "2026-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1506307/000150630726000085/kmi-20260630.htm",
+      "primary": "kmi-20260630.htm",
       "resolved_from_primary": null,
       "chars": 20000,
-      "raw_path": "data/hebeltrader/source-packet-raw/HT-016/KMI-2026-10-23-a5771f9c.htm"
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-016/KMI-2026-07-24-38839df9.htm"
     },
     {
       "ticker": "OKE",
       "name": "ONEOK",
       "form": "10-Q",
-      "filing_date": "2026-10-28",
-      "url": "https://www.sec.gov/Archives/edgar/data/1039684/000103968426000039/oke-20260930.htm",
-      "primary": "oke-20260930.htm",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/1039684/000103968426000029/oke-20260630.htm",
+      "primary": "oke-20260630.htm",
       "resolved_from_primary": null,
       "chars": 20000,
-      "raw_path": "data/hebeltrader/source-packet-raw/HT-016/OKE-2026-10-28-8a50075c.htm"
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-016/OKE-2026-08-04-91fe1500.htm"
     },
     {
       "ticker": "EPD",
@@ -62,12 +62,12 @@
       "ticker": "LNG",
       "name": "Cheniere",
       "form": "10-Q",
-      "filing_date": "2026-10-29",
-      "url": "https://www.sec.gov/Archives/edgar/data/3570/000000357026000038/lng-20260930.htm",
-      "primary": "lng-20260930.htm",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/3570/000000357026000028/lng-20260630.htm",
+      "primary": "lng-20260630.htm",
       "resolved_from_primary": null,
       "chars": 20000,
-      "raw_path": "data/hebeltrader/source-packet-raw/HT-016/LNG-2026-10-29-20bceaa5.htm"
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-016/LNG-2026-08-06-90135009.htm"
     }
   ]
 }

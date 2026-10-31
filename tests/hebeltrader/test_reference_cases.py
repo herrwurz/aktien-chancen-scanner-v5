@@ -36,7 +36,7 @@ def test_extended_cases_do_not_change_original_historical_summary():
     data = load_references(DATA)
     summary = historical_summary(data)
     assert summary["total"] == 18
-    assert summary["missing_full_teasers"] == ["HT-016"]
+    assert summary["missing_full_teasers"] == []
     extended = {c["reference_number"]: c for c in data["cases"] if c["reference_number"] > 18}
     assert extended[20]["outcome"] == "not_identified"
     assert extended[21]["outcome"] == "not_tested"
@@ -56,7 +56,7 @@ def test_scan_export_has_no_solutions_or_original_guesses(tmp_path):
         for value in ["Analog Devices", "Lattice", "Empower", "Alif", "MN84GA"]
     )
     assert original["publication_at"] is None
-    assert sum(bool(c["teaser_text"]) for c in exported["cases"]) == 23
+    assert sum(bool(c["teaser_text"]) for c in exported["cases"]) == 24
     with pytest.raises(FileExistsError):
         export_inputs(DATA, tmp_path / "inputs.json")
 
@@ -79,7 +79,7 @@ def test_markdown_and_current_inventory_follow_structured_reference():
     markdown = (ROOT / "docs/hebeltrader-identification-rules.md").read_text()
     assert markdown_table(data) in markdown
     inventory = inventory_history(ROOT / "docs/hebeltrader-identification-rules.md")
-    assert sum(c["original_text_available"] for c in inventory["cases"]) == 17
+    assert sum(c["original_text_available"] for c in inventory["cases"]) == 18
     adi = next(c for c in inventory["cases"] if c["case_id"] == "HT-001")
     assert adi["first_prediction"] == "Lattice Semiconductor"
     assert "Zukäufe" in adi["original_text"]
