@@ -123,7 +123,19 @@ Live falsification without Tavily/OpenAI:
 python3 -c "from pathlib import Path; from scanner.hebeltrader.detective.simulated_falsification import run_simulated_live_falsification as r; print(r(Path('/tmp/sim3b'))['identification'])"
 ```
 
-Returns `basis=live_falsification`. Real web path still needs API keys.
+Returns `basis=live_falsification`.
+
+## Stufe 3b (live, mit Keys)
+
+Requires `TAVILY_API_KEY` / `DETECTIVE_SEARCH_API_KEY` (and optionally OpenAI) plus
+explicit cost approval. Do **not** pass a source packet — packets force the offline path.
+
+```bash
+python3 -m scanner.hebeltrader.detective.live_falsification \
+  --approve-cost --text-file teaser.txt --root /tmp/ht-live-3b
+```
+
+Tavily `GET /usage` uses a 60s client timeout (the endpoint is slower than search).
 
 ## Korpus-Grenze
 

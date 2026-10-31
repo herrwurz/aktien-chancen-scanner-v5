@@ -17,10 +17,21 @@ MODEL_PRICES_USD_PER_MILLION = {
 class TavilyUsageMonitor:
     """Fetch Tavily account usage without exposing credentials or provider errors."""
 
-    def __init__(self, *, getter=None, clock=monotonic, ttl_seconds=300):
+    # Official GET /usage is authenticated but often slower than search; 10s timed out live.
+    DEFAULT_TIMEOUT_SECONDS = 60
+
+    def __init__(
+        self,
+        *,
+        getter=None,
+        clock=monotonic,
+        ttl_seconds=300,
+        timeout_seconds=DEFAULT_TIMEOUT_SECONDS,
+    ):
         self.getter = getter or httpx.get
         self.clock = clock
         self.ttl_seconds = ttl_seconds
+        self.timeout_seconds = timeout_seconds
         self._cached = None
 
     @staticmethod
@@ -45,7 +56,7 @@ class TavilyUsageMonitor:
             response = self.getter(
                 "https://api.tavily.com/usage",
                 headers={"Authorization": "Bearer " + api_key},
-                timeout=10,
+                timeout=self.timeout_seconds,
                 follow_redirects=False,
             )
         except (httpx.HTTPError, RuntimeError):

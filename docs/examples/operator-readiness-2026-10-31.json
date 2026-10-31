@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-operator-readiness-v1",
-  "recorded_at": "2026-10-31T10:10:54.313207+00:00",
+  "recorded_at": "2026-10-31T11:13:39.566316+00:00",
   "corpus": {
     "named_identified": "26/26",
     "originals_identified": "0/26",
@@ -62,7 +62,7 @@
     }
   },
   "api_keys_present": {
-    "EODHD_API_TOKEN": true,
+    "EODHD_API_TOKEN": false,
     "TAVILY_API_KEY": false,
     "OPENAI_API_KEY": false
   },
@@ -85,11 +85,12 @@
   ],
   "next_operator_actions": [
     "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-    "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+    "For live Stufe 3b: provide TAVILY_API_KEY/DETECTIVE_SEARCH_API_KEY and/or OPENAI_API_KEY/DETECTIVE_SOURCE_AI_API_KEY",
     "Secure next real teaser before reading Call-PDF (≥2 named anchors)"
   ],
   "smoke": {
     "corpus_case": "python3 -m scanner.hebeltrader.detective.investigate_cli analyze --corpus-case HT-003 --root /tmp/ht-corpus-case",
-    "simulated_3b": "python3 -m scanner.hebeltrader.detective.corpus_report recipe"
+    "simulated_3b": "python3 -m scanner.hebeltrader.detective.corpus_report recipe",
+    "live_3b": "python3 -m scanner.hebeltrader.detective.live_falsification --approve-cost --text-file <teaser.txt> --root /tmp/ht-live-3b"
   }
 }
