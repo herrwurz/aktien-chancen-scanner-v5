@@ -305,18 +305,26 @@ def build_readiness(
             "OPENAI_API_KEY": bool(os.environ.get("OPENAI_API_KEY")),
         },
         "blockers": blockers,
-        "next_operator_actions": [
-            "Upload Hebeltrader PDFs 192/26 (Costco) and 137/26 (BASF); "
-            "run scripts/ingest_publisher_pdfs.py then "
-            "scripts/promote_provisional_publication_at.py --apply",
-            "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-            "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
-            "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
-        ],
+        "next_operator_actions": (
+            (
+                [
+                    "Upload Hebeltrader PDFs 192/26 (Costco) and 137/26 (BASF); "
+                    "run scripts/ingest_publisher_pdfs.py then "
+                    "scripts/promote_provisional_publication_at.py --apply"
+                ]
+                if promote.get("still_missing")
+                else []
+            )
+            + [
+                "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
+                "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+                "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
+            ]
+        ),
         "smoke": {
             "corpus_case": (
                 "python3 -m scanner.hebeltrader.detective.investigate_cli analyze "
-                "--corpus-case HT-001 --root /tmp/ht-corpus-case"
+                "--corpus-case HT-003 --root /tmp/ht-corpus-case"
             ),
             "simulated_3b": ("python3 -m scanner.hebeltrader.detective.corpus_report recipe"),
         },

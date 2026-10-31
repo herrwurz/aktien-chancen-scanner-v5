@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-corpus-evidence-v1",
-  "note": "Union of batch-10 + us-rest + eu-sec + eu-ir-wayback + pending-pdf. Blind 202/26 kept separate. pending-pdf cutoffs remain provisional.",
+  "note": "Union of batch-10 + us-rest + eu-sec + eu-ir-wayback + pending-pdf. Blind 202/26 kept separate. Costco/BASF publication_at promoted from PDF Stand Uhr.",
   "batches": [
     "batch-10",
     "batch-us-rest",
@@ -26,7 +26,7 @@
       "case_id": "HT-003",
       "expected_ticker": "COST",
       "source_batch": "batch-pending-pdf",
-      "provisional_publication_at": true
+      "provisional_publication_at": false
     },
     {
       "case_id": "HT-004",
@@ -80,7 +80,7 @@
       "case_id": "HT-012",
       "expected_ticker": "BAS",
       "source_batch": "batch-pending-pdf",
-      "provisional_publication_at": true
+      "provisional_publication_at": false
     },
     {
       "case_id": "HT-013",

@@ -138,6 +138,28 @@ def _load_case_index():
     return by_issue
 
 
+def _reference_gaps(public_rows: list[dict]) -> dict[str, str]:
+    """Remaining Ref-27 PDF gaps after this ingest (HT-016 stays issue-less)."""
+    by_case = {
+        row["mapped_case_id"]: row
+        for row in public_rows
+        if row.get("mapped_case_id") and row.get("in_reference_27")
+    }
+    gaps: dict[str, str] = {}
+    costco = by_case.get("HT-003")
+    if not costco or costco.get("issue") != "192/26":
+        gaps["HT-003"] = "Costco 192/26 not in upload set (have Costco 70/26 instead)"
+    elif not costco.get("publication_at_guess"):
+        gaps["HT-003"] = "Costco 192/26 present but Stand Uhr missing"
+    basf = by_case.get("HT-012")
+    if not basf or basf.get("issue") != "137/26":
+        gaps["HT-012"] = "BASF 137/26 not in upload set"
+    elif not basf.get("publication_at_guess"):
+        gaps["HT-012"] = "BASF 137/26 present but Stand Uhr missing"
+    gaps["HT-016"] = "no publication_issue / no PDF"
+    return gaps
+
+
 def ingest_one(path: Path, case_by_issue: dict) -> tuple[dict, dict]:
     data = path.read_bytes()
     sha = hashlib.sha256(data).hexdigest()
@@ -242,11 +264,7 @@ def main(argv=None):
             "unique_issues": len({r.get("issue") for r in public_rows if r.get("issue")}),
             "errors": len(errors),
         },
-        "reference_gaps": {
-            "HT-003": "Costco 192/26 not in upload set (have Costco 70/26 instead)",
-            "HT-012": "BASF 137/26 not in upload set",
-            "HT-016": "no publication_issue / no PDF",
-        },
+        "reference_gaps": _reference_gaps(public_rows),
         "pdfs": public_rows,
         "errors": errors,
     }

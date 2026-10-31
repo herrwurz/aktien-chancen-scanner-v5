@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "evaluation_class": "development_regression",
-  "note": " publication_at filled from publisher PDF Stand-Uhr guesses; not exact exchange clock proof.",
+  "note": "publication_at filled from publisher PDF Stand-Uhr guesses; not exact exchange clock proof. Costco/BASF promoted from pending PDFs.",
   "cases": [
     {
       "case_id": "HT-003",
       "headline": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!",
       "teaser_text": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!\nAufholjagd im Handel! Ein etablierter Branchenführer verbindet hohe Kundenloyalität mit stabilen Einnahmen, starker Ertragskraft und zusätzlichen Wachstumschancen im digitalen Geschäft. Zwar ist die Bewertung ambitioniert, doch die operative Qualität rechtfertigt einen genaueren Blick. Nach der jüngsten Korrektur sendet auch der Chart wieder ein klares Signal: Eine zentrale Trendlinie wurde zurückerobert, der Weg zu neuen Höchstständen ist frei. Der passende Call verleiht der Story zusätzlichen Schub und bietet bei voller Zielerreichung eine maximale Performance von bis zu 1.438 Prozent.",
       "publication_date": "2026-10-16",
-      "publication_at": null
+      "publication_at": "2026-10-16T08:15:00+01:00"
     },
     {
       "case_id": "HT-016",
@@ -106,7 +106,7 @@
       "headline": "Hier steckt eine irrwitzige Turnaround-Chance drin!",
       "teaser_text": "Hier steckt eine irrwitzige Turnaround-Chance drin!\nHier entsteht gerade eine hochspannende Turnaround-Story mit echtem Nachholpotenzial. Ein internationaler Branchenriese hat seinen Umbau spürbar beschleunigt, die Profitabilität verbessert, Kosten gesenkt und sendet mit milliardenschweren Aktienrückkäufen ein klares Signal. Auch fundamental verdichtet sich das Bild: steigende Gewinne, attraktive Dividendenrendite und neue Fantasie durch strategische Werte, die der Markt bislang nur unzureichend einpreist. Für spekulative Anleger wird es mit dem empfohlenen Hebelprodukt besonders explosiv: Im Idealfall winkt eine Renditechance von bis zu 1.900 Prozent.",
       "publication_date": "2026-07-31",
-      "publication_at": null
+      "publication_at": "2026-07-31T08:15:00+01:00"
     },
     {
       "case_id": "HT-017",

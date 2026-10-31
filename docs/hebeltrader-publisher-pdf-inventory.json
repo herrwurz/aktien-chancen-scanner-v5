@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "format": "hebeltrader-publisher-pdf-inventory-v1",
-  "recorded_at": "2026-10-30T19:42:09.986427+00:00",
+  "recorded_at": "2026-10-31T10:09:12.177408+00:00",
   "archive_dir": "data/hebeltrader/publisher-pdfs/ (gitignored)",
   "extract_dir": "data/hebeltrader/publisher-pdf-extracts/ (gitignored)",
   "policy": [
@@ -10,18 +10,16 @@
     "publication_at_guess uses Europe/Berlin wall clock from 'Stand: … um … Uhr' when present."
   ],
   "counts": {
-    "pdfs": 131,
-    "with_issue": 131,
-    "with_publication_at_guess": 92,
-    "with_call_wkn": 131,
-    "mapped_to_reference_27": 26,
+    "pdfs": 133,
+    "with_issue": 133,
+    "with_publication_at_guess": 94,
+    "with_call_wkn": 133,
+    "mapped_to_reference_27": 28,
     "mapped_blind": 1,
-    "unique_issues": 129,
+    "unique_issues": 131,
     "errors": 0
   },
   "reference_gaps": {
-    "HT-003": "Costco 192/26 not in upload set (have Costco 70/26 instead)",
-    "HT-012": "BASF 137/26 not in upload set",
     "HT-016": "no publication_issue / no PDF"
   },
   "pdfs": [
@@ -1601,6 +1599,27 @@
       "is_blind_case": false
     },
     {
+      "filename": "Hebeltrader_2026-137_BASF_7a75.pdf",
+      "sha256": "849540e787f76871d10dc45670225b9cf9646471b49913a7e430ef8601c9aab8",
+      "bytes": 760000,
+      "page_count": 6,
+      "issue": "137/26",
+      "year": 2026,
+      "publication_date": "2026-07-31",
+      "publication_at_guess": "2026-07-31T08:15:00+01:00",
+      "call_wkns": [
+        "MJ7DUX"
+      ],
+      "label_hint": "BASF",
+      "headline_guess": "BASF: Der Chemie-Gigant ist bereit für den BASF",
+      "text_chars": 13660,
+      "has_extractable_text": true,
+      "mapped_case_id": "HT-012",
+      "mapped_company": "BASF",
+      "in_reference_27": true,
+      "is_blind_case": false
+    },
+    {
       "filename": "Hebeltrader_2026-140_Thales_397a.pdf",
       "sha256": "ddf194d00945242ca9003b3289f3df20295c8a3befe821a763bc2f3c703a43be",
       "bytes": 708273,
@@ -1933,6 +1952,27 @@
       "has_extractable_text": true,
       "mapped_case_id": "HT-002",
       "mapped_company": "Zurich Insurance Group",
+      "in_reference_27": true,
+      "is_blind_case": false
+    },
+    {
+      "filename": "Hebeltrader_2026-192_Costco_c7dd.pdf",
+      "sha256": "4f7c10d0fb43b67f2e2a648193f851c0e902c07b399aa458f8286b5b5f8a7c6f",
+      "bytes": 707181,
+      "page_count": 6,
+      "issue": "192/26",
+      "year": 2026,
+      "publication_date": "2026-10-16",
+      "publication_at_guess": "2026-10-16T08:15:00+01:00",
+      "call_wkns": [
+        "JY5SQZ"
+      ],
+      "label_hint": "Costco",
+      "headline_guess": "Costco: Costco",
+      "text_chars": 13672,
+      "has_extractable_text": true,
+      "mapped_case_id": "HT-003",
+      "mapped_company": "Costco Wholesale",
       "in_reference_27": true,
       "is_blind_case": false
     },

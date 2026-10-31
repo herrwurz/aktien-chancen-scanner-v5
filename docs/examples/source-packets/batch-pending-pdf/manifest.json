@@ -6,7 +6,7 @@
     {
       "case_id": "HT-003",
       "cutoff": "2026-10-16T08:15:00+01:00",
-      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+      "publication_at_basis": "publisher_pdf_stand_uhr",
       "featured_issue": "192/26",
       "lead": "COST:0000909832:Costco",
       "peers": [
@@ -25,12 +25,13 @@
       "named_products": [
         "Kirkland"
       ],
-      "named_acquisitions": []
+      "named_acquisitions": [],
+      "publication_at": "2026-10-16T08:15:00+01:00"
     },
     {
       "case_id": "HT-012",
       "cutoff": "2026-07-31T08:15:00+01:00",
-      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+      "publication_at_basis": "publisher_pdf_stand_uhr",
       "featured_issue": "137/26",
       "lead_ticker": "BAS",
       "lead_name": "BASF",
@@ -52,7 +53,8 @@
       "named_products": [
         "Oppanol"
       ],
-      "named_acquisitions": []
+      "named_acquisitions": [],
+      "publication_at": "2026-07-31T08:15:00+01:00"
     }
   ]
 }

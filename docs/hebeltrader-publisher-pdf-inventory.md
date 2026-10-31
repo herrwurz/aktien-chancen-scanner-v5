@@ -1,6 +1,6 @@
 # HEBELTRADER Publisher-PDF Inventar
 
-Stand: 2026-10-30 (UTC).
+Stand: 2026-10-31 (UTC).
 
 ## Policy
 
@@ -12,18 +12,12 @@ Stand: 2026-10-30 (UTC).
 
 | Kennzahl | Wert |
 |---|---:|
-| PDFs | 131 |
-| mit Issue | 131 |
-| mit `publication_at` Guess | 92 |
-| mit Call-WKN | 131 |
-| gemappt auf 27er-Refs (PDF-Zeilen) | 26 |
-| Blind 202/26 | 1 |
+| PDFs | 133 |
+| mit Issue | 133 |
+| mit `publication_at` Guess | 94 |
+| mit Call-WKN | 133 |
+| gemappt auf 27er-Refs | 28 |
 | Extraktionsfehler | 0 |
-
-### Lücken in der 27er-Referenz
-- **HT-003** Costco **192/26** — nicht im Upload (vorhanden: Costco **70/26**)
-- **HT-012** BASF **137/26** — nicht im Upload
-- **HT-016** — keine Issue / kein PDF
 
 ## Mapping auf Referenz-27
 
@@ -31,6 +25,7 @@ Stand: 2026-10-30 (UTC).
 |---|---|---|---|
 | 101/26 | HT-026 | Carrier Global | `Hebeltrader_2026-101_Carrier_757e.pdf` |
 | 119/26 | HT-027 | Thermo Fisher Scientific | `Hebeltrader_2026-119_Thermo_bdc3.pdf` |
+| 137/26 | HT-012 | BASF | `Hebeltrader_2026-137_BASF_7a75.pdf` |
 | 140/26 | HT-011 | Thales | `Hebeltrader_2026-140_Thales_397a.pdf` |
 | 141/26 | HT-015 | Leonardo S.p.A. | `Hebeltrader_2026-141_Leonardo_3c6d.pdf` |
 | 143/26 | HT-010 | Broadcom | `Hebeltrader_2026-143_Broadacom_b972.pdf` |
@@ -45,6 +40,7 @@ Stand: 2026-10-30 (UTC).
 | 173/26 | HT-005 | Micron Technology | `Hebeltrader_2026-173_Micron_af6b.pdf` |
 | 176/26 | HT-004 | Salesforce | `Hebeltrader_2026-176_SAL_6c40.pdf` |
 | 190/26 | HT-002 | Zurich Insurance Group | `Hebeltrader_2026-190_ZUR_6b25.pdf` |
+| 192/26 | HT-003 | Costco Wholesale | `Hebeltrader_2026-192_Costco_c7dd.pdf` |
 | 193/26 | HT-017 | JPMorgan Chase | `Hebeltrader_2026-193_JPM_8cfd.pdf` |
 | 195/26 | HT-018 | Johnson & Johnson | `Hebeltrader_2026-195_JNJ_e639.pdf` |
 | 198/26 | HT-019 | — | `Hebeltrader_2026-198_SLB_1c4b.pdf` |
@@ -128,6 +124,7 @@ Stand: 2026-10-30 (UTC).
 | 119/26 | 2026-07-07 | SY7B4G | Thermo | yes | `Hebeltrader_2026-119_Thermo_bdc3.pdf` |
 | 120/26 | 2026-07-08 | PK64DH | General | — | `Hebeltrader_2026-120_General_0d0f.pdf` |
 | 121/26 | 2026-07-09 | DU9B9Q | ENI | — | `Hebeltrader_2026-121_ENI_a2ac.pdf` |
+| 137/26 | 2026-07-31 | MJ7DUX | BASF | yes | `Hebeltrader_2026-137_BASF_7a75.pdf` |
 | 140/26 | 2026-08-05 | DN3NVH | Thales | yes | `Hebeltrader_2026-140_Thales_397a.pdf` |
 | 141/26 | 2026-08-06 | VJ2RFH | Leonardo | yes | `Hebeltrader_2026-141_Leonardo_3c6d.pdf` |
 | 143/26 | 2026-08-10 | MN8GZP | Broadacom | yes | `Hebeltrader_2026-143_Broadacom_b972.pdf` |
@@ -145,6 +142,7 @@ Stand: 2026-10-30 (UTC).
 | 176/26 | 2026-09-24 | JG0AEJ | SAL | yes | `Hebeltrader_2026-176_SAL_6c40.pdf` |
 | 19/26 | 2026-02-09 | SY9W4E | DT | — | `Hebeltrader_2026-19_DT_910c.pdf` |
 | 190/26 | 2026-10-14 | UN6E7X | ZUR | yes | `Hebeltrader_2026-190_ZUR_6b25.pdf` |
+| 192/26 | 2026-10-16 | JY5SQZ | Costco | yes | `Hebeltrader_2026-192_Costco_c7dd.pdf` |
 | 193/26 | 2026-10-19 | MN6CYX | JPM | yes | `Hebeltrader_2026-193_JPM_8cfd.pdf` |
 | 195/26 | 2026-10-21 | JE11C1 | JNJ | yes | `Hebeltrader_2026-195_JNJ_e639.pdf` |
 | 198/26 | 2026-10-26 | VY95PV | SLB | yes | `Hebeltrader_2026-198_SLB_1c4b.pdf` |
