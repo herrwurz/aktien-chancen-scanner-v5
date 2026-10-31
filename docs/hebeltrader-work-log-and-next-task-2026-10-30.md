@@ -141,8 +141,11 @@ Begleitartikel-Ereignisse. Live Teaser-only kann das nicht trennen. Discovery/
 Falsifikation expandiert jetzt Power+Data-Center auf Midstream-Gas/Pipeline-Layer
 (ohne WMB zu leaken). Residual A in `hebeltrader-identification-rules.md`.
 
-**Weiter:** Call-PDF 191/26 Stand + Begleitartikel-Ereignisse PIT; keine
-Schwellen-Absenkung; WMB bleibt Verdacht bis Primärnadeln.
+**Operator 2026-10-31:** Fall bleibt **offen** — Report/Call-PDF liegt nicht vor.
+Keine Identifikation, kein Freeze-Push.
+
+**Weiter:** Nächster echter Teaser / anderes Call-PDF; HT-016 erst wieder bei
+Report 191/26; keine Schwellen-Absenkung.
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
