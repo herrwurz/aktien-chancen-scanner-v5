@@ -1,26 +1,24 @@
-# Batch pending-PDF: Costco / BASF (provisional cutoff)
+# Batch pending-PDF: Costco / BASF (PDF Stand confirmed)
 
 Reference gaps **HT-003** (Costco **192/26**) and **HT-012** (BASF **137/26**)
-still lack the publisher Call-PDFs in the upload set. Without the PDF
-`Stand: … um … Uhr` line we do **not** mutate
-`reference-27-inputs-with-publication-at.json`.
+were filled by operator upload on 2026-10-31. `publication_at` is now bound to
+the publisher PDF `Stand: … um … Uhr` line via
+`scripts/promote_provisional_publication_at.py --apply --apply-shared-refs`.
 
-## Provisional cutoff (developmental only)
+## Confirmed cutoff
 
-| Case | Issue | Featured date | Provisional `publication_at` |
-|---|---|---|---|
-| HT-003 | 192/26 | 2026-10-16 | `2026-10-16T08:15:00+01:00` |
-| HT-012 | 137/26 | 2026-07-31 | `2026-07-31T08:15:00+01:00` |
+| Case | Issue | Featured date | `publication_at` | Basis |
+|---|---|---|---|---|
+| HT-003 | 192/26 | 2026-10-16 | `2026-10-16T08:15:00+01:00` | `publisher_pdf_stand_uhr` |
+| HT-012 | 137/26 | 2026-07-31 | `2026-07-31T08:15:00+01:00` | `publisher_pdf_stand_uhr` |
 
-Basis: `featured_date` from `featured_calls.json` + corpus-canonical Stand
-**08:15** (all 92 PDF `publication_at_guess` values in the inventory use 08:15).
-Flag: `publication_at_basis=featured_date_plus_corpus_stand_0815_pdf_pending`.
+PDFs (gitignored archive): `Hebeltrader_2026-192_Costco_c7dd.pdf`,
+`Hebeltrader_2026-137_BASF_7a75.pdf`. Call-WKNs from ingest: Costco **JY5SQZ**,
+BASF **MJ7DUX**.
 
-**Operator unblock:** upload `Hebeltrader_2026-192_*Costco*.pdf` and
-`Hebeltrader_2026-137_*BASF*.pdf`, re-run `scripts/ingest_publisher_pdfs.py`,
-then replace provisional cutoffs with PDF Stand guesses in the shared refs.
+Shared `reference-27-inputs-with-publication-at.json` now carries these cutoffs.
 
-## Ergebnis (named, provisional cutoff)
+## Ergebnis (named)
 
 | Case | Ticker | Named anchors | identified |
 |---|---|---|---|
@@ -32,15 +30,14 @@ then replace provisional cutoffs with PDF Stand guesses in the shared refs.
 ## Packets
 
 - HT-003: SEC 10-Q Costco + WMT/TGT/BJ/DG/DLTR peers
-- HT-012: Wayback IR (Oppanol N PLUS PR) + DOW/DD/LYB/EMN/CE peers  
-  (BASF has no SEC issuer CIK)
+- HT-012: Wayback IR (Oppanol N PLUS PR) + DOW/DD/LYB/EMN/CE peers
 
 ## Still blocked
 
-**HT-016** — no `publication_issue`, no featured date, identity unresolved
-(Williams family). Needs operator issue binding before any packet.
+**HT-016** — no `publication_issue`, no featured date. Scaffold under
+`ht-016-blocked/` only.
 
 ## Gates
 
 Unchanged: ≥2 Kernhinweise, Margin ≥35, ≥5 Peer-Emittenten. Blind 202/26
-untouched. Call-PDFs remain resolution-only.
+untouched. Call-PDFs remain resolution-only (cutoff source, not packet body).

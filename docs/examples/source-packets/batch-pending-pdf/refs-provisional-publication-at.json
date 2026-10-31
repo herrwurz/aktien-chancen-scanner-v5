@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "note": "Provisional publication_at for PDF-gap cases: featured_date + corpus-canonical Stand 08:15. NOT copied into reference-27 until operator PDFs 192/26 and 137/26 confirm Stand line.",
+  "note": "Promoted from publisher PDF Stand Uhr where ready; remaining gaps stay provisional.",
   "cases": [
     {
       "case_id": "HT-003",
@@ -8,8 +8,10 @@
       "teaser_text": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!\nAufholjagd im Handel! Ein etablierter Branchenführer verbindet hohe Kundenloyalität mit stabilen Einnahmen, starker Ertragskraft und zusätzlichen Wachstumschancen im digitalen Geschäft. Zwar ist die Bewertung ambitioniert, doch die operative Qualität rechtfertigt einen genaueren Blick. Nach der jüngsten Korrektur sendet auch der Chart wieder ein klares Signal: Eine zentrale Trendlinie wurde zurückerobert, der Weg zu neuen Höchstständen ist frei. Der passende Call verleiht der Story zusätzlichen Schub und bietet bei voller Zielerreichung eine maximale Performance von bis zu 1.438 Prozent.",
       "publication_date": "2026-10-16",
       "publication_at": "2026-10-16T08:15:00+01:00",
-      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
-      "featured_issue": "192/26"
+      "publication_at_basis": "publisher_pdf_stand_uhr",
+      "featured_issue": "192/26",
+      "promoted_from_pdf": "Hebeltrader_2026-192_Costco_c7dd.pdf",
+      "promoted_at": "2026-10-31T10:09:12.309702+00:00"
     },
     {
       "case_id": "HT-012",
@@ -17,8 +19,10 @@
       "teaser_text": "Hier steckt eine irrwitzige Turnaround-Chance drin!\nHier entsteht gerade eine hochspannende Turnaround-Story mit echtem Nachholpotenzial. Ein internationaler Branchenriese hat seinen Umbau spürbar beschleunigt, die Profitabilität verbessert, Kosten gesenkt und sendet mit milliardenschweren Aktienrückkäufen ein klares Signal. Auch fundamental verdichtet sich das Bild: steigende Gewinne, attraktive Dividendenrendite und neue Fantasie durch strategische Werte, die der Markt bislang nur unzureichend einpreist. Für spekulative Anleger wird es mit dem empfohlenen Hebelprodukt besonders explosiv: Im Idealfall winkt eine Renditechance von bis zu 1.900 Prozent.",
       "publication_date": "2026-07-31",
       "publication_at": "2026-07-31T08:15:00+01:00",
-      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
-      "featured_issue": "137/26"
+      "publication_at_basis": "publisher_pdf_stand_uhr",
+      "featured_issue": "137/26",
+      "promoted_from_pdf": "Hebeltrader_2026-137_BASF_7a75.pdf",
+      "promoted_at": "2026-10-31T10:09:12.309702+00:00"
     }
   ]
 }

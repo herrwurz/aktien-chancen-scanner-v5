@@ -8,7 +8,7 @@ from pathlib import Path
 FREEZE = Path("docs/examples/source-packets/corpus-v1/evidence-batch-corpus-v1.json")
 MANIFEST = Path("docs/examples/source-packets/corpus-v1/manifest.json")
 
-PROVISIONAL = {"HT-003", "HT-012"}
+PROVISIONAL: set[str] = set()
 
 
 def test_corpus_v1_named_all_identified_from_packet():
@@ -68,11 +68,10 @@ def test_corpus_v1_manifest_marks_provisional_pdf_gaps():
         "HT-026",
         "HT-027",
     }
-    for case_id in PROVISIONAL:
-        assert by_id[case_id]["provisional_publication_at"] is True
-    for case_id, case in by_id.items():
-        if case_id not in PROVISIONAL:
-            assert case["provisional_publication_at"] is False
+    # Costco/BASF Stand Uhr promoted 2026-10-31 — no provisional cutoffs left.
+    assert PROVISIONAL == set()
+    for case in by_id.values():
+        assert case["provisional_publication_at"] is False
 
 
 def test_corpus_v1_excludes_ht016():

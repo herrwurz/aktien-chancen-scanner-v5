@@ -19,7 +19,8 @@
       "path": "docs/examples/source-packets/batch-pending-pdf/packets/HT-003.json",
       "documents": 6,
       "lead_form": "10-Q",
-      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending"
+      "publication_at_basis": "publisher_pdf_stand_uhr",
+      "publication_at": "2026-10-16T08:15:00+01:00"
     },
     {
       "case_id": "HT-012",
@@ -27,7 +28,8 @@
       "path": "docs/examples/source-packets/batch-pending-pdf/packets/HT-012.json",
       "documents": 6,
       "lead_form": "wayback_ir",
-      "publication_at_basis": "featured_date_plus_corpus_stand_0815_pdf_pending"
+      "publication_at_basis": "publisher_pdf_stand_uhr",
+      "publication_at": "2026-07-31T08:15:00+01:00"
     }
   ]
 }

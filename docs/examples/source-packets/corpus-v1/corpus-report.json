@@ -29,10 +29,7 @@
     "identified": 0,
     "identified_case_ids": []
   },
-  "provisional_publication_at": [
-    "HT-003",
-    "HT-012"
-  ],
+  "provisional_publication_at": [],
   "blocked_out_of_corpus": [
     "HT-016"
   ],

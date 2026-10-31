@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-provisional-publication-at-promote-plan-v1",
+  "recorded_at": "2026-10-31T10:09:12.309702+00:00",
+  "blocked": [
+    {
+      "case_id": "HT-016",
+      "reason": "no_publication_issue_no_featured_date_unresolved_identity"
+    }
+  ],
+  "actions": [
+    {
+      "case_id": "HT-003",
+      "status": "ready_to_promote",
+      "required_issue": "192/26",
+      "from_publication_at": "2026-10-16T08:15:00+01:00",
+      "to_publication_at": "2026-10-16T08:15:00+01:00",
+      "from_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+      "to_basis": "publisher_pdf_stand_uhr",
+      "filename": "Hebeltrader_2026-192_Costco_c7dd.pdf",
+      "publication_date": "2026-10-16"
+    },
+    {
+      "case_id": "HT-012",
+      "status": "ready_to_promote",
+      "required_issue": "137/26",
+      "from_publication_at": "2026-07-31T08:15:00+01:00",
+      "to_publication_at": "2026-07-31T08:15:00+01:00",
+      "from_basis": "featured_date_plus_corpus_stand_0815_pdf_pending",
+      "to_basis": "publisher_pdf_stand_uhr",
+      "filename": "Hebeltrader_2026-137_BASF_7a75.pdf",
+      "publication_date": "2026-07-31"
+    }
+  ],
+  "ready": 2,
+  "still_missing": 0
+}

@@ -1,7 +1,7 @@
 # Corpus-v1: unified evidence freeze (26/27 refs)
 
-Union of all shippable source-packet batches after EU-IR + provisional
-Costco/BASF. **HT-016** remains out (no issue / no date).
+Union of all shippable source-packet batches after EU-IR + Costco/BASF
+(PDF Stand confirmed). **HT-016** remains out (no issue / no date).
 
 ## Named identification
 
@@ -11,7 +11,7 @@ Costco/BASF. **HT-016** remains out (no issue / no date).
 | batch-us-rest | 7 | 7 |
 | batch-eu-sec | 3 | 3 |
 | batch-eu-ir-wayback | 4 | 4 |
-| batch-pending-pdf | 2 | 2 (provisional cutoff) |
+| batch-pending-pdf | 2 | 2 (PDF Stand Uhr) |
 | **corpus-v1** | **26** | **26** |
 
 Original teasers: **0/26** identified (corpus gap: no ≥2 native named anchors).
@@ -19,11 +19,11 @@ Original teasers: **0/26** identified (corpus gap: no ≥2 native named anchors)
 Gates unchanged: ≥2 Kernhinweise, margin ≥35, ≥5 peer issuers,
 `basis=historical_source_packet`. Blind 202/26 freeze SHA untouched.
 
-## Provisional cutoffs
+## Cutoffs
 
-HT-003 / HT-012 still use `featured_date + Stand 08:15` until PDFs **192/26**
-and **137/26** land. Shared `reference-27-inputs-with-publication-at.json`
-stays `null` for those two.
+HT-003 / HT-012 use publisher PDF Stand Uhr (`2026-10-16T08:15` /
+`2026-07-31T08:15`). Shared `reference-27-inputs-with-publication-at.json`
+filled. No provisional cutoffs remain in corpus-v1.
 
 ## Commands
 

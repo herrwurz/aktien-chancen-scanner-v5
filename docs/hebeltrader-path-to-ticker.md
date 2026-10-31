@@ -76,10 +76,10 @@ Prospective freeze SHA `3fff83e1…` untouched.
 `batch-eu-ir-wayback/`: **4/4 named identified** (ZURN, HO, LDO, ADS) via Wayback
 IR lead + SEC peers (`archived_snapshot`).
 
-`batch-pending-pdf/`: **2/2 named identified** (COST, BAS) on **provisional**
-cutoffs (`featured_date` + corpus Stand 08:15) while PDFs 192/26 & 137/26 are
-missing. Shared `reference-27-inputs-with-publication-at.json` stays null for
-those cases until operator upload. **HT-016** still blocked (no issue/date).
+`batch-pending-pdf/`: **2/2 named identified** (COST, BAS) with **PDF Stand Uhr**
+cutoffs after operator upload of 192/26 & 137/26 (2026-10-31). Shared
+`reference-27-inputs-with-publication-at.json` filled. **HT-016** still blocked
+(no issue/date).
 
 ## Corpus-v1 (vereinigt)
 
@@ -92,10 +92,8 @@ those cases until operator upload. **HT-016** still blocked (no issue/date).
 Pipeline needles). **Dev only** — no issue/date, not in the freeze. Unlock
 requires operator issue binding + Call-PDF Stand Uhr.
 
-Pending PDF cutoffs (Costco 192/26, BASF 137/26): dry-run
-`python3 scripts/promote_provisional_publication_at.py`; `--apply` when PDFs
-land. PIT history pad default is **800** days
-(`market_screen export-pit --history-pad-days`).
+Costco/BASF cutoffs promoted (`publisher_pdf_stand_uhr`). PIT history pad
+default is **800** days (`market_screen export-pit --history-pad-days`).
 
 ## Operator CLI (corpus-v1)
 

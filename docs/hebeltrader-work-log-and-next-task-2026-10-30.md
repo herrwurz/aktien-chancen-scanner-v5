@@ -101,9 +101,14 @@ Market-PIT: ADI Top-1. Publisher-PDFs bleiben Resolutionsartefakte.
 - `investigate_cli analyze --corpus-case HT-xxx` lädt corpus-v1 Inputs+Paket
   (historical blind) → Stufe 3a Smoke ohne manuelles Packet-Pfad-Gefummel.
 
-## 16. Offen (nächste Schritte)
+## 16. PDF Promote Costco/BASF (2026-10-31)
+Operator-Upload 192/26 + 137/26 → ingest + `promote_provisional_publication_at
+--apply --apply-shared-refs`. Basis jetzt `publisher_pdf_stand_uhr` (Stand 08:15).
+Corpus-v1 provisional flags cleared. Nur HT-016 bleibt PDF/Issue-Lücke.
+
+## 17. Offen (nächste Schritte)
 **A.** Pilot auf Fälle mit **eigenamen Spezifika im Teaser**; oder Operator-Pakete mit
-  Zitat-aligned IR. PDFs 192/26 + 137/26 nachreichen; HT-016 Issue+PDF.
+  Zitat-aligned IR. HT-016 Issue+PDF.
 
 **B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26 (bestätigt).
 

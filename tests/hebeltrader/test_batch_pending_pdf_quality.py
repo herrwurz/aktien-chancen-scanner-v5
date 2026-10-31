@@ -1,4 +1,4 @@
-"""Quality freeze for provisional-cutoff Costco/BASF pending-PDF batch."""
+"""Quality freeze for Costco/BASF batch after PDF Stand promotion."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ EXPECTED = {
     "HT-003": "COST",
     "HT-012": "BAS",
 }
+PDF_BASIS = "publisher_pdf_stand_uhr"
 
 
 def test_pending_pdf_named_identified_with_gates():
@@ -37,21 +38,21 @@ def test_pending_pdf_originals_not_identified():
             assert row["identification_status"] != "identified"
 
 
-def test_pending_pdf_manifest_and_provisional_basis():
+def test_pending_pdf_manifest_uses_publisher_stand_basis():
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert [c["case_id"] for c in manifest["cases"]] == list(EXPECTED)
     for case in manifest["cases"]:
-        assert case["publication_at_basis"] == ("featured_date_plus_corpus_stand_0815_pdf_pending")
+        assert case["publication_at_basis"] == PDF_BASIS
+        assert case["publication_at"].endswith("T08:15:00+01:00")
 
 
-def test_pending_pdf_does_not_mutate_shared_reference_publication_at():
-    """Shared 27er refs stay null until operator PDFs confirm Stand."""
+def test_pending_pdf_shared_reference_publication_at_promoted():
+    """Shared 27er refs filled from PDF Stand after operator upload."""
     shared = json.loads(SHARED_REFS.read_text(encoding="utf-8"))
     cases = shared if isinstance(shared, list) else shared.get("cases") or shared.get("inputs")
     by_id = {c["case_id"]: c for c in cases}
-    for case_id in EXPECTED:
-        assert by_id[case_id].get("publication_at") is None
     overlay = json.loads(REFS.read_text(encoding="utf-8"))
     for case in overlay["cases"]:
-        assert case["publication_at_basis"] == ("featured_date_plus_corpus_stand_0815_pdf_pending")
+        assert case["publication_at_basis"] == PDF_BASIS
         assert case["publication_at"].endswith("T08:15:00+01:00")
+        assert by_id[case["case_id"]].get("publication_at") == case["publication_at"]

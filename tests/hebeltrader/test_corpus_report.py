@@ -23,7 +23,7 @@ def test_corpus_report_scorecard_matches_freeze():
     assert report["named"]["identified"] == 26
     assert report["named"]["total"] == 26
     assert report["original"]["identified"] == 0
-    assert report["provisional_publication_at"] == ["HT-003", "HT-012"]
+    assert report["provisional_publication_at"] == []
     assert report["blocked_out_of_corpus"] == ["HT-016"]
     assert report["gates"]["named_all_meet_gates"] is True
 
@@ -63,5 +63,7 @@ def test_corpus_readiness_board(capsys):
     board = json.loads(capsys.readouterr().out)
     assert board["kind"] == "hebeltrader-operator-readiness-v1"
     assert board["corpus"]["gates_ok"] is True
-    assert any(b["id"] == "pending_pdfs_192_137" for b in board["blockers"])
+    assert board["corpus"]["provisional_publication_at"] == []
+    assert not any(b["id"] == "pending_pdfs_192_137" for b in board["blockers"])
+    assert any(b["id"] == "ht016_no_publication_at" for b in board["blockers"])
     assert board["api_keys_present"]["EODHD_API_TOKEN"] in {True, False}
