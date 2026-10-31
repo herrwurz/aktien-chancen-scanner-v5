@@ -67,3 +67,8 @@ def test_corpus_readiness_board(capsys):
     assert not any(b["id"] == "pending_pdfs_192_137" for b in board["blockers"])
     assert any(b["id"] == "ht016_no_publication_at" for b in board["blockers"])
     assert board["api_keys_present"]["EODHD_API_TOKEN"] in {True, False}
+    assert "live_3b" in board["smoke"]
+    assert "live_falsification" in board["smoke"]["live_3b"]
+    recipe = build_recipe()
+    assert "live_3b" in recipe
+    assert "live_falsification" in recipe["live_3b"]

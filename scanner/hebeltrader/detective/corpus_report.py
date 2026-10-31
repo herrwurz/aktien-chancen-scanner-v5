@@ -128,12 +128,17 @@ def build_recipe(
             "print(run_simulated_live_falsification(Path('/tmp/sim3b'))"
             "['identification'])\""
         ),
+        "live_3b": (
+            "python3 -m scanner.hebeltrader.detective.live_falsification "
+            "--approve-cost --text-file <teaser.txt> --root /tmp/ht-live-3b"
+        ),
         "readiness": "python3 -m scanner.hebeltrader.detective.corpus_report readiness",
         "evidence_batch": cmd,
         "notes": [
             "Named freeze is already committed; re-run only after packet edits.",
             "HT-016 stays out until operator issue + PDF Stand.",
-            "Stufe 3b live web needs Tavily/OpenAI; use simulated_falsification offline.",
+            "Stufe 3b offline: simulated_falsification. Live: live_falsification "
+            "with Tavily/OpenAI keys + --approve-cost.",
         ],
     }
 
@@ -148,6 +153,8 @@ def render_recipe(recipe: dict) -> str:
         f"scorecard: {recipe['scorecard']}",
         f"tiebreak:  {recipe['tiebreak']}",
         f"promote:   {recipe['promote_pending_pdfs']}",
+        f"simulated_3b: {recipe['simulated_3b']}",
+        f"live_3b:      {recipe['live_3b']}",
         "",
         "notes:",
     ]
@@ -271,7 +278,12 @@ def build_readiness(
                 "detail": "0/26 originals have ≥2 native named anchors",
             }
         )
-    if not os.environ.get("TAVILY_API_KEY") and not os.environ.get("OPENAI_API_KEY"):
+    def _env_present(*names: str) -> bool:
+        return any(bool(os.environ.get(name, "").strip()) for name in names)
+
+    tavily_present = _env_present("TAVILY_API_KEY", "DETECTIVE_SEARCH_API_KEY")
+    openai_present = _env_present("OPENAI_API_KEY", "DETECTIVE_SOURCE_AI_API_KEY")
+    if not tavily_present and not openai_present:
         blockers.append(
             {
                 "id": "live_3b_api_keys",
@@ -279,6 +291,27 @@ def build_readiness(
                 "detail": "Tavily/OpenAI absent; use simulated_falsification offline",
             }
         )
+    next_actions = []
+    if promote.get("still_missing"):
+        next_actions.append(
+            "Upload Hebeltrader PDFs 192/26 (Costco) and 137/26 (BASF); "
+            "run scripts/ingest_publisher_pdfs.py then "
+            "scripts/promote_provisional_publication_at.py --apply"
+        )
+    next_actions.append("Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet")
+    if not tavily_present and not openai_present:
+        next_actions.append(
+            "For live Stufe 3b: provide TAVILY_API_KEY/DETECTIVE_SEARCH_API_KEY "
+            "and/or OPENAI_API_KEY/DETECTIVE_SOURCE_AI_API_KEY"
+        )
+    else:
+        next_actions.append(
+            "Keys present: run live Stufe 3b with "
+            "`python3 -m scanner.hebeltrader.detective.live_falsification "
+            "--approve-cost --text-file <teaser.txt>` "
+            "(or set DETECTIVE_EXTERNAL_API_APPROVED=true)"
+        )
+    next_actions.append("Secure next real teaser before reading Call-PDF (≥2 named anchors)")
     return {
         "schema_version": 1,
         "kind": "hebeltrader-operator-readiness-v1",
@@ -300,33 +333,22 @@ def build_readiness(
         },
         "tiebreak": tiebreak,
         "api_keys_present": {
-            "EODHD_API_TOKEN": bool(os.environ.get("EODHD_API_TOKEN")),
-            "TAVILY_API_KEY": bool(os.environ.get("TAVILY_API_KEY")),
-            "OPENAI_API_KEY": bool(os.environ.get("OPENAI_API_KEY")),
+            "EODHD_API_TOKEN": _env_present("EODHD_API_TOKEN"),
+            "TAVILY_API_KEY": tavily_present,
+            "OPENAI_API_KEY": openai_present,
         },
         "blockers": blockers,
-        "next_operator_actions": (
-            (
-                [
-                    "Upload Hebeltrader PDFs 192/26 (Costco) and 137/26 (BASF); "
-                    "run scripts/ingest_publisher_pdfs.py then "
-                    "scripts/promote_provisional_publication_at.py --apply"
-                ]
-                if promote.get("still_missing")
-                else []
-            )
-            + [
-                "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-                "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
-                "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
-            ]
-        ),
+        "next_operator_actions": next_actions,
         "smoke": {
             "corpus_case": (
                 "python3 -m scanner.hebeltrader.detective.investigate_cli analyze "
                 "--corpus-case HT-003 --root /tmp/ht-corpus-case"
             ),
             "simulated_3b": ("python3 -m scanner.hebeltrader.detective.corpus_report recipe"),
+            "live_3b": (
+                "python3 -m scanner.hebeltrader.detective.live_falsification "
+                "--approve-cost --text-file <teaser.txt> --root /tmp/ht-live-3b"
+            ),
         },
     }
 

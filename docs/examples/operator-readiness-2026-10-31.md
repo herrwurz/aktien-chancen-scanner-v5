@@ -23,7 +23,7 @@ python3 -m scanner.hebeltrader.detective.corpus_report readiness
 |---|---|
 | HT-016 | no issue/date (scaffold only) |
 | Original teasers | **0/26** with ≥2 native named anchors |
-| Live Stufe 3b | needs Tavily/OpenAI |
+| Live Stufe 3b | absent in this snapshot → blocker `live_3b_api_keys`; with keys: `live_falsification --approve-cost` |
 
 ## Smoke
 
