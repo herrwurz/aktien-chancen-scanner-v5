@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-operator-readiness-v1",
-  "recorded_at": "2026-10-31T10:10:54.313207+00:00",
+  "recorded_at": "2026-10-31T13:44:09.299317+00:00",
   "corpus": {
     "named_identified": "26/26",
     "originals_identified": "0/26",
@@ -17,7 +17,7 @@
     "blocked": [
       {
         "case_id": "HT-016",
-        "reason": "no_publication_issue_no_featured_date_unresolved_identity"
+        "reason": "issue_191_26_bound_awaiting_pdf_stand_unresolved_identity"
       }
     ],
     "actions": [
@@ -36,7 +36,9 @@
     ]
   },
   "ht016": {
-    "status": "blocked_no_publication_at",
+    "status": "blocked_awaiting_pdf_stand",
+    "publication_issue": "191/26",
+    "publication_at": "2026-10-15T08:15:00+01:00",
     "suspected_ticker": "WMB",
     "identification_freeze": false
   },
@@ -63,29 +65,23 @@
   },
   "api_keys_present": {
     "EODHD_API_TOKEN": true,
-    "TAVILY_API_KEY": false,
-    "OPENAI_API_KEY": false
+    "TAVILY_API_KEY": true,
+    "OPENAI_API_KEY": true
   },
   "blockers": [
     {
-      "id": "ht016_no_publication_at",
+      "id": "ht016_awaiting_pdf_stand",
       "status": "blocked",
-      "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand"
+      "detail": "HT-016 issue 191/26 + featured 2026-10-15 bound; Call-PDF Stand Uhr still missing; stays out of freeze"
     },
     {
       "id": "original_teaser_anchor_gap",
       "status": "corpus_gap",
       "detail": "0/26 originals have ≥2 native named anchors"
-    },
-    {
-      "id": "live_3b_api_keys",
-      "status": "blocked",
-      "detail": "Tavily/OpenAI absent; use simulated_falsification offline"
     }
   ],
   "next_operator_actions": [
-    "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-    "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+    "HT-016: upload Call-PDF 191/26 Stand Uhr — keep blocked; do not force into freeze",
     "Secure next real teaser before reading Call-PDF (≥2 named anchors)"
   ],
   "smoke": {

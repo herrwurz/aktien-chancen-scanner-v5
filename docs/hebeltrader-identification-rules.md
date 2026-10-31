@@ -47,7 +47,7 @@ und genauen Veröffentlichungsuhrzeiten bleiben unbekannt.
 | HT-013 | „Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!“; HEBELTRADER 154/26; 25.08.2026 | Danaher (DHR) | JY3SF7 | FALSCH (Nutzerrekonstruktion) | Ersttipp: Zebra Technologies. Nutzerfall 08. Allgemeine fundamentale und charttechnische Aussagen reichten nicht zur eindeutigen Identifikation. Volltext vorhanden. |
 | HT-014 | „Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!“; HEBELTRADER 151/26; 20.08.2026 | SAP | UP9A9X | FALSCH (Nutzerrekonstruktion) | Ersttipp: Oracle. Nutzerfall 09. Oracle statt SAP; direkte Software-Wettbewerber und konkrete Geschäftszahlen gegeneinander prüfen. Volltext vorhanden. |
 | HT-015 | „Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!“; HEBELTRADER 141/26; 06.08.2026 | Leonardo S.p.A. | VJ2RFH | FALSCH (Nutzerrekonstruktion) | Ersttipp: Thales. Nutzerfall 13. Thales statt Leonardo; konkrete Aufträge, Ereignisse und Kennzahlen müssen zwischen europäischen Rüstungskonzernen entscheiden. Volltext vorhanden. |
-| HT-016 | „Dieser Branchenführer profitiert vom Stromhunger der Zukunft!“ | Auflösung unbekannt; Verdacht: Williams Companies | unbekannt | Ungelöst | Ersttipp: Williams. Nutzerfall 02.  Vollständiger Originalteaser fehlt. |
+| HT-016 | „Dieser Branchenführer profitiert vom Stromhunger der Zukunft!“; HEBELTRADER 191/26; 15.10.2026 | Auflösung unbekannt; Verdacht: Williams Companies | unbekannt | Ungelöst | Ersttipp: Williams. Nutzerfall 02.  Volltext vorhanden. |
 | HT-017 | „Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!“; HEBELTRADER 193/26; 19.10.2026 | JPMorgan Chase (JPM) | MN6CYX | FALSCH (Nutzerrekonstruktion) | Ersttipp: Goldman Sachs. Nutzerfall 16. Historische unkalibrierte Angabe: 60 %. Zu frühe Festlegung auf Goldman Sachs aufgrund allgemeiner Rallye-Hinweise; unkalibrierte 60-%-Angabe. Volltext vorhanden. Auflösung am 2026-10-19. |
 | HT-018 | „Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!“; HEBELTRADER 195/26; 21.10.2026 | Johnson & Johnson (JNJ) | JE11C1 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Johnson & Johnson. Nutzerfall 17. Historische unkalibrierte Angabe: 55 %.  Volltext vorhanden. Auflösung am 2026-10-21. |
 
@@ -82,6 +82,33 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 - **Ursache noch nicht hinreichend belegt:** vermutlich zu frühe Gewichtung des generischen „Comeback“-Narrativs; genaue damalige Quellen und Ranking rekonstruieren, nicht rückwirkend erfinden.
 - **Regressionstest:** Originalteaser 176/26 unverändert prüfen und Salesforce mit mindestens fünf Alternativen vergleichen.
 
+### OK-001 – Nasdaq statt generischer Fintech-Peers (199/26, 27.10.2026)
+- **Eingefrorene Blind-Top-3 vor Report:** NDAQ → DB1 → LSEG (Hypothese, `not_identified`).
+- **Nutzerauflösung / Call-PDF:** Nasdaq, Inc.; Call **JY7FDN**; Stand 27.10.2026 08:15.
+- **Lernregel:** Nicht „Fintech + Quartalszahlen + Allzeithoch“ allein ranken. Der entscheidende
+  Fingerabdruck in den Primärzahlen war die **Kombination** Indexgeschäft ~**+39 %**, ARR
+  ~**USD 3,4 Mrd.**, bereinigte operative Marge ~**57 %**. Peers ohne diese Kombi (DB1/LSEG/CME/ICE)
+  dürfen NDAQ nicht überholen, sobald die Earnings-Texte vorliegen.
+- **Härte im Code:** `metric_fingerprint` + PIT Earnings/ATH (`earnings_pit`); Regression
+  `tests/hebeltrader/test_metric_fingerprint.py`.
+- **Hinweis:** Entwicklungsfall nach Auflösung — kein unabhängiger Blindtest mehr.
+
+### Residual A – Stromhunger: Utility-Thema vs. Midstream-Ereignisse (HT-016 / 191/26)
+- **Eingefrorene Live-Top-3 (Stand provisional 15.10.2026 08:15):** NEE → Iberdrola → ENEL;
+  Status `not_identified`. WMB fehlte im Universum (Teaser-only Discovery).
+- **Operator-Korrektur (2026-10-31):** NEE / Iberdrola / Enel passen zum **allgemeinen
+  Strombedarf-Thema**. Williams passt **zusätzlich** zu den **konkreten
+  Unternehmensereignissen des Begleitartikels**.
+- **Lernregel:** „Stromhunger / Rechenzentren / Energie“ allein reicht nicht zur
+  Identifikation eines Versorgers. Generische Utility-Treffer sind Theme-Fit, keine
+  Auflösung. Discriminator sind datierte Begleitartikel-Ereignisse (Produkt/Pipeline/
+  Vertrag/Expansion) — oft Midstream/Gas statt Retail-Utility. Ohne diese Primärnadeln:
+  Enthaltung; Scaffold-WMB nicht als Lösung leaken.
+- **Härte im Code:** Discovery/Falsifikation expandiert die Power+Data-Center-Wertschöpfungskette
+  (Utility **und** Midstream-Gas/Pipeline); AI-Planer soll Layer streuen. Regression
+  `tests/hebeltrader/test_teaser_search_quality.py`.
+- **Offen:** Call-PDF 191/26 Stand Uhr + Begleitartikel-Ereignisse PIT-sicher extrahieren.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.
@@ -93,6 +120,8 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 
 ## Änderungsjournal
 
+- **2026-10-31:** HT-016 Residual A — Utility-Theme vs. Midstream-Begleitartikel; Discovery
+  expandiert Power+Data-Center auf Midstream-Gas/Pipeline ohne WMB-Leak.
 - **2026-10-28 (erneute Vollständigkeitsprüfung):** Historische Check-16-/Check-17-Auflösungen ergänzt: JPMorgan Chase MN6CYX (Ersttipp Goldman Sachs falsch) und Johnson & Johnson JE11C1 (richtig). 18 Fälle insgesamt, 10 richtig, 7 falsch, 1 ungelöst; historische Quote 10/16 vor Analog Devices bezog sich auf abgeschlossene Fälle ohne Williams.
 - **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.
 - **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
@@ -202,6 +231,8 @@ Nachweis: [maschinenlesbare Quellenbestätigung](hebeltrader-20026-source-confir
 - Daten/Ausgaben nur soweit angegeben. JPM-/JNJ-Auflösungsdaten nicht als Publikation
   übernehmen; Thales-Datierung ausdrücklich als unbestätigte frühere Übersichtsangabe markieren.
 - Williams: tatsächliche Aktie, tatsächlicher Ticker und Call-WKN null. WMB ist nur Verdacht.
+  Operator 2026-10-31: Utilities (NEE/Iberdrola/Enel) = Theme-Fit; Williams zusätzlich über
+  Begleitartikel-Ereignisse — siehe Residual A oben.
 - **Ein** vollständiger Originalteaser liegt jetzt vor: der vom Nutzer übermittelte
   ADI-Text in der strukturierten Referenzsammlung. Die übrigen 17 Volltexte fehlen weiterhin.
 - Der ADI-Teaser nennt Zukäufe und Geschäftsfelder, aber **nicht** Empower oder Alif.

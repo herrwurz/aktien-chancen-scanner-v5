@@ -19,6 +19,9 @@ from .chart_check import chart_score
 from .chart_check import check as chart_check
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
+from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
+from .featured_calls import blocked_features, is_blocked
+from .metric_fingerprint import apply_metric_fingerprints
 from .research_plan import build_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
@@ -37,6 +40,12 @@ def clue_specificity(text):
         value,
     ):
         return 12
+    if re.search(
+        r"\barr\b|annualized recurring|wiederkehrend\w*\s+(?:erl[öo]se|umsatz)|"
+        r"operative[rn]?\s+marge|operating margin|indexgesch[äa]ft",
+        value,
+    ):
+        return 10
     if re.search(r"übernahm|übernahme|acquisition|großauftrag|partnerschaft|zulassung", value):
         return 8
     if re.search(r"bruttomarge|cashflow|umsatz|gewinn|marge|revenue|earnings", value):
@@ -44,6 +53,23 @@ def clue_specificity(text):
     if re.search(r"chart|kursziel|rendite|ausbruch|rally", value):
         return 0
     return 2
+
+
+def _documents_by_asset(fetched):
+    grouped = {}
+    for doc in fetched or []:
+        name = doc.get("company_name")
+        if not name:
+            continue
+        asset_id = "company:" + hashlib.sha256(
+            canonical_company(name, doc.get("ticker")).encode()
+        ).hexdigest()
+        grouped.setdefault(asset_id, []).append(doc)
+    return grouped
+
+
+def _apply_metric_fingerprints(ranked, fetched):
+    return apply_metric_fingerprints(ranked, _documents_by_asset(fetched))
 
 
 def apply_tie_labels(ranked):
@@ -378,6 +404,45 @@ def _is_hypothesis(name, hypotheses):
     return any(canonical_company(h) == key for h in hypotheses)
 
 
+def _identity_dict(identity) -> dict:
+    if identity is None:
+        return {}
+    return identity if isinstance(identity, dict) else identity.model_dump()
+
+
+def _filter_active_call_blocked(ranked: list, blocked: dict) -> tuple[list, list]:
+    """Drop recently featured underlyings from ranking targets (exclusion only)."""
+    kept, dropped = [], []
+    for row in ranked:
+        asset = _identity_dict(row.get("identity"))
+        if is_blocked(asset, blocked):
+            dropped.append(
+                {
+                    "asset_id": row.get("asset_id"),
+                    "name": asset.get("name"),
+                    "ticker": asset.get("ticker"),
+                    "reason": "active_call_exclusion_180d",
+                }
+            )
+        else:
+            kept.append(row)
+    return kept, dropped
+
+
+def _query_targets_blocked(query: str, blocked: dict) -> bool:
+    """True when a planner verification query quotes a blocked company/ticker."""
+    if not query or not blocked or blocked.get("status") == "no_publication_date":
+        return False
+    for entry in blocked.get("entries") or []:
+        name = (entry.get("company") or "").strip()
+        ticker = (entry.get("ticker") or "").strip()
+        if name and f'"{name}"' in query:
+            return True
+        if ticker and (f'"{ticker}"' in query or query.startswith(ticker + " ")):
+            return True
+    return False
+
+
 def _apply_chart(ranked, cache, text, top=6):
     # Chart clues (long uptrend, breakout) are checked with market data, not web text.
     for row in ranked:
@@ -639,11 +704,22 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
 
 
 class Investigator:
-    def __init__(self, root, *, web=None, clock=None, product_issuers=None):
+    def __init__(
+        self,
+        root,
+        *,
+        web=None,
+        clock=None,
+        product_issuers=None,
+        earnings_lookup=None,
+        ath_bars_fetcher=None,
+    ):
         self.root = Path(root)
         self.web = web
         self.product_issuers = product_issuers or {}
         self.clock = clock or (lambda: datetime.now(UTC))
+        self.earnings_lookup = earnings_lookup
+        self.ath_bars_fetcher = ath_bars_fetcher
 
     def analyze(self, request, *, documents=None, historical_blind=False, case_id=None):
         if historical_blind and (
@@ -696,14 +772,26 @@ class Investigator:
         offline = documents is not None or self.web is None
         semantic_clues = []
         hypotheses = []
+        # Exclude underlyings from still-open HEBELTRADER calls (market/structure already do this).
+        as_of = request.publication_at or retrieved
+        blocked = blocked_features(as_of)
+        active_call_dropped: list[dict] = []
         apis = getattr(self.web, "apis", None)
         if not offline and apis is not None and apis.ai_key:
             try:
                 planned = apis.plan(text)
                 semantic_clues = planned["clues"]
-                hypotheses = list(
-                    dict.fromkeys(planned.get("candidate_hypotheses", []) + screened_names(text))
+                seed_names = list(
+                    dict.fromkeys(
+                        planned.get("candidate_hypotheses", [])
+                        + screened_names(text, blocked=blocked)
+                    )
                 )
+                hypotheses = [
+                    name
+                    for name in seed_names
+                    if not is_blocked({"name": name, "ticker": ticker_for(name)}, blocked)
+                ]
                 for item in semantic_clues:
                     start = text.index(item["quote"])
                     clues.append(
@@ -720,7 +808,12 @@ class Investigator:
                             extraction_method="ai_literal_quote_requires_manual_review",
                         )
                     )
-                queries = _interleave(planned["queries"], screen_queries(text), queries)
+                planned_queries = [
+                    q for q in planned["queries"] if not _query_targets_blocked(q, blocked)
+                ]
+                queries = _interleave(
+                    planned_queries, screen_queries(text, blocked=blocked), queries
+                )
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"source": "ai_planner", "error": str(exc)[:120]})
 
@@ -966,9 +1059,21 @@ class Investigator:
             return result
 
         ranked = compare()
+        ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+        active_call_dropped.extend(dropped)
         chart_cache = {}
+        earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
+        metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}
         if not offline:
             _apply_chart(ranked, chart_cache, text)
+            earnings_pit = apply_earnings_pit(
+                ranked,
+                request.publication_at,
+                text,
+                lookup=self.earnings_lookup,
+                ath_bars_fetcher=self.ath_bars_fetcher,
+            )
+            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -984,6 +1089,18 @@ class Investigator:
             for query in peer_queries:
                 research(query)
             ranked = compare()
+            ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+            active_call_dropped.extend(dropped)
+            if not offline:
+                _apply_chart(ranked, chart_cache, text)
+                earnings_pit = apply_earnings_pit(
+                    ranked,
+                    request.publication_at,
+                    text,
+                    lookup=self.earnings_lookup,
+                    ath_bars_fetcher=self.ath_bars_fetcher,
+                )
+                metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
             peer_comparison.update(
                 status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
                 queries=peer_queries,
@@ -1007,6 +1124,24 @@ class Investigator:
                 )
                 for row in ranked[:3]
             ]
+            # Explicit earnings-date probes when the teaser claims reported results.
+            if teaser_claims_reported_results(text):
+                falsification_queries.extend(
+                    f'"{row["identity"]["name"]}" {row["identity"].get("ticker") or ""} '
+                    f"earnings date results before open after close"
+                    for row in ranked[:5]
+                )
+            # HT-016: utility leaders on "data-center power demand" must be falsified
+            # against midstream gas / pipeline peers (Begleitartikel events often sit there).
+            if re.search(r"strom\w*|energie\w*|utilit\w*|power", text, re.I) and re.search(
+                r"rechenzentr\w*|data\s*cent(?:er|re)", text, re.I
+            ):
+                falsification_queries.extend(
+                    [
+                        "natural gas midstream pipeline vs utility data center power demand",
+                        "gas transmission pipeline company AI data center electricity contracts",
+                    ]
+                )
             for query in falsification_queries:
                 research(query)
             falsification.update(
@@ -1014,8 +1149,20 @@ class Investigator:
                 queries=falsification_queries,
             )
             ranked = compare()
+            ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+            active_call_dropped.extend(dropped)
         if not offline:
             _apply_chart(ranked, chart_cache, text)
+            earnings_pit = apply_earnings_pit(
+                ranked,
+                request.publication_at,
+                text,
+                lookup=self.earnings_lookup,
+                ath_bars_fetcher=self.ath_bars_fetcher,
+            )
+            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+            falsification["earnings_pit"] = earnings_pit
+            falsification["metric_fingerprints"] = metric_fingerprints
         reasoning_review = {
             "status": "not_available_offline" if offline else "not_performed_no_candidates",
             "changes_deterministic_ranking": False,
@@ -1194,6 +1341,23 @@ class Investigator:
             "falsification": falsification,
             "reasoning_review": reasoning_review,
             "peer_comparison": peer_comparison,
+            "active_call_exclusion": {
+                "status": blocked.get("status"),
+                "as_of": blocked.get("as_of"),
+                "lookback_days": blocked.get("lookback_days"),
+                "blocklist_entries": len(blocked.get("entries") or []),
+                "excluded_from_ranking": list(
+                    {
+                        row["asset_id"]: row
+                        for row in active_call_dropped
+                        if row.get("asset_id")
+                    }.values()
+                ),
+                "policy": (
+                    "Recently featured HEBELTRADER underlyings (open-call lookback) are "
+                    "removed from hypothesis seeds and ranking targets; never solutions."
+                ),
+            },
             "search_queries": queries,
             "limitations": limits,
             "research_errors": errors,

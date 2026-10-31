@@ -114,6 +114,47 @@ Corpus-v1 provisional flags cleared. Nur HT-016 bleibt PDF/Issue-Lücke.
 
 **C.** Echte Stufe 3b sobald Tavily/OpenAI Keys da sind (Harness schon grün).
 
+## 18. Earnings/ATH PIT-Falsifikation (2026-10-31)
+Operator-Korrektur zu HT 199/26: Mastercard (Bericht 29.10.) und Visa (27.10.
+after close) waren am Stand 27.10. 08:15 Wien **noch nicht** als „starke
+Quartalszahlen“ belegbar — das muss der Detektiv selbst finden.
+Neu: `scanner/hebeltrader/detective/earnings_pit.py` + Hook in `Investigator`
+(hard contradictions, Score −100, Earnings-Date-Queries in Falsifikation).
+Replay: MA/V/PYPL demoted; NDAQ/DB1 bleiben ohne Quartals-Widerspruch.
+
+## 19. HT 199/26 aufgelöst + Metric-Fingerprint (2026-10-31)
+Call-PDF: **Nasdaq / JY7FDN**, Stand 08:15. Blind-Tipp NDAQ war Rang 1.
+Härte: `metric_fingerprint` — ARR + operative Marge + Segmentwachstum (Index +39 %,
+ARR 3,4 Mrd., Marge 57 %) schlägt generische Fintech-Peers. Register OK-001.
+
+## 17. HT-016 → 191/26 (2026-10-31)
+
+Operator bind: **HEBELTRADER 191/26**, featured **15.10.2026**. Scaffold status
+`blocked_awaiting_pdf_stand`; provisional `publication_at`
+`2026-10-15T08:15:00+01:00`. SEC packet re-cut for that cutoff. Still out of
+corpus-v1 until Call-PDF Stand Uhr.
+
+### Operator-Diskriminierung (2026-10-31)
+
+NEE / Iberdrola / Enel = Theme-Fit Strombedarf. Williams = zusätzlich
+Begleitartikel-Ereignisse. Live Teaser-only kann das nicht trennen. Discovery/
+Falsifikation expandiert jetzt Power+Data-Center auf Midstream-Gas/Pipeline-Layer
+(ohne WMB zu leaken). Residual A in `hebeltrader-identification-rules.md`.
+
+**Operator 2026-10-31:** Fall bleibt **offen** — Report/Call-PDF liegt nicht vor.
+Keine Identifikation, kein Freeze-Push.
+
+**Weiter:** Nächster echter Teaser / anderes Call-PDF; HT-016 erst wieder bei
+Report 191/26; keine Schwellen-Absenkung.
+
+## 20. Offline-Hebel bis Montag (2026-10-31)
+
+- Live-Investigator wendet jetzt **Active-Call-Ausschluss (180d)** an (Seeds,
+  Planner-Queries, Ranking) — bisher nur Market/Structure.
+- `scripts/refresh_original_anchor_gap.py` regeneriert corpus-gap; weiterhin
+  **0/27** mit ≥2 nativen Named-Ankern (Teaser-Anonymität, kein Tooling-Engpass).
+- Readiness-Board aktualisiert (Keys grün; HT-016 offen).
+
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
 innerhalb **180 Tagen** vor `publication_date` werden aus Offline-/Market-Hypothesen entfernt

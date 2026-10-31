@@ -80,6 +80,17 @@ def build_queries(text, named, fallback):
                 "semiconductor IP architecture licensing dominant provider market share",
                 "semiconductor foundry materials dominant supplier market share earnings growth",
             ]
+    # HT-016 lesson: "Stromhunger / Rechenzentren" fits utilities AND midstream gas.
+    # Generic live search collapses to utilities; force value-chain counterqueries so
+    # pipeline / natural-gas suppliers can enter the universe without naming a winner.
+    if sector == "power infrastructure" and any(
+        ctx in contexts for ctx in ("AI data centers",)
+    ):
+        queries += [
+            "natural gas midstream pipeline data center power demand earnings",
+            "gas transmission pipeline company long-term contracts power generation AI",
+            "midstream energy infrastructure supplier electricity demand data centers",
+        ]
     if re.search(r"wiederkehrend\w*|recurring revenue|\bARR\b", clean, re.I):
         queries.append(sector + ' "recurring revenue" quarterly results')
     if len(contexts) >= 2:

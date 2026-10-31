@@ -7,11 +7,17 @@ Entwicklungsdiagnose — kein Blind-Benchmark.
 `corpus-gap.json`: **0/27** Original-Teaser mit ≥2 nativen spezifischen Ankern
 (Named-Relation oder Finanzkennzahl). Produktseitig anonym.
 
-| Metrik | 27er |
+Refresh:
+
+```bash
+python3 scripts/refresh_original_anchor_gap.py
+```
+
+| Metrik | 27er (refresh 2026-10-31) |
 |---|---|
 | ≥1 Named-Relation (`acquisition\|…`) | 0 |
 | ≥1 `financial_metric` | 3 |
-| ≥1 Entity | 1 (HT-023 AbbVie) |
+| ≥1 Entity | 3 (incl. HT-023 AbbVie; HT-016 full teaser) |
 | ≥2 spezifische Anker | **0** |
 
 ## Identity-Kanal: `issuer_literal`

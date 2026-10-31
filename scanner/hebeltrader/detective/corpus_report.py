@@ -132,7 +132,7 @@ def build_recipe(
         "evidence_batch": cmd,
         "notes": [
             "Named freeze is already committed; re-run only after packet edits.",
-            "HT-016 stays out until operator issue + PDF Stand.",
+            "HT-016 issue 191/26 bound; stays out until Call-PDF Stand Uhr.",
             "Stufe 3b live web needs Tavily/OpenAI; use simulated_falsification offline.",
         ],
     }
@@ -255,12 +255,18 @@ def build_readiness(
                 "actions": promote.get("actions"),
             }
         )
-    if ht016 and ht016.get("status") == "blocked_no_publication_at":
+    if ht016 and ht016.get("status") in (
+        "blocked_no_publication_at",
+        "blocked_awaiting_pdf_stand",
+    ):
         blockers.append(
             {
-                "id": "ht016_no_publication_at",
+                "id": "ht016_awaiting_pdf_stand",
                 "status": "blocked",
-                "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand",
+                "detail": (
+                    "HT-016 issue 191/26 + featured 2026-10-15 bound; "
+                    "Call-PDF Stand Uhr still missing; stays out of freeze"
+                ),
             }
         )
     if originals["identified"] == 0:
@@ -295,6 +301,8 @@ def build_readiness(
         "promote_pending_pdf": promote,
         "ht016": {
             "status": (ht016 or {}).get("status"),
+            "publication_issue": (ht016 or {}).get("publication_issue"),
+            "publication_at": (ht016 or {}).get("publication_at"),
             "suspected_ticker": (ht016 or {}).get("suspected_ticker"),
             "identification_freeze": (ht016 or {}).get("identification_freeze"),
         },
@@ -315,11 +323,23 @@ def build_readiness(
                 if promote.get("still_missing")
                 else []
             )
-            + [
-                "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-                "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
-                "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
-            ]
+            + (
+                [
+                    "HT-016: upload Call-PDF 191/26 Stand Uhr — keep blocked; "
+                    "do not force into freeze"
+                ]
+                if (ht016 or {}).get("status")
+                in ("blocked_no_publication_at", "blocked_awaiting_pdf_stand")
+                else []
+            )
+            + (
+                ["For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY"]
+                if not (
+                    os.environ.get("TAVILY_API_KEY") or os.environ.get("OPENAI_API_KEY")
+                )
+                else []
+            )
+            + ["Secure next real teaser before reading Call-PDF (≥2 named anchors)"]
         ),
         "smoke": {
             "corpus_case": (
