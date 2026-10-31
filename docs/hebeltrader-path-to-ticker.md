@@ -97,9 +97,31 @@ Pending PDF cutoffs (Costco 192/26, BASF 137/26): dry-run
 land. PIT history pad default is **800** days
 (`market_screen export-pit --history-pad-days`).
 
+## Operator CLI (corpus-v1)
+
+```bash
+python3 -m scanner.hebeltrader.detective.corpus_report report
+python3 -m scanner.hebeltrader.detective.corpus_report recipe
+python3 -m scanner.hebeltrader.detective.corpus_report originals
+python3 -m scanner.hebeltrader.detective.corpus_report tiebreak
+```
+
+pad800 market tie-break: Top1/3/8 = **2/3/7** (unchanged vs remap); only **7/26**
+named packet leaders appear in market Top-8. Charts do not replace packets.
+
+## Stufe 3b (simuliert, offline)
+
+Live falsification without Tavily/OpenAI:
+
+```bash
+python3 -c "from pathlib import Path; from scanner.hebeltrader.detective.simulated_falsification import run_simulated_live_falsification as r; print(r(Path('/tmp/sim3b'))['identification'])"
+```
+
+Returns `basis=live_falsification`. Real web path still needs API keys.
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
 reichere Teaser oder bewusste Diagnose-Anreicherung (wie Batch-10 named).
 
-Blind 202/26 Chart-Scores unangetastet (Freeze SHA unverändert).
+Blind 202/26 Chart-Scores unangetastet (Freeze SHA unverändert; DBK Rang ~565).

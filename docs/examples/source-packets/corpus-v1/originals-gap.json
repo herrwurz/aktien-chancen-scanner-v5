@@ -1,0 +1,178 @@
+{
+  "total": 26,
+  "identified": 0,
+  "by_packet_evidence_status": {
+    "insufficient_evidence": {
+      "count": 25,
+      "cases": [
+        {
+          "case_id": "HT-001",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-002",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-003",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-004",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-005",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-006",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-007",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-008",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-009",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-010",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-011",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-012",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-013",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-014",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-015",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-017",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-018",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-019",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-020",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-021",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-022",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-024",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-025",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-026",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        },
+        {
+          "case_id": "HT-027",
+          "ticker": null,
+          "confirmed_specific_clues": 0,
+          "score_margin": 0
+        }
+      ]
+    },
+    "partial_evidence": {
+      "count": 1,
+      "cases": [
+        {
+          "case_id": "HT-023",
+          "ticker": "ABBV",
+          "confirmed_specific_clues": 1,
+          "score_margin": 54
+        }
+      ]
+    }
+  },
+  "schema_version": 1,
+  "kind": "hebeltrader-corpus-v1-originals-gap-v1",
+  "blocked_out_of_corpus": [
+    "HT-016"
+  ],
+  "interpretation": "0 originals identified: teaser anonymity (≥2 native named anchors missing), not packet tooling. HT-023 original reaches partial_evidence via issuer_literal."
+}

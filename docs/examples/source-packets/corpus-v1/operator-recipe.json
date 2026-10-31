@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-corpus-v1-recipe-v1",
+  "packets": "docs/examples/source-packets/corpus-v1/packets",
+  "snapshots": "reports/snapshots-pit-pool-v1-pad800-2026-10-31.json",
+  "scorecard": "python3 -m scanner.hebeltrader.detective.corpus_report report",
+  "tiebreak": "python3 -m scanner.hebeltrader.detective.corpus_report tiebreak --snapshots reports/snapshots-pit-pool-v1-pad800-2026-10-31.json",
+  "promote_pending_pdfs": "python3 scripts/promote_provisional_publication_at.py",
+  "simulated_3b": "python3 -c \"from pathlib import Path; from scanner.hebeltrader.detective.simulated_falsification import run_simulated_live_falsification; print(run_simulated_live_falsification(Path('/tmp/sim3b'))['identification'])\"",
+  "evidence_batch": "python3 -m scanner.hebeltrader.detective.evidence_batch \\\n  --inputs docs/examples/source-packets/corpus-v1/HT-*.inputs.*.json \\\n  --source-packets docs/examples/source-packets/corpus-v1/packets \\\n  --snapshots reports/snapshots-pit-pool-v1-pad800-2026-10-31.json \\\n  --summary docs/examples/source-packets/corpus-v1/evidence-batch-corpus-v1.json",
+  "notes": [
+    "Named freeze is already committed; re-run only after packet edits.",
+    "HT-016 stays out until operator issue + PDF Stand.",
+    "Stufe 3b live web needs Tavily/OpenAI; use simulated_falsification offline."
+  ]
+}

@@ -38,8 +38,14 @@ python3 -m scanner.hebeltrader.detective.evidence_batch \
 Freeze: `evidence-batch-corpus-v1.json`. Quality:
 `tests/hebeltrader/test_corpus_v1_quality.py`.
 
-Scorecard (no re-scan):
+Operator CLI (no re-scan for scorecard/gap; tiebreak needs local pad800 JSON):
 
 ```bash
-python3 -m scanner.hebeltrader.detective.corpus_report
+python3 -m scanner.hebeltrader.detective.corpus_report report
+python3 -m scanner.hebeltrader.detective.corpus_report recipe
+python3 -m scanner.hebeltrader.detective.corpus_report originals
+python3 -m scanner.hebeltrader.detective.corpus_report tiebreak
 ```
+
+Artifacts: `corpus-report.json`, `originals-gap.json`, `operator-recipe.json`.
+Market tie-break summary: `docs/examples/market-tiebreak-pad800-2026-10-31.{json,md}`.

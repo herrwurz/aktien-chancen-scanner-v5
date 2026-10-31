@@ -90,11 +90,19 @@ SEC-10-Q-Paket ADI+5 Peers (`docs/examples/source-packets/pilot/`). Pipeline ok;
 Evidenz trotzdem **not_identified** — Teaser ohne Eigenamen (Empower/Alif nur in Auflösung).
 Market-PIT: ADI Top-1. Publisher-PDFs bleiben Resolutionsartefakte.
 
-## 14. Offen (nächste Schritte)
-**A.** Pilot auf Fälle mit **eigenamen Spezifika im Teaser**; oder Operator-Pakete mit
-  Zitat-aligned IR. PDFs 192/26 + 137/26 nachreichen.
+## 14. Corpus CLI + pad800 Tie-Break + 3b-Harness (2026-10-31)
+- `corpus_report {report,recipe,originals,tiebreak}` verdrahtet corpus-v1.
+- pad800 market: Top1/3/8 = 2/3/7; nur 7/26 named leaders im market Top-8;
+  Blind DBK Rang 565 unverändert (`B_chart_rank`).
+- `simulated_falsification` übt Stufe 3b offline (`basis=live_falsification`).
 
-**B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26.
+## 15. Offen (nächste Schritte)
+**A.** Pilot auf Fälle mit **eigenamen Spezifika im Teaser**; oder Operator-Pakete mit
+  Zitat-aligned IR. PDFs 192/26 + 137/26 nachreichen; HT-016 Issue+PDF.
+
+**B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26 (bestätigt).
+
+**C.** Echte Stufe 3b sobald Tavily/OpenAI Keys da sind (Harness schon grün).
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls

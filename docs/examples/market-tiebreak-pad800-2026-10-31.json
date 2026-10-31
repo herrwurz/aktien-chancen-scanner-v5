@@ -1,0 +1,1172 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-market-tiebreak-pad800-v1",
+  "recorded_at": "2026-10-31T07:15:52.324000+00:00",
+  "snapshots": "reports/snapshots-pit-pool-v1-pad800-2026-10-31.json",
+  "history_pad_days": 800,
+  "policy": [
+    "Charts are tie-break / suggestion only — never identification.",
+    "Blind 202/26 freeze SHA and chart weights are not retuned here.",
+    "Named packet leaders remain the identification channel (Stufe 3a).",
+    "Original teasers remain 0 identified without ≥2 native named anchors."
+  ],
+  "market": {
+    "graded": 26,
+    "top1": 2,
+    "top3": 3,
+    "top8": 7,
+    "with_hypotheses": 26
+  },
+  "packet_leader_confirmation": {
+    "named_identified": 26,
+    "market_confirms_in_top8": 7,
+    "market_misses_top8": 19,
+    "confirmed": [
+      {
+        "case_id": "HT-001",
+        "packet_leader": "ADI",
+        "market_hit_rank": 1,
+        "market_top8": [
+          "ADI",
+          "NXPI",
+          "TXN",
+          "AMD",
+          "ATEYY",
+          "ENTG",
+          "TSM",
+          "CDNS"
+        ]
+      },
+      {
+        "case_id": "HT-002",
+        "packet_leader": "ZURN",
+        "market_hit_rank": 7,
+        "market_top8": [
+          "BEZ.LSE",
+          "SREN.SW",
+          "BALN.SW",
+          "DLG.LSE",
+          "HSX.LSE",
+          "SCR.PA",
+          "ZURN.SW",
+          "TRYG.CO"
+        ]
+      },
+      {
+        "case_id": "HT-003",
+        "packet_leader": "COST",
+        "market_hit_rank": 1,
+        "market_top8": [
+          "COST",
+          "ABNB",
+          "MO",
+          "ADM",
+          "BME.LSE",
+          "CHD",
+          "KO",
+          "CL"
+        ]
+      },
+      {
+        "case_id": "HT-005",
+        "packet_leader": "MU",
+        "market_hit_rank": 6,
+        "market_top8": [
+          "SOI.PA",
+          "AMD",
+          "ATEYY",
+          "ADI",
+          "ENTG",
+          "MU",
+          "005930.KO",
+          "WAF.XETRA"
+        ]
+      },
+      {
+        "case_id": "HT-014",
+        "packet_leader": "SAP",
+        "market_hit_rank": 5,
+        "market_top8": [
+          "PANW",
+          "SNOW",
+          "ANSS",
+          "BC8.XETRA",
+          "SAP.XETRA",
+          "ADSK",
+          "MSFT",
+          "PLTR"
+        ]
+      },
+      {
+        "case_id": "HT-020",
+        "packet_leader": "SNPS",
+        "market_hit_rank": 7,
+        "market_top8": [
+          "NXPI",
+          "TXN",
+          "AMD",
+          "ATEYY",
+          "ENTG",
+          "CDNS",
+          "SNPS",
+          "ASML"
+        ]
+      },
+      {
+        "case_id": "HT-023",
+        "packet_leader": "ABBV",
+        "market_hit_rank": 2,
+        "market_top8": [
+          "ASML",
+          "ABBV",
+          "AMAT",
+          "ARGX.BR",
+          "BNP.PA",
+          "BEZ.LSE",
+          "CHRW",
+          "CSX"
+        ]
+      }
+    ],
+    "missed": [
+      {
+        "case_id": "HT-004",
+        "packet_leader": "CRM",
+        "market_hit_rank": null,
+        "market_top8": [
+          "AES",
+          "AMD",
+          "A",
+          "ALLFG.AS",
+          "BBY.LSE",
+          "BEZ.LSE",
+          "TECH",
+          "BIIB"
+        ]
+      },
+      {
+        "case_id": "HT-006",
+        "packet_leader": "UNH",
+        "market_hit_rank": null,
+        "market_top8": [
+          "AMGN",
+          "ARGX.BR",
+          "BIIB",
+          "BMY",
+          "CAH",
+          "GILD",
+          "HSIC",
+          "IQV"
+        ]
+      },
+      {
+        "case_id": "HT-007",
+        "packet_leader": "VRT",
+        "market_hit_rank": null,
+        "market_top8": [
+          "EDP.LS",
+          "SVT.LSE",
+          "FORTUM.HE",
+          "SSE.LSE",
+          "UN0.XETRA",
+          "AES",
+          "NEX.PA",
+          "EDPR.LS"
+        ]
+      },
+      {
+        "case_id": "HT-008",
+        "packet_leader": "KKR",
+        "market_hit_rank": null,
+        "market_top8": [
+          "AES",
+          "APA",
+          "ANET",
+          "XOM",
+          "GILD",
+          "HAS",
+          "JMAT.LSE",
+          "0ONG.LSE"
+        ]
+      },
+      {
+        "case_id": "HT-009",
+        "packet_leader": "PFE",
+        "market_hit_rank": null,
+        "market_top8": [
+          "A",
+          "AMGN",
+          "BDX",
+          "TECH",
+          "CAH",
+          "CRL",
+          "HSIC",
+          "INDV.LSE"
+        ]
+      },
+      {
+        "case_id": "HT-010",
+        "packet_leader": "AVGO",
+        "market_hit_rank": null,
+        "market_top8": [
+          "AES",
+          "APA",
+          "HM-B.ST",
+          "KGF.LSE",
+          "0ONG.LSE",
+          "LMT",
+          "NEM",
+          "SCHA.OL"
+        ]
+      },
+      {
+        "case_id": "HT-011",
+        "packet_leader": "HO",
+        "market_hit_rank": null,
+        "market_top8": [
+          "ABN.AS",
+          "AES",
+          "ACX.MC",
+          "AGS.BR",
+          "A",
+          "AIR.PA",
+          "ALV.XETRA",
+          "AME"
+        ]
+      },
+      {
+        "case_id": "HT-012",
+        "packet_leader": "BAS",
+        "market_hit_rank": null,
+        "market_top8": [
+          "MMM",
+          "ABN.AS",
+          "ADM.LSE",
+          "AFL",
+          "ALLFG.AS",
+          "ALV.XETRA",
+          "ALL",
+          "AMGN"
+        ]
+      },
+      {
+        "case_id": "HT-013",
+        "packet_leader": "DHR",
+        "market_hit_rank": null,
+        "market_top8": [
+          "ADM.LSE",
+          "AENA.MC",
+          "A",
+          "ABNB",
+          "AKRBP.OL",
+          "ALLFG.AS",
+          "ALV.XETRA",
+          "AMGN"
+        ]
+      },
+      {
+        "case_id": "HT-015",
+        "packet_leader": "LDO",
+        "market_hit_rank": null,
+        "market_top8": [
+          "AIR.PA",
+          "BA.LSE",
+          "LMT",
+          "RTX",
+          "KOG.OL",
+          "HAG.XETRA",
+          "MTX.XETRA",
+          "NOC"
+        ]
+      },
+      {
+        "case_id": "HT-017",
+        "packet_leader": "JPM",
+        "market_hit_rank": null,
+        "market_top8": [
+          "CME",
+          "ALLFG.AS",
+          "MO",
+          "BME.LSE",
+          "CHD",
+          "KO",
+          "DB1.XETRA",
+          "DG"
+        ]
+      },
+      {
+        "case_id": "HT-018",
+        "packet_leader": "JNJ",
+        "market_hit_rank": null,
+        "market_top8": [
+          "A",
+          "BDX",
+          "TECH",
+          "BIIB",
+          "CAH",
+          "CNC",
+          "CRL",
+          "DEMANT.CO"
+        ]
+      },
+      {
+        "case_id": "HT-019",
+        "packet_leader": "SLB",
+        "market_hit_rank": null,
+        "market_top8": [
+          "BT-A.LSE",
+          "BATS.LSE",
+          "CBOE",
+          "DOW",
+          "ERIC-B.ST",
+          "LIN",
+          "OCDO.LSE",
+          "SCHA.OL"
+        ]
+      },
+      {
+        "case_id": "HT-021",
+        "packet_leader": "BP",
+        "market_hit_rank": null,
+        "market_top8": [
+          "EDP.LS",
+          "FORTUM.HE",
+          "RWE.XETRA",
+          "UN0.XETRA",
+          "VER.VI",
+          "AES",
+          "EVN.VI",
+          "ETN"
+        ]
+      },
+      {
+        "case_id": "HT-022",
+        "packet_leader": "CEG",
+        "market_hit_rank": null,
+        "market_top8": [
+          "AES",
+          "EDP.LS",
+          "FORTUM.HE",
+          "RWE.XETRA",
+          "UN0.XETRA",
+          "EVN.VI",
+          "NTGY.MC",
+          "SU.PA"
+        ]
+      },
+      {
+        "case_id": "HT-024",
+        "packet_leader": "E",
+        "market_hit_rank": null,
+        "market_top8": [
+          "BARC.LSE",
+          "BBVA.MC",
+          "BNP.PA",
+          "BNY",
+          "SAB.MC",
+          "BAC",
+          "BKT.MC",
+          "EBS.VI"
+        ]
+      },
+      {
+        "case_id": "HT-025",
+        "packet_leader": "ADS",
+        "market_hit_rank": null,
+        "market_top8": [
+          "ABBN.SW",
+          "ABN.AS",
+          "ASML",
+          "ATS.VI",
+          "ACX.MC",
+          "AMD",
+          "A",
+          "AIXA.XETRA"
+        ]
+      },
+      {
+        "case_id": "HT-026",
+        "packet_leader": "CARR",
+        "market_hit_rank": null,
+        "market_top8": [
+          "ASM.AS",
+          "ASML",
+          "ACX.MC",
+          "AMGN",
+          "AMAT",
+          "ARGX.BR",
+          "AIZ",
+          "ALAB"
+        ]
+      },
+      {
+        "case_id": "HT-027",
+        "packet_leader": "TMO",
+        "market_hit_rank": null,
+        "market_top8": [
+          "RO.SW",
+          "AMGN",
+          "AZN.LSE",
+          "BAYN.XETRA",
+          "BDX",
+          "CAH",
+          "CRL",
+          "DVA"
+        ]
+      }
+    ]
+  },
+  "original_packet_gap": {
+    "total": 26,
+    "identified": 0,
+    "by_packet_evidence_status": {
+      "insufficient_evidence": {
+        "count": 25,
+        "cases": [
+          {
+            "case_id": "HT-001",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-002",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-003",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-004",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-005",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-006",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-007",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-008",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-009",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-010",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-011",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-012",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-013",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-014",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-015",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-017",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-018",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-019",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-020",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-021",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-022",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-024",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-025",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-026",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          },
+          {
+            "case_id": "HT-027",
+            "ticker": null,
+            "confirmed_specific_clues": 0,
+            "score_margin": 0
+          }
+        ]
+      },
+      "partial_evidence": {
+        "count": 1,
+        "cases": [
+          {
+            "case_id": "HT-023",
+            "ticker": "ABBV",
+            "confirmed_specific_clues": 1,
+            "score_margin": 54
+          }
+        ]
+      }
+    }
+  },
+  "blind_202_26": {
+    "status": "ok",
+    "in_top8": false,
+    "top8": [
+      "APA",
+      "A",
+      "AI.PA",
+      "APD",
+      "ALLFG.AS",
+      "MO",
+      "AMGN",
+      "AAPL"
+    ],
+    "dbk_rank": 565,
+    "dbk_score": 10,
+    "coverage": 981,
+    "ranked_before_limit": 957,
+    "names_at_score_23": 98,
+    "note": "Developmental residual B_chart_rank. Blind freeze SHA untouched; no chart score retuning.",
+    "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json"
+  },
+  "cases": [
+    {
+      "case_id": "HT-001",
+      "ticker": "ADI",
+      "graded": true,
+      "market_hit_rank": 1,
+      "status": "ok",
+      "market_top8": [
+        "ADI",
+        "NXPI",
+        "TXN",
+        "AMD",
+        "ATEYY",
+        "ENTG",
+        "TSM",
+        "CDNS"
+      ],
+      "chart_clues": [],
+      "coverage": 1021,
+      "excluded_recent_calls": 23
+    },
+    {
+      "case_id": "HT-002",
+      "ticker": "ZURN",
+      "graded": true,
+      "market_hit_rank": 7,
+      "status": "ok",
+      "market_top8": [
+        "BEZ.LSE",
+        "SREN.SW",
+        "BALN.SW",
+        "DLG.LSE",
+        "HSX.LSE",
+        "SCR.PA",
+        "ZURN.SW",
+        "TRYG.CO"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 19
+    },
+    {
+      "case_id": "HT-003",
+      "ticker": "COST",
+      "graded": true,
+      "market_hit_rank": 1,
+      "status": "ok",
+      "market_top8": [
+        "COST",
+        "ABNB",
+        "MO",
+        "ADM",
+        "BME.LSE",
+        "CHD",
+        "KO",
+        "CL"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 20
+    },
+    {
+      "case_id": "HT-004",
+      "ticker": "CRM",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "AES",
+        "AMD",
+        "A",
+        "ALLFG.AS",
+        "BBY.LSE",
+        "BEZ.LSE",
+        "TECH",
+        "BIIB"
+      ],
+      "chart_clues": [],
+      "coverage": 1021,
+      "excluded_recent_calls": 18
+    },
+    {
+      "case_id": "HT-005",
+      "ticker": "MU",
+      "graded": true,
+      "market_hit_rank": 6,
+      "status": "ok",
+      "market_top8": [
+        "SOI.PA",
+        "AMD",
+        "ATEYY",
+        "ADI",
+        "ENTG",
+        "MU",
+        "005930.KO",
+        "WAF.XETRA"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 17
+    },
+    {
+      "case_id": "HT-006",
+      "ticker": "UNH",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "AMGN",
+        "ARGX.BR",
+        "BIIB",
+        "BMY",
+        "CAH",
+        "GILD",
+        "HSIC",
+        "IQV"
+      ],
+      "chart_clues": [],
+      "coverage": 1021,
+      "excluded_recent_calls": 14
+    },
+    {
+      "case_id": "HT-007",
+      "ticker": "VRT",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "EDP.LS",
+        "SVT.LSE",
+        "FORTUM.HE",
+        "SSE.LSE",
+        "UN0.XETRA",
+        "AES",
+        "NEX.PA",
+        "EDPR.LS"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 13
+    },
+    {
+      "case_id": "HT-008",
+      "ticker": "KKR",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "AES",
+        "APA",
+        "ANET",
+        "XOM",
+        "GILD",
+        "HAS",
+        "JMAT.LSE",
+        "0ONG.LSE"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 10
+    },
+    {
+      "case_id": "HT-009",
+      "ticker": "PFE",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "A",
+        "AMGN",
+        "BDX",
+        "TECH",
+        "CAH",
+        "CRL",
+        "HSIC",
+        "INDV.LSE"
+      ],
+      "chart_clues": [],
+      "coverage": 1020,
+      "excluded_recent_calls": 9
+    },
+    {
+      "case_id": "HT-010",
+      "ticker": "AVGO",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "AES",
+        "APA",
+        "HM-B.ST",
+        "KGF.LSE",
+        "0ONG.LSE",
+        "LMT",
+        "NEM",
+        "SCHA.OL"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "coverage": 1020,
+      "excluded_recent_calls": 8
+    },
+    {
+      "case_id": "HT-011",
+      "ticker": "HO",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "ABN.AS",
+        "AES",
+        "ACX.MC",
+        "AGS.BR",
+        "A",
+        "AIR.PA",
+        "ALV.XETRA",
+        "AME"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "coverage": 1020,
+      "excluded_recent_calls": 6
+    },
+    {
+      "case_id": "HT-012",
+      "ticker": "BAS",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "MMM",
+        "ABN.AS",
+        "ADM.LSE",
+        "AFL",
+        "ALLFG.AS",
+        "ALV.XETRA",
+        "ALL",
+        "AMGN"
+      ],
+      "chart_clues": [],
+      "coverage": 1020,
+      "excluded_recent_calls": 5
+    },
+    {
+      "case_id": "HT-013",
+      "ticker": "DHR",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "ADM.LSE",
+        "AENA.MC",
+        "A",
+        "ABNB",
+        "AKRBP.OL",
+        "ALLFG.AS",
+        "ALV.XETRA",
+        "AMGN"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 12
+    },
+    {
+      "case_id": "HT-014",
+      "ticker": "SAP",
+      "graded": true,
+      "market_hit_rank": 5,
+      "status": "ok",
+      "market_top8": [
+        "PANW",
+        "SNOW",
+        "ANSS",
+        "BC8.XETRA",
+        "SAP.XETRA",
+        "ADSK",
+        "MSFT",
+        "PLTR"
+      ],
+      "chart_clues": [],
+      "coverage": 1021,
+      "excluded_recent_calls": 11
+    },
+    {
+      "case_id": "HT-015",
+      "ticker": "LDO",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "AIR.PA",
+        "BA.LSE",
+        "LMT",
+        "RTX",
+        "KOG.OL",
+        "HAG.XETRA",
+        "MTX.XETRA",
+        "NOC"
+      ],
+      "chart_clues": [],
+      "coverage": 1020,
+      "excluded_recent_calls": 7
+    },
+    {
+      "case_id": "HT-017",
+      "ticker": "JPM",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "CME",
+        "ALLFG.AS",
+        "MO",
+        "BME.LSE",
+        "CHD",
+        "KO",
+        "DB1.XETRA",
+        "DG"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 21
+    },
+    {
+      "case_id": "HT-018",
+      "ticker": "JNJ",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "A",
+        "BDX",
+        "TECH",
+        "BIIB",
+        "CAH",
+        "CNC",
+        "CRL",
+        "DEMANT.CO"
+      ],
+      "chart_clues": [
+        "breakout",
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 22
+    },
+    {
+      "case_id": "HT-019",
+      "ticker": "SLB",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "BT-A.LSE",
+        "BATS.LSE",
+        "CBOE",
+        "DOW",
+        "ERIC-B.ST",
+        "LIN",
+        "OCDO.LSE",
+        "SCHA.OL"
+      ],
+      "chart_clues": [
+        "above_gd200",
+        "correction"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 23
+    },
+    {
+      "case_id": "HT-020",
+      "ticker": "SNPS",
+      "graded": true,
+      "market_hit_rank": 7,
+      "status": "ok",
+      "market_top8": [
+        "NXPI",
+        "TXN",
+        "AMD",
+        "ATEYY",
+        "ENTG",
+        "CDNS",
+        "SNPS",
+        "ASML"
+      ],
+      "chart_clues": [
+        "steady_uptrend"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 24
+    },
+    {
+      "case_id": "HT-021",
+      "ticker": "BP",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "EDP.LS",
+        "FORTUM.HE",
+        "RWE.XETRA",
+        "UN0.XETRA",
+        "VER.VI",
+        "AES",
+        "EVN.VI",
+        "ETN"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "coverage": 1021,
+      "excluded_recent_calls": 16
+    },
+    {
+      "case_id": "HT-022",
+      "ticker": "CEG",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "AES",
+        "EDP.LS",
+        "FORTUM.HE",
+        "RWE.XETRA",
+        "UN0.XETRA",
+        "EVN.VI",
+        "NTGY.MC",
+        "SU.PA"
+      ],
+      "chart_clues": [],
+      "coverage": 1021,
+      "excluded_recent_calls": 15
+    },
+    {
+      "case_id": "HT-023",
+      "ticker": "ABBV",
+      "graded": true,
+      "market_hit_rank": 2,
+      "status": "ok",
+      "market_top8": [
+        "ASML",
+        "ABBV",
+        "AMAT",
+        "ARGX.BR",
+        "BNP.PA",
+        "BEZ.LSE",
+        "CHRW",
+        "CSX"
+      ],
+      "chart_clues": [],
+      "coverage": 1019,
+      "excluded_recent_calls": 2
+    },
+    {
+      "case_id": "HT-024",
+      "ticker": "E",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "BARC.LSE",
+        "BBVA.MC",
+        "BNP.PA",
+        "BNY",
+        "SAB.MC",
+        "BAC",
+        "BKT.MC",
+        "EBS.VI"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "coverage": 1019,
+      "excluded_recent_calls": 1
+    },
+    {
+      "case_id": "HT-025",
+      "ticker": "ADS",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "ABBN.SW",
+        "ABN.AS",
+        "ASML",
+        "ATS.VI",
+        "ACX.MC",
+        "AMD",
+        "A",
+        "AIXA.XETRA"
+      ],
+      "chart_clues": [],
+      "coverage": 1019,
+      "excluded_recent_calls": 0
+    },
+    {
+      "case_id": "HT-026",
+      "ticker": "CARR",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "ASM.AS",
+        "ASML",
+        "ACX.MC",
+        "AMGN",
+        "AMAT",
+        "ARGX.BR",
+        "AIZ",
+        "ALAB"
+      ],
+      "chart_clues": [
+        "breakout"
+      ],
+      "coverage": 1019,
+      "excluded_recent_calls": 3
+    },
+    {
+      "case_id": "HT-027",
+      "ticker": "TMO",
+      "graded": true,
+      "market_hit_rank": null,
+      "status": "ok",
+      "market_top8": [
+        "RO.SW",
+        "AMGN",
+        "AZN.LSE",
+        "BAYN.XETRA",
+        "BDX",
+        "CAH",
+        "CRL",
+        "DVA"
+      ],
+      "chart_clues": [
+        "correction"
+      ],
+      "coverage": 1020,
+      "excluded_recent_calls": 4
+    }
+  ]
+}
