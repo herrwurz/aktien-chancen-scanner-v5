@@ -1,25 +1,18 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-operator-readiness-v1",
-  "recorded_at": "2026-10-31T10:10:54.313207+00:00",
+  "recorded_at": "2026-10-31T10:19:44.665235+00:00",
   "corpus": {
     "named_identified": "26/26",
     "originals_identified": "0/26",
     "gates_ok": true,
     "provisional_publication_at": [],
-    "blocked_out_of_corpus": [
-      "HT-016"
-    ]
+    "blocked_out_of_corpus": []
   },
   "promote_pending_pdf": {
     "ready": 0,
     "still_missing": 0,
-    "blocked": [
-      {
-        "case_id": "HT-016",
-        "reason": "no_publication_issue_no_featured_date_unresolved_identity"
-      }
-    ],
+    "blocked": [],
     "actions": [
       {
         "case_id": "HT-003",
@@ -36,9 +29,10 @@
     ]
   },
   "ht016": {
-    "status": "blocked_no_publication_at",
-    "suspected_ticker": "WMB",
-    "identification_freeze": false
+    "status": "dropped",
+    "suspected_ticker": null,
+    "identification_freeze": false,
+    "note": "Removed from active register 2026-10-31 (Williams / Nutzerfall 02)."
   },
   "tiebreak": {
     "market": {
@@ -68,11 +62,6 @@
   },
   "blockers": [
     {
-      "id": "ht016_no_publication_at",
-      "status": "blocked",
-      "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand"
-    },
-    {
       "id": "original_teaser_anchor_gap",
       "status": "corpus_gap",
       "detail": "0/26 originals have ≥2 native named anchors"
@@ -84,8 +73,7 @@
     }
   ],
   "next_operator_actions": [
-    "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-    "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+    "For live Stufe 3b: set TAVILY_API_KEY and/or OPENAI_API_KEY in the Cursor Cloud Agent environment Secrets",
     "Secure next real teaser before reading Call-PDF (≥2 named anchors)"
   ],
   "smoke": {

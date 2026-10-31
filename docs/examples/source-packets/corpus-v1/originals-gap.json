@@ -171,8 +171,6 @@
   },
   "schema_version": 1,
   "kind": "hebeltrader-corpus-v1-originals-gap-v1",
-  "blocked_out_of_corpus": [
-    "HT-016"
-  ],
+  "blocked_out_of_corpus": [],
   "interpretation": "0 originals identified: teaser anonymity (≥2 native named anchors missing), not packet tooling. HT-023 original reaches partial_evidence via issuer_literal."
 }

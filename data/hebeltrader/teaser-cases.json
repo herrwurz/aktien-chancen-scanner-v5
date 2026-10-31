@@ -1,17 +1,18 @@
 {
   "schema_version": 1,
-  "provenance": "User reconstruction of prior conversations, supplemented 2026-10-28; not a complete historic archive.",
+  "provenance": "User reconstruction of prior conversations, supplemented 2026-10-28; not a complete historic archive. HT-016 (Williams / Nutzerfall 02) removed from active register 2026-10-31.",
   "evaluation_class": "development_regression",
   "independent_benchmark": false,
   "case_id_policy": "Existing HT IDs preserved; reference_number is user-supplied chronology.",
   "reported_historical_summary": {
-    "total": 18,
+    "total": 17,
     "correct": 10,
     "wrong": 7,
-    "unresolved": 1,
+    "unresolved": 0,
     "resolved": 17,
     "accuracy_percent_rounded": 58.8,
-    "independently_validated": false
+    "independently_validated": false,
+    "note": "HT-016 (Williams, Nutzerfall 02) dropped 2026-10-31 by operator; original 18-case chronology keeps reference_number gap at 2."
   },
   "cases": [
     {
@@ -67,7 +68,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2096,
-      "advertised_return_targets_percent": [514, 2096],
+      "advertised_return_targets_percent": [
+        514,
+        2096
+      ],
       "advertised_loss_risk_percent": 62,
       "risk_reward_ratio": 21.1
     },
@@ -124,7 +128,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1494,
-      "advertised_return_targets_percent": [376, 1494],
+      "advertised_return_targets_percent": [
+        376,
+        1494
+      ],
       "advertised_loss_risk_percent": 71,
       "risk_reward_ratio": 13.3
     },
@@ -174,7 +181,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2853,
-      "advertised_return_targets_percent": [632, 2853],
+      "advertised_return_targets_percent": [
+        632,
+        2853
+      ],
       "advertised_loss_risk_percent": 63,
       "risk_reward_ratio": 27.6
     },
@@ -223,7 +233,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1354,
-      "advertised_return_targets_percent": [418, 1354],
+      "advertised_return_targets_percent": [
+        418,
+        1354
+      ],
       "advertised_loss_risk_percent": 48,
       "risk_reward_ratio": 18.37
     },
@@ -272,7 +285,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2814,
-      "advertised_return_targets_percent": [576, 2814],
+      "advertised_return_targets_percent": [
+        576,
+        2814
+      ],
       "advertised_loss_risk_percent": 71,
       "risk_reward_ratio": 23.7
     },
@@ -328,7 +344,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1434,
-      "advertised_return_targets_percent": [270, 1434],
+      "advertised_return_targets_percent": [
+        270,
+        1434
+      ],
       "advertised_loss_risk_percent": 61,
       "risk_reward_ratio": 13.9
     },
@@ -385,7 +404,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1225,
-      "advertised_return_targets_percent": [344, 1225],
+      "advertised_return_targets_percent": [
+        344,
+        1225
+      ],
       "advertised_loss_risk_percent": 56,
       "risk_reward_ratio": 13.94
     },
@@ -441,7 +463,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1269,
-      "advertised_return_targets_percent": [315, 1269]
+      "advertised_return_targets_percent": [
+        315,
+        1269
+      ]
     },
     {
       "case_id": "HT-019",
@@ -485,7 +510,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1464,
-      "advertised_return_targets_percent": [421, 1464]
+      "advertised_return_targets_percent": [
+        421,
+        1464
+      ]
     },
     {
       "case_id": "HT-003",
@@ -529,44 +557,6 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1438
-    },
-    {
-      "case_id": "HT-016",
-      "reference_number": 2,
-      "headline": "Dieser Branchenführer profitiert vom Stromhunger der Zukunft!",
-      "teaser_text": null,
-      "text_completeness": "headline_only",
-      "publication_date": null,
-      "publication_issue": null,
-      "publication_at": null,
-      "first_prediction": "Williams",
-      "first_prediction_confidence": null,
-      "confidence_status": null,
-      "actual_company": null,
-      "actual_ticker": null,
-      "derivative_wkn": null,
-      "outcome": "unresolved",
-      "source_status": "user_reconstructed_conversation",
-      "key_clues": null,
-      "contradicting_clues": null,
-      "failure_analysis": null,
-      "evidence_sources": [
-        {
-          "type": "user_reconstruction",
-          "reference": "18-case development request, 2026-10-28",
-          "verified_primary_source": false
-        }
-      ],
-      "resolution_date": null,
-      "resolution_clues": null,
-      "original_top3": null,
-      "other_reported_candidates": null,
-      "suspected_company": "Williams Companies",
-      "suspected_ticker": "WMB",
-      "date_status": "unknown",
-      "evaluation_class": "development_regression",
-      "independent_benchmark": false,
-      "advertised_return_percent": null
     },
     {
       "case_id": "HT-002",
@@ -618,7 +608,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1433,
-      "advertised_return_targets_percent": [408, 1433],
+      "advertised_return_targets_percent": [
+        408,
+        1433
+      ],
       "advertised_loss_risk_percent": 56,
       "risk_reward_ratio": 16.46
     },
@@ -754,7 +747,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 2252,
-      "advertised_return_targets_percent": [495, 2252],
+      "advertised_return_targets_percent": [
+        495,
+        2252
+      ],
       "advertised_loss_risk_percent": 62,
       "risk_reward_ratio": 22.2
     },
@@ -805,7 +801,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1169,
-      "advertised_return_targets_percent": [361, 1169]
+      "advertised_return_targets_percent": [
+        361,
+        1169
+      ]
     },
     {
       "case_id": "HT-013",
@@ -1201,7 +1200,10 @@
       "evaluation_class": "development_regression",
       "independent_benchmark": false,
       "advertised_return_percent": 1705,
-      "advertised_return_targets_percent": [426, 1705]
+      "advertised_return_targets_percent": [
+        426,
+        1705
+      ]
     },
     {
       "case_id": "HT-018",

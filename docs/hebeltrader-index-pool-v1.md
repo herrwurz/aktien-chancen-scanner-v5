@@ -73,8 +73,8 @@ Market-Universum: **eine Zeile je Ticker** (SPX/NDX/Curated-Namen kollabieren; S
 ## Budget / nächste Schritte
 
 1. Pool + Remap + PIT-Diagnose + Dedup + corpus-v1 evidence freeze.
-2. Evidenz-Kanal: **26/26** named identified (provisional Costco/BASF); HT-016
-   scaffold under `ht-016-blocked/` (noch ohne pub_at); PDFs 192/26 & 137/26
+2. Evidenz-Kanal: **26/26** named identified (Costco/BASF PDF Stand); HT-016
+   dropped from active register 2026-10-31; PDFs 192/26 & 137/26
    via `scripts/promote_provisional_publication_at.py` — siehe
    `docs/hebeltrader-source-packets.md`.
 3. PIT default pad is **800** days (`market_screen export-pit --history-pad-days`).

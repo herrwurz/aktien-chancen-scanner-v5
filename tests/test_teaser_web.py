@@ -106,12 +106,11 @@ def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_pa
     response = client.post("/api/hebeltrader/references/import", auth=("admin", "private-password"))
     assert response.status_code == 200
     data = response.json()
-    assert len(data["cases"]) == 27
+    assert len(data["cases"]) == 26
     assert data["summary"]["correct"] == 10
     assert data["summary"]["wrong"] == 7
-    assert data["summary"]["unresolved"] == 1
-    williams = next(c for c in data["cases"] if c["case_id"] == "HT-016")
-    assert williams["actual_company"] is None
+    assert data["summary"]["unresolved"] == 0
+    assert "HT-016" not in {c["case_id"] for c in data["cases"]}
     assert client.get("/api/hebeltrader/cases", auth=("admin", "private-password")).json() == []
     monkeypatch.setattr(
         reference_library, "download", lambda: (_ for _ in ()).throw(AssertionError())

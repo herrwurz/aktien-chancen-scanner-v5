@@ -23,7 +23,7 @@ def test_scan_all_references_without_reading_solutions_then_evaluate(tmp_path, m
     with monkeypatch.context() as patch:
         patch.setattr(Path, "read_text", guarded)
         frozen = run_scan(inputs, tmp_path / "out")
-    assert len(frozen["report"]["cases"]) == 27
+    assert len(frozen["report"]["cases"]) == 26
     assert all(c["identification"]["status"] == "not_identified" for c in frozen["report"]["cases"])
     assert all(
         set(candidate) <= {"name", "sector", "layer", "structure", "ticker", "aliases"}
@@ -33,20 +33,21 @@ def test_scan_all_references_without_reading_solutions_then_evaluate(tmp_path, m
     assert all(not case["candidates"] for case in frozen["report"]["cases"])
     result = evaluate(tmp_path / "out/rankings.json", REFERENCES)
     assert result["historical_conversation"]["wrong"] == 7
-    assert result["regression"]["cases"] == 27
+    assert result["regression"]["cases"] == 26
     assert result["regression"]["graded_cases"] == 25
-    assert result["regression"]["abstentions"] == 27
+    assert result["regression"]["abstentions"] == 26
     assert result["independent_real_blind_tests"] == 0
     assert result["regression"]["top1_rate"] is None
     assert result["regression"]["top3_rate"] is None
-    assert result["missing_full_text_count"] == 4
-    assert result["historical_conversation"]["total"] == 18
+    assert result["missing_full_text_count"] == 3
+    assert result["historical_conversation"]["total"] == 17
+    assert result["historical_conversation"]["unresolved"] == 0
     assert result["offline_hypothesis_coverage"]["graded_cases"] == 25
     assert result["offline_hypothesis_coverage"]["solution_in_first_suggestion"] == 2
     assert result["offline_hypothesis_coverage"]["solution_in_top3_suggestions"] == 4
     assert result["offline_hypothesis_coverage"]["solution_in_top8_suggestions"] == 6
     assert result["cases"][0]["offline_hypothesis_rank"] == 1
-    assert result["market_hypothesis_coverage"]["snapshots_not_provided"] == 27
+    assert result["market_hypothesis_coverage"]["snapshots_not_provided"] == 26
     assert result["market_hypothesis_coverage"]["suggestion_cases"] == 0
     assert result["cases"][0]["market_hypothesis_rank"] is None
 
