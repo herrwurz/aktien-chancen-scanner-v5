@@ -260,7 +260,7 @@ def build_readiness(
             {
                 "id": "ht016_no_publication_at",
                 "status": "blocked",
-                "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand",
+                "detail": "HT-016 full teaser present but no issue/PDF Stand; stays out of freeze",
             }
         )
     if originals["identified"] == 0:
