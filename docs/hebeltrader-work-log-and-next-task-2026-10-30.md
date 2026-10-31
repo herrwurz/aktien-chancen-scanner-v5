@@ -96,7 +96,12 @@ Market-PIT: ADI Top-1. Publisher-PDFs bleiben Resolutionsartefakte.
   Blind DBK Rang 565 unverändert (`B_chart_rank`).
 - `simulated_falsification` übt Stufe 3b offline (`basis=live_falsification`).
 
-## 15. Offen (nächste Schritte)
+## 15. Operator-Readiness + corpus-case CLI (2026-10-31)
+- `corpus_report readiness` — Blocker-Board (PDFs, HT-016, Original-Gap, API-Keys).
+- `investigate_cli analyze --corpus-case HT-xxx` lädt corpus-v1 Inputs+Paket
+  (historical blind) → Stufe 3a Smoke ohne manuelles Packet-Pfad-Gefummel.
+
+## 16. Offen (nächste Schritte)
 **A.** Pilot auf Fälle mit **eigenamen Spezifika im Teaser**; oder Operator-Pakete mit
   Zitat-aligned IR. PDFs 192/26 + 137/26 nachreichen; HT-016 Issue+PDF.
 

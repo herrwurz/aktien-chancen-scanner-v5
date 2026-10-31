@@ -104,6 +104,14 @@ python3 -m scanner.hebeltrader.detective.corpus_report report
 python3 -m scanner.hebeltrader.detective.corpus_report recipe
 python3 -m scanner.hebeltrader.detective.corpus_report originals
 python3 -m scanner.hebeltrader.detective.corpus_report tiebreak
+python3 -m scanner.hebeltrader.detective.corpus_report readiness
+```
+
+Replay one corpus case through the primary CLI (named packet → Stufe 3a):
+
+```bash
+python3 -m scanner.hebeltrader.detective.investigate_cli analyze \
+  --corpus-case HT-001 --corpus-variant named --root /tmp/ht-corpus-case
 ```
 
 pad800 market tie-break: Top1/3/8 = **2/3/7** (unchanged vs remap); only **7/26**

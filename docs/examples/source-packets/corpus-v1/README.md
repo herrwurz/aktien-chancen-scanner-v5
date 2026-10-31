@@ -45,7 +45,16 @@ python3 -m scanner.hebeltrader.detective.corpus_report report
 python3 -m scanner.hebeltrader.detective.corpus_report recipe
 python3 -m scanner.hebeltrader.detective.corpus_report originals
 python3 -m scanner.hebeltrader.detective.corpus_report tiebreak
+python3 -m scanner.hebeltrader.detective.corpus_report readiness
+```
+
+Primary CLI replay:
+
+```bash
+python3 -m scanner.hebeltrader.detective.investigate_cli analyze \
+  --corpus-case HT-001 --root /tmp/ht-corpus-case
 ```
 
 Artifacts: `corpus-report.json`, `originals-gap.json`, `operator-recipe.json`.
-Market tie-break summary: `docs/examples/market-tiebreak-pad800-2026-10-31.{json,md}`.
+Market tie-break: `docs/examples/market-tiebreak-pad800-2026-10-31.{json,md}`.
+Readiness: `docs/examples/operator-readiness-2026-10-31.{json,md}`.
