@@ -8,13 +8,14 @@
 |---|---|
 | Case | HT-016 |
 | Headline | Dieser Branchenführer profitiert vom Stromhunger der Zukunft! |
-| Text | headline-only (`teaser_text=null`) |
-| `publication_issue` | null |
+| Text | full teaser in `HT-016.inputs.original.json` (operator 2026-10-31) |
+| `publication_issue` | null — Ausgabe laut Operator nicht mehr verfügbar |
 | `publication_date` / `publication_at` | null |
 | Outcome | unresolved (suspected WMB / Williams Companies) |
 
 Without an operator-bound issue + Stand Uhr there is no historical cutoff.
-Blind / ID-freeze use of this packet is **forbidden**.
+Blind / ID-freeze use of this packet is **forbidden**. Full text alone does
+**not** unlock identification.
 
 ## What this directory holds
 
