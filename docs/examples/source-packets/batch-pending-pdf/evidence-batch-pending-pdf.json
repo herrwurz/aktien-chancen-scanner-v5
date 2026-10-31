@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-evidence-batch-v1",
+  "packets": "docs/examples/source-packets/batch-pending-pdf/packets",
+  "snapshots": "reports/snapshots-pit-pool-v1-remap-2026-10-30.json",
+  "root": "/tmp/evidence-batch-pending-pdf",
+  "freezes": [
+    {
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-003.inputs.named.json",
+      "root": "/tmp/evidence-batch-pending-pdf/00-HT-003.inputs.named",
+      "ranking_sha256": "8f0b591c2465dfb90d13982e9c477f5096182d5999e64e7ec621642889a8a06d",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-003.inputs.original.json",
+      "root": "/tmp/evidence-batch-pending-pdf/01-HT-003.inputs.original",
+      "ranking_sha256": "7525f7ef93c043cdac79743be0364414bf1ecd9db54613e891115475a583e504",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-012.inputs.named.json",
+      "root": "/tmp/evidence-batch-pending-pdf/02-HT-012.inputs.named",
+      "ranking_sha256": "f642516d6e2643c436ae3cfc5f07bd9f102901069c7d29c503b93f6e20c0f827",
+      "cases": 1
+    },
+    {
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-012.inputs.original.json",
+      "root": "/tmp/evidence-batch-pending-pdf/03-HT-012.inputs.original",
+      "ranking_sha256": "c325a789847cac79be1a43f4cb45b23ff11f04f262f7b165bdc3d555180da73f",
+      "cases": 1
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "HT-003",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "COST",
+      "packet_evidence_name": "Costco",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "COST",
+      "leader_name": "Costco",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-003.inputs.named.json"
+    },
+    {
+      "case_id": "HT-003",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "DG",
+      "leader_name": "Dollar General",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-003.inputs.original.json"
+    },
+    {
+      "case_id": "HT-012",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "ticker_hypothesis_ready",
+      "packet_evidence_ticker": "BAS",
+      "packet_evidence_name": "BASF",
+      "confirmed_specific_clues": 2,
+      "evidence_score": 104,
+      "score_margin": 104,
+      "identification_status": "identified",
+      "identification_basis": "historical_source_packet",
+      "decision_status": "likely_identified",
+      "leader_ticker": "BAS",
+      "leader_name": "BASF",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed"
+      ],
+      "next_step": "manual_review",
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-012.inputs.named.json"
+    },
+    {
+      "case_id": "HT-012",
+      "source_packet_status": "provided",
+      "packet_evidence_status": "insufficient_evidence",
+      "packet_evidence_ticker": null,
+      "packet_evidence_name": null,
+      "confirmed_specific_clues": 0,
+      "evidence_score": 0,
+      "score_margin": 0,
+      "identification_status": "not_identified",
+      "identification_basis": null,
+      "decision_status": "ambiguous_tie",
+      "leader_ticker": "LYB",
+      "leader_name": "LyondellBasell",
+      "checked_candidates": 6,
+      "limitations": [
+        "fewer_than_five_countercandidates",
+        "active_falsification_not_performed",
+        "insufficient_specific_primary_evidence",
+        "ambiguous_leading_candidates"
+      ],
+      "next_step": "named_anchors_in_teaser_plus_dated_packet",
+      "inputs": "docs/examples/source-packets/batch-pending-pdf/HT-012.inputs.original.json"
+    }
+  ],
+  "counts": {
+    "cases": 4,
+    "ticker_hypothesis_ready": 2,
+    "partial_evidence": 0,
+    "identified": 2,
+    "identified_from_packet": 2
+  }
+}

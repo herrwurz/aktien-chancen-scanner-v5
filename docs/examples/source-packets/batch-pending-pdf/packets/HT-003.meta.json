@@ -1,0 +1,73 @@
+{
+  "case_id": "HT-003",
+  "documents": 6,
+  "path": "docs/examples/source-packets/batch-pending-pdf/packets/HT-003.json",
+  "meta": [
+    {
+      "ticker": "COST",
+      "name": "Costco",
+      "form": "10-Q",
+      "filing_date": "2026-06-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000051/cost-20260510.htm",
+      "primary": "cost-20260510.htm",
+      "resolved_from_primary": null,
+      "chars": 12054,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-003/COST-2026-06-03-e2d5c7c2.htm"
+    },
+    {
+      "ticker": "WMT",
+      "name": "Walmart",
+      "form": "10-Q",
+      "filing_date": "2026-08-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/104169/000010416926000154/wmt-20260731.htm",
+      "primary": "wmt-20260731.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-003/WMT-2026-08-28-cdf726ee.htm"
+    },
+    {
+      "ticker": "TGT",
+      "name": "Target",
+      "form": "10-Q",
+      "filing_date": "2026-08-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000042/tgt-20260801.htm",
+      "primary": "tgt-20260801.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-003/TGT-2026-08-28-37337a36.htm"
+    },
+    {
+      "ticker": "BJ",
+      "name": "BJs Wholesale",
+      "form": "10-Q",
+      "filing_date": "2026-08-25",
+      "url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000057/bj-20260801.htm",
+      "primary": "bj-20260801.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-003/BJ-2026-08-25-a02e941e.htm"
+    },
+    {
+      "ticker": "DG",
+      "name": "Dollar General",
+      "form": "10-Q",
+      "filing_date": "2026-08-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/29534/000110465926101932/dg-20260731x10q.htm",
+      "primary": "dg-20260731x10q.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-003/DG-2026-08-27-b373bf45.htm"
+    },
+    {
+      "ticker": "DLTR",
+      "name": "Dollar Tree",
+      "form": "10-Q",
+      "filing_date": "2026-08-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/935703/000093570326000109/dltr-20260801.htm",
+      "primary": "dltr-20260801.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-003/DLTR-2026-08-27-bc19c411.htm"
+    }
+  ]
+}
