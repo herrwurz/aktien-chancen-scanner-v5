@@ -9,10 +9,9 @@ import httpx
 
 from scanner.hebeltrader.detective.reference_cases import historical_summary, load_references
 
-# SOURCE commit is updated after the teaser-cases.json drop lands on the branch.
 SOURCE = (
     "https://raw.githubusercontent.com/herrwurz/aktien-chancen-scanner-v5/"
-    "cursor/drop-ht016-5c76/data/hebeltrader/teaser-cases.json"
+    "90faeda5c849614ff24a9dad0fcf7db7f51eab46/data/hebeltrader/teaser-cases.json"
 )
 SHA256 = "97d16f77865348e80a6f736d9f3489799104c049deae3779cba677be3da087f7"
 
