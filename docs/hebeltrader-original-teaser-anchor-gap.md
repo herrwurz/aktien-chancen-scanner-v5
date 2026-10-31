@@ -1,13 +1,18 @@
 # Original-Teaser: Named-Anchor-Lücke
 
-Stand: 2026-10-30.
+Stand: 2026-10-31.
 
 ## Kurzfassung
 
-Im Entwicklungs-Korpus (27 Refs) gibt es **keinen** Original-Teaser mit ≥2
-bestätigbaren spezifischen Ankern für den Evidenzkanal. Tooling (SEC-Binding,
-Issuer-Anaphora, Gewinnsprung-Extraktion) ist nicht der Engpass — **Teaser-
-Anonymität** ist es.
+Im Entwicklungs-Korpus (corpus-v1, 26 Refs; HT-016 out) gibt es **keinen**
+Original-Teaser mit ≥2 bestätigbaren spezifischen Ankern für den Evidenzkanal
+(`originals identified: 0/26`; 25× `insufficient_evidence`, HT-023
+`partial_evidence` via `issuer_literal`). Tooling (SEC-Binding, Issuer-Anaphora,
+Gewinnsprung-Extraktion) ist nicht der Engpass — **Teaser-Anonymität** ist es.
+
+Scorecard: `python3 -m scanner.hebeltrader.detective.corpus_report originals`.
+pad800 market Top-8 trifft nur 2/3/7 Original-Lösungen und bestätigt nur 7/26
+named packet leaders — Chart ersetzt keine Named-Anker.
 
 Wenn der Teaser den Emittenten **wörtlich** nennt (HT-023 AbbVie), bindet der
 `issuer_literal`-Kanal den Namen an das passende Paket → Top-1 / 

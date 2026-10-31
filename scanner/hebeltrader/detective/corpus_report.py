@@ -1,7 +1,12 @@
-"""Scorecard CLI over the corpus-v1 evidence freeze.
+"""Corpus-v1 operator CLI: scorecard, recipe, originals gap, market tie-break.
 
-Reads the committed freeze + manifest and prints a compact named/original
-summary. Does not re-run scans or touch Blind 202/26.
+Subcommands:
+  report     named/original freeze scorecard (default)
+  recipe     print standard evidence_batch + pad800 snapshot recipe
+  originals  original-teaser packet_evidence gap from freeze
+  tiebreak   market chart as tie-break on pad800 (optional Blind remap file)
+
+Does not retune Blind 202/26 scores. Does not require Tavily/OpenAI.
 """
 
 from __future__ import annotations
@@ -13,6 +18,8 @@ from pathlib import Path
 
 DEFAULT_FREEZE = Path("docs/examples/source-packets/corpus-v1/evidence-batch-corpus-v1.json")
 DEFAULT_MANIFEST = Path("docs/examples/source-packets/corpus-v1/manifest.json")
+DEFAULT_PACKETS = Path("docs/examples/source-packets/corpus-v1/packets")
+DEFAULT_SNAPSHOTS = Path("reports/snapshots-pit-pool-v1-pad800-2026-10-31.json")
 BLOCKED_OUT = ("HT-016",)
 
 
@@ -81,31 +88,189 @@ def render_text(report: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def build_recipe(
+    *,
+    packets: Path = DEFAULT_PACKETS,
+    snapshots: Path = DEFAULT_SNAPSHOTS,
+    corpus_dir: Path = DEFAULT_MANIFEST.parent,
+) -> dict:
+    cmd = (
+        "python3 -m scanner.hebeltrader.detective.evidence_batch \\\n"
+        f"  --inputs {corpus_dir}/HT-*.inputs.*.json \\\n"
+        f"  --source-packets {packets} \\\n"
+        f"  --snapshots {snapshots} \\\n"
+        f"  --summary {corpus_dir}/evidence-batch-corpus-v1.json"
+    )
+    return {
+        "schema_version": 1,
+        "kind": "hebeltrader-corpus-v1-recipe-v1",
+        "packets": str(packets),
+        "snapshots": str(snapshots),
+        "scorecard": "python3 -m scanner.hebeltrader.detective.corpus_report report",
+        "tiebreak": (
+            "python3 -m scanner.hebeltrader.detective.corpus_report tiebreak "
+            f"--snapshots {snapshots}"
+        ),
+        "promote_pending_pdfs": "python3 scripts/promote_provisional_publication_at.py",
+        "simulated_3b": (
+            'python3 -c "from pathlib import Path; from scanner.hebeltrader.detective.'
+            "simulated_falsification import run_simulated_live_falsification; "
+            "print(run_simulated_live_falsification(Path('/tmp/sim3b'))"
+            "['identification'])\""
+        ),
+        "evidence_batch": cmd,
+        "notes": [
+            "Named freeze is already committed; re-run only after packet edits.",
+            "HT-016 stays out until operator issue + PDF Stand.",
+            "Stufe 3b live web needs Tavily/OpenAI; use simulated_falsification offline.",
+        ],
+    }
+
+
+def render_recipe(recipe: dict) -> str:
+    lines = [
+        "corpus-v1 operator recipe",
+        "",
+        "evidence_batch:",
+        recipe["evidence_batch"],
+        "",
+        f"scorecard: {recipe['scorecard']}",
+        f"tiebreak:  {recipe['tiebreak']}",
+        f"promote:   {recipe['promote_pending_pdfs']}",
+        "",
+        "notes:",
+    ]
+    for note in recipe["notes"]:
+        lines.append(f"  - {note}")
+    return "\n".join(lines) + "\n"
+
+
+def build_originals(freeze: dict) -> dict:
+    from .market_tiebreak import original_packet_gap
+
+    gap = original_packet_gap(freeze)
+    gap["schema_version"] = 1
+    gap["kind"] = "hebeltrader-corpus-v1-originals-gap-v1"
+    gap["blocked_out_of_corpus"] = list(BLOCKED_OUT)
+    gap["interpretation"] = (
+        "0 originals identified: teaser anonymity (≥2 native named anchors missing), "
+        "not packet tooling. HT-023 original reaches partial_evidence via issuer_literal."
+    )
+    return gap
+
+
+def render_originals(gap: dict) -> str:
+    lines = [
+        "corpus-v1 original teaser gap",
+        f"  originals identified: {gap['identified']}/{gap['total']}",
+        f"  blocked (out): {', '.join(gap['blocked_out_of_corpus'])}",
+        "  by packet_evidence:",
+    ]
+    for status, bucket in gap["by_packet_evidence_status"].items():
+        lines.append(f"    {status}: {bucket['count']}")
+        for row in bucket["cases"][:5]:
+            extra = ""
+            if row.get("ticker"):
+                extra = f" → {row['ticker']} clues={row.get('confirmed_specific_clues')}"
+            lines.append(f"      {row['case_id']}{extra}")
+    lines.append(f"  note: {gap['interpretation']}")
+    return "\n".join(lines) + "\n"
+
+
+def _write(path: Path | None, payload: dict) -> None:
+    if path is None:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
-    parser.add_argument("--json", action="store_true", help="Emit JSON instead of text")
-    parser.add_argument("--out", type=Path, help="Optional write path for JSON report")
+    sub = parser.add_subparsers(dest="command")
+
+    report_p = sub.add_parser("report", help="named/original freeze scorecard")
+    report_p.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
+    report_p.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    report_p.add_argument("--json", action="store_true")
+    report_p.add_argument("--out", type=Path)
+
+    recipe_p = sub.add_parser("recipe", help="print operator evidence_batch recipe")
+    recipe_p.add_argument("--packets", type=Path, default=DEFAULT_PACKETS)
+    recipe_p.add_argument("--snapshots", type=Path, default=DEFAULT_SNAPSHOTS)
+    recipe_p.add_argument("--json", action="store_true")
+    recipe_p.add_argument("--out", type=Path)
+
+    originals_p = sub.add_parser("originals", help="original teaser packet_evidence gap")
+    originals_p.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
+    originals_p.add_argument("--json", action="store_true")
+    originals_p.add_argument("--out", type=Path)
+
+    tie_p = sub.add_parser("tiebreak", help="market chart tie-break on pad800")
+    tie_p.add_argument("--snapshots", type=Path, default=DEFAULT_SNAPSHOTS)
+    tie_p.add_argument("--json", action="store_true")
+    tie_p.add_argument("--out", type=Path)
+
+    # Back-compat: bare flags without subcommand → report
+    if argv is None:
+        import sys
+
+        argv = sys.argv[1:]
+    if not argv or argv[0].startswith("-"):
+        argv = ["report", *argv]
+
     args = parser.parse_args(argv)
 
-    freeze = json.loads(args.freeze.read_text(encoding="utf-8"))
-    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
-    report = build_report(freeze, manifest)
-    if args.out:
-        args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(
-            json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    if args.command == "report":
+        freeze = json.loads(args.freeze.read_text(encoding="utf-8"))
+        manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+        payload = build_report(freeze, manifest)
+        _write(args.out, payload)
+        if args.json:
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(render_text(payload), end="")
+        ok = payload["gates"]["named_all_meet_gates"] and not payload["named"]["not_identified"]
+        return 0 if ok else 1
+
+    if args.command == "recipe":
+        payload = build_recipe(packets=args.packets, snapshots=args.snapshots)
+        _write(args.out, payload)
+        if args.json:
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(render_recipe(payload), end="")
+        return 0
+
+    if args.command == "originals":
+        freeze = json.loads(args.freeze.read_text(encoding="utf-8"))
+        payload = build_originals(freeze)
+        _write(args.out, payload)
+        if args.json:
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(render_originals(payload), end="")
+        return 0 if payload["identified"] == 0 else 1
+
+    if args.command == "tiebreak":
+        from . import market_tiebreak as mt
+
+        if not args.snapshots.exists():
+            raise SystemExit(f"missing snapshots {args.snapshots}")
+        payload = mt.build_report(
+            snapshots_path=args.snapshots,
+            freeze_path=DEFAULT_FREEZE,
+            blind_inputs_path=mt.DEFAULT_BLIND_INPUTS,
+            blind_snapshots_path=mt.DEFAULT_BLIND_SNAPSHOTS,
         )
-    if args.json:
-        print(json.dumps(report, indent=2, ensure_ascii=False))
-    else:
-        print(render_text(report), end="")
-    return (
-        0
-        if report["gates"]["named_all_meet_gates"] and not report["named"]["not_identified"]
-        else 1
-    )
+        _write(args.out, payload)
+        if args.json:
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(mt.render_text(payload), end="")
+        return 0
+
+    parser.error(f"unknown command {args.command}")
+    return 2
 
 
 if __name__ == "__main__":

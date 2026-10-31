@@ -36,4 +36,7 @@ Pending PDF promotion (Costco 192/26, BASF 137/26):
 `python3 scripts/promote_provisional_publication_at.py` (dry-run;
 `--apply` / `--apply-shared-refs` when PDFs land).
 
+Corpus CLI: `python3 -m scanner.hebeltrader.detective.corpus_report {report,recipe,originals,tiebreak}`.
+Stufe 3b offline harness: `scanner.hebeltrader.detective.simulated_falsification`.
+
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.
