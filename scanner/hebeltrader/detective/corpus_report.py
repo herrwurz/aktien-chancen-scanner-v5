@@ -323,11 +323,23 @@ def build_readiness(
                 if promote.get("still_missing")
                 else []
             )
-            + [
-                "HT-016: upload Call-PDF 191/26 Stand Uhr — keep blocked; do not force into freeze",
-                "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
-                "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
-            ]
+            + (
+                [
+                    "HT-016: upload Call-PDF 191/26 Stand Uhr — keep blocked; "
+                    "do not force into freeze"
+                ]
+                if (ht016 or {}).get("status")
+                in ("blocked_no_publication_at", "blocked_awaiting_pdf_stand")
+                else []
+            )
+            + (
+                ["For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY"]
+                if not (
+                    os.environ.get("TAVILY_API_KEY") or os.environ.get("OPENAI_API_KEY")
+                )
+                else []
+            )
+            + ["Secure next real teaser before reading Call-PDF (≥2 named anchors)"]
         ),
         "smoke": {
             "corpus_case": (

@@ -15,15 +15,17 @@ python3 -m scanner.hebeltrader.detective.corpus_report readiness
 | Shared 27er `publication_at` for HT-003/012 | filled |
 | Gates (≥2 clues, margin≥35, ≥5 peers) | ok |
 | Simulated Stufe 3b | harness green |
+| Live API keys | EODHD / Tavily / OpenAI present |
+| Active-call exclusion | wired into live Investigator (180d) |
 | Corpus investigate shortcut | `--corpus-case HT-xxx` |
 
 ## Blocked / gap
 
 | Item | Status |
 |---|---|
-| HT-016 | 191/26 bound 15.10.2026; awaiting Call-PDF Stand |
-| Original teasers | **0/26** with ≥2 native named anchors |
-| Live Stufe 3b | needs Tavily/OpenAI |
+| HT-016 | 191/26 bound 15.10.2026; **open** until Call-PDF/report |
+| Original teasers | **0/27** with ≥2 native named anchors |
+| Next learning case | Monday teaser before Call-PDF |
 
 ## Smoke
 
@@ -31,6 +33,7 @@ python3 -m scanner.hebeltrader.detective.corpus_report readiness
 python3 -m scanner.hebeltrader.detective.investigate_cli analyze \
   --corpus-case HT-003 --root /tmp/ht-corpus-case
 python3 scripts/promote_provisional_publication_at.py   # expect already_promoted
+python3 scripts/refresh_original_anchor_gap.py
 ```
 
 JSON: `operator-readiness-2026-10-31.json`.

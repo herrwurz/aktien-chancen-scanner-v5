@@ -147,6 +147,14 @@ Keine Identifikation, kein Freeze-Push.
 **Weiter:** Nächster echter Teaser / anderes Call-PDF; HT-016 erst wieder bei
 Report 191/26; keine Schwellen-Absenkung.
 
+## 20. Offline-Hebel bis Montag (2026-10-31)
+
+- Live-Investigator wendet jetzt **Active-Call-Ausschluss (180d)** an (Seeds,
+  Planner-Queries, Ranking) — bisher nur Market/Structure.
+- `scripts/refresh_original_anchor_gap.py` regeneriert corpus-gap; weiterhin
+  **0/27** mit ≥2 nativen Named-Ankern (Teaser-Anonymität, kein Tooling-Engpass).
+- Readiness-Board aktualisiert (Keys grün; HT-016 offen).
+
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
 innerhalb **180 Tagen** vor `publication_date` werden aus Offline-/Market-Hypothesen entfernt

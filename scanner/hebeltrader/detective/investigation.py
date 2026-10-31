@@ -20,6 +20,7 @@ from .chart_check import check as chart_check
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
+from .featured_calls import blocked_features, is_blocked
 from .metric_fingerprint import apply_metric_fingerprints
 from .research_plan import build_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
@@ -403,6 +404,45 @@ def _is_hypothesis(name, hypotheses):
     return any(canonical_company(h) == key for h in hypotheses)
 
 
+def _identity_dict(identity) -> dict:
+    if identity is None:
+        return {}
+    return identity if isinstance(identity, dict) else identity.model_dump()
+
+
+def _filter_active_call_blocked(ranked: list, blocked: dict) -> tuple[list, list]:
+    """Drop recently featured underlyings from ranking targets (exclusion only)."""
+    kept, dropped = [], []
+    for row in ranked:
+        asset = _identity_dict(row.get("identity"))
+        if is_blocked(asset, blocked):
+            dropped.append(
+                {
+                    "asset_id": row.get("asset_id"),
+                    "name": asset.get("name"),
+                    "ticker": asset.get("ticker"),
+                    "reason": "active_call_exclusion_180d",
+                }
+            )
+        else:
+            kept.append(row)
+    return kept, dropped
+
+
+def _query_targets_blocked(query: str, blocked: dict) -> bool:
+    """True when a planner verification query quotes a blocked company/ticker."""
+    if not query or not blocked or blocked.get("status") == "no_publication_date":
+        return False
+    for entry in blocked.get("entries") or []:
+        name = (entry.get("company") or "").strip()
+        ticker = (entry.get("ticker") or "").strip()
+        if name and f'"{name}"' in query:
+            return True
+        if ticker and (f'"{ticker}"' in query or query.startswith(ticker + " ")):
+            return True
+    return False
+
+
 def _apply_chart(ranked, cache, text, top=6):
     # Chart clues (long uptrend, breakout) are checked with market data, not web text.
     for row in ranked:
@@ -732,14 +772,26 @@ class Investigator:
         offline = documents is not None or self.web is None
         semantic_clues = []
         hypotheses = []
+        # Exclude underlyings from still-open HEBELTRADER calls (market/structure already do this).
+        as_of = request.publication_at or retrieved
+        blocked = blocked_features(as_of)
+        active_call_dropped: list[dict] = []
         apis = getattr(self.web, "apis", None)
         if not offline and apis is not None and apis.ai_key:
             try:
                 planned = apis.plan(text)
                 semantic_clues = planned["clues"]
-                hypotheses = list(
-                    dict.fromkeys(planned.get("candidate_hypotheses", []) + screened_names(text))
+                seed_names = list(
+                    dict.fromkeys(
+                        planned.get("candidate_hypotheses", [])
+                        + screened_names(text, blocked=blocked)
+                    )
                 )
+                hypotheses = [
+                    name
+                    for name in seed_names
+                    if not is_blocked({"name": name, "ticker": ticker_for(name)}, blocked)
+                ]
                 for item in semantic_clues:
                     start = text.index(item["quote"])
                     clues.append(
@@ -756,7 +808,12 @@ class Investigator:
                             extraction_method="ai_literal_quote_requires_manual_review",
                         )
                     )
-                queries = _interleave(planned["queries"], screen_queries(text), queries)
+                planned_queries = [
+                    q for q in planned["queries"] if not _query_targets_blocked(q, blocked)
+                ]
+                queries = _interleave(
+                    planned_queries, screen_queries(text, blocked=blocked), queries
+                )
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"source": "ai_planner", "error": str(exc)[:120]})
 
@@ -1002,6 +1059,8 @@ class Investigator:
             return result
 
         ranked = compare()
+        ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+        active_call_dropped.extend(dropped)
         chart_cache = {}
         earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
         metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}
@@ -1030,6 +1089,8 @@ class Investigator:
             for query in peer_queries:
                 research(query)
             ranked = compare()
+            ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+            active_call_dropped.extend(dropped)
             if not offline:
                 _apply_chart(ranked, chart_cache, text)
                 earnings_pit = apply_earnings_pit(
@@ -1088,6 +1149,8 @@ class Investigator:
                 queries=falsification_queries,
             )
             ranked = compare()
+            ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+            active_call_dropped.extend(dropped)
         if not offline:
             _apply_chart(ranked, chart_cache, text)
             earnings_pit = apply_earnings_pit(
@@ -1278,6 +1341,23 @@ class Investigator:
             "falsification": falsification,
             "reasoning_review": reasoning_review,
             "peer_comparison": peer_comparison,
+            "active_call_exclusion": {
+                "status": blocked.get("status"),
+                "as_of": blocked.get("as_of"),
+                "lookback_days": blocked.get("lookback_days"),
+                "blocklist_entries": len(blocked.get("entries") or []),
+                "excluded_from_ranking": list(
+                    {
+                        row["asset_id"]: row
+                        for row in active_call_dropped
+                        if row.get("asset_id")
+                    }.values()
+                ),
+                "policy": (
+                    "Recently featured HEBELTRADER underlyings (open-call lookback) are "
+                    "removed from hypothesis seeds and ranking targets; never solutions."
+                ),
+            },
             "search_queries": queries,
             "limitations": limits,
             "research_errors": errors,
