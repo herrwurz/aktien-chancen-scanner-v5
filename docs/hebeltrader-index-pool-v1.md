@@ -51,7 +51,8 @@ INDEX_POOL_NDX_JSON=/tmp/ndx_nasdaq.json python3 scripts/build_index_pool_v1.py
 |---|---:|---:|---|
 | vor Remap | 919/1045 | 904–906 | `snapshots-pit-pool-v1-2026-10-30.meta.json` |
 | nach Remap v1 | 994/1044 | 979–981 | `snapshots-pit-pool-v1-remap-2026-10-30.meta.json` |
-| **Remap v1.1 + curated post-pass** | **1009/1044** | **1007–1009** | `snapshots-pit-pool-v1-remap-2026-10-31.meta.json` |
+| Remap v1.1 + curated post-pass | 1009/1044 | 1007–1009 | `snapshots-pit-pool-v1-remap-2026-10-31.meta.json` |
+| **pad800 (history_pad_days=800)** | **1027/1044** | **1019–1021** | `snapshots-pit-pool-v1-pad800-2026-10-31.meta.json` |
 
 Voll-JSON gitignored unter `reports/`. Spot-Checks ok: `DBK.XETRA`, `ASSA-B.ST`, `CAP.PA`, `ENI.XETRA`, ATX.
 
@@ -72,8 +73,11 @@ Market-Universum: **eine Zeile je Ticker** (SPX/NDX/Curated-Namen kollabieren; S
 ## Budget / nächste Schritte
 
 1. Pool + Remap + PIT-Diagnose + Dedup + corpus-v1 evidence freeze.
-2. Evidenz-Kanal: **26/26** named identified (provisional Costco/BASF); HT-016 +
-   PDFs 192/26 & 137/26 noch offen — siehe `docs/hebeltrader-source-packets.md`.
-3. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
+2. Evidenz-Kanal: **26/26** named identified (provisional Costco/BASF); HT-016
+   scaffold under `ht-016-blocked/` (noch ohne pub_at); PDFs 192/26 & 137/26
+   via `scripts/promote_provisional_publication_at.py` — siehe
+   `docs/hebeltrader-source-packets.md`.
+3. PIT default pad is **800** days (`market_screen export-pit --history-pad-days`).
+4. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
 
 Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning).
