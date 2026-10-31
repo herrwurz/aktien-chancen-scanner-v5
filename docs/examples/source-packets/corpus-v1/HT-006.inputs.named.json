@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-006 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-006",
+      "headline": "Gesundheitsriese vor der Neubewertung!",
+      "teaser_text": "Gesundheitsriese vor der Neubewertung!\nDieser Gesundheitskoloss meldet sich eindrucksvoll zurück. Nach der heftigen Talfahrt greifen die Bullen wieder an und haben die entscheidende Abwärtstrendgerade überwunden. Gleichzeitig wirkt die operative Wende: Die medizinische Kostenquote sinkt, das integrierte Geschäftsmodell liefert neue Ertragskraft und das Management hebt die Prognose an. Auch milliardenschwere Aktienrückkäufe unterstreichen das Vertrauen in das Comeback. Zündet die Rally jetzt die nächste Stufe, könnte der ausgewählte Call am ersten Kursziel bereits 495 Prozent zulegen. Im Best Case eröffnet das zweite Kursziel sogar ein Potenzial von bis zu 2.252 Prozent. Dem steht ein mögliches Verlustrisiko von 62 Prozent gegenüber. Das Chance-Risiko-Verhältnis von 22,2 macht dieses Comeback zu einem Hebel-Setup mit Seltenheitswert.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern UnitedHealth — Wachstumstreiber Optum und UnitedHealthcare heben den Umsatz.",
+      "publication_date": "2026-09-03",
+      "publication_at": "2026-09-03T08:15:00+01:00"
+    }
+  ]
+}

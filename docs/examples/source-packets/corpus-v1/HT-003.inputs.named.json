@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-003 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-003",
+      "headline": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!",
+      "teaser_text": "Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!\nAufholjagd im Handel! Ein etablierter Branchenführer verbindet hohe Kundenloyalität mit stabilen Einnahmen, starker Ertragskraft und zusätzlichen Wachstumschancen im digitalen Geschäft. Zwar ist die Bewertung ambitioniert, doch die operative Qualität rechtfertigt einen genaueren Blick. Nach der jüngsten Korrektur sendet auch der Chart wieder ein klares Signal: Eine zentrale Trendlinie wurde zurückerobert, der Weg zu neuen Höchstständen ist frei. Der passende Call verleiht der Story zusätzlichen Schub und bietet bei voller Zielerreichung eine maximale Performance von bis zu 1.438 Prozent.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Costco — Wachstumstreiber Kirkland heben den Umsatz.",
+      "publication_date": "2026-10-16",
+      "publication_at": "2026-10-16T08:15:00+01:00"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader_index_pool_ticker_remap",
-  "note": "EODHD-verified remaps from pool-v1 PIT misses. Applied at load time. Japan TSE and unavailable Italy MI stay gaps.",
+  "note": "EODHD-verified remaps from pool-v1 PIT misses (v1.1: +IT LSE/XETRA, +JP US ADRs). Applied at load time. Delisted/M&A names stay accepted gaps.",
   "remaps": {
     "ADH.OL": "ADEA",
     "AKERBP.OL": "AKRBP.OL",
@@ -78,10 +78,39 @@
     "VESTAS.CO": "VWS.CO",
     "VOLVB.ST": "VOLV-B.ST",
     "VPLAYB.ST": "VPLAY-B.ST",
-    "WEND.PA": "MF.PA"
+    "WEND.PA": "MF.PA",
+    "BRNW.MI": "0Q7S.LSE",
+    "CPR.MI": "DVCMY",
+    "IDP.MI": "0EWD.LSE",
+    "ISP.MI": "0HBC.LSE",
+    "LDO.MI": "0ONG.LSE",
+    "LUMI.PA": "0FRI.LSE",
+    "MB.MI": "0HBF.LSE",
+    "MONC.MI": "0QII.LSE",
+    "NEXI.MI": "0NX5.LSE",
+    "PIRC.MI": "0P1R.LSE",
+    "PLPH.SW": "0AAJ.LSE",
+    "PST.MI": "0RC2.LSE",
+    "REC.MI": "0KBS.LSE",
+    "SANO.HE": "0JLQ.LSE",
+    "SKG.IR": "SK3.HA",
+    "SRG.MI": "0NQP.LSE",
+    "TEN.XETRA": "0HXB.LSE",
+    "TIT.MI": "TQI0.XETRA",
+    "TRN.MI": "0LBM.LSE",
+    "UCG.MI": "CRIN.XETRA",
+    "UN01.XETRA": "UN0.XETRA",
+    "6146.TSE": "DSCSY",
+    "6326.TSE": "KUBTY",
+    "6367.TSE": "DKILY",
+    "6857.TSE": "ATEYY",
+    "6861.TSE": "KYCCF",
+    "6954.TSE": "FANUY",
+    "8035.TSE": "TOELY"
   },
   "accepted_gaps": {
-    "japan_tse": "Eight curated .TSE primaries without EODHD Japan venue.",
-    "italy_mi": "EODHD All-World exchange list has no MI; some Italian names remapped to XETRA/US when available."
+    "japan_tse": "Remaining .TSE primaries without EODHD Japan venue; several remapped to US ADRs when identity-verified.",
+    "italy_mi": "EODHD has no native MI board; Italian names remapped to XETRA/LSE/US when identity-verified.",
+    "delisted_or_empty": "DS Smith, Swedish Match, MorphoSys, Encavis, Neoen, Morrisons, Evraz, Varta, Just Eat Takeaway, Falck, Royal Mail, S4 Capital, Sky Group, Lanvin, MAN SE, Glanbia, LifeCo, Millicom — empty EOD or M&A/delist; left as gaps."
   }
 }

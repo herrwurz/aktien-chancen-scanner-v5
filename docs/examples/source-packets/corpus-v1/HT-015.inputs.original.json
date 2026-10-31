@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-015 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-015",
+      "headline": "Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!",
+      "teaser_text": "Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!\nDieser europäische Hightech- und Rüstungstitel könnte vor der nächsten explosiven Aufwärtsbewegung stehen. Rekordaufträge, steigende Profitabilität, verbesserter Cashflow und eine starke Position in mehreren Zukunftsmärkten liefern ein fundamental starkes Gesamtbild. Gleichzeitig verdichten sich charttechnisch die Signale für einen neuen Kursschub. Für besonders spekulative Anleger wird es noch spannender: Das empfohlene Derivat eröffnet im Best Case die Chance auf einen Gewinn von bis zu 2.769 Prozent!",
+      "publication_date": "2026-08-06",
+      "publication_at": "2026-08-06T08:15:00+01:00"
+    }
+  ]
+}

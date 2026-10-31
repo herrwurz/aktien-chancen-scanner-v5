@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-020 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-020",
+      "headline": "Der heimliche Herrscher über die globale Chipindustrie!",
+      "teaser_text": "Der heimliche Herrscher über die globale Chipindustrie!\nStellen Sie sich vor, ein Unternehmen wird in der Branche so unverzichtbar, dass seine Kunden kaum noch eine Wahl haben. Genau dieses Geheimnis steckt hinter einer Aktie, die seit Jahren kontinuierlich nach oben marschiert. Die Bilanz glänzt, die Gewinne wachsen im Eiltempo, und selbst die Kritiker müssen zugeben: Hier arbeitet jemand mit System. Doch der Chart verrät jetzt den entscheidenden Moment. Wer beim Ausbruch dabei ist, kann mit dem passenden Optionsschein Call außergewöhnliche Renditen erzielen: Beim ersten Kursziel warten 315 Prozent, beim zweiten sogar bis zu 1.269 Prozent.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Synopsys — Mit der Übernahme von Ansys.",
+      "publication_date": "2026-10-29",
+      "publication_at": "2026-10-29T08:15:00+01:00"
+    }
+  ]
+}

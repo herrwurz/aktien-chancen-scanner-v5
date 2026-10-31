@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-027 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-027",
+      "headline": "Hier lauert die nächste Chance auf spektakuläre Gewinne!",
+      "teaser_text": "Hier lauert die nächste Chance auf spektakuläre Gewinne!\nKaum ein Unternehmen profitiert derzeit so stark von den Megatrends Künstliche Intelligenz, Biotechnologie und Präzisionsmedizin. Der Weltmarktführer seiner Branche überzeugt mit einer dominanten Marktstellung, zweistelligen Gewinnperspektiven und einer Bewertung, die nach der jüngsten Konsolidierung wieder attraktiv erscheint. Analysten erwarten für 2026 einen Gewinnsprung von mehr als 40 Prozent, während die charttechnische Ausgangslage ebenfalls immer bullisher wird. Das von uns ausgewählte Hebelprodukt setzt noch einen drauf: Im Idealfall winkt eine Performance von über 2.000 Prozent!",
+      "publication_date": "2026-07-07",
+      "publication_at": "2026-07-07T08:15:00+01:00"
+    }
+  ]
+}

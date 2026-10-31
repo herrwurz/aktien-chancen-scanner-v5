@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-004 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-004",
+      "headline": "Comeback mit Ansage: Dieser Tech-Titel startet durch!",
+      "teaser_text": "Comeback mit Ansage: Dieser Tech-Titel startet durch!\nTotgesagte leben länger – und manchmal kehren sie mit solcher Wucht zurück, dass selbst Skeptiker nervös werden. Bei einem Technologiewert verdichten sich die Signale für einen spektakulären Turnaround. Das Geschäft zieht an, die Profitabilität überzeugt, der freie Cashflow gibt Rückenwind und die KI-Offensive eröffnet neue Erlösquellen. Noch scheint der Markt das Comeback nicht vollständig einzupreisen. Genau hier setzt unsere Analyse an: Sie zeigt die entscheidenden charttechnischen Marken, die fundamentalen Kurstreiber und das enorme Potenzial eines passenden Call-Optionsscheins. Im Idealfall kann das Derivat eine Performance von bis zu 1.717 Prozent erreichen.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Salesforce — Wachstumstreiber Data Cloud und Agentforce heben den Umsatz.",
+      "publication_date": "2026-09-24",
+      "publication_at": "2026-09-24T08:15:00+01:00"
+    }
+  ]
+}

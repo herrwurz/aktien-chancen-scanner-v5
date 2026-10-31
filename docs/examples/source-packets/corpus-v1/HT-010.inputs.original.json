@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-010 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-010",
+      "headline": "Ausbruchsalarm bei einem Hightech-Schwergewicht!",
+      "teaser_text": "Ausbruchsalarm bei einem Hightech-Schwergewicht!\nHier braut sich eine der explosivsten Chancen im Technologiesektor zusammen. Ein Schwergewicht aus der digitalen Infrastruktur liefert bärenstarke Zahlen, profitiert von einer regelrecht entfesselten Nachfrage und könnte operativ vor dem nächsten Gewinnschub stehen. Umsatz, Profitabilität und Cashflow ziehen kräftig an, dazu kommt ein Chartbild, das nach der Korrektur wieder auf Angriff schaltet. Besonders heiß: Das empfohlene Hebelprodukt bietet im Idealfall ein Gewinnpotenzial von mehr als 1.500 Prozent.",
+      "publication_date": "2026-08-10",
+      "publication_at": "2026-08-10T08:15:00+01:00"
+    }
+  ]
+}

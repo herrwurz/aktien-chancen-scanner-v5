@@ -81,6 +81,12 @@ cutoffs (`featured_date` + corpus Stand 08:15) while PDFs 192/26 & 137/26 are
 missing. Shared `reference-27-inputs-with-publication-at.json` stays null for
 those cases until operator upload. **HT-016** still blocked (no issue/date).
 
+## Corpus-v1 (vereinigt)
+
+`corpus-v1/`: **26/26 named identified** via `historical_source_packet`
+(alle Batches außer HT-016). Original-Teaser weiter **0/26**. Freeze
+`evidence-batch-corpus-v1.json`.
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder

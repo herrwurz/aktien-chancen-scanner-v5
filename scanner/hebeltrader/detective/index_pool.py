@@ -229,6 +229,21 @@ def load_pool_assets(path: str | None = None) -> list[dict]:
     return assets
 
 
+def _apply_remaps_to_assets(assets: list[dict]) -> list[dict]:
+    """Apply EODHD ticker remaps after curated overlay (curated may reintroduce .TSE/.MI)."""
+    remaps = load_ticker_remaps()
+    out = []
+    for raw in assets:
+        asset = dict(raw)
+        ticker = asset.get("ticker")
+        mapped = apply_ticker_remap(ticker, remaps)
+        if mapped and mapped != ticker:
+            asset.setdefault("ticker_original", ticker)
+            asset["ticker"] = mapped
+        out.append(asset)
+    return out
+
+
 def _overlay_curated(pool_assets: list[dict], curated: list[dict] | None = None) -> list[dict]:
     """Merge pool identity with curated structure tags; curated ticker wins on name match."""
     curated = list(curated if curated is not None else load_curated_universe())
@@ -251,7 +266,8 @@ def _overlay_curated(pool_assets: list[dict], curated: list[dict] | None = None)
             row = dict(asset)
             row["sources"] = ["curated_global_universe"]
             by_key[key] = row
-    return _dedupe_by_ticker(sorted(by_key.values(), key=lambda a: a["name"].casefold()))
+    merged_rows = sorted(by_key.values(), key=lambda a: a["name"].casefold())
+    return _dedupe_by_ticker(_apply_remaps_to_assets(merged_rows))
 
 
 def _asset_quality(asset: dict) -> tuple:

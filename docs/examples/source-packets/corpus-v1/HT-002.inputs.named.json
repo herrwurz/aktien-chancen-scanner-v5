@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-002 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-002",
+      "headline": "Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!",
+      "teaser_text": "Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!\nTurnaround-Alarm im Versicherungssektor! Ein etablierter Branchenwert liefert robuste Geschäftszahlen, gewinnt durch strategische Expansion neue Wachstumsperspektiven und verfügt über eine starke fundamentale Basis. Nach dem charttechnischen Befreiungsschlag könnte nun die nächste Aufwärtswelle starten. Zusätzlichen Rückenwind liefert eine historisch starke Saisonphase. Der empfohlene Call verwandelt eine moderate Erholung in eine echte Hebelstory und bietet bei voller Zielerreichung eine maximale Performance von bis zu 1.433 Prozent.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Zurich Insurance — Wachstumstreiber Beazley heben den Umsatz.",
+      "publication_date": "2026-10-14",
+      "publication_at": "2026-10-14T08:15:00+01:00"
+    }
+  ]
+}

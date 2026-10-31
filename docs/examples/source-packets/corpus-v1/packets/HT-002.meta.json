@@ -1,0 +1,75 @@
+{
+  "case_id": "HT-002",
+  "documents": 6,
+  "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-002.json",
+  "meta": [
+    {
+      "ticker": "ZURN",
+      "name": "Zurich Insurance",
+      "form": "wayback_ir",
+      "filing_date": "20260812",
+      "url": "https://web.archive.org/web/20260812160731id_/https://www.zurich.com/beazleyoffer",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-002/ZURN-wayback-20260812160731-904b4667.bin",
+      "needles_hit": {
+        "Beazley": 28,
+        "Specialty": 2
+      }
+    },
+    {
+      "ticker": "CB",
+      "name": "Chubb",
+      "form": "10-Q",
+      "filing_date": "2026-07-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/896159/000089615926000017/cb-20260630.htm",
+      "primary": "cb-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-002/CB-2026-07-28-50a70746.htm"
+    },
+    {
+      "ticker": "MET",
+      "name": "MetLife",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1099219/000109921926000050/met-20260630.htm",
+      "primary": "met-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-002/MET-2026-08-06-0062d966.htm"
+    },
+    {
+      "ticker": "PRU",
+      "name": "Prudential Financial",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/1137774/000113777426000176/pru-20260630.htm",
+      "primary": "pru-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-002/PRU-2026-08-05-ed6af691.htm"
+    },
+    {
+      "ticker": "AIG",
+      "name": "AIG",
+      "form": "10-Q",
+      "filing_date": "2026-08-07",
+      "url": "https://www.sec.gov/Archives/edgar/data/5272/000000527226000076/aig-20260630.htm",
+      "primary": "aig-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-002/AIG-2026-08-07-0b1da6c5.htm"
+    },
+    {
+      "ticker": "TRV",
+      "name": "Travelers",
+      "form": "10-Q",
+      "filing_date": "2026-07-17",
+      "url": "https://www.sec.gov/Archives/edgar/data/86312/000008631226000145/trv-20260630.htm",
+      "primary": "trv-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-002/TRV-2026-07-17-9bce3ffa.htm"
+    }
+  ]
+}

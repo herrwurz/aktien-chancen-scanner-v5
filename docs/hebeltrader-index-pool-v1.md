@@ -50,12 +50,13 @@ INDEX_POOL_NDX_JSON=/tmp/ndx_nasdaq.json python3 scripts/build_index_pool_v1.py
 | Lauf | Succeeded | Coverage / as_of | Meta |
 |---|---:|---:|---|
 | vor Remap | 919/1045 | 904–906 | `snapshots-pit-pool-v1-2026-10-30.meta.json` |
-| **nach Remap v1** | **994/1044** | **979–981** | `snapshots-pit-pool-v1-remap-2026-10-30.meta.json` |
+| nach Remap v1 | 994/1044 | 979–981 | `snapshots-pit-pool-v1-remap-2026-10-30.meta.json` |
+| **Remap v1.1 + curated post-pass** | **1009/1044** | **1007–1009** | `snapshots-pit-pool-v1-remap-2026-10-31.meta.json` |
 
 Voll-JSON gitignored unter `reports/`. Spot-Checks ok: `DBK.XETRA`, `ASSA-B.ST`, `CAP.PA`, `ENI.XETRA`, ATX.
 
-Ticker-Remap v1: `index_pool_ticker_remap_v1.json` (~76 Korrekturen).  
-Restlücken: Japan `.TSE`, Italien `.MI` ohne Venue, delistete/illiquide Namen.
+Ticker-Remap v1.1: `index_pool_ticker_remap_v1.json` (~100+ Korrekturen; +IT LSE/XETRA,
++JP ADRs). Restlücken: delistete/M&A-Namen (Swedish Match, DS Smith, MorphoSys, …).
 
 ## Diagnose auf Pool-PIT (2026-10-30)
 
@@ -70,9 +71,9 @@ Market-Universum: **eine Zeile je Ticker** (SPX/NDX/Curated-Namen kollabieren; S
 
 ## Budget / nächste Schritte
 
-1. Pool + Remap + PIT-Diagnose + Dedup → **0 € Extra**.
-2. Evidenz-Kanal: echte Pakete brauchen `publication_at` (heute 0/27 Refs) — siehe
-   `docs/hebeltrader-source-packets.md`.
+1. Pool + Remap + PIT-Diagnose + Dedup + corpus-v1 evidence freeze.
+2. Evidenz-Kanal: **26/26** named identified (provisional Costco/BASF); HT-016 +
+   PDFs 192/26 & 137/26 noch offen — siehe `docs/hebeltrader-source-packets.md`.
 3. EODHD Fundamentals erst bei Bedarf für automatischen Constituent-Refresh.
 
 Der Freeze von Blind 202/26 bleibt unverändert (kein Retuning).
