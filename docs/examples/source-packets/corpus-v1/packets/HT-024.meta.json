@@ -1,0 +1,78 @@
+{
+  "case_id": "HT-024",
+  "cutoff_publication_at": "2026-06-02T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "E",
+      "name": "Eni",
+      "form": "6-K",
+      "filing_date": "2026-04-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1002242/000110465926048393/tm2612669d1_6k.htm",
+      "primary": "tm2612669d1_6k.htm",
+      "resolved_from_primary": null,
+      "chars": 12058,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-024/E-2026-04-24-343ac52b.htm"
+    },
+    {
+      "ticker": "BP",
+      "name": "BP",
+      "form": "6-K",
+      "filing_date": "2025-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/313807/000031380725000026/bp-20250630.htm",
+      "primary": "bp-20250630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-024/BP-2025-08-05-86b230a5.htm"
+    },
+    {
+      "ticker": "SHEL",
+      "name": "Shell",
+      "form": "6-K",
+      "filing_date": "2025-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/1306965/000130696525000031/q22025exhibit991.htm",
+      "primary": "q22025exhibit991.htm",
+      "resolved_from_primary": "shel-20250630.htm",
+      "chars": 428,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-024/SHEL-2025-07-31-d633d896.htm"
+    },
+    {
+      "ticker": "TTE",
+      "name": "TotalEnergies",
+      "form": "6-K",
+      "filing_date": "2025-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/879764/000141057825001493/tot-20250630xex99d1.htm",
+      "primary": "tot-20250630xex99d1.htm",
+      "resolved_from_primary": "tot-20250630x6k.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-024/TTE-2025-07-24-3101edc1.htm"
+    },
+    {
+      "ticker": "EQNR",
+      "name": "Equinor",
+      "form": "6-K",
+      "filing_date": "2025-10-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1140625/000114062525000114/eqnr-20250930.htm",
+      "primary": "eqnr-20250930.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-024/EQNR-2025-10-29-df625086.htm"
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil",
+      "form": "10-Q",
+      "filing_date": "2026-05-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/34088/000003408826000067/xom-20260331.htm",
+      "primary": "xom-20260331.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-024/XOM-2026-05-04-74838e2a.htm"
+    }
+  ],
+  "needles": [
+    "Plenitude",
+    "Versalis",
+    "share repurchase",
+    "buyback"
+  ]
+}

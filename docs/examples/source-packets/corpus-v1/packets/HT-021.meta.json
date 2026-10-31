@@ -1,0 +1,78 @@
+{
+  "case_id": "HT-021",
+  "cutoff_publication_at": "2026-09-11T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "BP",
+      "name": "BP",
+      "form": "6-K",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/313807/000031380726000016/bp-20260630.htm",
+      "primary": "bp-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 12049,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-021/BP-2026-08-04-a6df3f65.htm"
+    },
+    {
+      "ticker": "SHEL",
+      "name": "Shell",
+      "form": "6-K",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1306965/000162828026050763/q22026exhibit991.htm",
+      "primary": "q22026exhibit991.htm",
+      "resolved_from_primary": "shel-20260630_d2.htm",
+      "chars": 447,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-021/SHEL-2026-07-30-d8779862.htm"
+    },
+    {
+      "ticker": "TTE",
+      "name": "TotalEnergies",
+      "form": "6-K",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/879764/000110465926086078/tot-20260630xex99d1.htm",
+      "primary": "tot-20260630xex99d1.htm",
+      "resolved_from_primary": "tot-20260630x6k.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-021/TTE-2026-07-23-2867c321.htm"
+    },
+    {
+      "ticker": "EQNR",
+      "name": "Equinor",
+      "form": "6-K",
+      "filing_date": "2025-10-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1140625/000114062525000114/eqnr-20250930.htm",
+      "primary": "eqnr-20250930.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-021/EQNR-2025-10-29-df625086.htm"
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil",
+      "form": "10-Q",
+      "filing_date": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/34088/000003408826000093/xom-20260630.htm",
+      "primary": "xom-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-021/XOM-2026-08-03-8421d2ab.htm"
+    },
+    {
+      "ticker": "CVX",
+      "name": "Chevron",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/93410/000009341026000167/cvx-20260630.htm",
+      "primary": "cvx-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-021/CVX-2026-08-06-3f186ad4.htm"
+    }
+  ],
+  "needles": [
+    "Castrol",
+    "Archaea",
+    "share buyback",
+    "dividend"
+  ]
+}

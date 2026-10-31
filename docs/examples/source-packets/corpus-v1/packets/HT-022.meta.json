@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-022",
+  "cutoff_publication_at": "2026-09-10T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "CEG",
+      "name": "Constellation Energy",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1868275/000186827526000104/ceg-20260630.htm",
+      "chars": 8016,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/CEG-2026-08-06-61bb1c85.htm"
+    },
+    {
+      "ticker": "CEG",
+      "name": "Constellation Energy",
+      "form": "8-K",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1868275/000186827526000097/ceg-20260806.htm",
+      "chars": 7802,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/CEG-2026-08-06-e669f0eb.htm"
+    },
+    {
+      "ticker": "VST",
+      "name": "Vistra",
+      "form": "10-Q",
+      "filing_date": "2026-08-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000019/vistra-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/VST-2026-08-10-e8eff110.htm"
+    },
+    {
+      "ticker": "NRG",
+      "name": "NRG Energy",
+      "form": "10-Q",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/1013871/000101387126000020/nrg-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/NRG-2026-08-04-4eb56528.htm"
+    },
+    {
+      "ticker": "EXC",
+      "name": "Exelon",
+      "form": "10-Q",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1109357/000110935726000080/exc-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/EXC-2026-07-30-83130b17.htm"
+    },
+    {
+      "ticker": "D",
+      "name": "Dominion Energy",
+      "form": "10-Q",
+      "filing_date": "2026-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/715957/000119312526327487/d-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/D-2026-07-31-a69392af.htm"
+    },
+    {
+      "ticker": "DUK",
+      "name": "Duke Energy",
+      "form": "10-Q",
+      "filing_date": "2026-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326160/000132616026000040/duk-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-022/DUK-2026-08-04-66c98d73.htm"
+    }
+  ],
+  "needles": [
+    "Calpine"
+  ]
+}

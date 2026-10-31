@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-012 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-012",
+      "headline": "Hier steckt eine irrwitzige Turnaround-Chance drin!",
+      "teaser_text": "Hier steckt eine irrwitzige Turnaround-Chance drin!\nHier entsteht gerade eine hochspannende Turnaround-Story mit echtem Nachholpotenzial. Ein internationaler Branchenriese hat seinen Umbau spürbar beschleunigt, die Profitabilität verbessert, Kosten gesenkt und sendet mit milliardenschweren Aktienrückkäufen ein klares Signal. Auch fundamental verdichtet sich das Bild: steigende Gewinne, attraktive Dividendenrendite und neue Fantasie durch strategische Werte, die der Markt bislang nur unzureichend einpreist. Für spekulative Anleger wird es mit dem empfohlenen Hebelprodukt besonders explosiv: Im Idealfall winkt eine Renditechance von bis zu 1.900 Prozent.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern BASF — Wachstumstreiber Oppanol heben den Umsatz.",
+      "publication_date": "2026-07-31",
+      "publication_at": "2026-07-31T08:15:00+01:00"
+    }
+  ]
+}

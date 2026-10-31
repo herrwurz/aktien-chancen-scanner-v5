@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-021 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-021",
+      "headline": "Ölpreis-Rückenwind trifft auf massive Unterbewertung!",
+      "teaser_text": "Ölpreis-Rückenwind trifft auf massive Unterbewertung!\nCashflow steigt, Schulden sinken, die Bewertung ist niedrig: Bei diesem Turnaround-Kandidaten verdichten sich die Kaufsignale. Fundamental hellt sich das Bild sichtbar auf, während steigende Energiepreise die Gewinnkraft zusätzlich befeuern könnten. Anleger erhalten zudem eine attraktive Dividende und die Chance auf eine deutliche Neubewertung. Besonders spekulativ wird es mit dem empfohlenen Derivat, das bei einer erfolgreichen Kursentwicklung ein außergewöhnliches Gewinnpotenzial von mehr als 1.200 Prozent bietet.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern BP — Mit der Übernahme von Archaea — Wachstumstreiber Castrol heben den Umsatz.",
+      "publication_date": "2026-09-11",
+      "publication_at": "2026-09-11T08:15:00+01:00"
+    }
+  ]
+}

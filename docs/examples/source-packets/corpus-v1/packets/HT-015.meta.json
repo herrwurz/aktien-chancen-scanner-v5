@@ -1,0 +1,75 @@
+{
+  "case_id": "HT-015",
+  "documents": 6,
+  "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-015.json",
+  "meta": [
+    {
+      "ticker": "LDO",
+      "name": "Leonardo",
+      "form": "wayback_ir",
+      "filing_date": "20260721",
+      "url": "https://web.archive.org/web/20260721162855id_/https://www.leonardo.com/en/press-release-detail/-/detail/21-07-2026-leonardo-and-baykar-s-lba-systems-jv-achieves-full-operational-readiness",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-015/LDO-wayback-20260721162855-98a0dfef.bin",
+      "needles_hit": {
+        "Baykar": 19,
+        "LBA": 21
+      }
+    },
+    {
+      "ticker": "LMT",
+      "name": "Lockheed Martin",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/936468/000162828026049411/lmt-20260628.htm",
+      "primary": "lmt-20260628.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-015/LMT-2026-07-23-d325f793.htm"
+    },
+    {
+      "ticker": "RTX",
+      "name": "RTX",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/101829/000010182926000027/rtx-20260630.htm",
+      "primary": "rtx-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-015/RTX-2026-07-23-601d8003.htm"
+    },
+    {
+      "ticker": "NOC",
+      "name": "Northrop Grumman",
+      "form": "10-Q",
+      "filing_date": "2026-07-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1133421/000113342126000034/noc-20260630.htm",
+      "primary": "noc-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-015/NOC-2026-07-21-fdfb3c40.htm"
+    },
+    {
+      "ticker": "GD",
+      "name": "General Dynamics",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/40533/000004053326000032/gd-20260705.htm",
+      "primary": "gd-20260705.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-015/GD-2026-07-29-523acec2.htm"
+    },
+    {
+      "ticker": "HII",
+      "name": "Huntington Ingalls",
+      "form": "10-Q",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1501585/000150158526000047/hii-20260630.htm",
+      "primary": "hii-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-015/HII-2026-07-30-7b3853ee.htm"
+    }
+  ]
+}

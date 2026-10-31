@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-008",
+  "cutoff_publication_at": "2026-08-14T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "KKR",
+      "name": "KKR & Co.",
+      "form": "10-Q",
+      "filing_date": "2026-08-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1404912/000140491226000027/kkr-20260630.htm",
+      "chars": 8015,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/KKR-2026-08-06-caff075a.htm"
+    },
+    {
+      "ticker": "KKR",
+      "name": "KKR & Co.",
+      "form": "8-K",
+      "filing_date": "2026-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/1404912/000114036126030498/ef20079131_8k.htm",
+      "chars": 6096,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/KKR-2026-07-31-aaeaf7b6.htm"
+    },
+    {
+      "ticker": "BX",
+      "name": "Blackstone",
+      "form": "10-Q",
+      "filing_date": "2026-08-07",
+      "url": "https://www.sec.gov/Archives/edgar/data/1393818/000119312526340208/d158269d10q.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/BX-2026-08-07-03b77833.htm"
+    },
+    {
+      "ticker": "APO",
+      "name": "Apollo Global Management",
+      "form": "10-Q",
+      "filing_date": "2026-08-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1858681/000185868126000040/apo-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/APO-2026-08-10-d99f26cb.htm"
+    },
+    {
+      "ticker": "CG",
+      "name": "Carlyle Group",
+      "form": "10-Q",
+      "filing_date": "2026-08-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1527166/000152716626000045/cg-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/CG-2026-08-10-8c2abb12.htm"
+    },
+    {
+      "ticker": "ARES",
+      "name": "Ares Management",
+      "form": "10-Q",
+      "filing_date": "2026-08-07",
+      "url": "https://www.sec.gov/Archives/edgar/data/1176948/000162828026054538/ares-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/ARES-2026-08-07-07e883fc.htm"
+    },
+    {
+      "ticker": "BAM",
+      "name": "Brookfield Asset Management",
+      "form": "10-Q",
+      "filing_date": "2026-08-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/1937926/000162828026054933/bam-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-008/BAM-2026-08-10-9bd2a45d.htm"
+    }
+  ],
+  "needles": [
+    "Arctos"
+  ]
+}

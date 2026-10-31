@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-snapshots-pit-pool-meta-v1",
+  "snapshot_path": "reports/snapshots-pit-pool-v1-remap-2026-10-31.json",
+  "recorded_at": "2026-10-31T06:40:15.882985+00:00",
+  "note": "Remap v1.1 + curated post-pass (JP ADRs / IT LSE/XETRA). Corpus-v1 26 as_of dates. Delisted/M&A remain gaps.",
+  "export_meta": {
+    "attempted": 1044,
+    "failed": 35,
+    "failures": [
+      {
+        "ticker": "ANSS",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "BALN.SW",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "1COV.XETRA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "DLG.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SMDS.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "ECV.XETRA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "EVR.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "FALK.CO",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "FOR.MC",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "FDXF",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "GLB.IR",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "GWI.MI",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "HELN.SW",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "HONA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "INDV.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "JUST.AS",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "LANV.PA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "LIF.IR",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "MAN.XETRA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "TIGO.ST",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "MOR.XETRA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "MRW.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "NEOEN.PA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "ROL.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "S4.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SCHA.OL",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SKY.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SOW.XETRA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SPCX",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SXS.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SUNB.LSE",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "SWMA.ST",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "VAR1.XETRA",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "VYLR",
+        "reason": "fetch_empty_or_error"
+      },
+      {
+        "ticker": "6506.TSE",
+        "reason": "fetch_empty_or_error"
+      }
+    ],
+    "from_date": "2025-04-04",
+    "max_coverage": 1009,
+    "min_coverage": 1007,
+    "status": "partial",
+    "succeeded": 1009,
+    "targeted_fill": {
+      "attempted": 42,
+      "failed": [
+        "SMDS.LSE",
+        "ECV.XETRA",
+        "EVR.LSE",
+        "FALK.CO",
+        "FOR.MC",
+        "GLB.IR",
+        "GWI.MI",
+        "JUST.AS",
+        "LANV.PA",
+        "LIF.IR",
+        "MAN.XETRA",
+        "TIGO.ST",
+        "MOR.XETRA",
+        "MRW.LSE",
+        "NEOEN.PA",
+        "ROL.LSE",
+        "S4.LSE",
+        "SKY.LSE",
+        "SOW.XETRA",
+        "SWMA.ST",
+        "VAR1.XETRA",
+        "6506.TSE"
+      ],
+      "succeeded": 20
+    },
+    "to_date": "2026-10-29",
+    "token_present": true,
+    "universe_tickers": 1044,
+    "remap_version": "v1.1-curated-postpass"
+  },
+  "as_of_dates": [
+    "2026-05-29",
+    "2026-06-02",
+    "2026-06-08",
+    "2026-06-11",
+    "2026-07-07",
+    "2026-07-31",
+    "2026-08-05",
+    "2026-08-06",
+    "2026-08-10",
+    "2026-08-11",
+    "2026-08-14",
+    "2026-08-20",
+    "2026-08-25",
+    "2026-08-28",
+    "2026-09-03",
+    "2026-09-10",
+    "2026-09-11",
+    "2026-09-21",
+    "2026-09-24",
+    "2026-10-14",
+    "2026-10-16",
+    "2026-10-19",
+    "2026-10-21",
+    "2026-10-26",
+    "2026-10-28",
+    "2026-10-29"
+  ],
+  "format": "hebeltrader-market-snapshots-pit-v1",
+  "pit_basis": "publication_date_eod",
+  "delta_vs_2026_10_30": {
+    "succeeded_before": 994,
+    "succeeded_after": 1009,
+    "failed_before": 50,
+    "failed_after": 35
+  },
+  "jp_adr_spot_checks": {
+    "ATEYY": true,
+    "TOELY": true,
+    "KYCCF": true,
+    "DKILY": true,
+    "FANUY": true,
+    "KUBTY": true,
+    "DSCSY": true
+  },
+  "it_spot_checks": {
+    "0ONG.LSE": true,
+    "CRIN.XETRA": true,
+    "TQI0.XETRA": true,
+    "0NX5.LSE": true
+  }
+}

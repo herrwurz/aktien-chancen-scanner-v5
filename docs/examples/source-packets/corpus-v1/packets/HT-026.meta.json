@@ -1,0 +1,73 @@
+{
+  "case_id": "HT-026",
+  "cutoff_publication_at": "2026-06-11T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "CARR",
+      "name": "Carrier Global",
+      "form": "10-Q",
+      "filing_date": "2026-04-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000026/carr-20260331.htm",
+      "chars": 8027,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/CARR-2026-04-30-8ff7c6c8.htm"
+    },
+    {
+      "ticker": "CARR",
+      "name": "Carrier Global",
+      "form": "8-K",
+      "filing_date": "2026-04-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000023/carr-20260430.htm",
+      "chars": 3911,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/CARR-2026-04-30-7e3aaba4.htm"
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv",
+      "form": "10-Q",
+      "filing_date": "2026-04-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/1674101/000162828026026556/vrt-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/VRT-2026-04-22-f2062219.htm"
+    },
+    {
+      "ticker": "JCI",
+      "name": "Johnson Controls",
+      "form": "10-Q",
+      "filing_date": "2026-05-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/833444/000083344426000050/jci-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/JCI-2026-05-06-0783f969.htm"
+    },
+    {
+      "ticker": "TT",
+      "name": "Trane Technologies",
+      "form": "10-Q",
+      "filing_date": "2026-04-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1466258/000162828026028743/tt-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/TT-2026-04-30-b9c9fb79.htm"
+    },
+    {
+      "ticker": "ETN",
+      "name": "Eaton",
+      "form": "10-Q",
+      "filing_date": "2026-05-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000013/etn-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/ETN-2026-05-05-65f8e4f8.htm"
+    },
+    {
+      "ticker": "EMR",
+      "name": "Emerson Electric",
+      "form": "10-Q",
+      "filing_date": "2026-05-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/32604/000003260426000035/emr-20260331.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-026/EMR-2026-05-05-231c9898.htm"
+    }
+  ],
+  "needles": [
+    "Viessmann",
+    "Toshiba"
+  ]
+}

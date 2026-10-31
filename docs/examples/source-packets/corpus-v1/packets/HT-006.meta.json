@@ -1,0 +1,73 @@
+{
+  "case_id": "HT-006",
+  "cutoff_publication_at": "2026-09-03T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "UNH",
+      "name": "UnitedHealth Group",
+      "form": "10-Q",
+      "filing_date": "2026-08-10",
+      "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176626000197/unh-20260630.htm",
+      "chars": 8089,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/UNH-2026-08-10-d5f72281.htm"
+    },
+    {
+      "ticker": "UNH",
+      "name": "UnitedHealth Group",
+      "form": "8-K",
+      "filing_date": "2026-07-16",
+      "url": "https://www.sec.gov/Archives/edgar/data/731766/000073176626000191/unh-20260716.htm",
+      "chars": 3500,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/UNH-2026-07-16-c5cf3cf0.htm"
+    },
+    {
+      "ticker": "ELV",
+      "name": "Elevance Health",
+      "form": "10-Q",
+      "filing_date": "2026-07-15",
+      "url": "https://www.sec.gov/Archives/edgar/data/1156039/000115603926000060/elv-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/ELV-2026-07-15-170c9d5d.htm"
+    },
+    {
+      "ticker": "CVS",
+      "name": "CVS Health",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/64803/000006480326000098/cvs-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/CVS-2026-08-05-5ba8e8b1.htm"
+    },
+    {
+      "ticker": "CI",
+      "name": "Cigna",
+      "form": "10-Q",
+      "filing_date": "2026-07-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/CI-2026-07-30-59f4750f.htm"
+    },
+    {
+      "ticker": "HUM",
+      "name": "Humana",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/49071/000004907126000050/hum-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/HUM-2026-07-29-ae4c798e.htm"
+    },
+    {
+      "ticker": "CNC",
+      "name": "Centene",
+      "form": "10-Q",
+      "filing_date": "2026-07-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000153/cnc-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-006/CNC-2026-07-28-dcbc4a54.htm"
+    }
+  ],
+  "needles": [
+    "Optum",
+    "UnitedHealthcare"
+  ]
+}

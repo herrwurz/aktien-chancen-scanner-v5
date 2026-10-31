@@ -66,6 +66,21 @@ def test_ticker_remaps_cover_nordic_and_french_pit_misses():
     assert assets["Eni"]["ticker"] == "ENI.XETRA"
 
 
+def test_curated_overlay_applies_ticker_remaps_for_japan_and_italy():
+    """Curated .TSE/.MI tickers must not bypass remaps after overlay."""
+    remaps = load_ticker_remaps()
+    assert remaps["6857.TSE"] == "ATEYY"
+    assert remaps["LDO.MI"] == "0ONG.LSE"
+    market = {a["name"]: a for a in market_universe_list()}
+    assert market["Advantest"]["ticker"] == "ATEYY"
+    assert market["Advantest"].get("ticker_original") == "6857.TSE"
+    assert market["Leonardo"]["ticker"] == "0ONG.LSE"
+    assert market["Leonardo"].get("ticker_original") == "LDO.MI"
+    tickers = {a["ticker"] for a in market_universe_list() if a.get("ticker")}
+    assert "6857.TSE" not in tickers
+    assert "LDO.MI" not in tickers
+
+
 def test_market_universe_overlays_curated_and_keeps_pool_names():
     market = market_universe_list()
     names = {a["name"] for a in market}

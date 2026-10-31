@@ -1,0 +1,72 @@
+{
+  "case_id": "HT-013",
+  "cutoff_publication_at": "2026-08-25T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "DHR",
+      "name": "Danaher",
+      "form": "10-Q",
+      "filing_date": "2026-07-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/313616/000031361626000161/dhr-20260626.htm",
+      "chars": 8015,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/DHR-2026-07-21-22d5521a.htm"
+    },
+    {
+      "ticker": "DHR",
+      "name": "Danaher",
+      "form": "8-K",
+      "filing_date": "2026-08-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/313616/000119312526330652/d161342d8k.htm",
+      "chars": 8015,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/DHR-2026-08-03-1ede31b7.htm"
+    },
+    {
+      "ticker": "TMO",
+      "name": "Thermo Fisher Scientific",
+      "form": "10-Q",
+      "filing_date": "2026-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/97745/000009774526000144/tmo-20260627.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/TMO-2026-07-31-2073ff01.htm"
+    },
+    {
+      "ticker": "A",
+      "name": "Agilent Technologies",
+      "form": "10-Q",
+      "filing_date": "2026-06-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1090872/000109087226000055/a-20260430.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/A-2026-06-01-add5f828.htm"
+    },
+    {
+      "ticker": "IQV",
+      "name": "IQVIA",
+      "form": "10-Q",
+      "filing_date": "2026-07-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1478242/000162828026050211/iqv-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/IQV-2026-07-28-d0d3ad3d.htm"
+    },
+    {
+      "ticker": "WAT",
+      "name": "Waters",
+      "form": "10-Q",
+      "filing_date": "2026-08-11",
+      "url": "https://www.sec.gov/Archives/edgar/data/1000697/000119312526344691/d170082d10q.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/WAT-2026-08-11-07d1606c.htm"
+    },
+    {
+      "ticker": "MTD",
+      "name": "Mettler-Toledo",
+      "form": "10-Q",
+      "filing_date": "2026-07-31",
+      "url": "https://www.sec.gov/Archives/edgar/data/1037646/000103764626000051/mtd-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-013/MTD-2026-07-31-2cf4c08e.htm"
+    }
+  ],
+  "needles": [
+    "Masimo"
+  ]
+}

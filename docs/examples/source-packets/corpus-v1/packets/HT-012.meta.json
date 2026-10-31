@@ -1,0 +1,76 @@
+{
+  "case_id": "HT-012",
+  "documents": 6,
+  "path": "docs/examples/source-packets/batch-pending-pdf/packets/HT-012.json",
+  "meta": [
+    {
+      "ticker": "BAS",
+      "name": "BASF",
+      "form": "wayback_ir",
+      "filing_date": "20260709",
+      "url": "https://web.archive.org/web/20260709153810id_/https://www.basf.com/global/en/media/news-releases/2026/06/p-26-096",
+      "chars": 10032,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-012/BAS-wayback-20260709153810-cb5f4309.bin",
+      "needles_hit": {
+        "Oppanol": 18,
+        "Ultrason": 0,
+        "battery": 7
+      }
+    },
+    {
+      "ticker": "DOW",
+      "name": "Dow",
+      "form": "10-Q",
+      "filing_date": "2026-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/29915/000175178826000147/dow-20260630.htm",
+      "primary": "dow-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-012/DOW-2026-07-24-824584cf.htm"
+    },
+    {
+      "ticker": "DD",
+      "name": "DuPont",
+      "form": "10-Q",
+      "filing_date": "2026-05-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/1666700/000166670026000031/dd-20260331.htm",
+      "primary": "dd-20260331.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-012/DD-2026-05-05-26fe92cf.htm"
+    },
+    {
+      "ticker": "LYB",
+      "name": "LyondellBasell",
+      "form": "10-Q",
+      "filing_date": "2026-05-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1489393/000148939326000028/lyb-20260331.htm",
+      "primary": "lyb-20260331.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-012/LYB-2026-05-01-a3c3c92b.htm"
+    },
+    {
+      "ticker": "EMN",
+      "name": "Eastman",
+      "form": "10-Q",
+      "filing_date": "2026-05-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/915389/000091538926000099/emn-20260331.htm",
+      "primary": "emn-20260331.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-012/EMN-2026-05-01-f9f0adde.htm"
+    },
+    {
+      "ticker": "CE",
+      "name": "Celanese",
+      "form": "10-Q",
+      "filing_date": "2026-05-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1306830/000130683026000096/ce-20260331.htm",
+      "primary": "ce-20260331.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-012/CE-2026-05-06-6ca6fd98.htm"
+    }
+  ]
+}

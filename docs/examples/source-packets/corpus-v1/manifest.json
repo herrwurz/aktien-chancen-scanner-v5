@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-corpus-evidence-v1",
+  "note": "Union of batch-10 + us-rest + eu-sec + eu-ir-wayback + pending-pdf. Blind 202/26 kept separate. pending-pdf cutoffs remain provisional.",
+  "batches": [
+    "batch-10",
+    "batch-us-rest",
+    "batch-eu-sec",
+    "batch-eu-ir-wayback",
+    "batch-pending-pdf"
+  ],
+  "cases": [
+    {
+      "case_id": "HT-001",
+      "expected_ticker": "ADI",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-002",
+      "expected_ticker": "ZURN",
+      "source_batch": "batch-eu-ir-wayback",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-003",
+      "expected_ticker": "COST",
+      "source_batch": "batch-pending-pdf",
+      "provisional_publication_at": true
+    },
+    {
+      "case_id": "HT-004",
+      "expected_ticker": "CRM",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-005",
+      "expected_ticker": "MU",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-006",
+      "expected_ticker": "UNH",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-007",
+      "expected_ticker": "VRT",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-008",
+      "expected_ticker": "KKR",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-009",
+      "expected_ticker": "PFE",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-010",
+      "expected_ticker": "AVGO",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-011",
+      "expected_ticker": "HO",
+      "source_batch": "batch-eu-ir-wayback",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-012",
+      "expected_ticker": "BAS",
+      "source_batch": "batch-pending-pdf",
+      "provisional_publication_at": true
+    },
+    {
+      "case_id": "HT-013",
+      "expected_ticker": "DHR",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-014",
+      "expected_ticker": "SAP",
+      "source_batch": "batch-eu-sec",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-015",
+      "expected_ticker": "LDO",
+      "source_batch": "batch-eu-ir-wayback",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-017",
+      "expected_ticker": "JPM",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-018",
+      "expected_ticker": "JNJ",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-019",
+      "expected_ticker": "SLB",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-020",
+      "expected_ticker": "SNPS",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-021",
+      "expected_ticker": "BP",
+      "source_batch": "batch-eu-sec",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-022",
+      "expected_ticker": "CEG",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-023",
+      "expected_ticker": "ABBV",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-024",
+      "expected_ticker": "E",
+      "source_batch": "batch-eu-sec",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-025",
+      "expected_ticker": "ADS",
+      "source_batch": "batch-eu-ir-wayback",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-026",
+      "expected_ticker": "CARR",
+      "source_batch": "batch-10",
+      "provisional_publication_at": false
+    },
+    {
+      "case_id": "HT-027",
+      "expected_ticker": "TMO",
+      "source_batch": "batch-us-rest",
+      "provisional_publication_at": false
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "case_id": "HT-010",
+  "cutoff_publication_at": "2026-08-10T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "form": "10-Q",
+      "filing_date": "2026-06-09",
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000173016826000054/avgo-20260503.htm",
+      "chars": 10033,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/AVGO-2026-06-09-8432fd34.htm"
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "form": "8-K",
+      "filing_date": "2026-07-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000119312526295589/d84378d8k.htm",
+      "chars": 3888,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/AVGO-2026-07-06-08ea9a1c.htm"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "form": "10-Q",
+      "filing_date": "2026-05-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000052/nvda-20260426.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/NVDA-2026-05-20-cece53ae.htm"
+    },
+    {
+      "ticker": "AMD",
+      "name": "Advanced Micro Devices",
+      "form": "10-Q",
+      "filing_date": "2026-08-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000123/amd-20260627.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/AMD-2026-08-05-8444d5d0.htm"
+    },
+    {
+      "ticker": "QCOM",
+      "name": "QUALCOMM",
+      "form": "10-Q",
+      "filing_date": "2026-07-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/804328/000080432826000086/qcom-20260628.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/QCOM-2026-07-29-bce84f2d.htm"
+    },
+    {
+      "ticker": "INTC",
+      "name": "Intel",
+      "form": "10-Q",
+      "filing_date": "2026-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/50863/000005086326000157/intc-20260627.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/INTC-2026-07-24-3695f48c.htm"
+    },
+    {
+      "ticker": "TXN",
+      "name": "Texas Instruments",
+      "form": "10-Q",
+      "filing_date": "2026-07-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/97476/000009747626000152/txn-20260630.htm",
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-010/TXN-2026-07-24-bc230f07.htm"
+    }
+  ],
+  "needles": [
+    "VMware",
+    "custom AI"
+  ]
+}

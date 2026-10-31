@@ -1,0 +1,78 @@
+{
+  "case_id": "HT-014",
+  "cutoff_publication_at": "2026-08-20T08:15:00+01:00",
+  "documents": [
+    {
+      "ticker": "SAP",
+      "name": "SAP",
+      "form": "6-K",
+      "filing_date": "2026-07-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1000184/000110465926087251/tm2621275d1_ex99-2.htm",
+      "primary": "tm2621275d1_ex99-2.htm",
+      "resolved_from_primary": "tm2621275d1_6k.htm",
+      "chars": 12064,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-014/SAP-2026-07-28-63bc856d.htm"
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle",
+      "form": "10-Q",
+      "filing_date": "2026-03-11",
+      "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526101045/orcl-20260228.htm",
+      "primary": "orcl-20260228.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-014/ORCL-2026-03-11-4578d8eb.htm"
+    },
+    {
+      "ticker": "CRM",
+      "name": "Salesforce",
+      "form": "10-Q",
+      "filing_date": "2026-05-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000110852426000127/crm-20260430.htm",
+      "primary": "crm-20260430.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-014/CRM-2026-05-28-02fa1e5e.htm"
+    },
+    {
+      "ticker": "NOW",
+      "name": "ServiceNow",
+      "form": "10-Q",
+      "filing_date": "2026-07-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/1373715/000137371526000076/now-20260630.htm",
+      "primary": "now-20260630.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-014/NOW-2026-07-23-bfedeb40.htm"
+    },
+    {
+      "ticker": "WDAY",
+      "name": "Workday",
+      "form": "10-Q",
+      "filing_date": "2026-05-22",
+      "url": "https://www.sec.gov/Archives/edgar/data/1327811/000132781126000026/wday-20260430.htm",
+      "primary": "wday-20260430.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-014/WDAY-2026-05-22-f982bbea.htm"
+    },
+    {
+      "ticker": "ADBE",
+      "name": "Adobe",
+      "form": "10-Q",
+      "filing_date": "2026-06-15",
+      "url": "https://www.sec.gov/Archives/edgar/data/796343/000079634326000112/adbe-20260529.htm",
+      "primary": "adbe-20260529.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-014/ADBE-2026-06-15-bbc98b83.htm"
+    }
+  ],
+  "needles": [
+    "Dremio",
+    "Prior Labs",
+    "S/4HANA",
+    "Cloud ERP"
+  ]
+}

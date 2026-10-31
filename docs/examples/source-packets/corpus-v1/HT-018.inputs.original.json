@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-018 original teaser; batch-10.",
+  "cases": [
+    {
+      "case_id": "HT-018",
+      "headline": "Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!",
+      "teaser_text": "Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!\nEin Gesundheitsriese mit prall gefüllter Kasse steht vor dem Befreiungsschlag. Umsatz im Aufwind, Innovationen in der Pipeline, Ertragskraft auf Rekordniveau. Die Korrektur der letzten Wochen? Für Eingeweihte eine Tür, die sich gerade öffnet. Unsere Experten haben das Szenario durchkalkuliert: ein Call-Optionsschein mit starkem Hebel, klarer Stoppplan und eine Strategie, die Gewinne sichert. Der Showdown: bis zu plus 1.761 Prozent am zweiten Kursziel.",
+      "publication_date": "2026-10-21",
+      "publication_at": "2026-10-21T08:15:00+01:00"
+    }
+  ]
+}

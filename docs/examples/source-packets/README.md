@@ -25,6 +25,8 @@ Pilots:
 - `batch-pending-pdf/` — Costco/BASF with **provisional** `publication_at`
   (featured_date + corpus Stand 08:15; PDFs 192/26 & 137/26 still missing);
   **2/2 named identified**. HT-016 still blocked. Shared 27er refs untouched.
+- `corpus-v1/` — union freeze of the five batches above; **26/26 named identified**
+  (HT-016 out). Originals 0/26.
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

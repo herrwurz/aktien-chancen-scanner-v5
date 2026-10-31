@@ -1,0 +1,76 @@
+{
+  "case_id": "HT-025",
+  "documents": 6,
+  "path": "docs/examples/source-packets/batch-eu-ir-wayback/packets/HT-025.json",
+  "meta": [
+    {
+      "ticker": "ADS",
+      "name": "Adidas",
+      "form": "wayback_ir",
+      "filing_date": "20260519",
+      "url": "https://web.archive.org/web/20260519012343id_/https://www.adidas-group.com/en/media/press-releases/adidas-records-strong-start-to-the-year-in-the-first-quarter-of-2026",
+      "chars": 8151,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-025/ADS-wayback-20260519012343-74dc06e8.bin",
+      "needles_hit": {
+        "Trionda": 1,
+        "Adizero": 4,
+        "FIFA": 1
+      }
+    },
+    {
+      "ticker": "NKE",
+      "name": "Nike",
+      "form": "10-Q",
+      "filing_date": "2026-04-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018726000037/nke-20260228.htm",
+      "primary": "nke-20260228.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-025/NKE-2026-04-01-15b722a3.htm"
+    },
+    {
+      "ticker": "LULU",
+      "name": "Lululemon",
+      "form": "10-Q",
+      "filing_date": "2025-12-11",
+      "url": "https://www.sec.gov/Archives/edgar/data/1397187/000139718725000055/lulu-20251102.htm",
+      "primary": "lulu-20251102.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-025/LULU-2025-12-11-7fb31392.htm"
+    },
+    {
+      "ticker": "UAA",
+      "name": "Under Armour",
+      "form": "10-Q",
+      "filing_date": "2026-02-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1336917/000133691726000027/ua-20251231.htm",
+      "primary": "ua-20251231.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-025/UAA-2026-02-06-7e70d57c.htm"
+    },
+    {
+      "ticker": "DECK",
+      "name": "Deckers",
+      "form": "10-Q",
+      "filing_date": "2026-02-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/910521/000091052126000005/deck-20251231.htm",
+      "primary": "deck-20251231.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-025/DECK-2026-02-03-60132e37.htm"
+    },
+    {
+      "ticker": "VFC",
+      "name": "VF Corporation",
+      "form": "10-Q",
+      "filing_date": "2026-01-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/103379/000010337926000011/vfc-20251227.htm",
+      "primary": "vfc-20251227.htm",
+      "resolved_from_primary": null,
+      "chars": 20000,
+      "raw_path": "data/hebeltrader/source-packet-raw/HT-025/VFC-2026-01-28-f9bde1eb.htm"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-011 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-011",
+      "headline": "Hightech-Konzern vor neuem Rekordhoch!",
+      "teaser_text": "Hightech-Konzern vor neuem Rekordhoch!\nHier entsteht gerade ein Ausnahme-Setup für spekulative Anleger: Ein europäischer Hightech-Konzern profitiert massiv von einem strukturellen Boommarkt, überzeugt mit starkem Auftragseingang, soliden Margen und hoher Planungssicherheit. Gleichzeitig deutet charttechnisch vieles auf den möglichen Ausbruch auf ein neues Rekordhoch hin. Besonders brisant: Das empfohlene Derivat hat bereits enorme Dynamik gezeigt – und im Idealfall winkt sogar eine Gewinnchance von bis zu 2.617 Prozent.\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Thales — Mit der Übernahme von Exail.",
+      "publication_date": "2026-08-05",
+      "publication_at": "2026-08-05T08:15:00+01:00"
+    }
+  ]
+}

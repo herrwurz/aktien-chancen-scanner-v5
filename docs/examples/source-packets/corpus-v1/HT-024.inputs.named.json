@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "corpus_kind": "development_regression",
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false,
+  "note": "HT-024 DEVELOPMENTAL enrichment with Konzern/products; not a freeze input. Call-PDF remains resolution-only.",
+  "cases": [
+    {
+      "case_id": "HT-024",
+      "headline": "Die Börse liebt Geschichten wie diese ...",
+      "teaser_text": "Die Börse liebt Geschichten wie diese ...\nEin finanzstarker Konzern, der Milliarden an seine Aktionäre zurückgibt, gleichzeitig in Zukunftsmärkte investiert und dabei mit einer überraschend günstigen Bewertung aufwartet. Genau jetzt verdichten sich die Anzeichen, dass die mehrmonatige Konsolidierung endet und die nächste Aufwärtswelle beginnt. Analysten erwarten einen massiven Gewinnsprung, während das passende Hebelprodukt im Erfolgsfall Renditen von über 1.400 Prozent ermöglicht!\n\nZusätzlicher entwicklungsdiagnostischer Hinweis (nicht Original-Teaser): Konzern Eni — Wachstumstreiber Plenitude heben den Umsatz.",
+      "publication_date": "2026-06-02",
+      "publication_at": "2026-06-02T08:15:00+01:00"
+    }
+  ]
+}
