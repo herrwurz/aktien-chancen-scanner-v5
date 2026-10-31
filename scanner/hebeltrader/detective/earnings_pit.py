@@ -271,11 +271,12 @@ def apply_earnings_pit(
     *,
     lookup=None,
     ath_bars_fetcher=None,
-    top: int = 8,
+    top: int | None = None,
 ) -> dict:
     """Mutate ranked rows with hard contradictions when PIT facts fail.
 
     Returns a summary for the report ``falsification`` / diagnostics block.
+    Checks every ranked row by default so demotions cannot elevate unchecked names.
     """
     from .structure_screen import ticker_for
 
@@ -308,7 +309,8 @@ def apply_earnings_pit(
         summary["status"] = "skipped_no_claim"
         return summary
 
-    for row in ranked[:top]:
+    scope = ranked if top is None else ranked[:top]
+    for row in scope:
         identity = row.get("identity") or {}
         data = identity if isinstance(identity, dict) else identity.model_dump()
         name = data.get("name") or ""
