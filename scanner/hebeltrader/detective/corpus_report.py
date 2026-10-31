@@ -316,7 +316,7 @@ def build_readiness(
                 else []
             )
             + [
-                "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
+                "HT-016: issue/PDF unavailable — keep blocked; do not force into freeze",
                 "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
                 "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
             ]
