@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-operator-readiness-v1",
+  "recorded_at": "2026-10-31T09:37:20.803640+00:00",
+  "corpus": {
+    "named_identified": "26/26",
+    "originals_identified": "0/26",
+    "gates_ok": true,
+    "provisional_publication_at": [
+      "HT-003",
+      "HT-012"
+    ],
+    "blocked_out_of_corpus": [
+      "HT-016"
+    ]
+  },
+  "promote_pending_pdf": {
+    "ready": 0,
+    "still_missing": 2,
+    "blocked": [
+      {
+        "case_id": "HT-016",
+        "reason": "no_publication_issue_no_featured_date_unresolved_identity"
+      }
+    ],
+    "actions": [
+      {
+        "case_id": "HT-003",
+        "status": "still_missing_pdf",
+        "required_issue": "192/26",
+        "company_hint": "Costco"
+      },
+      {
+        "case_id": "HT-012",
+        "status": "still_missing_pdf",
+        "required_issue": "137/26",
+        "company_hint": "BASF"
+      }
+    ]
+  },
+  "ht016": {
+    "status": "blocked_no_publication_at",
+    "suspected_ticker": "WMB",
+    "identification_freeze": false
+  },
+  "tiebreak": {
+    "market": {
+      "graded": 26,
+      "top1": 2,
+      "top3": 3,
+      "top8": 7,
+      "with_hypotheses": 26
+    },
+    "packet_leader_confirmation": {
+      "named_identified": 26,
+      "market_confirms_in_top8": 7,
+      "market_misses_top8": 19
+    },
+    "blind_202_26": {
+      "dbk_rank": 565,
+      "dbk_score": 10,
+      "in_top8": false,
+      "residual_error_class": "B_chart_rank",
+      "note": "Developmental residual B_chart_rank. Blind freeze SHA untouched; no chart score retuning."
+    }
+  },
+  "api_keys_present": {
+    "EODHD_API_TOKEN": true,
+    "TAVILY_API_KEY": false,
+    "OPENAI_API_KEY": false
+  },
+  "blockers": [
+    {
+      "id": "pending_pdfs_192_137",
+      "status": "blocked",
+      "detail": "Costco 192/26 and/or BASF 137/26 PDF Stand still missing",
+      "actions": [
+        {
+          "case_id": "HT-003",
+          "status": "still_missing_pdf",
+          "required_issue": "192/26",
+          "company_hint": "Costco"
+        },
+        {
+          "case_id": "HT-012",
+          "status": "still_missing_pdf",
+          "required_issue": "137/26",
+          "company_hint": "BASF"
+        }
+      ]
+    },
+    {
+      "id": "ht016_no_publication_at",
+      "status": "blocked",
+      "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand"
+    },
+    {
+      "id": "original_teaser_anchor_gap",
+      "status": "corpus_gap",
+      "detail": "0/26 originals have ≥2 native named anchors"
+    },
+    {
+      "id": "live_3b_api_keys",
+      "status": "blocked",
+      "detail": "Tavily/OpenAI absent; use simulated_falsification offline"
+    }
+  ],
+  "next_operator_actions": [
+    "Upload Hebeltrader PDFs 192/26 (Costco) and 137/26 (BASF); run scripts/ingest_publisher_pdfs.py then scripts/promote_provisional_publication_at.py --apply",
+    "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
+    "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+    "Secure next real teaser before reading Call-PDF (≥2 named anchors)"
+  ],
+  "smoke": {
+    "corpus_case": "python3 -m scanner.hebeltrader.detective.investigate_cli analyze --corpus-case HT-001 --root /tmp/ht-corpus-case",
+    "simulated_3b": "python3 -m scanner.hebeltrader.detective.corpus_report recipe"
+  }
+}

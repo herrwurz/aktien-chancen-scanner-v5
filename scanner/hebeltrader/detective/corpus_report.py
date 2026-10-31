@@ -1,10 +1,11 @@
-"""Corpus-v1 operator CLI: scorecard, recipe, originals gap, market tie-break.
+"""Corpus-v1 operator CLI: scorecard, recipe, originals gap, market tie-break, readiness.
 
 Subcommands:
   report     named/original freeze scorecard (default)
   recipe     print standard evidence_batch + pad800 snapshot recipe
   originals  original-teaser packet_evidence gap from freeze
   tiebreak   market chart as tie-break on pad800 (optional Blind remap file)
+  readiness  single board of gates / operator blockers / API keys
 
 Does not retune Blind 202/26 scores. Does not require Tavily/OpenAI.
 """
@@ -13,13 +14,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections import Counter
+from datetime import UTC, datetime
 from pathlib import Path
 
 DEFAULT_FREEZE = Path("docs/examples/source-packets/corpus-v1/evidence-batch-corpus-v1.json")
 DEFAULT_MANIFEST = Path("docs/examples/source-packets/corpus-v1/manifest.json")
 DEFAULT_PACKETS = Path("docs/examples/source-packets/corpus-v1/packets")
 DEFAULT_SNAPSHOTS = Path("reports/snapshots-pit-pool-v1-pad800-2026-10-31.json")
+DEFAULT_HT016 = Path("docs/examples/source-packets/ht-016-blocked/manifest.json")
+DEFAULT_TIEBREAK = Path("docs/examples/market-tiebreak-pad800-2026-10-31.json")
 BLOCKED_OUT = ("HT-016",)
 
 
@@ -112,12 +117,18 @@ def build_recipe(
             f"--snapshots {snapshots}"
         ),
         "promote_pending_pdfs": "python3 scripts/promote_provisional_publication_at.py",
+        "investigate_corpus_case": (
+            "python3 -m scanner.hebeltrader.detective.investigate_cli analyze "
+            "--corpus-case HT-001 --corpus-variant named "
+            "--root /tmp/ht-corpus-case"
+        ),
         "simulated_3b": (
             'python3 -c "from pathlib import Path; from scanner.hebeltrader.detective.'
             "simulated_falsification import run_simulated_live_falsification; "
             "print(run_simulated_live_falsification(Path('/tmp/sim3b'))"
             "['identification'])\""
         ),
+        "readiness": "python3 -m scanner.hebeltrader.detective.corpus_report readiness",
         "evidence_batch": cmd,
         "notes": [
             "Named freeze is already committed; re-run only after packet edits.",
@@ -177,6 +188,168 @@ def render_originals(gap: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _promote_plan() -> dict:
+    try:
+        from scripts.promote_provisional_publication_at import (
+            PROVISIONAL_REFS,
+            plan_promotions,
+        )
+
+        inventory = json.loads(
+            Path("docs/hebeltrader-publisher-pdf-inventory.json").read_text(encoding="utf-8")
+        )
+        provisional = json.loads(PROVISIONAL_REFS.read_text(encoding="utf-8"))
+        plan = plan_promotions(inventory, provisional)
+        return {
+            "ready": plan["ready"],
+            "still_missing": plan["still_missing"],
+            "blocked": plan["blocked"],
+            "actions": plan["actions"],
+        }
+    except Exception as exc:  # noqa: BLE001 - readiness must not crash
+        return {"error": str(exc)[:200]}
+
+
+def build_readiness(
+    *,
+    freeze_path: Path = DEFAULT_FREEZE,
+    manifest_path: Path = DEFAULT_MANIFEST,
+    ht016_path: Path = DEFAULT_HT016,
+    tiebreak_path: Path = DEFAULT_TIEBREAK,
+) -> dict:
+    freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    report = build_report(freeze, manifest)
+    originals = build_originals(freeze)
+    promote = _promote_plan()
+    ht016 = None
+    if ht016_path.exists():
+        ht016 = json.loads(ht016_path.read_text(encoding="utf-8")).get("case")
+    tiebreak = None
+    if tiebreak_path.exists():
+        raw = json.loads(tiebreak_path.read_text(encoding="utf-8"))
+        tiebreak = {
+            "market": raw.get("market"),
+            "packet_leader_confirmation": {
+                k: raw.get("packet_leader_confirmation", {}).get(k)
+                for k in (
+                    "named_identified",
+                    "market_confirms_in_top8",
+                    "market_misses_top8",
+                )
+            },
+            "blind_202_26": {
+                k: raw.get("blind_202_26", {}).get(k)
+                for k in ("dbk_rank", "dbk_score", "in_top8", "residual_error_class", "note")
+            },
+        }
+        if tiebreak["blind_202_26"].get("residual_error_class") is None:
+            tiebreak["blind_202_26"]["residual_error_class"] = "B_chart_rank"
+    blockers = []
+    if promote.get("still_missing"):
+        blockers.append(
+            {
+                "id": "pending_pdfs_192_137",
+                "status": "blocked",
+                "detail": "Costco 192/26 and/or BASF 137/26 PDF Stand still missing",
+                "actions": promote.get("actions"),
+            }
+        )
+    if ht016 and ht016.get("status") == "blocked_no_publication_at":
+        blockers.append(
+            {
+                "id": "ht016_no_publication_at",
+                "status": "blocked",
+                "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand",
+            }
+        )
+    if originals["identified"] == 0:
+        blockers.append(
+            {
+                "id": "original_teaser_anchor_gap",
+                "status": "corpus_gap",
+                "detail": "0/26 originals have ≥2 native named anchors",
+            }
+        )
+    if not os.environ.get("TAVILY_API_KEY") and not os.environ.get("OPENAI_API_KEY"):
+        blockers.append(
+            {
+                "id": "live_3b_api_keys",
+                "status": "blocked",
+                "detail": "Tavily/OpenAI absent; use simulated_falsification offline",
+            }
+        )
+    return {
+        "schema_version": 1,
+        "kind": "hebeltrader-operator-readiness-v1",
+        "recorded_at": datetime.now(UTC).isoformat(),
+        "corpus": {
+            "named_identified": f"{report['named']['identified']}/{report['named']['total']}",
+            "originals_identified": (
+                f"{report['original']['identified']}/{report['original']['total']}"
+            ),
+            "gates_ok": report["gates"]["named_all_meet_gates"],
+            "provisional_publication_at": report["provisional_publication_at"],
+            "blocked_out_of_corpus": report["blocked_out_of_corpus"],
+        },
+        "promote_pending_pdf": promote,
+        "ht016": {
+            "status": (ht016 or {}).get("status"),
+            "suspected_ticker": (ht016 or {}).get("suspected_ticker"),
+            "identification_freeze": (ht016 or {}).get("identification_freeze"),
+        },
+        "tiebreak": tiebreak,
+        "api_keys_present": {
+            "EODHD_API_TOKEN": bool(os.environ.get("EODHD_API_TOKEN")),
+            "TAVILY_API_KEY": bool(os.environ.get("TAVILY_API_KEY")),
+            "OPENAI_API_KEY": bool(os.environ.get("OPENAI_API_KEY")),
+        },
+        "blockers": blockers,
+        "next_operator_actions": [
+            "Upload Hebeltrader PDFs 192/26 (Costco) and 137/26 (BASF); "
+            "run scripts/ingest_publisher_pdfs.py then "
+            "scripts/promote_provisional_publication_at.py --apply",
+            "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
+            "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+            "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
+        ],
+        "smoke": {
+            "corpus_case": (
+                "python3 -m scanner.hebeltrader.detective.investigate_cli analyze "
+                "--corpus-case HT-001 --root /tmp/ht-corpus-case"
+            ),
+            "simulated_3b": ("python3 -m scanner.hebeltrader.detective.corpus_report recipe"),
+        },
+    }
+
+
+def render_readiness(board: dict) -> str:
+    corpus = board["corpus"]
+    lines = [
+        "operator readiness",
+        f"  corpus named: {corpus['named_identified']} (gates_ok={corpus['gates_ok']})",
+        f"  corpus originals: {corpus['originals_identified']}",
+        f"  provisional pub_at: {', '.join(corpus['provisional_publication_at']) or '—'}",
+        f"  HT-016: {board['ht016'].get('status')}",
+        (
+            "  API keys: "
+            + ", ".join(f"{k}={'yes' if v else 'no'}" for k, v in board["api_keys_present"].items())
+        ),
+        f"  blockers ({len(board['blockers'])}):",
+    ]
+    for item in board["blockers"]:
+        lines.append(f"    - [{item['status']}] {item['id']}: {item['detail']}")
+    lines.append("  next:")
+    for action in board["next_operator_actions"]:
+        lines.append(f"    - {action}")
+    if board.get("tiebreak") and board["tiebreak"].get("market"):
+        m = board["tiebreak"]["market"]
+        lines.append(
+            f"  pad800 market Top1/3/8: {m['top1']}/{m['top3']}/{m['top8']} of {m['graded']}"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def _write(path: Path | None, payload: dict) -> None:
     if path is None:
         return
@@ -209,6 +382,12 @@ def main(argv=None) -> int:
     tie_p.add_argument("--snapshots", type=Path, default=DEFAULT_SNAPSHOTS)
     tie_p.add_argument("--json", action="store_true")
     tie_p.add_argument("--out", type=Path)
+
+    ready_p = sub.add_parser("readiness", help="operator readiness board")
+    ready_p.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
+    ready_p.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    ready_p.add_argument("--json", action="store_true")
+    ready_p.add_argument("--out", type=Path)
 
     # Back-compat: bare flags without subcommand → report
     if argv is None:
@@ -267,6 +446,16 @@ def main(argv=None) -> int:
             print(json.dumps(payload, indent=2, ensure_ascii=False))
         else:
             print(mt.render_text(payload), end="")
+        return 0
+
+    if args.command == "readiness":
+        payload = build_readiness(freeze_path=args.freeze, manifest_path=args.manifest)
+        _write(args.out, payload)
+        if args.json:
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(render_readiness(payload), end="")
+        # Exit 0 even with blockers — readiness is informational.
         return 0
 
     parser.error(f"unknown command {args.command}")

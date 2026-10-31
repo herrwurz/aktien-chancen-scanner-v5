@@ -44,9 +44,24 @@ def test_corpus_recipe_and_originals_cli(capsys):
     recipe = build_recipe()
     assert "evidence_batch" in recipe
     assert "pad800" in recipe["snapshots"]
+    assert "investigate_corpus_case" in recipe
     assert main(["recipe"]) == 0
     assert "evidence_batch:" in capsys.readouterr().out
     assert main(["originals", "--freeze", str(FREEZE)]) == 0
     out = capsys.readouterr().out
     assert "originals identified: 0/26" in out
     assert "HT-023" in out
+
+
+def test_corpus_readiness_board(capsys):
+    assert main(["readiness"]) == 0
+    out = capsys.readouterr().out
+    assert "operator readiness" in out
+    assert "corpus named: 26/26" in out
+    assert "ht016_no_publication_at" in out or "HT-016" in out
+    assert main(["readiness", "--json"]) == 0
+    board = json.loads(capsys.readouterr().out)
+    assert board["kind"] == "hebeltrader-operator-readiness-v1"
+    assert board["corpus"]["gates_ok"] is True
+    assert any(b["id"] == "pending_pdfs_192_137" for b in board["blockers"])
+    assert board["api_keys_present"]["EODHD_API_TOKEN"] in {True, False}

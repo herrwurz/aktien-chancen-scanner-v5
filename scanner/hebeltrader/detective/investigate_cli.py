@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from .case_journal import CaseJournal
+from .corpus_case import DEFAULT_CORPUS_DIR, load_corpus_case
 from .history import evaluate_frozen, inventory_history
 from .investigation import InvestigationRequest, Investigator
 from .monitor import TeaserMonitor
@@ -55,6 +56,22 @@ def main(argv=None):
     parser.add_argument("--publication-at")
     parser.add_argument(
         "--packet", type=Path, help="Operator-supplied source documents; not a blind benchmark"
+    )
+    parser.add_argument(
+        "--corpus-case",
+        help="Load corpus-v1 HT-xxx inputs+packet (named/original); implies historical-blind",
+    )
+    parser.add_argument(
+        "--corpus-variant",
+        choices=("named", "original"),
+        default="named",
+        help="With --corpus-case: named (default) or original teaser inputs",
+    )
+    parser.add_argument(
+        "--corpus-dir",
+        type=Path,
+        default=DEFAULT_CORPUS_DIR,
+        help="corpus-v1 directory for --corpus-case",
     )
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--historical-blind", action="store_true")
@@ -120,29 +137,64 @@ def main(argv=None):
             args.root, web=web if args.allow_network else None, product_issuers=issuers
         )
         if args.command == "analyze":
+            corpus = None
+            if args.corpus_case:
+                if args.text_file or args.packet or args.publication_at:
+                    parser.error(
+                        "--corpus-case cannot combine with --text-file/--packet/--publication-at"
+                    )
+                try:
+                    corpus = load_corpus_case(
+                        args.corpus_case,
+                        variant=args.corpus_variant,
+                        corpus_dir=args.corpus_dir,
+                    )
+                except (OSError, ValueError) as exc:
+                    parser.error(str(exc))
             request = InvestigationRequest(
-                teaser_text=args.text_file.read_text() if args.text_file else "",
+                teaser_text=(
+                    corpus["teaser_text"]
+                    if corpus
+                    else (args.text_file.read_text() if args.text_file else "")
+                ),
                 teaser_url=args.url,
                 original_source_url=args.original_source_url,
                 source_retrieved_at=args.source_retrieved_at,
-                headline=args.headline,
+                headline=corpus["headline"] if corpus else args.headline,
                 publisher=args.publisher,
                 author=args.author,
                 issue=args.issue,
-                evaluation_class=args.evaluation_class,
+                evaluation_class=(corpus["evaluation_class"] if corpus else args.evaluation_class),
                 previously_used_for_development=False if args.new_blind_case else None,
-                publication_at=datetime.fromisoformat(args.publication_at)
-                if args.publication_at
-                else None,
+                publication_at=(
+                    corpus["publication_at"]
+                    if corpus
+                    else (
+                        datetime.fromisoformat(args.publication_at) if args.publication_at else None
+                    )
+                ),
+                publication_date=corpus["publication_date"] if corpus else None,
             )
-            packet = json.loads(args.packet.read_text()) if args.packet else None
+            packet = (
+                corpus["documents"]
+                if corpus
+                else (json.loads(args.packet.read_text()) if args.packet else None)
+            )
             result = run_case(
                 engine,
                 request,
                 documents=packet,
-                historical_blind=args.historical_blind,
+                historical_blind=bool(corpus) or args.historical_blind,
                 register_path=args.register_path,
             )
+            if corpus:
+                result = dict(result)
+                result["corpus_case"] = {
+                    "case_id": corpus["case_id"],
+                    "variant": corpus["variant"],
+                    "expected_ticker": corpus["expected_ticker"],
+                    "paths": corpus["paths"],
+                }
             print(json.dumps(result, ensure_ascii=False, indent=2))
             return 0
         if not args.allow_network:
