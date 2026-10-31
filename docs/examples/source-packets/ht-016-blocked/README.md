@@ -57,12 +57,21 @@ python3 -m scanner.hebeltrader.detective.build_sec_packet \
   --raw-dir data/hebeltrader/source-packet-raw/HT-016
 ```
 
+## Discrimination note (operator 2026-10-31)
+
+Live teaser-only ranking surfaced **utilities** (NEE / Iberdrola / Enel) — that matches
+the **general electricity-demand theme**. **Williams** additionally matches the
+**Begleitartikel corporate events**. Do not treat theme-fit utilities as a resolution;
+do not inject WMB from this scaffold into live discovery. Extract event needles from the
+Call-PDF article once Stand Uhr is confirmed.
+
 ## Operator unlock (remaining)
 
 1. Upload Call-PDF for 191/26; run `scripts/ingest_publisher_pdfs.py`.
 2. Confirm `publication_at` from the PDF `Stand: … um … Uhr` line.
-3. Re-cut the packet with that cutoff; only then consider corpus promotion.
-4. Shared `reference-27-inputs-with-publication-at.json` stays untouched until then.
+3. Extract Begleitartikel event needles (PIT-safe) and re-run live with those clues.
+4. Re-cut the packet with that cutoff; only then consider corpus promotion.
+5. Shared `reference-27-inputs-with-publication-at.json` stays untouched until then.
 
 Related: `scripts/promote_provisional_publication_at.py` (Costco 192/26,
 BASF 137/26). HT-016 stays blocked there until PDF Stand.

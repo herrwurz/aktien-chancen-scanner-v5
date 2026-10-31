@@ -34,6 +34,24 @@ def test_chip_dominance_teaser_covers_design_software_and_other_layers():
     assert len(queries) <= 10
 
 
+def test_stromhunger_data_center_teaser_expands_midstream_value_chain():
+    """HT-016: utilities fit the theme; midstream must enter discovery too."""
+    text = (
+        "Dieser Branchenführer profitiert vom Stromhunger der Zukunft!\n"
+        "Energie-Alarm im KI-Zeitalter! Der Stromhunger moderner Rechenzentren "
+        "eröffnet einem etablierten Branchenführer gewaltige neue Chancen. "
+        "Solide Cashflows, langfristige Verträge."
+    )
+    queries = build_queries(text, [], [])
+    blob = " ".join(queries).lower()
+    assert "midstream" in blob or "pipeline" in blob
+    assert "data center" in blob or "data centers" in blob
+    # Never leak the historical Williams suspicion into search seeds.
+    assert "williams" not in blob
+    assert "wmb" not in blob
+    assert len(queries) <= 10
+
+
 def test_generic_headline_without_sector_keeps_raw_fallback():
     assert build_queries("Hier steckt eine irrwitzige Turnaround-Chance drin!", [], []) == [
         "Hier steckt eine irrwitzige Turnaround-Chance drin! company investor relations"
@@ -186,4 +204,5 @@ def test_planner_prompt_requests_value_chain_spread_and_accepts_six_seeds(tmp_pa
     )
     plan = api.plan("Herrscher der Chipindustrie")
     assert "DIFFERENT layers" in seen[0]
+    assert "midstream natural-gas" in seen[0]
     assert len(plan["candidate_hypotheses"]) == 6

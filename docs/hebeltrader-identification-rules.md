@@ -93,6 +93,22 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
   `tests/hebeltrader/test_metric_fingerprint.py`.
 - **Hinweis:** Entwicklungsfall nach Auflösung — kein unabhängiger Blindtest mehr.
 
+### Residual A – Stromhunger: Utility-Thema vs. Midstream-Ereignisse (HT-016 / 191/26)
+- **Eingefrorene Live-Top-3 (Stand provisional 15.10.2026 08:15):** NEE → Iberdrola → ENEL;
+  Status `not_identified`. WMB fehlte im Universum (Teaser-only Discovery).
+- **Operator-Korrektur (2026-10-31):** NEE / Iberdrola / Enel passen zum **allgemeinen
+  Strombedarf-Thema**. Williams passt **zusätzlich** zu den **konkreten
+  Unternehmensereignissen des Begleitartikels**.
+- **Lernregel:** „Stromhunger / Rechenzentren / Energie“ allein reicht nicht zur
+  Identifikation eines Versorgers. Generische Utility-Treffer sind Theme-Fit, keine
+  Auflösung. Discriminator sind datierte Begleitartikel-Ereignisse (Produkt/Pipeline/
+  Vertrag/Expansion) — oft Midstream/Gas statt Retail-Utility. Ohne diese Primärnadeln:
+  Enthaltung; Scaffold-WMB nicht als Lösung leaken.
+- **Härte im Code:** Discovery/Falsifikation expandiert die Power+Data-Center-Wertschöpfungskette
+  (Utility **und** Midstream-Gas/Pipeline); AI-Planer soll Layer streuen. Regression
+  `tests/hebeltrader/test_teaser_search_quality.py`.
+- **Offen:** Call-PDF 191/26 Stand Uhr + Begleitartikel-Ereignisse PIT-sicher extrahieren.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.
@@ -104,6 +120,8 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 
 ## Änderungsjournal
 
+- **2026-10-31:** HT-016 Residual A — Utility-Theme vs. Midstream-Begleitartikel; Discovery
+  expandiert Power+Data-Center auf Midstream-Gas/Pipeline ohne WMB-Leak.
 - **2026-10-28 (erneute Vollständigkeitsprüfung):** Historische Check-16-/Check-17-Auflösungen ergänzt: JPMorgan Chase MN6CYX (Ersttipp Goldman Sachs falsch) und Johnson & Johnson JE11C1 (richtig). 18 Fälle insgesamt, 10 richtig, 7 falsch, 1 ungelöst; historische Quote 10/16 vor Analog Devices bezog sich auf abgeschlossene Fälle ohne Williams.
 - **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.
 - **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
@@ -213,6 +231,8 @@ Nachweis: [maschinenlesbare Quellenbestätigung](hebeltrader-20026-source-confir
 - Daten/Ausgaben nur soweit angegeben. JPM-/JNJ-Auflösungsdaten nicht als Publikation
   übernehmen; Thales-Datierung ausdrücklich als unbestätigte frühere Übersichtsangabe markieren.
 - Williams: tatsächliche Aktie, tatsächlicher Ticker und Call-WKN null. WMB ist nur Verdacht.
+  Operator 2026-10-31: Utilities (NEE/Iberdrola/Enel) = Theme-Fit; Williams zusätzlich über
+  Begleitartikel-Ereignisse — siehe Residual A oben.
 - **Ein** vollständiger Originalteaser liegt jetzt vor: der vom Nutzer übermittelte
   ADI-Text in der strukturierten Referenzsammlung. Die übrigen 17 Volltexte fehlen weiterhin.
 - Der ADI-Teaser nennt Zukäufe und Geschäftsfelder, aber **nicht** Empower oder Alif.

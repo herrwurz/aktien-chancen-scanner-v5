@@ -196,5 +196,11 @@
       }
     }
   ],
-  "note": "Frozen before Call-PDF resolution. WMB suspected only; not identified. Not in corpus-v1."
+  "note": "Frozen before Call-PDF resolution. WMB suspected only; not identified. Not in corpus-v1. Operator 2026-10-31: NEE/Iberdrola/Enel fit general power-demand theme; Williams additionally fits Begleitartikel corporate events — teaser-only live cannot discriminate.",
+  "operator_discrimination": {
+    "theme_fit_utilities": ["NEE", "Iberdrola", "Enel"],
+    "event_fit_suspected": "WMB",
+    "discriminator": "Begleitartikel concrete corporate events (not teaser theme alone)"
+  }
 }
+

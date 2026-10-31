@@ -134,8 +134,15 @@ Operator bind: **HEBELTRADER 191/26**, featured **15.10.2026**. Scaffold status
 `2026-10-15T08:15:00+01:00`. SEC packet re-cut for that cutoff. Still out of
 corpus-v1 until Call-PDF Stand Uhr.
 
-**Weiter:** Call-PDF 191/26 Stand; live Ranking für Stromhunger mit PIT 15.10.;
-keine Schwellen-Absenkung; WMB bleibt Verdacht.
+### Operator-Diskriminierung (2026-10-31)
+
+NEE / Iberdrola / Enel = Theme-Fit Strombedarf. Williams = zusätzlich
+Begleitartikel-Ereignisse. Live Teaser-only kann das nicht trennen. Discovery/
+Falsifikation expandiert jetzt Power+Data-Center auf Midstream-Gas/Pipeline-Layer
+(ohne WMB zu leaken). Residual A in `hebeltrader-identification-rules.md`.
+
+**Weiter:** Call-PDF 191/26 Stand + Begleitartikel-Ereignisse PIT; keine
+Schwellen-Absenkung; WMB bleibt Verdacht bis Primärnadeln.
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls

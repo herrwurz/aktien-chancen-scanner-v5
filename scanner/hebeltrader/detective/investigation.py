@@ -1070,6 +1070,17 @@ class Investigator:
                     f"earnings date results before open after close"
                     for row in ranked[:5]
                 )
+            # HT-016: utility leaders on "data-center power demand" must be falsified
+            # against midstream gas / pipeline peers (Begleitartikel events often sit there).
+            if re.search(r"strom\w*|energie\w*|utilit\w*|power", text, re.I) and re.search(
+                r"rechenzentr\w*|data\s*cent(?:er|re)", text, re.I
+            ):
+                falsification_queries.extend(
+                    [
+                        "natural gas midstream pipeline vs utility data center power demand",
+                        "gas transmission pipeline company AI data center electricity contracts",
+                    ]
+                )
             for query in falsification_queries:
                 research(query)
             falsification.update(
