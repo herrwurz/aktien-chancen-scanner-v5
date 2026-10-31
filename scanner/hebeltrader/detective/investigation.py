@@ -19,6 +19,7 @@ from .chart_check import chart_score
 from .chart_check import check as chart_check
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
+from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
 from .research_plan import build_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
@@ -639,11 +640,22 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
 
 
 class Investigator:
-    def __init__(self, root, *, web=None, clock=None, product_issuers=None):
+    def __init__(
+        self,
+        root,
+        *,
+        web=None,
+        clock=None,
+        product_issuers=None,
+        earnings_lookup=None,
+        ath_bars_fetcher=None,
+    ):
         self.root = Path(root)
         self.web = web
         self.product_issuers = product_issuers or {}
         self.clock = clock or (lambda: datetime.now(UTC))
+        self.earnings_lookup = earnings_lookup
+        self.ath_bars_fetcher = ath_bars_fetcher
 
     def analyze(self, request, *, documents=None, historical_blind=False, case_id=None):
         if historical_blind and (
@@ -967,8 +979,16 @@ class Investigator:
 
         ranked = compare()
         chart_cache = {}
+        earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
         if not offline:
             _apply_chart(ranked, chart_cache, text)
+            earnings_pit = apply_earnings_pit(
+                ranked,
+                request.publication_at,
+                text,
+                lookup=self.earnings_lookup,
+                ath_bars_fetcher=self.ath_bars_fetcher,
+            )
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -984,6 +1004,15 @@ class Investigator:
             for query in peer_queries:
                 research(query)
             ranked = compare()
+            if not offline:
+                _apply_chart(ranked, chart_cache, text)
+                earnings_pit = apply_earnings_pit(
+                    ranked,
+                    request.publication_at,
+                    text,
+                    lookup=self.earnings_lookup,
+                    ath_bars_fetcher=self.ath_bars_fetcher,
+                )
             peer_comparison.update(
                 status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
                 queries=peer_queries,
@@ -1007,6 +1036,13 @@ class Investigator:
                 )
                 for row in ranked[:3]
             ]
+            # Explicit earnings-date probes when the teaser claims reported results.
+            if teaser_claims_reported_results(text):
+                falsification_queries.extend(
+                    f'"{row["identity"]["name"]}" {row["identity"].get("ticker") or ""} '
+                    f"earnings date results before open after close"
+                    for row in ranked[:5]
+                )
             for query in falsification_queries:
                 research(query)
             falsification.update(
@@ -1016,6 +1052,14 @@ class Investigator:
             ranked = compare()
         if not offline:
             _apply_chart(ranked, chart_cache, text)
+            earnings_pit = apply_earnings_pit(
+                ranked,
+                request.publication_at,
+                text,
+                lookup=self.earnings_lookup,
+                ath_bars_fetcher=self.ath_bars_fetcher,
+            )
+            falsification["earnings_pit"] = earnings_pit
         reasoning_review = {
             "status": "not_available_offline" if offline else "not_performed_no_candidates",
             "changes_deterministic_ranking": False,

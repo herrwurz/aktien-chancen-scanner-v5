@@ -125,6 +125,19 @@ python3 -c "from pathlib import Path; from scanner.hebeltrader.detective.simulat
 
 Returns `basis=live_falsification`. Real web path still needs API keys.
 
+## Hard-Fact PIT (Quartalszahlen / Allzeithoch)
+
+When the teaser already claims reported quarterly results or an all-time high,
+`earnings_pit` runs automatically on live ranked candidates:
+
+- Results must be **public at or before** `publication_at` (Vienna Stand).
+- Same-day US before-open / after-close prints are **not** known at a morning Stand.
+- ATH is checked on EOD closes through the prior session; >2% below ATH → hard contradiction.
+
+```bash
+python3 -m pytest tests/hebeltrader/test_earnings_pit.py -q
+```
+
 ## Korpus-Grenze
 
 27er-Original-Teaser: **0** mit ≥2 nativen Named-Ankern. Stufe 3a braucht entweder
