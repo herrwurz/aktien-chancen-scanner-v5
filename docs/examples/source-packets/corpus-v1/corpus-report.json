@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-corpus-v1-report-v1",
+  "freeze_counts": {
+    "cases": 52,
+    "ticker_hypothesis_ready": 26,
+    "partial_evidence": 1,
+    "identified": 26,
+    "identified_from_packet": 26
+  },
+  "manifest_cases": 26,
+  "named": {
+    "total": 26,
+    "identified": 26,
+    "not_identified": [],
+    "basis": {
+      "historical_source_packet": 26
+    },
+    "by_batch": {
+      "batch-10": 10,
+      "batch-eu-ir-wayback": 4,
+      "batch-pending-pdf": 2,
+      "batch-us-rest": 7,
+      "batch-eu-sec": 3
+    }
+  },
+  "original": {
+    "total": 26,
+    "identified": 0,
+    "identified_case_ids": []
+  },
+  "provisional_publication_at": [
+    "HT-003",
+    "HT-012"
+  ],
+  "blocked_out_of_corpus": [
+    "HT-016"
+  ],
+  "gates": {
+    "min_confirmed_specific_clues": 2,
+    "min_score_margin": 35,
+    "min_checked_candidates": 5,
+    "named_all_meet_gates": true
+  }
+}

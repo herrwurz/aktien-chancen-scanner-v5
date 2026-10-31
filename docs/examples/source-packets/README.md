@@ -26,7 +26,14 @@ Pilots:
   (featured_date + corpus Stand 08:15; PDFs 192/26 & 137/26 still missing);
   **2/2 named identified**. HT-016 still blocked. Shared 27er refs untouched.
 - `corpus-v1/` — union freeze of the five batches above; **26/26 named identified**
-  (HT-016 out). Originals 0/26.
+  (HT-016 out). Originals 0/26. Scorecard:
+  `python3 -m scanner.hebeltrader.detective.corpus_report`
+- `ht-016-blocked/` — Williams SEC scaffold (dev only; no `publication_at`;
+  **not** in identification freeze). Unlock via operator issue + PDF Stand.
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
+
+Pending PDF promotion (Costco 192/26, BASF 137/26):
+`python3 scripts/promote_provisional_publication_at.py` (dry-run;
+`--apply` / `--apply-shared-refs` when PDFs land).
 
 See `docs/hebeltrader-source-packets.md`, `docs/hebeltrader-path-to-ticker.md`.

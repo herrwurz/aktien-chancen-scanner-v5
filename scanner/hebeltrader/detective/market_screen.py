@@ -217,13 +217,16 @@ def export_pit_snapshots(
     fetch_bars=None,
     pause_seconds=0.15,
     progress=None,
-    history_pad_days=420,
+    history_pad_days=800,
 ):
     """One bar pull per ticker through max(as_of); features sliced per publication date.
 
     ``pit_basis`` is calendar ``publication_date`` EOD (last close on or before that day).
     This is coarser than ``publication_at`` and must not be treated as an exact cutoff for
     evidence packets.
+
+    Default ``history_pad_days`` is 800 so trend features (e.g. 200-day) have ample
+    pre-window bars even for early corpus as_of dates.
     """
     from .chart_check import fetch_eod_bars
 
@@ -368,13 +371,30 @@ def as_of_dates_from_inputs(inputs_path):
     )
 
 
+def _parse_history_pad(argv):
+    """Return (argv_without_flag, history_pad_days|None)."""
+    if "--history-pad-days" not in argv:
+        return argv, None
+    idx = argv.index("--history-pad-days")
+    if idx + 1 >= len(argv):
+        raise SystemExit("--history-pad-days requires an integer")
+    try:
+        pad = int(argv[idx + 1])
+    except ValueError as exc:
+        raise SystemExit("--history-pad-days must be an integer") from exc
+    if pad < 1:
+        raise SystemExit("--history-pad-days must be >= 1")
+    cleaned = argv[:idx] + argv[idx + 2 :]
+    return cleaned, pad
+
+
 def main(argv):
     usage = (
         "usage:\n"
         "  python -m scanner.hebeltrader.detective.market_screen "
         "export OUT.json [--as-of YYYY-MM-DD]\n"
         "  python -m scanner.hebeltrader.detective.market_screen "
-        "export-pit OUT.json --inputs INPUTS.json"
+        "export-pit OUT.json --inputs INPUTS.json [--history-pad-days N]"
     )
     if not argv:
         print(usage, file=sys.stderr)
@@ -396,15 +416,19 @@ def main(argv):
             return 2
         payload = export_snapshots(today=as_of, progress=progress)
     elif argv[0] == "export-pit":
-        if len(argv) != 4 or argv[2] != "--inputs":
+        rest, history_pad = _parse_history_pad(argv[1:])
+        if len(rest) != 3 or rest[1] != "--inputs":
             print(usage, file=sys.stderr)
             return 2
-        out = Path(argv[1])
-        dates = as_of_dates_from_inputs(argv[3])
+        out = Path(rest[0])
+        dates = as_of_dates_from_inputs(rest[2])
         if not dates:
             print("no publication_date values in inputs", file=sys.stderr)
             return 1
-        payload = export_pit_snapshots(dates, progress=progress)
+        kwargs = {}
+        if history_pad is not None:
+            kwargs["history_pad_days"] = history_pad
+        payload = export_pit_snapshots(dates, progress=progress, **kwargs)
     else:
         print(usage, file=sys.stderr)
         return 2

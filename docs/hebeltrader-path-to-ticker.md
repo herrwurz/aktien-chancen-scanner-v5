@@ -85,7 +85,17 @@ those cases until operator upload. **HT-016** still blocked (no issue/date).
 
 `corpus-v1/`: **26/26 named identified** via `historical_source_packet`
 (alle Batches außer HT-016). Original-Teaser weiter **0/26**. Freeze
-`evidence-batch-corpus-v1.json`.
+`evidence-batch-corpus-v1.json`. Scorecard:
+`python3 -m scanner.hebeltrader.detective.corpus_report`.
+
+`ht-016-blocked/`: Williams SEC scaffold (WMB + peers, Transco / Northwest
+Pipeline needles). **Dev only** — no issue/date, not in the freeze. Unlock
+requires operator issue binding + Call-PDF Stand Uhr.
+
+Pending PDF cutoffs (Costco 192/26, BASF 137/26): dry-run
+`python3 scripts/promote_provisional_publication_at.py`; `--apply` when PDFs
+land. PIT history pad default is **800** days
+(`market_screen export-pit --history-pad-days`).
 
 ## Korpus-Grenze
 

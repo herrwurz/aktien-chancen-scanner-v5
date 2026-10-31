@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-snapshots-pit-pool-meta-v1",
+  "snapshot_path": "reports/snapshots-pit-pool-v1-pad800-2026-10-31.json",
+  "recorded_at": "2026-10-31T07:03:38.960127+00:00",
+  "note": "Corpus-v1 26 as_of dates with history_pad_days=800 (from_date 2024-03-20). Universe already remap v1.1 via market_universe_list. Coverage up vs remap-2026-10-31 (1009→1027 succeeded). Delisted/M&A remain gaps.",
+  "history_pad_days": 800,
+  "export_meta": {
+    "attempted": 1044,
+    "failed": 17,
+    "failures": [
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "EVR.LSE"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "FALK.CO"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "FOR.MC"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "GLB.IR"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "GWI.MI"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "JUST.AS"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "LANV.PA"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "LIF.IR"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "MAN.XETRA"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "TIGO.ST"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "MRW.LSE"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "ROL.LSE"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "S4.LSE"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "SKY.LSE"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "SOW.XETRA"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "SWMA.ST"
+      },
+      {
+        "reason": "fetch_empty_or_error",
+        "ticker": "6506.TSE"
+      }
+    ],
+    "from_date": "2024-03-20",
+    "max_coverage": 1021,
+    "min_coverage": 1019,
+    "status": "partial",
+    "succeeded": 1027,
+    "to_date": "2026-10-29",
+    "token_present": true,
+    "universe_tickers": 1044
+  }
+}

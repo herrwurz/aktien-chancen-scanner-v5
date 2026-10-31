@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "kind": "hebeltrader-blocked-packet-scaffold-v1",
+  "note": "HT-016 Williams SEC scaffold for operator unlock. NOT in corpus-v1 / identification freeze. Research cutoff is provisional; no publisher Stand.",
+  "case": {
+    "case_id": "HT-016",
+    "suspected_ticker": "WMB",
+    "suspected_company": "Williams Companies",
+    "status": "blocked_no_publication_at",
+    "text_completeness": "headline_only",
+    "publication_issue": null,
+    "publication_at": null,
+    "research_cutoff": "2026-10-30T08:15:00+01:00",
+    "research_cutoff_basis": "provisional_research_as_of_not_publisher_stand",
+    "identification_freeze": false,
+    "lead_needles": ["Transco", "Northwest Pipeline", "Transmission"],
+    "issuers": [
+      {"ticker": "WMB", "cik": "0000107263", "role": "lead"},
+      {"ticker": "KMI", "cik": "0001506307", "role": "peer"},
+      {"ticker": "OKE", "cik": "0001039684", "role": "peer"},
+      {"ticker": "EPD", "cik": "0001061219", "role": "peer"},
+      {"ticker": "ET", "cik": "0001276187", "role": "peer"},
+      {"ticker": "LNG", "cik": "0000003570", "role": "peer"}
+    ],
+    "packet": "packets/HT-016.json",
+    "meta": "packets/HT-016.meta.json"
+  }
+}

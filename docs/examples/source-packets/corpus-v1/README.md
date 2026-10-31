@@ -37,3 +37,9 @@ python3 -m scanner.hebeltrader.detective.evidence_batch \
 
 Freeze: `evidence-batch-corpus-v1.json`. Quality:
 `tests/hebeltrader/test_corpus_v1_quality.py`.
+
+Scorecard (no re-scan):
+
+```bash
+python3 -m scanner.hebeltrader.detective.corpus_report
+```
