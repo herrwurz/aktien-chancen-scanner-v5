@@ -56,6 +56,8 @@ def test_tavily_usage_returns_plan_remaining_credits_and_caches():
     assert calls[0][0] == "https://api.tavily.com/usage"
     assert calls[0][1]["headers"] == {"Authorization": "Bearer tvly-private"}
     assert calls[0][1]["follow_redirects"] is False
+    assert calls[0][1]["timeout"] == TavilyUsageMonitor.DEFAULT_TIMEOUT_SECONDS
+    assert TavilyUsageMonitor.DEFAULT_TIMEOUT_SECONDS >= 60
 
 
 def test_tavily_usage_fails_closed_without_leaking_key():

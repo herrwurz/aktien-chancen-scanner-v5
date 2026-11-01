@@ -112,7 +112,16 @@ Corpus-v1 provisional flags cleared. Nur HT-016 bleibt PDF/Issue-Lücke.
 
 **B.** Charts nur als Tie-Break; kein Score-Retuning von Blind 202/26 (bestätigt).
 
-**C.** Echte Stufe 3b sobald Tavily/OpenAI Keys da sind (Harness schon grün).
+**C.** Echte Stufe 3b: Keys vorhanden → `live_falsification --approve-cost` auf nächsten
+  realen Teaser (kein Packet). Tavily `/usage`-Timeout auf 60s angehoben.
+
+## 18. Tavily usage timeout + live 3b path (2026-10-31)
+- `TavilyUsageMonitor` Default-Timeout 60s (vorher 10s → false `network_error`).
+- Settings akzeptieren `TAVILY_API_KEY` / `OPENAI_API_KEY` als Aliase.
+- `live_falsification` CLI mit Pflicht-`--approve-cost` / `DETECTIVE_EXTERNAL_API_APPROVED`.
+- Readiness: Key-Blocker entfällt bei gesetzten Keys; Next-Action zeigt Live-Befehl.
+
+Live-Smoke 198/26 (Original-Teaser, `--approve-cost`, max 40): Pfad ok (Tavily+OpenAI Audit), Ergebnis weiterhin `not_identified` / `insufficient_evidence` — anonyme Teaser-Limits, kein Blind-Claim.
 
 ### Active-Call-Ausschluss
 `featured_calls.json` + `blocked_features(as_of)`: unterlyings aus früheren HEBELTRADER-Calls
