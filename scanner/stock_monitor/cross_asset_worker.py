@@ -26,7 +26,7 @@ from scanner.stock_monitor.worker import SecTarget
 
 async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
     discovery = None
-    if not symbols and os.getenv("CRYPTO_DISCOVER_UNIVERSE", "false").lower() == "true":
+    if os.getenv("CRYPTO_DISCOVER_UNIVERSE", "false").lower() == "true":
         async with httpx.AsyncClient() as client:
             discovery = await discover_spot_symbols(client)
         symbols = discovery["symbols"]
