@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from scanner.stock_monitor.quality import CandidateAudit, quality_summary
+from scanner.stock_monitor.quality import quality_summary
 
 
 def audit_monitor_outcomes(run: dict) -> dict:
