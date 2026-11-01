@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta, UTC
+import datetime
+from datetime import timedelta
 from hashlib import sha256
 
 import pytest
@@ -6,7 +7,7 @@ import pytest
 from scanner.stock_monitor.journal import Decision, Evidence, append_run
 
 
-T = datetime(2026, 10, 28, 14, 0, tzinfo=UTC)
+T = datetime.datetime(2026, 10, 28, 14, 0, tzinfo=datetime.UTC)
 
 
 def evidence(**changes):
