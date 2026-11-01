@@ -1060,8 +1060,12 @@ class Investigator:
             return result
 
         ranked = compare()
-        ranked, dropped = _filter_active_call_blocked(ranked, blocked)
-        active_call_dropped.extend(dropped)
+        # Active-call exclusion is for live hypothesis discovery only. Offline historical
+        # packets must keep their issuer/peers even if those names appear on the blocklist
+        # from an earlier HEBELTRADER issue (Stufe 3a identity channel).
+        if not offline:
+            ranked, dropped = _filter_active_call_blocked(ranked, blocked)
+            active_call_dropped.extend(dropped)
         chart_cache = {}
         earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
         metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}

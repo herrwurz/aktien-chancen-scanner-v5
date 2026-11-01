@@ -39,7 +39,7 @@ def test_scan_all_references_without_reading_solutions_then_evaluate(tmp_path, m
     assert result["independent_real_blind_tests"] == 0
     assert result["regression"]["top1_rate"] is None
     assert result["regression"]["top3_rate"] is None
-    assert result["missing_full_text_count"] == 4
+    assert result["missing_full_text_count"] == 3  # HT-016 full teaser bound 2026-10-31
     assert result["historical_conversation"]["total"] == 18
     assert result["offline_hypothesis_coverage"]["graded_cases"] == 25
     assert result["offline_hypothesis_coverage"]["solution_in_first_suggestion"] == 2
