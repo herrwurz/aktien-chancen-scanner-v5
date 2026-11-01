@@ -1,5 +1,4 @@
-import datetime
-from datetime import timedelta
+import datetime as dt
 from hashlib import sha256
 
 import pytest
@@ -7,13 +6,13 @@ import pytest
 from scanner.stock_monitor.journal import Decision, Evidence, append_run
 
 
-T = datetime.datetime(2026, 10, 28, 14, 0, tzinfo=datetime.UTC)
+T = dt.datetime(2026, 10, 28, 14, 0, tzinfo=dt.UTC)
 
 
 def evidence(**changes):
     values = dict(event_id="test-1", symbol="TEST", source_url="https://example.org/filing",
-                  source_type="primary", published_at=T, first_seen_at=T + timedelta(minutes=1),
-                  retrieved_at=T + timedelta(minutes=2),
+                  source_type="primary", published_at=T, first_seen_at=T + dt.timedelta(minutes=1),
+                  retrieved_at=T + dt.timedelta(minutes=2),
                   content_sha256=sha256(b"filing").hexdigest())
     values.update(changes)
     return Evidence(**values)
@@ -21,7 +20,7 @@ def evidence(**changes):
 
 def test_append_and_duplicate_rejection(tmp_path):
     path = tmp_path / "runs.jsonl"
-    kw = dict(path=path, run_id="run-1", cutoff=T + timedelta(minutes=3),
+    kw = dict(path=path, run_id="run-1", cutoff=T + dt.timedelta(minutes=3),
               evidence=[evidence()],
               decisions=[Decision("test-1", "event_detected", "New filing", "unavailable")],
               code_version="test", coverage="1 source checked; no live quotes")
@@ -45,7 +44,7 @@ def test_delayed_quote_cannot_be_executable():
 
 def test_corrupt_journal_rejected(tmp_path):
     path = tmp_path / "runs.jsonl"
-    kwargs = dict(cutoff=T + timedelta(minutes=3), evidence=[evidence()], decisions=[],
+    kwargs = dict(cutoff=T + dt.timedelta(minutes=3), evidence=[evidence()], decisions=[],
                   code_version="test", coverage="partial")
     append_run(path, run_id="a", **kwargs)
     path.write_text(path.read_text().replace("partial", "complete"))
