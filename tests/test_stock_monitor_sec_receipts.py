@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -18,11 +18,11 @@ def record():
 def test_sec_timezone_and_form_filter():
     result = receipts_from_submissions(record(), cik=1234567, symbol="XYZ")
     assert len(result) == 1
-    assert result[0].published_at.astimezone(timezone.utc) == datetime(
-        2026, 10, 27, 20, 15, tzinfo=timezone.utc
+    assert result[0].published_at.astimezone(UTC) == datetime(
+        2026, 10, 27, 20, 15, tzinfo=UTC
     )
     assert result[0].source_url.endswith("000123456726000001/0001234567-26-000001-index.html")
-    result[0].validate(datetime(2026, 10, 27, 20, 21, tzinfo=timezone.utc))
+    result[0].validate(datetime(2026, 10, 27, 20, 21, tzinfo=UTC))
 
 
 def test_misaligned_rows_fail_closed():
