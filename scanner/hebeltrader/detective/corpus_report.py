@@ -278,6 +278,7 @@ def build_readiness(
                 "detail": "0/26 originals have ≥2 native named anchors",
             }
         )
+
     def _env_present(*names: str) -> bool:
         return any(bool(os.environ.get(name, "").strip()) for name in names)
 
