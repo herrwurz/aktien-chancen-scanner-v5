@@ -1,6 +1,6 @@
 """Bounded SEC monitor worker tests."""
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime  # noqa: I001
 
 from scanner.stock_monitor.worker import SecTarget, run_sec_monitor
 
