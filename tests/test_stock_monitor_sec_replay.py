@@ -1,4 +1,4 @@
-import datetime as dt
+import datetime as dt  # noqa: I001
 
 from scanner.stock_monitor.export import export_runs
 from scanner.stock_monitor.sec_replay import replay_sec_snapshot
