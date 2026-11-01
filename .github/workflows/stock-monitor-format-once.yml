@@ -1,0 +1,35 @@
+name: Stock monitor one-shot formatting
+on:
+  push:
+    branches:
+      - feature/stock-forward-monitor-issue-88
+    paths:
+      - .github/workflows/stock-monitor-format-once.yml
+jobs:
+  format:
+    if: "!contains(github.event.head_commit.message, '[stock-format]')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/stock-forward-monitor-issue-88
+          persist-credentials: true
+      - uses: astral-sh/ruff-action@v3
+        with:
+          version: "0.14.4"
+          args: "format scanner/stock_monitor tests/test_stock_forward_journal.py tests/test_stock_monitor_export.py tests/test_stock_monitor_sec_receipts.py tests/test_stock_monitor_sec_replay.py"
+      - name: Fix import ordering in new monitor files
+        run: |
+          ruff check --select I --fix scanner/stock_monitor tests/test_stock_forward_journal.py tests/test_stock_monitor_export.py tests/test_stock_monitor_sec_receipts.py tests/test_stock_monitor_sec_replay.py
+          ruff format scanner/stock_monitor tests/test_stock_forward_journal.py tests/test_stock_monitor_export.py tests/test_stock_monitor_sec_receipts.py tests/test_stock_monitor_sec_replay.py
+      - name: Commit only monitor formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scanner/stock_monitor tests/test_stock_forward_journal.py tests/test_stock_monitor_export.py tests/test_stock_monitor_sec_receipts.py tests/test_stock_monitor_sec_replay.py
+          if ! git diff --cached --quiet; then
+            git commit -m "style(stock): apply Ruff formatting [stock-format]"
+            git push origin HEAD:feature/stock-forward-monitor-issue-88
+          fi
