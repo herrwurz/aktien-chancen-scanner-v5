@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 
 import pytest
@@ -6,13 +6,13 @@ import pytest
 from scanner.stock_monitor.journal import Decision, Evidence, append_run
 
 
-T = datetime(2026, 10, 28, 14, 0, tzinfo=timezone.utc)
+T = datetime(2026, 10, 28, 14, 0, tzinfo=UTC)
 
 
 def evidence(**changes):
     values = dict(event_id="test-1", symbol="TEST", source_url="https://example.org/filing",
                   source_type="primary", published_at=T, first_seen_at=T + timedelta(minutes=1),
-                  retrieved_at=T + timedelta(minutes=2), content_sha256=sha256(b"filing").hexdigest())
+                  retrieved_at=T + timedelta(minutes=2),\n                  content_sha256=sha256(b"filing").hexdigest())
     values.update(changes)
     return Evidence(**values)
 
@@ -20,7 +20,7 @@ def evidence(**changes):
 def test_append_and_duplicate_rejection(tmp_path):
     path = tmp_path / "runs.jsonl"
     kw = dict(path=path, run_id="run-1", cutoff=T + timedelta(minutes=3),
-              evidence=[evidence()], decisions=[Decision("test-1", "event_detected", "New filing", "unavailable")],
+              evidence=[evidence()],\n              decisions=[Decision("test-1", "event_detected", "New filing", "unavailable")],
               code_version="test", coverage="1 source checked; no live quotes")
     assert len(append_run(**kw)) == 64
     with pytest.raises(ValueError, match="Duplicate"):
