@@ -86,9 +86,7 @@ async def run_once(*, root: Path, symbols: list[str], targets: list[SecTarget]) 
     run_id = f"{cutoff:%Y%m%dT%H%M%S}-{uuid4().hex[:12]}"
     # SEC client is synchronous and must not block the async spot feed.
     stock_task = asyncio.create_task(
-        asyncio.to_thread(
-            _stock_pass, root=root, targets=targets, run_id=run_id, cutoff=cutoff
-        )
+        asyncio.to_thread(_stock_pass, root=root, targets=targets, run_id=run_id, cutoff=cutoff)
     )
     crypto_task = asyncio.create_task(_crypto_pass(symbols, cutoff=cutoff))
     stock_result, crypto_result = await asyncio.gather(
