@@ -55,9 +55,9 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
                         "symbol": symbol,
                         "status": "checked" if len(candles) >= 21 else "unavailable",
                         "closed_candles": len(candles),
-                        "last_candle_at": candles[-1].close_time.isoformat()
-                        if candles
-                        else None,
+                        "last_candle_at": (
+                            candles[-1].close_time.isoformat() if candles else None
+                        ),
                     }
                 except (ValueError, httpx.HTTPError, ProviderError) as exc:
                     return {
