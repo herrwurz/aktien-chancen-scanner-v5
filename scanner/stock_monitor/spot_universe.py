@@ -17,7 +17,9 @@ async def discover_spot_symbols(
     if not 1 <= max_symbols <= 50:
         raise ValueError("Candle follow-up budget must be 1..50")
     try:
-        response = await client.get("https://data-api.binance.vision/api/v3/ticker/24hr", timeout=20)
+        response = await client.get(
+            "https://data-api.binance.vision/api/v3/ticker/24hr", timeout=20
+        )
         response.raise_for_status()
         payload = response.json()
         if not isinstance(payload, list):
@@ -51,7 +53,10 @@ async def discover_spot_symbols(
             "eligible_symbols": len(rows),
             "detail_budget": max_symbols,
             "selection": "absolute_24h_price_change_then_quote_volume",
-            "limitations": "24h change is not early momentum; one exchange only; spot eligibility not independently confirmed",
+            "limitations": (
+                "24h change is not early momentum; one exchange only; "
+                "spot eligibility not independently confirmed"
+            ),
         }
     except (httpx.HTTPError, ValueError) as exc:
         return {"status": "unavailable", "error_type": type(exc).__name__, "symbols": []}
