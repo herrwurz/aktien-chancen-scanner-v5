@@ -54,11 +54,13 @@ def run_sec_monitor(
             )
             outcomes.append({"symbol": target.symbol, **result})
         except (ValueError, KeyError, TypeError, OSError) as exc:
-            outcomes.append({
-                "symbol": target.symbol,
-                "status": "unavailable",
-                "error_type": type(exc).__name__,
-            })
+            outcomes.append(
+                {
+                    "symbol": target.symbol,
+                    "status": "unavailable",
+                    "error_type": type(exc).__name__,
+                }
+            )
     return {
         "run_id": run_id,
         "cutoff": observed_at.isoformat(),

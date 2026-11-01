@@ -20,9 +20,7 @@ def test_unavailable_is_not_no_signal():
 
 def test_reject_naive_timestamp():
     with pytest.raises(ValueError, match="timezone-aware"):
-        summarize_coverage(
-            [SourceCoverage("SEC", "checked", datetime(2026, 11, 1), "Checked")]
-        )
+        summarize_coverage([SourceCoverage("SEC", "checked", datetime(2026, 11, 1), "Checked")])
 
 
 def test_empty_coverage_is_incomplete():
