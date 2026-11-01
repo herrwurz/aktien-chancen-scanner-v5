@@ -1,7 +1,8 @@
-# Corpus-v1: unified evidence freeze (26/27 refs)
+# Corpus-v1: unified evidence freeze (26 active refs)
 
 Union of all shippable source-packet batches after EU-IR + Costco/BASF
-(PDF Stand confirmed). **HT-016** remains out (no issue / no date).
+(PDF Stand confirmed). **HT-016** Williams was dropped from the active
+register on 2026-10-31.
 
 ## Named identification
 

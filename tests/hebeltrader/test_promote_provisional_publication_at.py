@@ -34,12 +34,12 @@ def _provisional():
     }
 
 
-def test_plan_reports_missing_and_blocked():
+def test_plan_reports_missing_without_dropped_ht016():
     inventory = {"pdfs": []}
     plan = plan_promotions(inventory, _provisional())
     assert plan["ready"] == 0
     assert plan["still_missing"] == 2
-    assert any(b["case_id"] == "HT-016" for b in plan["blocked"])
+    assert plan["blocked"] == []
     statuses = {a["case_id"]: a["status"] for a in plan["actions"]}
     assert statuses["HT-003"] == "still_missing_pdf"
     assert statuses["HT-012"] == "still_missing_pdf"

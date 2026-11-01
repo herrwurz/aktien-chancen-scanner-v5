@@ -2,12 +2,7 @@
   "schema_version": 1,
   "kind": "hebeltrader-provisional-publication-at-promote-plan-v1",
   "recorded_at": "2026-10-31T10:09:12.309702+00:00",
-  "blocked": [
-    {
-      "case_id": "HT-016",
-      "reason": "no_publication_issue_no_featured_date_unresolved_identity"
-    }
-  ],
+  "blocked": [],
   "actions": [
     {
       "case_id": "HT-003",

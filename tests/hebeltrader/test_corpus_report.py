@@ -24,7 +24,7 @@ def test_corpus_report_scorecard_matches_freeze():
     assert report["named"]["total"] == 26
     assert report["original"]["identified"] == 0
     assert report["provisional_publication_at"] == []
-    assert report["blocked_out_of_corpus"] == ["HT-016"]
+    assert report["blocked_out_of_corpus"] == []
     assert report["gates"]["named_all_meet_gates"] is True
 
 
@@ -32,7 +32,7 @@ def test_corpus_report_cli_exit_zero(capsys):
     assert main(["report", "--freeze", str(FREEZE), "--manifest", str(MANIFEST)]) == 0
     out = capsys.readouterr().out
     assert "named identified: 26/26" in out
-    assert "HT-016" in out
+    assert "blocked (out):" in out
 
 
 def test_corpus_report_bare_flags_still_work(capsys):
@@ -58,12 +58,13 @@ def test_corpus_readiness_board(capsys):
     out = capsys.readouterr().out
     assert "operator readiness" in out
     assert "corpus named: 26/26" in out
-    assert "ht016_no_publication_at" in out or "HT-016" in out
+    assert "dropped" in out
     assert main(["readiness", "--json"]) == 0
     board = json.loads(capsys.readouterr().out)
     assert board["kind"] == "hebeltrader-operator-readiness-v1"
     assert board["corpus"]["gates_ok"] is True
     assert board["corpus"]["provisional_publication_at"] == []
+    assert board["ht016"]["status"] == "dropped"
     assert not any(b["id"] == "pending_pdfs_192_137" for b in board["blockers"])
-    assert any(b["id"] == "ht016_no_publication_at" for b in board["blockers"])
+    assert not any(b["id"] == "ht016_no_publication_at" for b in board["blockers"])
     assert board["api_keys_present"]["EODHD_API_TOKEN"] in {True, False}

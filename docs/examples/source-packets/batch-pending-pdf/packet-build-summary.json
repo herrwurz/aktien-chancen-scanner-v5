@@ -6,12 +6,7 @@
   "built": 2,
   "reused": 0,
   "errors": [],
-  "blocked": [
-    {
-      "case_id": "HT-016",
-      "reason": "no_publication_issue_no_featured_date_unresolved_identity"
-    }
-  ],
+  "blocked": [],
   "results": [
     {
       "case_id": "HT-003",

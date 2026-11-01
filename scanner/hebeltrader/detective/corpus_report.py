@@ -23,9 +23,8 @@ DEFAULT_FREEZE = Path("docs/examples/source-packets/corpus-v1/evidence-batch-cor
 DEFAULT_MANIFEST = Path("docs/examples/source-packets/corpus-v1/manifest.json")
 DEFAULT_PACKETS = Path("docs/examples/source-packets/corpus-v1/packets")
 DEFAULT_SNAPSHOTS = Path("reports/snapshots-pit-pool-v1-pad800-2026-10-31.json")
-DEFAULT_HT016 = Path("docs/examples/source-packets/ht-016-blocked/manifest.json")
 DEFAULT_TIEBREAK = Path("docs/examples/market-tiebreak-pad800-2026-10-31.json")
-BLOCKED_OUT = ("HT-016",)
+BLOCKED_OUT: tuple[str, ...] = ()
 
 
 def build_report(freeze: dict, manifest: dict) -> dict:
@@ -132,7 +131,7 @@ def build_recipe(
         "evidence_batch": cmd,
         "notes": [
             "Named freeze is already committed; re-run only after packet edits.",
-            "HT-016 stays out until operator issue + PDF Stand.",
+            "HT-016 Williams was dropped from the active register (2026-10-31).",
             "Stufe 3b live web needs Tavily/OpenAI; use simulated_falsification offline.",
         ],
     }
@@ -214,7 +213,6 @@ def build_readiness(
     *,
     freeze_path: Path = DEFAULT_FREEZE,
     manifest_path: Path = DEFAULT_MANIFEST,
-    ht016_path: Path = DEFAULT_HT016,
     tiebreak_path: Path = DEFAULT_TIEBREAK,
 ) -> dict:
     freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
@@ -222,9 +220,6 @@ def build_readiness(
     report = build_report(freeze, manifest)
     originals = build_originals(freeze)
     promote = _promote_plan()
-    ht016 = None
-    if ht016_path.exists():
-        ht016 = json.loads(ht016_path.read_text(encoding="utf-8")).get("case")
     tiebreak = None
     if tiebreak_path.exists():
         raw = json.loads(tiebreak_path.read_text(encoding="utf-8"))
@@ -253,14 +248,6 @@ def build_readiness(
                 "status": "blocked",
                 "detail": "Costco 192/26 and/or BASF 137/26 PDF Stand still missing",
                 "actions": promote.get("actions"),
-            }
-        )
-    if ht016 and ht016.get("status") == "blocked_no_publication_at":
-        blockers.append(
-            {
-                "id": "ht016_no_publication_at",
-                "status": "blocked",
-                "detail": "HT-016 headline-only; needs issue binding + Call-PDF Stand",
             }
         )
     if originals["identified"] == 0:
@@ -294,9 +281,10 @@ def build_readiness(
         },
         "promote_pending_pdf": promote,
         "ht016": {
-            "status": (ht016 or {}).get("status"),
-            "suspected_ticker": (ht016 or {}).get("suspected_ticker"),
-            "identification_freeze": (ht016 or {}).get("identification_freeze"),
+            "status": "dropped",
+            "suspected_ticker": None,
+            "identification_freeze": False,
+            "note": "Removed from active register 2026-10-31 (Williams / Nutzerfall 02).",
         },
         "tiebreak": tiebreak,
         "api_keys_present": {
@@ -316,8 +304,8 @@ def build_readiness(
                 else []
             )
             + [
-                "Bind HT-016 to an issue + PDF Stand; re-cut ht-016-blocked packet",
-                "For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY",
+                "For live Stufe 3b: set TAVILY_API_KEY and/or OPENAI_API_KEY "
+                "in the Cursor Cloud Agent environment Secrets",
                 "Secure next real teaser before reading Call-PDF (≥2 named anchors)",
             ]
         ),
@@ -338,7 +326,7 @@ def render_readiness(board: dict) -> str:
         f"  corpus named: {corpus['named_identified']} (gates_ok={corpus['gates_ok']})",
         f"  corpus originals: {corpus['originals_identified']}",
         f"  provisional pub_at: {', '.join(corpus['provisional_publication_at']) or '—'}",
-        f"  HT-016: {board['ht016'].get('status')}",
+        f"  HT-016: {board['ht016'].get('status')} (dropped from active register)",
         (
             "  API keys: "
             + ", ".join(f"{k}={'yes' if v else 'no'}" for k, v in board["api_keys_present"].items())

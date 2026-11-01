@@ -19,9 +19,7 @@
     "unique_issues": 131,
     "errors": 0
   },
-  "reference_gaps": {
-    "HT-016": "no publication_issue / no PDF"
-  },
+  "reference_gaps": {},
   "pdfs": [
     {
       "filename": "Hebeltrader_2025-02_EK_halfOK_ff46.pdf",
