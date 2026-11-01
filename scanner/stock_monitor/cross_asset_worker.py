@@ -33,18 +33,22 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
         for symbol in symbols:
             try:
                 candles = await provider.fetch_candles(symbol, "5m", limit=22, now=cutoff)
-                outcomes.append({
-                    "symbol": symbol,
-                    "status": "checked" if len(candles) >= 21 else "unavailable",
-                    "closed_candles": len(candles),
-                    "last_candle_at": candles[-1].close_time.isoformat() if candles else None,
-                })
+                outcomes.append(
+                    {
+                        "symbol": symbol,
+                        "status": "checked" if len(candles) >= 21 else "unavailable",
+                        "closed_candles": len(candles),
+                        "last_candle_at": candles[-1].close_time.isoformat() if candles else None,
+                    }
+                )
             except (ValueError, httpx.HTTPError) as exc:
-                outcomes.append({
-                    "symbol": symbol,
-                    "status": "unavailable",
-                    "error_type": type(exc).__name__,
-                })
+                outcomes.append(
+                    {
+                        "symbol": symbol,
+                        "status": "unavailable",
+                        "error_type": type(exc).__name__,
+                    }
+                )
     checked = sum(item["status"] == "checked" for item in outcomes)
     return {
         "status": "complete" if checked == len(symbols) else "partial",
@@ -72,9 +76,7 @@ def _stock_pass(*, root: Path, targets: list[SecTarget], run_id: str, cutoff: da
         user_agent=os.getenv("SEC_USER_AGENT"),
         cutoff=cutoff,
     )
-    result["status"] = (
-        "complete" if result["status"] == "complete" else "partial"
-    )
+    result["status"] = "complete" if result["status"] == "complete" else "partial"
     result["signal_status"] = "research_only_no_trade_validation"
     return result
 
@@ -119,10 +121,7 @@ def main() -> None:
         raise ValueError("CRYPTO_SYMBOLS must be a JSON string array")
     if not isinstance(target_rows, list):
         raise ValueError("SEC_TARGETS must be a JSON array")
-    targets = [
-        SecTarget(cik=int(row["cik"]), symbol=str(row["symbol"]))
-        for row in target_rows
-    ]
+    targets = [SecTarget(cik=int(row["cik"]), symbol=str(row["symbol"])) for row in target_rows]
     if len(targets) > 10:
         raise ValueError("Maximum 10 SEC targets per pass")
     result = asyncio.run(run_once(root=root, symbols=symbols, targets=targets))
