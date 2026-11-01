@@ -109,7 +109,26 @@ services:
       migrate: {condition: service_completed_successfully}
     stop_grace_period: 30s
 
+
+  cross-asset-research:
+    <<: *app
+    profiles: [research]
+    restart: "no"
+    command: [python, -m, scanner.stock_monitor.cross_asset_worker, --once]
+    environment:
+      <<: *environment
+      CROSS_ASSET_DATA_DIR: /data
+      CRYPTO_SYMBOLS: '${CRYPTO_SYMBOLS:-["BTCUSDT","ETHUSDT"]}'
+      SEC_TARGETS: '${SEC_TARGETS:-[]}'
+      SEC_ALLOW_NETWORK: ${SEC_ALLOW_NETWORK:-false}
+      SEC_MAX_REQUESTS: ${SEC_MAX_REQUESTS:-0}
+      SEC_USER_AGENT: ${SEC_USER_AGENT:-}
+    volumes:
+      - cross_asset_research:/data
+    networks: [egress]
+
 volumes:
+  cross_asset_research:
   scanner_postgres:
 
 networks:
