@@ -163,3 +163,10 @@ Blind 202/26 PIT+Exclude: ADI/SNPS raus; Market-Top waren LLY, HNR1, IBE, KOG, L
 
 Diagnose-Notizen: `docs/examples/reference-27-pit-diagnosis-notes-2026-10-30.md`.
 Japan-Lücken: bewusst akzeptiert (`accepted_snapshot_gaps`).
+
+## 21. CI/Check-Suite Hinweis (2026-11-01)
+
+GitHub Actions `tests / test` am Head grün. Eine Cursor-App Check-Suite blieb auf
+älteren Pushes teils `queued` ohne Runs (UI kann rot/pending wirken). Neuer Head-
+Commit löst die Suite neu an; alte Failures bleiben nur Historie.
+
