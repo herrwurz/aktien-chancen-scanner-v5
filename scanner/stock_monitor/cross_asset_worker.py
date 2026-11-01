@@ -75,6 +75,7 @@ def _stock_pass(*, root: Path, targets: list[SecTarget], run_id: str, cutoff: da
         max_requests=int(os.getenv("SEC_MAX_REQUESTS", "0")),
         user_agent=os.getenv("SEC_USER_AGENT"),
         cutoff=cutoff,
+        live_mode=True,
     )
     result["status"] = "complete" if result["status"] == "complete" else "partial"
     result["signal_status"] = "research_only_no_trade_validation"
