@@ -20,12 +20,18 @@ from scanner.stock_monitor.cross_asset import run_cross_asset
 from scanner.stock_monitor.cross_asset_journal import append_cross_asset_run
 from scanner.stock_monitor.sec_client_runner import run_with_sec_client
 from scanner.stock_monitor.spot_signals import evaluate_spot_candidate
+from scanner.stock_monitor.spot_universe import discover_spot_symbols
 from scanner.stock_monitor.worker import SecTarget
 
 
 async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
+    discovery = None
+    if not symbols and os.getenv("CRYPTO_DISCOVER_UNIVERSE", "false").lower() == "true":
+        async with httpx.AsyncClient() as client:
+            discovery = await discover_spot_symbols(client)
+        symbols = discovery["symbols"]
     if not symbols:
-        return {"status": "unavailable", "reason": "no_crypto_symbols_configured"}
+        return {"status": "unavailable", "reason": "no_crypto_symbols_available", "discovery": discovery}
     if len(symbols) > 50:
         raise ValueError("Crypto symbol budget exceeded")
     async with httpx.AsyncClient() as client:
@@ -57,6 +63,7 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
     return {
         "status": "complete" if checked == len(symbols) else "partial",
         "source": "binance_spot",
+        "discovery": discovery,
         "requested_symbols": len(symbols),
         "checked_symbols": checked,
         "momentum_candidates": candidates,
