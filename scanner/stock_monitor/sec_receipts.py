@@ -33,8 +33,7 @@ def receipts_from_submissions(record: dict, *, cik: int, symbol: str) -> list[Ev
     # The SEC archive snapshot hash is a provenance receipt for the submissions
     # response, not a hash of each filing's full text.
     raw_hash = record.get("raw_sha256")
-    if not raw_hash or len(raw_hash) != 64:
-        raise ValueError("Missing SEC response hash")
+    if (\n        not isinstance(raw_hash, str)\n        or len(raw_hash) != 64\n        or any(c not in "0123456789abcdef" for c in raw_hash)\n    ):\n        raise ValueError("Invalid SEC response hash")
     result = []
     for i in range(count):
         form = recent["form"][i]
