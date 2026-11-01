@@ -18,7 +18,7 @@ def evaluate_spot_candidate(candles: list[Candle]) -> dict:
     bars = candles[-21:]
     if any(bar.interval != "5m" or bar.market != bars[0].market for bar in bars):
         return {"qualified": False, "reason": "mixed_market"}
-    if any(left.close_time != right.open_time for left, right in zip(bars, bars[1:])):
+    if any(left.close_time != right.open_time for left, right in zip(bars, bars[1:], strict=False)):
         return {"qualified": False, "reason": "discontinuous_candles"}
     baseline = bars[:-1]
     current = bars[-1]
