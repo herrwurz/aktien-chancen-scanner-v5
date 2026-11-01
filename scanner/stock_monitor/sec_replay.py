@@ -2,6 +2,7 @@
 
 No network, trading, scheduler, HEBELTRADER or server configuration changes.
 """
+
 from __future__ import annotations
 
 from datetime import datetime

@@ -2,6 +2,7 @@
 
 No order execution, market data fetching, or HEBELTRADER dependency.
 """
+
 from __future__ import annotations
 
 import json
@@ -43,8 +44,10 @@ class Evidence:
         ):
             raise ValueError("Invalid SHA256")
         if not (
-            as_utc(self.published_at) <= as_utc(self.first_seen_at)
-            <= as_utc(self.retrieved_at) <= as_utc(cutoff)
+            as_utc(self.published_at)
+            <= as_utc(self.first_seen_at)
+            <= as_utc(self.retrieved_at)
+            <= as_utc(cutoff)
         ):
             raise ValueError("Evidence unavailable at cutoff")
 
@@ -74,8 +77,16 @@ class Decision:
                 raise ValueError("Invalid long risk scenario")
 
 
-def append_run(path: Path, *, run_id: str, cutoff: datetime, evidence: list[Evidence],
-               decisions: list[Decision], code_version: str, coverage: str) -> str:
+def append_run(
+    path: Path,
+    *,
+    run_id: str,
+    cutoff: datetime,
+    evidence: list[Evidence],
+    decisions: list[Decision],
+    code_version: str,
+    coverage: str,
+) -> str:
     """Append one SHA-linked JSONL record. Never silently rewrite prior runs."""
     if not run_id or not code_version or not coverage:
         raise ValueError("Missing run metadata")
@@ -87,13 +98,20 @@ def append_run(path: Path, *, run_id: str, cutoff: datetime, evidence: list[Evid
         decision.validate(cutoff)
         if decision.event_id not in ids:
             raise ValueError("Decision without evidence")
+
     def serial(value: object) -> object:
         if isinstance(value, datetime):
             return utc(value)
         raise TypeError(type(value).__name__)
-    payload = {"run_id": run_id, "cutoff": cutoff_utc, "code_version": code_version,
-               "coverage": coverage, "evidence": [asdict(e) for e in evidence],
-               "decisions": [asdict(d) for d in decisions]}
+
+    payload = {
+        "run_id": run_id,
+        "cutoff": cutoff_utc,
+        "code_version": code_version,
+        "coverage": coverage,
+        "evidence": [asdict(e) for e in evidence],
+        "decisions": [asdict(d) for d in decisions],
+    }
     serialized = json.dumps(payload, default=serial, sort_keys=True, separators=(",", ":"))
     path.parent.mkdir(parents=True, exist_ok=True)
     previous = "0" * 64
@@ -109,6 +127,11 @@ def append_run(path: Path, *, run_id: str, cutoff: datetime, evidence: list[Evid
                 previous = expected
     digest = sha256((previous + serialized).encode()).hexdigest()
     with path.open("a", encoding="utf-8") as writer:
-        writer.write(json.dumps({"previous_sha256": previous, "payload": serialized,
-                                 "record_sha256": digest}, sort_keys=True) + "\n")
+        writer.write(
+            json.dumps(
+                {"previous_sha256": previous, "payload": serialized, "record_sha256": digest},
+                sort_keys=True,
+            )
+            + "\n"
+        )
     return digest

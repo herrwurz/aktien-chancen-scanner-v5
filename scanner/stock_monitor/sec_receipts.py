@@ -3,6 +3,7 @@
 Pure adapter: no network calls and no HEBELTRADER import. SEC acceptance
 timestamps are interpreted as America/New_York local time, not UTC.
 """
+
 from __future__ import annotations
 
 import json
@@ -55,12 +56,18 @@ def receipts_from_submissions(record: dict, *, cik: int, symbol: str) -> list[Ev
             f"https://www.sec.gov/Archives/edgar/data/{cik}/"
             f"{accession.replace('-', '')}/{accession}-index.html"
         )
-        result.append(Evidence(
-            event_id=f"sec:{accession}", symbol=symbol, source_url=url,
-            source_type="primary", published_at=accepted,
-            first_seen_at=retrieved, retrieved_at=retrieved,
-            content_sha256=raw_hash,
-        ))
+        result.append(
+            Evidence(
+                event_id=f"sec:{accession}",
+                symbol=symbol,
+                source_url=url,
+                source_type="primary",
+                published_at=accepted,
+                first_seen_at=retrieved,
+                retrieved_at=retrieved,
+                content_sha256=raw_hash,
+            )
+        )
     return result
 
 
