@@ -106,6 +106,5 @@ def append_run(path: Path, *, run_id: str, cutoff: datetime, evidence: list[Evid
     digest = sha256((previous + serialized).encode()).hexdigest()
     with path.open("a", encoding="utf-8") as writer:
         writer.write(json.dumps({"previous_sha256": previous, "payload": serialized,
-                                 "record_sha256": digest}, sort_keys=True) + "
-")
+                                 "record_sha256": digest}, sort_keys=True) + "\n")
     return digest
