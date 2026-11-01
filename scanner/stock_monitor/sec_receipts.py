@@ -5,6 +5,7 @@ timestamps are interpreted as America/New_York local time, not UTC.
 """
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from hashlib import sha256
 from zoneinfo import ZoneInfo
