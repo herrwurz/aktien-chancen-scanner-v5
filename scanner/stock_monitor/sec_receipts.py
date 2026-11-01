@@ -6,8 +6,8 @@ timestamps are interpreted as America/New_York local time, not UTC.
 from __future__ import annotations
 
 from datetime import datetime
-from hashlib import sha256
 import json
+from hashlib import sha256
 from zoneinfo import ZoneInfo
 
 from scanner.stock_monitor.journal import Evidence
