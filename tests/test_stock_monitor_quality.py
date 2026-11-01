@@ -9,7 +9,9 @@ from scanner.stock_monitor.quality import CandidateAudit, quality_summary
 
 def test_quality_counts_both_asset_classes_without_claiming_recall():
     items = [
-        CandidateAudit("stock", "sec:1", "ABC", datetime(2026, 11, 1, tzinfo=UTC), "alerted", "Filing"),
+        CandidateAudit(
+            "stock", "sec:1", "ABC", datetime(2026, 11, 1, tzinfo=UTC), "alerted", "Filing"
+        ),
         CandidateAudit("crypto", "pool:1", "XYZ", None, "missed", "Retrospective discovery"),
     ]
     result = quality_summary(items)
