@@ -56,7 +56,9 @@ def run_sec_monitor(
                 run_id=f"{run_id}:sec:{target.cik}",
                 code_version=code_version,
             )
-            outcomes.append({"symbol": target.symbol, **result, "cutoff": target_cutoff.isoformat()})
+            outcomes.append(
+                {"symbol": target.symbol, **result, "cutoff": target_cutoff.isoformat()}
+            )
         except (ValueError, KeyError, TypeError, OSError) as exc:
             outcomes.append(
                 {
