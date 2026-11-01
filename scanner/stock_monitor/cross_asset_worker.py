@@ -15,6 +15,7 @@ from uuid import uuid4
 
 import httpx
 
+from scanner.providers.base import ProviderError
 from scanner.providers.binance import BinanceSpotProvider
 from scanner.stock_monitor.cross_asset import run_cross_asset
 from scanner.stock_monitor.cross_asset_journal import append_cross_asset_run
@@ -36,32 +37,35 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
             "reason": "no_crypto_symbols_available",
             "discovery": discovery,
         }
-    if len(symbols) > 50:
-        raise ValueError("Crypto symbol budget exceeded")
+    # Bound concurrent API calls, not market coverage. Every eligible symbol is attempted.
+    concurrency = int(os.getenv("CRYPTO_DETAIL_CONCURRENCY", "4"))
+    if not 1 <= concurrency <= 8:
+        raise ValueError("CRYPTO_DETAIL_CONCURRENCY must be 1..8")
     async with httpx.AsyncClient() as client:
         provider = BinanceSpotProvider(client)
-        outcomes = []
-        for symbol in symbols:
-            try:
-                candles = await provider.fetch_candles(symbol, "5m", limit=22, now=cutoff)
-                signal = evaluate_spot_candidate(candles)
-                outcomes.append(
-                    {
+        semaphore = asyncio.Semaphore(concurrency)
+
+        async def inspect(symbol: str) -> dict:
+            async with semaphore:
+                try:
+                    candles = await provider.fetch_candles(symbol, "5m", limit=22, now=cutoff)
+                    signal = evaluate_spot_candidate(candles)
+                    last_candle_at = candles[-1].close_time.isoformat() if candles else None
+                    return {
                         "candidate": signal,
                         "symbol": symbol,
                         "status": "checked" if len(candles) >= 21 else "unavailable",
                         "closed_candles": len(candles),
-                        "last_candle_at": candles[-1].close_time.isoformat() if candles else None,
+                        "last_candle_at": last_candle_at,
                     }
-                )
-            except (ValueError, httpx.HTTPError) as exc:
-                outcomes.append(
-                    {
+                except (ValueError, httpx.HTTPError, ProviderError) as exc:
+                    return {
                         "symbol": symbol,
                         "status": "unavailable",
                         "error_type": type(exc).__name__,
                     }
-                )
+
+        outcomes = await asyncio.gather(*(inspect(symbol) for symbol in symbols))
     checked = sum(item["status"] == "checked" for item in outcomes)
     candidates = [item["symbol"] for item in outcomes if item.get("candidate", {}).get("qualified")]
     return {

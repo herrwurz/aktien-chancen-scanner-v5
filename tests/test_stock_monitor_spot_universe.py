@@ -1,4 +1,4 @@
-"""Offline coverage for market-wide screening and bounded detail budget."""
+"""Offline coverage for market-wide screening and unlimited eligible discovery."""
 
 import asyncio
 
@@ -21,7 +21,7 @@ def test_discovery_screens_all_and_ranks_movers():
 
     async def run():
         async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
-            return await discover_spot_symbols(client, max_symbols=2)
+            return await discover_spot_symbols(client)
 
     result = asyncio.run(run())
     assert result["status"] == "complete"
