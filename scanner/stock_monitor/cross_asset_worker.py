@@ -61,7 +61,7 @@ def _stock_pass(*, root: Path, targets: list[SecTarget], run_id: str, cutoff: da
     if not targets:
         return {"status": "unavailable", "reason": "no_sec_targets_configured"}
     allow_network = os.getenv("SEC_ALLOW_NETWORK", "false").lower() == "true"
-    return run_with_sec_client(
+    result = run_with_sec_client(
         cache_root=root / "sec-cache",
         journal_path=root / "sec-journal.jsonl",
         targets=targets,
@@ -72,6 +72,11 @@ def _stock_pass(*, root: Path, targets: list[SecTarget], run_id: str, cutoff: da
         user_agent=os.getenv("SEC_USER_AGENT"),
         cutoff=cutoff,
     )
+    result["status"] = (
+        "complete" if result["status"] == "complete" else "partial"
+    )
+    result["signal_status"] = "research_only_no_trade_validation"
+    return result
 
 
 async def run_once(*, root: Path, symbols: list[str], targets: list[SecTarget]) -> dict:
