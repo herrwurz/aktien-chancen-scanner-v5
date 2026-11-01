@@ -23,6 +23,7 @@ def run_with_sec_client(
     max_requests: int = 0,
     user_agent: str | None = None,
     cutoff: datetime | None = None,
+    live_mode: bool = False,
 ) -> dict:
     """Reuse SEC cache, User-Agent policy, retries and request budget."""
     if max_requests < 0 or max_requests > 100:
@@ -45,4 +46,5 @@ def run_with_sec_client(
         code_version=code_version,
         cutoff=cutoff or datetime.now(UTC),
         max_targets=100,
+        live_mode=live_mode,
     )

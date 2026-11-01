@@ -25,6 +25,7 @@ def run_sec_monitor(
     code_version: str,
     cutoff: datetime | None = None,
     max_targets: int = 10,
+    live_mode: bool = False,
 ) -> dict:
     """One bounded research-only pass; caller controls rate limits and cache."""
     if not 1 <= max_targets <= 100 or len(targets) > max_targets:
@@ -43,16 +44,21 @@ def run_sec_monitor(
             if record.get("status") == "dry_run":
                 outcomes.append({"symbol": target.symbol, "status": "dry_run"})
                 continue
+            # Live polling must not use a cutoff taken before the HTTP response.
+            # Historical replay keeps the caller-supplied point-in-time cutoff.
+            target_cutoff = max(observed_at, datetime.now(UTC)) if live_mode else observed_at
             result = replay_sec_snapshot(
                 record=record,
                 cik=target.cik,
                 symbol=target.symbol,
-                cutoff=observed_at,
+                cutoff=target_cutoff,
                 journal_path=journal_path,
                 run_id=f"{run_id}:sec:{target.cik}",
                 code_version=code_version,
             )
-            outcomes.append({"symbol": target.symbol, **result})
+            outcomes.append(
+                {"symbol": target.symbol, **result, "cutoff": target_cutoff.isoformat()}
+            )
         except (ValueError, KeyError, TypeError, OSError) as exc:
             outcomes.append(
                 {
