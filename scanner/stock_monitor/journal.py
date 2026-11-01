@@ -4,10 +4,11 @@ No order execution, market data fetching, or HEBELTRADER dependency.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
-from hashlib import sha256
 import json
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+import json
+from hashlib import sha256
 from pathlib import Path
 from typing import Literal
 
@@ -15,7 +16,7 @@ from typing import Literal
 def utc(value: datetime) -> str:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("Timestamp must be timezone-aware")
-    return value.astimezone(timezone.utc).isoformat()
+    return value.astimezone(UTC).isoformat()
 
 
 @dataclass(frozen=True)
@@ -34,9 +35,9 @@ class Evidence:
             raise ValueError("Missing event identity")
         if not self.source_url.startswith(("https://", "http://")):
             raise ValueError("Source URL required")
-        if len(self.content_sha256) != 64 or any(c not in "0123456789abcdef" for c in self.content_sha256):
+        if len(self.content_sha256) != 64 or any(\n            c not in "0123456789abcdef" for c in self.content_sha256\n        ):
             raise ValueError("Invalid SHA256")
-        if not (utc(self.published_at) <= utc(self.first_seen_at) <= utc(self.retrieved_at) <= utc(cutoff)):
+        if not (\n            utc(self.published_at) <= utc(self.first_seen_at)\n            <= utc(self.retrieved_at) <= utc(cutoff)\n        ):
             raise ValueError("Evidence unavailable at cutoff")
 
 
