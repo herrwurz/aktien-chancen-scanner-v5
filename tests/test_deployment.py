@@ -6,7 +6,11 @@ import yaml
 def test_compose_is_isolated_and_database_private():
     cfg = yaml.safe_load(Path("compose.yaml").read_text())
     assert cfg["name"] == "chancen-scanner-v6"
-    assert set(cfg["volumes"]) == {"scanner_postgres"}
+    assert set(cfg["volumes"]) == {"scanner_postgres", "cross_asset_research"}
+    assert cfg["services"]["cross-asset-research"]["profiles"] == ["research"]
+    assert cfg["services"]["cross-asset-research"]["networks"] == ["egress"]
+    assert cfg["services"]["cross-asset-research"]["volumes"] == ["cross_asset_research:/data"]
+    assert "depends_on" not in cfg["services"]["cross-asset-research"]
     assert set(cfg["networks"]) == {"backend", "egress", "web"}
     assert cfg["networks"]["backend"]["internal"] is True
     assert cfg["services"]["api"]["networks"] == ["backend", "web"]
