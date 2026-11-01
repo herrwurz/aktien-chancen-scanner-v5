@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from hashlib import sha256
 
 import pytest
@@ -8,7 +8,7 @@ from scanner.stock_monitor.journal import Decision, Evidence, append_run
 
 
 def test_export_is_verified_and_limited(tmp_path):
-    t = datetime(2026, 10, 28, 14, 0, tzinfo=timezone.utc)
+    t = datetime(2026, 10, 28, 14, 0, tzinfo=UTC)
     p = tmp_path / "runs.jsonl"
     event = Evidence("e1", "XYZ", "https://example.org/filing", "primary", t, t, t,
                      sha256(b"filing").hexdigest())
