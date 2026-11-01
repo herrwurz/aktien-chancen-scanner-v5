@@ -31,7 +31,11 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
             discovery = await discover_spot_symbols(client)
         symbols = discovery["symbols"]
     if not symbols:
-        return {"status": "unavailable", "reason": "no_crypto_symbols_available", "discovery": discovery}
+        return {
+            "status": "unavailable",
+            "reason": "no_crypto_symbols_available",
+            "discovery": discovery,
+        }
     if len(symbols) > 50:
         raise ValueError("Crypto symbol budget exceeded")
     async with httpx.AsyncClient() as client:
