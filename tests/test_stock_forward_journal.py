@@ -1,4 +1,4 @@
-import datetime as dt
+import datetime as dt  # noqa: I001
 from hashlib import sha256
 
 import pytest
