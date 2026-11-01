@@ -19,6 +19,7 @@ from scanner.providers.binance import BinanceSpotProvider
 from scanner.stock_monitor.cross_asset import run_cross_asset
 from scanner.stock_monitor.cross_asset_journal import append_cross_asset_run
 from scanner.stock_monitor.sec_client_runner import run_with_sec_client
+from scanner.stock_monitor.spot_signals import evaluate_spot_candidate
 from scanner.stock_monitor.worker import SecTarget
 
 
@@ -33,8 +34,10 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
         for symbol in symbols:
             try:
                 candles = await provider.fetch_candles(symbol, "5m", limit=22, now=cutoff)
+                signal = evaluate_spot_candidate(candles)
                 outcomes.append(
                     {
+                        "candidate": signal,
                         "symbol": symbol,
                         "status": "checked" if len(candles) >= 21 else "unavailable",
                         "closed_candles": len(candles),
@@ -50,13 +53,15 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
                     }
                 )
     checked = sum(item["status"] == "checked" for item in outcomes)
+    candidates = [item["symbol"] for item in outcomes if item.get("candidate", {}).get("qualified")]
     return {
         "status": "complete" if checked == len(symbols) else "partial",
         "source": "binance_spot",
         "requested_symbols": len(symbols),
         "checked_symbols": checked,
+        "momentum_candidates": candidates,
         "outcomes": outcomes,
-        "signal_status": "research_only_no_trade_validation",
+        "signal_status": "unvalidated_momentum_candidates_only",
         "bitpanda_listing_status": "not_checked",
     }
 
