@@ -34,9 +34,14 @@ class Evidence:
             raise ValueError("Missing event identity")
         if not self.source_url.startswith(("https://", "http://")):
             raise ValueError("Source URL required")
-        if len(self.content_sha256) != 64 or any(\n            c not in "0123456789abcdef" for c in self.content_sha256\n        ):
+        if len(self.content_sha256) != 64 or any(
+            c not in "0123456789abcdef" for c in self.content_sha256
+        ):
             raise ValueError("Invalid SHA256")
-        if not (\n            utc(self.published_at) <= utc(self.first_seen_at)\n            <= utc(self.retrieved_at) <= utc(cutoff)\n        ):
+        if not (
+            utc(self.published_at) <= utc(self.first_seen_at)
+            <= utc(self.retrieved_at) <= utc(cutoff)
+        ):
             raise ValueError("Evidence unavailable at cutoff")
 
 
@@ -101,5 +106,6 @@ def append_run(path: Path, *, run_id: str, cutoff: datetime, evidence: list[Evid
     digest = sha256((previous + serialized).encode()).hexdigest()
     with path.open("a", encoding="utf-8") as writer:
         writer.write(json.dumps({"previous_sha256": previous, "payload": serialized,
-                                 "record_sha256": digest}, sort_keys=True) + "\n")
+                                 "record_sha256": digest}, sort_keys=True) + "
+")
     return digest
