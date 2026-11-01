@@ -28,7 +28,7 @@ def receipts_from_submissions(record: dict, *, cik: int, symbol: str) -> list[Ev
     if any(len(recent[key]) != count for key in keys):
         raise ValueError("Misaligned SEC submission columns")
     retrieved = datetime.fromisoformat(record["retrieved_at"])
-    if retrieved.tzinfo is None:
+    if retrieved.tzinfo is None or retrieved.utcoffset() is None:
         raise ValueError("Retrieval timestamp must include timezone")
     # The SEC archive snapshot hash is a provenance receipt for the submissions
     # response, not a hash of each filing's full text.
