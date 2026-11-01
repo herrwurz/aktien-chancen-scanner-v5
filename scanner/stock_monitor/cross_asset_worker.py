@@ -79,7 +79,9 @@ async def run_once(*, root: Path, symbols: list[str], targets: list[SecTarget]) 
     run_id = f"{cutoff:%Y%m%dT%H%M%S}-{uuid4().hex[:12]}"
     # SEC client is synchronous and must not block the async spot feed.
     stock_task = asyncio.create_task(
-        asyncio.to_thread(_stock_pass, root=root, targets=targets, run_id=run_id, cutoff=cutoff)
+        asyncio.to_thread(
+            _stock_pass, root=root, targets=targets, run_id=run_id, cutoff=cutoff
+        )
     )
     crypto_task = asyncio.create_task(_crypto_pass(symbols, cutoff=cutoff))
     stock_result, crypto_result = await asyncio.gather(
@@ -112,17 +114,24 @@ def main() -> None:
         raise ValueError("CRYPTO_SYMBOLS must be a JSON string array")
     if not isinstance(target_rows, list):
         raise ValueError("SEC_TARGETS must be a JSON array")
-    targets = [SecTarget(cik=int(row["cik"]), symbol=str(row["symbol"])) for row in target_rows]
+    targets = [
+        SecTarget(cik=int(row["cik"]), symbol=str(row["symbol"]))
+        for row in target_rows
+    ]
     if len(targets) > 10:
         raise ValueError("Maximum 10 SEC targets per pass")
     result = asyncio.run(run_once(root=root, symbols=symbols, targets=targets))
-    print(json.dumps({
-        "run_id": result["run_id"],
-        "status": result["status"],
-        "stock_status": result["results"]["stock"]["status"],
-        "crypto_status": result["results"]["crypto"]["status"],
-        "order_execution": False,
-    }))
+    print(
+        json.dumps(
+            {
+                "run_id": result["run_id"],
+                "status": result["status"],
+                "stock_status": result["results"]["stock"]["status"],
+                "crypto_status": result["results"]["crypto"]["status"],
+                "order_execution": False,
+            }
+        )
+    )
 
 
 if __name__ == "__main__":
