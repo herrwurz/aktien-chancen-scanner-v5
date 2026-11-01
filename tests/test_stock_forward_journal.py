@@ -50,3 +50,12 @@ def test_corrupt_journal_rejected(tmp_path):
     path.write_text(path.read_text().replace("partial", "complete"))
     with pytest.raises(ValueError, match="Corrupted"):
         append_run(path, run_id="b", **kwargs)
+
+
+def test_subsecond_cutoff_ordering_is_numeric():
+    earlier = T.replace(microsecond=100000)
+    later = T.replace(microsecond=200000)
+    item = evidence(published_at=earlier, first_seen_at=later, retrieved_at=later)
+    item.validate(later)
+    with pytest.raises(ValueError, match="unavailable"):
+        item.validate(earlier)
