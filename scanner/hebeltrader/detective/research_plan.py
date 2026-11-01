@@ -83,9 +83,7 @@ def build_queries(text, named, fallback):
     # HT-016 lesson: "Stromhunger / Rechenzentren" fits utilities AND midstream gas.
     # Generic live search collapses to utilities; force value-chain counterqueries so
     # pipeline / natural-gas suppliers can enter the universe without naming a winner.
-    if sector == "power infrastructure" and any(
-        ctx in contexts for ctx in ("AI data centers",)
-    ):
+    if sector == "power infrastructure" and any(ctx in contexts for ctx in ("AI data centers",)):
         queries += [
             "natural gas midstream pipeline data center power demand earnings",
             "gas transmission pipeline company long-term contracts power generation AI",

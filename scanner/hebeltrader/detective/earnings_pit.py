@@ -223,8 +223,10 @@ class TavilyEarningsLookup:
     """Live snippet lookup; never raises; returns None when unsure."""
 
     def __init__(self, *, api_key: str | None = None, poster=None, timeout: float = 45):
-        self.api_key = api_key or os.environ.get("TAVILY_API_KEY") or os.environ.get(
-            "DETECTIVE_SEARCH_API_KEY"
+        self.api_key = (
+            api_key
+            or os.environ.get("TAVILY_API_KEY")
+            or os.environ.get("DETECTIVE_SEARCH_API_KEY")
         )
         self.poster = poster or httpx.post
         self.timeout = timeout

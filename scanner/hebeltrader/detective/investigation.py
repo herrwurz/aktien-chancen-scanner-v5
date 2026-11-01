@@ -61,9 +61,10 @@ def _documents_by_asset(fetched):
         name = doc.get("company_name")
         if not name:
             continue
-        asset_id = "company:" + hashlib.sha256(
-            canonical_company(name, doc.get("ticker")).encode()
-        ).hexdigest()
+        asset_id = (
+            "company:"
+            + hashlib.sha256(canonical_company(name, doc.get("ticker")).encode()).hexdigest()
+        )
         grouped.setdefault(asset_id, []).append(doc)
     return grouped
 
@@ -1348,9 +1349,7 @@ class Investigator:
                 "blocklist_entries": len(blocked.get("entries") or []),
                 "excluded_from_ranking": list(
                     {
-                        row["asset_id"]: row
-                        for row in active_call_dropped
-                        if row.get("asset_id")
+                        row["asset_id"]: row for row in active_call_dropped if row.get("asset_id")
                     }.values()
                 ),
                 "policy": (

@@ -334,9 +334,7 @@ def build_readiness(
             )
             + (
                 ["For live Stufe 3b: provide TAVILY_API_KEY and/or OPENAI_API_KEY"]
-                if not (
-                    os.environ.get("TAVILY_API_KEY") or os.environ.get("OPENAI_API_KEY")
-                )
+                if not (os.environ.get("TAVILY_API_KEY") or os.environ.get("OPENAI_API_KEY"))
                 else []
             )
             + ["Secure next real teaser before reading Call-PDF (≥2 named anchors)"]
