@@ -50,14 +50,13 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
                 try:
                     candles = await provider.fetch_candles(symbol, "5m", limit=22, now=cutoff)
                     signal = evaluate_spot_candidate(candles)
+                    last_candle_at = candles[-1].close_time.isoformat() if candles else None
                     return {
                         "candidate": signal,
                         "symbol": symbol,
                         "status": "checked" if len(candles) >= 21 else "unavailable",
                         "closed_candles": len(candles),
-                        "last_candle_at": (
-                            candles[-1].close_time.isoformat() if candles else None
-                        ),
+                        "last_candle_at": last_candle_at,
                     }
                 except (ValueError, httpx.HTTPError, ProviderError) as exc:
                     return {
