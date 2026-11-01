@@ -12,10 +12,14 @@ from pathlib import Path
 from typing import Literal
 
 
-def utc(value: datetime) -> str:
+def as_utc(value: datetime) -> datetime:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("Timestamp must be timezone-aware")
-    return value.astimezone(UTC).isoformat()
+    return value.astimezone(UTC)
+
+
+def utc(value: datetime) -> str:
+    return as_utc(value).isoformat()
 
 
 @dataclass(frozen=True)
@@ -39,8 +43,8 @@ class Evidence:
         ):
             raise ValueError("Invalid SHA256")
         if not (
-            utc(self.published_at) <= utc(self.first_seen_at)
-            <= utc(self.retrieved_at) <= utc(cutoff)
+            as_utc(self.published_at) <= as_utc(self.first_seen_at)
+            <= as_utc(self.retrieved_at) <= as_utc(cutoff)
         ):
             raise ValueError("Evidence unavailable at cutoff")
 
@@ -59,7 +63,7 @@ class Decision:
     def validate(self, cutoff: datetime) -> None:
         if not self.reason.strip():
             raise ValueError("Reason required")
-        if self.quote_timestamp is not None and utc(self.quote_timestamp) > utc(cutoff):
+        if self.quote_timestamp is not None and as_utc(self.quote_timestamp) > as_utc(cutoff):
             raise ValueError("Look-ahead quote")
         if self.status == "paper_entry_eligible":
             if self.quote_kind != "executable" or self.quote_timestamp is None:
