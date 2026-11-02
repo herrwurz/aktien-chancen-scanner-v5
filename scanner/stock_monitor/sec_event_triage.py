@@ -6,8 +6,14 @@ from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 NEW_YORK = ZoneInfo("America/New_York")
-PRIORITY = {"8-K": "high", "6-K": "high", "SC 13D": "high", "SC 13D/A": "medium",
-            "10-Q": "medium", "10-K": "medium"}
+PRIORITY = {
+    "8-K": "high",
+    "6-K": "high",
+    "SC 13D": "high",
+    "SC 13D/A": "medium",
+    "10-Q": "medium",
+    "10-K": "medium",
+}
 
 
 def recent_filing_events(
@@ -46,12 +52,14 @@ def recent_filing_events(
         accession = recent["accessionNumber"][index]
         if not isinstance(accession, str) or not accession.replace("-", "").isdigit():
             raise ValueError("Invalid accession number")
-        events.append({
-            "symbol": symbol,
-            "form": form,
-            "priority": PRIORITY[form],
-            "accepted_at": accepted.isoformat(),
-            "accession": accession,
-            "classification": "filing_type_only_unverified_content",
-        })
+        events.append(
+            {
+                "symbol": symbol,
+                "form": form,
+                "priority": PRIORITY[form],
+                "accepted_at": accepted.isoformat(),
+                "accession": accession,
+                "classification": "filing_type_only_unverified_content",
+            }
+        )
     return sorted(events, key=lambda item: item["accepted_at"], reverse=True)
