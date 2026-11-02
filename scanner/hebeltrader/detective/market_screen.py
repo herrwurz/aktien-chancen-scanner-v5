@@ -26,6 +26,10 @@ CLUES = (
         "above_gd200",
         r"200[\s-]*tage[\s-]*linie\s+(?:\w+\s+){0,2}(?:zurückerobert|verteidigt|überwunden)",
     ),
+    (
+        "golden_cross",
+        r"golden[\s-]*cross|goldenes?\s+kreuz",
+    ),
     ("breakout", r"ausbruch|befreiungsschlag|rallye|rally|kaufsignal"),
     ("correction", r"korrektur|rücksetzer|konsolidierung"),
     ("steady_uptrend", r"seit\s+jahren\s+(?:\w+\s+)?(?:kontinuierlich\s+)?nach\s+oben"),
@@ -46,6 +50,8 @@ def match_score(features, clues):
     score = chart_score(features)
     if "above_gd200" in clues:
         score += 6 if features["above_gd200"] else -6
+    if "golden_cross" in clues:
+        score += 8 if features.get("golden_cross") else -4
     if "breakout" in clues and features["breakout"]:
         score += 3
     if "correction" in clues and features["near_high_pct"] < -5:
