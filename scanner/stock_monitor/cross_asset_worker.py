@@ -33,10 +33,10 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
             discovery = await discover_spot_symbols(client)
         symbols = discovery["symbols"]
     universe_count = len(symbols)
-    symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff) if discovery else (
-        symbols,
-        "configured_symbols",
-    )
+    if discovery:
+        symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff)
+    else:
+        scan_mode = "configured_symbols"
     if not symbols:
         return {
             "status": "unavailable",
