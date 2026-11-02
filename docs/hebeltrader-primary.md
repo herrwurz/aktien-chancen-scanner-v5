@@ -82,8 +82,8 @@ nicht eingerichtet. Ein Marketinginterview mit bloßem Anzeigenfuß ist kein neu
 ## Historie, Blindtests und Integrität
 
 Die zentrale Fallhistorie bleibt [Identifikationsregeln](hebeltrader-identification-rules.md).
-[Maschinenlesbares Inventar](hebeltrader-case-inventory.json) erfasst alle 18 Fälle,
-einschließlich ADI/LSCC, CRM/Zoom, JPM/GS, JNJ und des ungelösten Williams-Falls.
+[Maschinenlesbares Inventar](hebeltrader-case-inventory.json) erfasst die 17 aktiven
+historischen Fälle (ADI/LSCC, CRM/Zoom, JPM/GS, JNJ; HT-016 Williams gestrichen).
 Keine vollständigen Originaltexte, exakten Veröffentlichungszeiten oder ursprünglichen
 Top-3-Ranglisten sind im Register verfügbar. Daraus entstehen keine 18 Blindtests.
 

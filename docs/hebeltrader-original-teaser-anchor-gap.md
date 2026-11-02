@@ -4,7 +4,7 @@ Stand: 2026-10-31.
 
 ## Kurzfassung
 
-Im Entwicklungs-Korpus (corpus-v1, 26 Refs; HT-016 out) gibt es **keinen**
+Im Entwicklungs-Korpus (corpus-v1, 26 aktive Refs; HT-016 dropped) gibt es **keinen**
 Original-Teaser mit ≥2 bestätigbaren spezifischen Ankern für den Evidenzkanal
 (`originals identified: 0/26`; 25× `insufficient_evidence`, HT-023
 `partial_evidence` via `issuer_literal`). Tooling (SEC-Binding, Issuer-Anaphora,

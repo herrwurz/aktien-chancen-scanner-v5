@@ -444,8 +444,44 @@ def _query_targets_blocked(query: str, blocked: dict) -> bool:
     return False
 
 
-def _apply_chart(ranked, cache, text, top=6):
-    # Chart clues (long uptrend, breakout) are checked with market data, not web text.
+_GOLDEN_CROSS_CLAIM = re.compile(r"golden[\s-]*cross|goldenes?\s+kreuz", re.I)
+
+
+def _teaser_claims_golden_cross(text):
+    return bool(_GOLDEN_CROSS_CLAIM.search(text or ""))
+
+
+def _apply_golden_cross_matrix(ranked, text):
+    """Confirm/contradict Golden-Cross semantic clues from PIT EOD features."""
+    if not _teaser_claims_golden_cross(text):
+        return
+    for row in ranked:
+        chart = row.get("chart") or {}
+        for cell in row.get("evidence_matrix") or []:
+            quote = cell.get("quote") or ""
+            if not _GOLDEN_CROSS_CLAIM.search(quote):
+                continue
+            if chart.get("status") != "ok":
+                cell["status"] = "unknown"
+                cell["reason"] = f"chart_{chart.get('status', 'unavailable')}"
+                continue
+            if chart.get("golden_cross"):
+                cell["status"] = "confirmed"
+                cell["reason"] = "eod_golden_cross_within_20d_pit"
+                cell["evidence_cluster_ids"] = ["chart:eodhd_sma50_sma200"]
+            else:
+                cell["status"] = "contradicted"
+                cell["reason"] = "eod_no_recent_golden_cross_pit"
+                cell["evidence_cluster_ids"] = ["chart:eodhd_sma50_sma200"]
+        row["unknown_clues"] = [
+            cell["clue_id"]
+            for cell in row.get("evidence_matrix") or []
+            if cell.get("status") == "unknown"
+        ]
+
+
+def _apply_chart(ranked, cache, text, top=6, as_of=None):
+    # Chart clues (long uptrend, breakout, golden cross) use market data, not web text.
     for row in ranked:
         data = row["identity"]
         data = data if isinstance(data, dict) else data.model_dump()
@@ -453,17 +489,23 @@ def _apply_chart(ranked, cache, text, top=6):
         if structure:
             row["market_structure"] = structure
             row["evidence_score"] += structure["bonus"]
+    chart_opts = {}
+    if as_of is not None:
+        chart_opts["today"] = as_of.date() if hasattr(as_of, "date") else as_of
     for row in ranked[:top]:
         identity = row["identity"]
         data = identity if isinstance(identity, dict) else identity.model_dump()
         ticker = data.get("ticker") or ticker_for(data.get("name") or "")
         key = row["asset_id"]
         if key not in cache:
-            cache[key] = chart_check(ticker) if ticker else {"status": "no_ticker"}
+            cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
         result = cache[key]
         row["chart"] = result
         if result["status"] == "ok":
             row["evidence_score"] += chart_score(result)
+            if _teaser_claims_golden_cross(text) and result.get("golden_cross"):
+                row["evidence_score"] += 4
+    _apply_golden_cross_matrix(ranked[:top], text)
     ranked.sort(
         key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
     )
@@ -1067,10 +1109,11 @@ class Investigator:
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
         chart_cache = {}
+        chart_as_of = request.publication_at
         earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
         metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}
         if not offline:
-            _apply_chart(ranked, chart_cache, text)
+            _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
             earnings_pit = apply_earnings_pit(
                 ranked,
                 request.publication_at,
@@ -1097,7 +1140,7 @@ class Investigator:
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
             if not offline:
-                _apply_chart(ranked, chart_cache, text)
+                _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
                 earnings_pit = apply_earnings_pit(
                     ranked,
                     request.publication_at,
@@ -1157,7 +1200,7 @@ class Investigator:
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
         if not offline:
-            _apply_chart(ranked, chart_cache, text)
+            _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
             earnings_pit = apply_earnings_pit(
                 ranked,
                 request.publication_at,

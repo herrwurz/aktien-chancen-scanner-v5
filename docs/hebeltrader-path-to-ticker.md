@@ -78,20 +78,16 @@ IR lead + SEC peers (`archived_snapshot`).
 
 `batch-pending-pdf/`: **2/2 named identified** (COST, BAS) with **PDF Stand Uhr**
 cutoffs after operator upload of 192/26 & 137/26 (2026-10-31). Shared
-`reference-27-inputs-with-publication-at.json` filled. **HT-016** issue **191/26**
-(15.10.2026) bound; still blocked pending Call-PDF Stand Uhr.
+`reference-27-inputs-with-publication-at.json` filled.
 
 ## Corpus-v1 (vereinigt)
 
-`corpus-v1/`: **26/26 named identified** via `historical_source_packet`
-(alle Batches außer HT-016). Original-Teaser weiter **0/26**. Freeze
-`evidence-batch-corpus-v1.json`. Scorecard:
-`python3 -m scanner.hebeltrader.detective.corpus_report`.
+`corpus-v1/`: **26/26 named identified** via `historical_source_packet`.
+Original-Teaser weiter **0/26**. Freeze `evidence-batch-corpus-v1.json`.
+Scorecard: `python3 -m scanner.hebeltrader.detective.corpus_report`.
 
-`ht-016-blocked/`: Williams SEC scaffold (WMB + peers, Transco / Northwest
-Pipeline needles). **Dev only** — 191/26 bound, provisional Stand 08:15, not in
-the freeze. Unlock
-requires operator issue binding + Call-PDF Stand Uhr.
+**HT-016** (Williams / Nutzerfall 02) was **dropped** from the active register
+on 2026-10-31; historical freezes that still mention it are archival only.
 
 Costco/BASF cutoffs promoted (`publisher_pdf_stand_uhr`). PIT history pad
 default is **800** days (`market_screen export-pit --history-pad-days`).
@@ -125,29 +121,6 @@ python3 -c "from pathlib import Path; from scanner.hebeltrader.detective.simulat
 ```
 
 Returns `basis=live_falsification`. Real web path still needs API keys.
-
-## Hard-Fact PIT (Quartalszahlen / Allzeithoch)
-
-When the teaser already claims reported quarterly results or an all-time high,
-`earnings_pit` runs automatically on live ranked candidates:
-
-- Results must be **public at or before** `publication_at` (Vienna Stand).
-- Same-day US before-open / after-close prints are **not** known at a morning Stand.
-- ATH is checked on EOD closes through the prior session; >2% below ATH → hard contradiction.
-
-```bash
-python3 -m pytest tests/hebeltrader/test_earnings_pit.py -q
-```
-
-## Metric fingerprint (199/26 lesson)
-
-After earnings docs are fetched, rank by rare numeric combos — not generic
-fintech/ATH overlap. Nasdaq’s decisive fingerprint was index growth ~39%, ARR
-~USD 3.4bn, adjusted operating margin ~57% (`metric_fingerprint`).
-
-```bash
-python3 -m pytest tests/hebeltrader/test_metric_fingerprint.py -q
-```
 
 ## Korpus-Grenze
 

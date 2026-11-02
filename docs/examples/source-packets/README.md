@@ -24,12 +24,10 @@ Pilots:
   Wayback-IR-Lead + SEC-Peers; **4/4 named identified**
 - `batch-pending-pdf/` — Costco/BASF with **PDF Stand Uhr** `publication_at`
   (192/26 & 137/26 uploaded 2026-10-31; basis=`publisher_pdf_stand_uhr`);
-  **2/2 named identified**. HT-016 still blocked. Shared 27er refs updated.
-- `corpus-v1/` — union freeze of the five batches above; **26/26 named identified**
-  (HT-016 out). Originals 0/26. Scorecard:
-  `python3 -m scanner.hebeltrader.detective.corpus_report`
-- `ht-016-blocked/` — Williams SEC scaffold (dev only; no `publication_at`;
-  **not** in identification freeze). Unlock via operator issue + PDF Stand.
+  **2/2 named identified**. Shared refs updated.
+- `corpus-v1/` — union freeze of the five batches above; **26/26 named identified**.
+  Originals 0/26. HT-016 Williams dropped from the active register (2026-10-31).
+  Scorecard: `python3 -m scanner.hebeltrader.detective.corpus_report`
 - `evidence-batch-pilots-2026-10-30.json` — seven-case batch freeze (3× identified: ABBV, TMO, PFE)
 
 Costco/BASF promotion completed (`promote_provisional_publication_at.py --apply

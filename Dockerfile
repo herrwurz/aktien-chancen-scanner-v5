@@ -22,7 +22,7 @@ COPY --chown=10001:10001 alembic.ini ./
 COPY --chown=10001:10001 migrations ./migrations
 # Permit a one-shot offline container to use the invoking host UID for a writable
 # bind-mounted report directory. Source remains read-only in the runtime image.
-RUN chmod -R a+rX /app
+RUN mkdir -p /data && chown 10001:10001 /data && chmod -R a+rX /app
 USER scanner
 EXPOSE 8000
 CMD ["python", "-m", "scanner.http_entrypoint"]

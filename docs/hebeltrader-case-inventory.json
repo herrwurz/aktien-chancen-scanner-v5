@@ -1,7 +1,4 @@
 {
-  "case_count": 18,
-  "evaluation_class": "development_regression",
-  "independent_benchmark": false,
   "cases": [
     {
       "case_id": "HT-001",
@@ -23,7 +20,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-001 | „Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine läuft auf Hochtouren!“; HEBELTRADER 200/26; 28.10.2026 | Analog Devices (ADI) | MN84GA | FALSCH (Nutzerrekonstruktion) | Ersttipp: Lattice Semiconductor. Nutzerfall 18. Historische unkalibrierte Angabe: 95 %. Ankereffekt und Bestätigungssuche nach frühem Lattice-Tipp; spezifische Unternehmensereignisse hätten stärker geprüft werden müssen; unkalibrierte 95-%-Angabe. Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Lattice Semiconductor",
       "historical_outcome": "wrong",
@@ -50,7 +47,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-002 | „Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!“; HEBELTRADER 190/26; 14.10.2026 | Zurich Insurance Group | UN6E7X | FALSCH (Nutzerrekonstruktion) | Ersttipp: UnitedHealth Group. Nutzerfall 03. Allgemeine Gewinn- und defensive Branchenhinweise waren nicht spezifisch genug. Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "UnitedHealth Group",
       "historical_outcome": "wrong",
@@ -77,7 +74,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-003 | „Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!“; HEBELTRADER 192/26; 16.10.2026 | Costco Wholesale (COST) | JY55QZ | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Costco. Nutzerfall 01.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Costco",
       "historical_outcome": "correct",
@@ -104,7 +101,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-004 | „Comeback mit Ansage: Dieser Tech-Titel startet durch!“; HEBELTRADER 176/26; 24.09.2026 | Salesforce (CRM) | JG0AEJ | FALSCH (Nutzerrekonstruktion) | Ersttipp: Zoom. Nutzerfall 04. Generisches Tech-Comeback-Narrativ überbewertet. Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Zoom",
       "historical_outcome": "wrong",
@@ -131,7 +128,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-005 | „Gewinnsprung voraus: Der unterschätzte KI-Profiteur!“; HEBELTRADER 173/26; 21.09.2026 | Micron Technology (MU) | UN87G6 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Micron. Nutzerfall 05.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Micron",
       "historical_outcome": "correct",
@@ -158,7 +155,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-006 | „Gesundheitsriese vor der Neubewertung!“; HEBELTRADER 161/26; 03.09.2026 | UnitedHealth Group (UNH) | VH2LU2 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: UnitedHealth. Nutzerfall 06.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "UnitedHealth",
       "historical_outcome": "correct",
@@ -185,7 +182,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-007 | „Cloud, Strom und Kühlung: Hier liegt der Schlüssel zum nächsten KI-Schub!“; HEBELTRADER 157/26; 28.08.2026 | Vertiv Holdings (VRT) | HM4EB1 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Vertiv. Nutzerfall 07.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Vertiv",
       "historical_outcome": "correct",
@@ -212,7 +209,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-008 | „KI, Infrastruktur, Milliarden – diese Aktie hat den perfekten Mix!“; HEBELTRADER 147/26; 14.08.2026 | KKR & Co. (KKR) | VH62T5 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: KKR. Nutzerfall 10.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "KKR",
       "historical_outcome": "correct",
@@ -239,7 +236,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-009 | „Diese Comeback-Aktie könnte jetzt alles in den Schatten stellen!“; HEBELTRADER 144/26; 11.08.2026 | Pfizer (PFE) | WA4R5Q | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Pfizer. Nutzerfall 11.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Pfizer",
       "historical_outcome": "correct",
@@ -266,7 +263,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-010 | „Ausbruchsalarm bei einem Hightech-Schwergewicht!“; HEBELTRADER 143/26; 10.08.2026 | Broadcom (AVGO) | MN8GZP | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Broadcom. Nutzerfall 12.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Broadcom",
       "historical_outcome": "correct",
@@ -293,7 +290,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-011 | „Hightech-Konzern vor neuem Rekordhoch!“; HEBELTRADER 140/26; 05.08.2026 | Thales | DN3NVH | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Thales. Nutzerfall 14.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Thales",
       "historical_outcome": "correct",
@@ -320,7 +317,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-012 | „Hier steckt eine irrwitzige Turnaround-Chance drin!“; HEBELTRADER 137/26; 31.07.2026 | BASF | MJ7DUX | RICHTIG (Nutzerrekonstruktion) | Ersttipp: BASF. Nutzerfall 15.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "BASF",
       "historical_outcome": "correct",
@@ -347,7 +344,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-013 | „Fundamental stark, charttechnisch explosiv: Die nächste Rallye kündigt sich an!“; HEBELTRADER 154/26; 25.08.2026 | Danaher (DHR) | JY3SF7 | FALSCH (Nutzerrekonstruktion) | Ersttipp: Zebra Technologies. Nutzerfall 08. Allgemeine fundamentale und charttechnische Aussagen reichten nicht zur eindeutigen Identifikation. Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Zebra Technologies",
       "historical_outcome": "wrong",
@@ -374,7 +371,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-014 | „Hier braut sich eine Comeback-Story mit rekordverdächtigem Hebelpotenzial zusammen!“; HEBELTRADER 151/26; 20.08.2026 | SAP | UP9A9X | FALSCH (Nutzerrekonstruktion) | Ersttipp: Oracle. Nutzerfall 09. Oracle statt SAP; direkte Software-Wettbewerber und konkrete Geschäftszahlen gegeneinander prüfen. Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Oracle",
       "historical_outcome": "wrong",
@@ -401,38 +398,11 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-015 | „Dieser Rüstungs-Highflyer startet durch – mit explosivem Turbo-Potenzial!“; HEBELTRADER 141/26; 06.08.2026 | Leonardo S.p.A. | VJ2RFH | FALSCH (Nutzerrekonstruktion) | Ersttipp: Thales. Nutzerfall 13. Thales statt Leonardo; konkrete Aufträge, Ereignisse und Kennzahlen müssen zwischen europäischen Rüstungskonzernen entscheiden. Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Thales",
       "historical_outcome": "wrong",
       "reference_number": 13,
-      "structured_reference_path": "data/hebeltrader/teaser-cases.json"
-    },
-    {
-      "case_id": "HT-016",
-      "context": "„Dieser Branchenführer profitiert vom Stromhunger der Zukunft!“; HEBELTRADER 191/26; 15.10.2026",
-      "original_text": "Dieser Branchenführer profitiert vom Stromhunger der Zukunft!\n\nEnergie-Alarm im KI-Zeitalter! Der Stromhunger moderner Rechenzentren eröffnet einem etablierten Branchenführer gewaltige neue Chancen. Solide Cashflows, langfristige Verträge und zusätzliche Wachstumsperspektiven schaffen ein starkes Fundament. Nun liefert auch der Chart ein klares Signal: Die Aktie hat sich nach der Korrektur stabilisiert und nimmt den nächsten Ausbruch ins Visier. Springt der Kurs über den entscheidenden Widerstand, könnte die Rally deutlich an Tempo gewinnen. Der empfohlene Call macht aus dieser Erholung eine echte Hebelstory – mit einer maximalen Performance von bis zu 1.453 Prozent bei voller Zielerreichung.\n",
-      "original_text_available": true,
-      "available_excerpt": "Dieser Branchenführer profitiert vom Stromhunger der Zukunft!",
-      "publication_date": "2026-10-15",
-      "publication_time": null,
-      "publication_time_available": false,
-      "historical_top3": null,
-      "status": "unresolved",
-      "reported_identity": "Auflösung unbekannt; Verdacht: Williams Companies",
-      "verified_identity": null,
-      "call_wkn": null,
-      "label_provenance": "Ungelöst",
-      "notes": "Ersttipp: Williams. Nutzerfall 02.  Volltext vorhanden.",
-      "evaluation_class": "development_regression",
-      "provenance": {
-        "path": "docs/hebeltrader-identification-rules.md",
-        "source_row": "| HT-016 | „Dieser Branchenführer profitiert vom Stromhunger der Zukunft!“; HEBELTRADER 191/26; 15.10.2026 | Auflösung unbekannt; Verdacht: Williams Companies | unbekannt | Ungelöst | Ersttipp: Williams. Nutzerfall 02.  Volltext vorhanden. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
-      },
-      "first_prediction": "Williams",
-      "historical_outcome": "unresolved",
-      "reference_number": 2,
       "structured_reference_path": "data/hebeltrader/teaser-cases.json"
     },
     {
@@ -455,7 +425,7 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-017 | „Die Rallye hat begonnen – Wall-Street-Schwergewicht im Ausbruch!“; HEBELTRADER 193/26; 19.10.2026 | JPMorgan Chase (JPM) | MN6CYX | FALSCH (Nutzerrekonstruktion) | Ersttipp: Goldman Sachs. Nutzerfall 16. Historische unkalibrierte Angabe: 60 %. Zu frühe Festlegung auf Goldman Sachs aufgrund allgemeiner Rallye-Hinweise; unkalibrierte 60-%-Angabe. Volltext vorhanden. Auflösung am 2026-10-19. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Goldman Sachs",
       "historical_outcome": "wrong",
@@ -482,12 +452,15 @@
       "provenance": {
         "path": "docs/hebeltrader-identification-rules.md",
         "source_row": "| HT-018 | „Rekordjagd im Gesundheitssektor – dieser Titel gehört ins Depot!“; HEBELTRADER 195/26; 21.10.2026 | Johnson & Johnson (JNJ) | JE11C1 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Johnson & Johnson. Nutzerfall 17. Historische unkalibrierte Angabe: 55 %.  Volltext vorhanden. Auflösung am 2026-10-21. |",
-        "sha256": "065385b232d455568875f28144a9e94cb6a92fbf9698dfc698aa6d09f2a19973"
+        "sha256": "ac3617af5a1623ad502d69b17de858c665c06dde243fd287009a16023a78267b"
       },
       "first_prediction": "Johnson & Johnson",
       "historical_outcome": "correct",
       "reference_number": 17,
       "structured_reference_path": "data/hebeltrader/teaser-cases.json"
     }
-  ]
+  ],
+  "case_count": 17,
+  "evaluation_class": "development_regression",
+  "independent_benchmark": false
 }

@@ -11,9 +11,9 @@ from scanner.hebeltrader.detective.reference_cases import historical_summary, lo
 
 SOURCE = (
     "https://raw.githubusercontent.com/herrwurz/aktien-chancen-scanner-v5/"
-    "e3332c22867f0d71c04e4af2267a5e67697aa3d7/data/hebeltrader/teaser-cases.json"
+    "90faeda5c849614ff24a9dad0fcf7db7f51eab46/data/hebeltrader/teaser-cases.json"
 )
-SHA256 = "742c6bb3ed4e8aae8a54bf2cfe8388af0bdfb41c065cbea84763d954ee5827bd"
+SHA256 = "97d16f77865348e80a6f736d9f3489799104c049deae3779cba677be3da087f7"
 
 
 def download():

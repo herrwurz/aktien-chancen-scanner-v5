@@ -14,9 +14,9 @@ def test_history_complete_and_honest():
     inventory = inventory_history(
         Path(__file__).parents[2] / "docs/hebeltrader-identification-rules.md"
     )
-    assert len(inventory["cases"]) == 18
+    assert len(inventory["cases"]) == 17
     cases = {c["case_id"]: c for c in inventory["cases"]}
-    assert cases["HT-016"]["status"] == "unresolved"
+    assert "HT-016" not in cases
     assert "Analog Devices" in cases["HT-001"]["reported_identity"]
     assert "Lattice" in cases["HT-001"]["notes"]
     assert "Salesforce" in cases["HT-004"]["reported_identity"]
@@ -42,7 +42,7 @@ def report():
                 "analysis_seconds": 1.2,
             },
             {
-                "case_id": "HT-016",
+                "case_id": "HT-OPEN",
                 "identification": {"status": "identified"},
                 "candidates": [{"asset_id": "WMB"}],
             },
@@ -67,7 +67,7 @@ def test_freeze_and_blind_evaluation(tmp_path):
                         "asset_id": "ADI",
                         "evaluation_class": "development_regression",
                     },
-                    {"case_id": "HT-016", "status": "unresolved", "asset_id": "WMB"},
+                    {"case_id": "HT-OPEN", "status": "unresolved", "asset_id": "WMB"},
                     {"case_id": "new", "asset_id": "CRM", "evaluation_class": "independent"},
                 ]
             }

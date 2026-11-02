@@ -1,25 +1,18 @@
 {
   "schema_version": 1,
   "kind": "hebeltrader-operator-readiness-v1",
-  "recorded_at": "2026-10-31T13:44:09.299317+00:00",
+  "recorded_at": "2026-10-31T10:19:44.665235+00:00",
   "corpus": {
     "named_identified": "26/26",
     "originals_identified": "0/26",
     "gates_ok": true,
     "provisional_publication_at": [],
-    "blocked_out_of_corpus": [
-      "HT-016"
-    ]
+    "blocked_out_of_corpus": []
   },
   "promote_pending_pdf": {
     "ready": 0,
     "still_missing": 0,
-    "blocked": [
-      {
-        "case_id": "HT-016",
-        "reason": "issue_191_26_bound_awaiting_pdf_stand_unresolved_identity"
-      }
-    ],
+    "blocked": [],
     "actions": [
       {
         "case_id": "HT-003",
@@ -36,11 +29,10 @@
     ]
   },
   "ht016": {
-    "status": "blocked_awaiting_pdf_stand",
-    "publication_issue": "191/26",
-    "publication_at": "2026-10-15T08:15:00+01:00",
-    "suspected_ticker": "WMB",
-    "identification_freeze": false
+    "status": "dropped",
+    "suspected_ticker": null,
+    "identification_freeze": false,
+    "note": "Removed from active register 2026-10-31 (Williams / Nutzerfall 02)."
   },
   "tiebreak": {
     "market": {
@@ -65,23 +57,23 @@
   },
   "api_keys_present": {
     "EODHD_API_TOKEN": true,
-    "TAVILY_API_KEY": true,
-    "OPENAI_API_KEY": true
+    "TAVILY_API_KEY": false,
+    "OPENAI_API_KEY": false
   },
   "blockers": [
-    {
-      "id": "ht016_awaiting_pdf_stand",
-      "status": "blocked",
-      "detail": "HT-016 issue 191/26 + featured 2026-10-15 bound; Call-PDF Stand Uhr still missing; stays out of freeze"
-    },
     {
       "id": "original_teaser_anchor_gap",
       "status": "corpus_gap",
       "detail": "0/26 originals have ≥2 native named anchors"
+    },
+    {
+      "id": "live_3b_api_keys",
+      "status": "blocked",
+      "detail": "Tavily/OpenAI absent; use simulated_falsification offline"
     }
   ],
   "next_operator_actions": [
-    "HT-016: upload Call-PDF 191/26 Stand Uhr — keep blocked; do not force into freeze",
+    "For live Stufe 3b: set TAVILY_API_KEY and/or OPENAI_API_KEY in the Cursor Cloud Agent environment Secrets",
     "Secure next real teaser before reading Call-PDF (≥2 named anchors)"
   ],
   "smoke": {

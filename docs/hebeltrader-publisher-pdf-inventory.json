@@ -19,9 +19,7 @@
     "unique_issues": 131,
     "errors": 0
   },
-  "reference_gaps": {
-    "HT-016": "191/26 bound 2026-10-15; Call-PDF / Stand Uhr missing"
-  },
+  "reference_gaps": {},
   "pdfs": [
     {
       "filename": "Hebeltrader_2025-02_EK_halfOK_ff46.pdf",

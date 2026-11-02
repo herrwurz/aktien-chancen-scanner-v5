@@ -140,7 +140,8 @@ Erneutes Laden verwendet das geprüfte lokale Archiv. Ohne Anmeldung kein Zugrif
 fehlgeschlagene Downloads verändern weder Falljournal noch Referenzbestand.
 
 Angezeigt werden die 18 Überschriften, ursprünglicher Tipp, gemeldete Auflösung,
-Call-WKN, Fehleranalyse und verfügbarer Originaltext. Williams bleibt ungelöst.
+Call-WKN, Fehleranalyse und verfügbarer Originaltext. HT-016 Williams ist aus dem
+aktiven Register entfernt.
 10 richtig / 7 falsch / 1 ungelöst bezeichnet ausschließlich die rekonstruierte
 Gesprächshistorie. Der Import erzeugt keine neuen Erstprognosen, keine Research-Kandidaten
 und keine neuen Blindtest-Treffer. Die Rankingsuche liest diese Bibliothek nicht.
