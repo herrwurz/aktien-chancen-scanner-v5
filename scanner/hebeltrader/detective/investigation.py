@@ -203,11 +203,13 @@ def source_class(document):
 def finding_timing(document, cutoff, *, current_hypothesis, live_publisher_recall=False):
     assessment = assess_document(document, cutoff, live_publisher_recall=live_publisher_recall)
     if assessment["eligibility"] == "eligible":
-        return {
+        out = {
             "temporal_eligibility": "eligible",
             "usable_for_ranking": True,
-            "availability_basis": assessment.get("availability_basis"),
         }
+        if assessment.get("availability_basis"):
+            out["availability_basis"] = assessment["availability_basis"]
+        return out
     if (
         current_hypothesis
         and assessment["eligibility"] == "uncertain"
@@ -222,7 +224,6 @@ def finding_timing(document, cutoff, *, current_hypothesis, live_publisher_recal
     return {
         "temporal_eligibility": assessment["eligibility"],
         "usable_for_ranking": False,
-        "availability_basis": assessment.get("availability_basis"),
     }
 
 
@@ -1029,7 +1030,11 @@ def _match_text(raw):
 
 
 def _fact_claim_subject(company, context, pattern, term):
-    """Issuer name or SEC self-reference must own the relation before the named term."""
+    """Issuer name or SEC self-reference must own the relation before the named term.
+
+    Title and body are joined with a newline for matching; do not let a title issuer
+    own a competitor deal in the next paragraph (stop ``link`` at newlines too).
+    """
     subjects = []
     if company:
         subjects.append(re.escape(company))
@@ -1037,9 +1042,9 @@ def _fact_claim_subject(company, context, pattern, term):
     subject_alt = "(?:" + "|".join(subjects) + ")"
     return re.search(
         subject_alt
-        + r"(?P<link>[^.!?]{0,320})\b(?:"
+        + r"(?P<link>[^.!?\n]{0,320})\b(?:"
         + pattern
-        + r")\b(?:\s+(?:of|from))?[^.!?]{0,280}"
+        + r")\b(?:\s+(?:of|from))?[^.!?\n]{0,280}"
         + re.escape(term),
         context,
         re.I,
@@ -1135,11 +1140,20 @@ def _evidence(document, clues, cutoff, *, allow_undated=False, live_publisher_re
             confirmed_context = None
             contradicted = False
             # German teaser terms (Rechenzentrum…) must also match English IR/SEC prose.
+            title = document.get("title") or ""
+            title_prefix = len(title) + (1 if title and (document.get("text") or "") else 0)
             for match in term_pattern(term).finditer(text):
                 # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
                 # Merger write-ups also need a wider window for issuer self-reference.
                 window = 1200 if relation == "acquisition" else 400
-                context = text[max(0, match.start() - window) : match.end() + 120]
+                match_in_title = bool(title) and match.start() < title_prefix
+                # Body matches must not let the title issuer bind a competitor deal below.
+                if match_in_title:
+                    context = text[max(0, match.start() - window) : match.end() + 120]
+                else:
+                    body = document.get("text") or ""
+                    body_at = match.start() - title_prefix
+                    context = body[max(0, body_at - window) : body_at + len(match.group(0)) + 120]
                 # Subject check uses the matched surface form (DE or EN alias).
                 matched_term = match.group(0)
                 subject = _fact_claim_subject(company, context, pattern, matched_term)
@@ -1149,8 +1163,8 @@ def _evidence(document, clues, cutoff, *, allow_undated=False, live_publisher_re
                     relation == "acquisition"
                     and company
                     and re.search(
-                        rf"(?:\bacquisition of\b|\bacquired\b)\s+{re.escape(term)}"
-                        rf"|{re.escape(term)}\s+(?:Acquisitions?|Merger)",
+                        rf"(?:\bacquisition of\b|\bacquired\b)\s+{re.escape(matched_term)}"
+                        rf"|{re.escape(matched_term)}\s+(?:Acquisitions?|Merger)",
                         context,
                         re.I,
                     )
@@ -1168,15 +1182,15 @@ def _evidence(document, clues, cutoff, *, allow_undated=False, live_publisher_re
                     subject
                     and re.search(r"\b(?:according|says|said)\b", subject.group("link"), re.I)
                 )
-                # Headline form: "Data Center Power Deal Will Impact {Company}" — issuer
-                # sits after the deal term; document.company_name already binds the page.
-                issuer_in_context = bool(
-                    company
-                    and re.search(r"(?<!\w)" + re.escape(company) + r"(?!\w)", context, re.I)
-                    and re.search(r"\b(?:" + pattern + r")\b", context, re.I)
+                # Headline-only form: "Data Center Power Deal Will Impact {Company}".
+                headline_owned = bool(
+                    match_in_title
+                    and company
+                    and re.search(r"(?<!\w)" + re.escape(company) + r"(?!\w)", title, re.I)
+                    and re.search(r"\b(?:" + pattern + r")\b", title, re.I)
                 )
                 owned = (not competitor) and (
-                    (subject and not hearsay_link) or sec_headline or issuer_in_context
+                    (subject and not hearsay_link) or sec_headline or headline_owned
                 )
                 if not owned:
                     continue
