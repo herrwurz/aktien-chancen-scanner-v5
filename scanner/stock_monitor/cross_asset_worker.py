@@ -19,6 +19,7 @@ from scanner.providers.base import ProviderError
 from scanner.providers.binance import BinanceSpotProvider
 from scanner.stock_monitor.cross_asset import run_cross_asset
 from scanner.stock_monitor.cross_asset_journal import append_cross_asset_run
+from scanner.stock_monitor.crypto_schedule import choose_detail_symbols
 from scanner.stock_monitor.sec_client_runner import run_with_sec_client
 from scanner.stock_monitor.spot_signals import evaluate_spot_candidate
 from scanner.stock_monitor.spot_universe import discover_spot_symbols
@@ -31,18 +32,11 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
         async with httpx.AsyncClient() as client:
             discovery = await discover_spot_symbols(client)
         symbols = discovery["symbols"]
-    # UTC schedule: full market coverage at 06:00 and 18:00; on other
-    # hourly runs, inspect top movers plus a rotating slice of all eligible pairs.
-    full_scan = cutoff.hour in {6, 18}
     universe_count = len(symbols)
-    if discovery is not None and not full_scan:
-        priority_count = min(20, universe_count)
-        pool = symbols[priority_count:]
-        rotation_count = min(60, len(pool))
-        slot = int(cutoff.timestamp() // 3600)
-        start = (slot * rotation_count) % len(pool) if pool else 0
-        rotated = [pool[(start + i) % len(pool)] for i in range(rotation_count)]
-        symbols = symbols[:priority_count] + rotated
+    symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff) if discovery else (
+        symbols,
+        "configured_symbols",
+    )
     if not symbols:
         return {
             "status": "unavailable",
@@ -83,7 +77,7 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
     return {
         "status": "complete" if checked == len(symbols) else "partial",
         "source": "binance_spot",
-        "scan_mode": "full" if full_scan else "hourly_priority_rotation",
+        "scan_mode": scan_mode,
         "universe_symbols": universe_count,
         "discovery": discovery,
         "requested_symbols": len(symbols),
