@@ -130,9 +130,7 @@ def has_material_research_source_gaps(errors, *, primary_documents: int, offline
     if not errors:
         return False
     material = [
-        item
-        for item in errors
-        if not _BUDGET_GAP_ERROR.search(str(item.get("error") or ""))
+        item for item in errors if not _BUDGET_GAP_ERROR.search(str(item.get("error") or ""))
     ]
     if material:
         return True
