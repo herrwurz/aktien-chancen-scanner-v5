@@ -711,18 +711,19 @@ def _pool_seed_row(seed, *, retrieved, clues):
         country = "US"
     elif ticker and "." not in ticker:
         country = "US"
+    identity = AssetIdentity(
+        asset_type="stock",
+        name=name,
+        ticker=ticker,
+        country=country,
+        source_id="index_pool_chart_seed",
+        retrieved_at=retrieved if isinstance(retrieved, datetime) else None,
+        instrument_type_status="unknown",
+        quality_status="candidate",
+    ).model_dump(mode="json")
     return {
         "asset_id": asset_id,
-        "identity": {
-            "asset_type": "stock",
-            "name": name,
-            "ticker": ticker,
-            "country": country,
-            "source_id": "index_pool_chart_seed",
-            "retrieved_at": retrieved,
-            "instrument_type_status": "unknown",
-            "quality_status": "candidate",
-        },
+        "identity": identity,
         "evidence_score": score,
         "evidence_matrix": [],
         "confirmed_specific_clues": [],
