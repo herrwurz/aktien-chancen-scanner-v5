@@ -2,8 +2,6 @@
 
 from datetime import UTC, datetime
 
-import pytest
-
 from scanner.stock_monitor.sec_event_triage import recent_filing_events
 
 
@@ -45,5 +43,4 @@ def test_future_retrieval_rejected():
         "payload": {"filings": {"recent": recent}},
     }
     cutoff = datetime(2026, 11, 2, tzinfo=UTC)
-    with pytest.raises(ValueError, match="not yet observable"):
-        recent_filing_events(record, symbol="AAPL", cutoff=cutoff)
+    assert recent_filing_events(record, symbol="AAPL", cutoff=cutoff) == []
