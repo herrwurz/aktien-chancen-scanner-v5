@@ -36,7 +36,7 @@ def recent_filing_events(
         raise ValueError("SEC retrieval timestamp must be aware")
     now = cutoff.astimezone(UTC)
     if retrieved.astimezone(UTC) > now:
-        raise ValueError("SEC response not yet observable at cutoff")
+        return []
     start = now - timedelta(hours=lookback_hours)
     events = []
     for index in range(count):
