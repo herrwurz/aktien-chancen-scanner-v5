@@ -301,14 +301,20 @@ def test_out_of_competition_solution_pdf_and_dataset_promotion(tmp_path):
         {"teaser_text": "iran ooc", "competition_mode": "out_of_competition", "headline": "Iran"}
     )
     j.record_analysis(ooc, frozen(tmp_path, "iran", ["GOLD"]))
+    assert j.cases(listing="out_of_competition")[0]["case_id"] == ooc
     pdf = b"%PDF-1.4 ooc-report"
     stored = j.store_solution_pdf(
         ooc, pdf, extracted={"name": "Gold Co", "call_wkn": "ABC123", "stock_wkn": "A0AAAA"}
     )
     assert stored["pdf_sha256"] == __import__("hashlib").sha256(pdf).hexdigest()
+    assert stored["listed_as_official"] is True
     assert (tmp_path / "j" / stored["relative_path"]).read_bytes() == pdf
+    assert j.case(ooc)["competition_mode"] == "official"
+    assert j.cases(listing="out_of_competition") == []
+    assert ooc in {row["case_id"] for row in j.cases(listing="official")}
     assert j.store_solution_pdf(ooc, pdf)["pdf_sha256"] == stored["pdf_sha256"]
     assert len([e for e in j.events() if e["kind"] == "solution_pdf"]) == 1
+    assert len([e for e in j.events() if e["kind"] == "listing_promotion"]) == 1
     with pytest.raises(ValueError, match="resolve"):
         j.promote_to_dataset(ooc, {"name": "Gold Co", "source": "purchased report"})
     j.resolve(
@@ -322,21 +328,6 @@ def test_out_of_competition_solution_pdf_and_dataset_promotion(tmp_path):
             "error_analysis": "confirmed from PDF",
         },
     )
-    official = j.intake({"teaser_text": "official for promote reject"})
-    j.record_analysis(official, frozen(tmp_path, "off2", ["X"]))
-    j.store_solution_pdf(official, pdf)
-    j.resolve(
-        official,
-        {
-            "asset_id": "X",
-            "name": "X",
-            "source": "x",
-            "basis": "user",
-            "error_analysis": "x",
-        },
-    )
-    with pytest.raises(ValueError, match="out_of_competition"):
-        j.promote_to_dataset(official, {"name": "X", "source": "x"})
     promoted = j.promote_to_dataset(
         ooc,
         {
@@ -349,7 +340,8 @@ def test_out_of_competition_solution_pdf_and_dataset_promotion(tmp_path):
     )
     assert promoted["export_relative_path"].endswith(f"{ooc}.json")
     export = json.loads((tmp_path / "j" / promoted["export_relative_path"]).read_text())
-    assert export["kind"] == "hebeltrader_out_of_competition_dataset_export"
+    assert export["kind"] == "hebeltrader_report_dataset_export"
+    assert export["competition_mode"] == "official"
     assert export["actual_company"] == "Gold Co"
     assert export["derivative_wkn"] == "ABC123"
     assert (
@@ -360,4 +352,4 @@ def test_out_of_competition_solution_pdf_and_dataset_promotion(tmp_path):
     register = tmp_path / "register.md"
     j.export_register(register)
     text = register.read_text()
-    assert "solution_pdf" in text and "dataset_promotion" in text
+    assert "solution_pdf" in text and "listing_promotion" in text and "dataset_promotion" in text

@@ -95,7 +95,7 @@
     <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
   </section>
   <section><h2>Außer Konkurrenz</h2>
-    <p class="muted">Analysiert und gespeichert, aber nicht in Meine Fälle, Quality oder Blind-Listing. Nach Reportkauf: PDF speichern, Auflösung eintragen, dann explizit in den Datensatz übernehmen.</p>
+    <p class="muted">Analysiert und gespeichert, aber zunächst nicht in Meine Fälle / Quality. Nach Reportkauf: PDF speichern → Fall wird ins Listing (Meine Fälle) aufgenommen; danach Auflösung und optional Datensatz-Export.</p>
     <div class="case-controls"><label for="ooc-case-select">Fall auswählen
       <select id="ooc-case-select"><option value="">Fälle laden …</option></select></label>
       <button type="button" id="load-ooc-cases">Aktualisieren</button></div>
@@ -528,6 +528,26 @@ const selectCase=caseId=>{
       else await showCaseActionError(response,'Referenzfreigabe nicht möglich');
     });actions.append(promote);
   }
+  if(row.solution_pdf&&row.resolution&&!row.dataset_promotion){
+    const dataset=el('button','In Datensatz übernehmen');dataset.type='button';
+    dataset.addEventListener('click',async()=>{
+      const name=prompt('Firmenname für Datensatz:',row.resolution?.name||'');
+      if(!name)return;
+      const ticker=prompt('Ticker (optional):','')||null;
+      const source=row.resolution?.source||'Gekaufter HEBELTRADER-Report';
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/dataset-promotion`,{
+        method:'POST',headers:{...authHeaders(),'content-type':'application/json'},
+        body:JSON.stringify({name,ticker,source,call_wkn:row.resolution?.call_wkn||null,
+          stock_wkn:row.solution_pdf?.extracted?.stock_wkn||null})});
+      if(response.ok){
+        document.querySelector('#case-message').textContent='Datensatz-Export gespeichert (lokal, nicht auto-commit).';
+        await loadCases(document.querySelector('#include-archived').checked);
+        document.querySelector('#case-select').value=row.case_id;selectCase(row.case_id);
+      }else await showCaseActionError(response,'Datensatz-Übernahme fehlgeschlagen');
+    });
+    actions.append(dataset);
+  }
+  if(row.listing_promotion)root.append(el('p',`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
   root.append(actions);
 };
 const authHeaders=()=>{const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;return headers;};
@@ -586,11 +606,19 @@ const selectOocCase=caseId=>{
       set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
       set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
       pdfStatus.textContent=data.persisted
-        ?`Gespeichert${data.name?': '+data.name:''}. Bitte Auflösung prüfen und speichern.`
+        ?(data.listed_as_official
+          ?`Gespeichert${data.name?': '+data.name:''}. Fall in Meine Fälle aufgenommen.`
+          :`Gespeichert${data.name?': '+data.name:''}. Bitte Auflösung prüfen und speichern.`)
         :'PDF gelesen, aber nicht persistiert.';
+      await loadCases(document.querySelector('#include-archived').checked);
       await loadOocCases();
-      document.querySelector('#ooc-case-select').value=row.case_id;
-      selectOocCase(row.case_id);
+      if(data.listed_as_official||data.competition_mode==='official'){
+        document.querySelector('#case-select').value=row.case_id;
+        selectCase(row.case_id);
+      }else{
+        document.querySelector('#ooc-case-select').value=row.case_id;
+        selectOocCase(row.case_id);
+      }
     }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
   });
   actions.append(pdfLabel);actions.append(pdfInput);actions.append(pdfStatus);

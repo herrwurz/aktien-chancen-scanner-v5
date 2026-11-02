@@ -180,6 +180,7 @@ class CaseJournal:
             "competition_mode": intake_input.get("competition_mode") or "official",
             "previously_used_for_development": intake_input.get("previously_used_for_development"),
             "solution_pdf": None,
+            "listing_promotion": None,
             "dataset_promotion": None,
             "analyses": 0,
             "opened_at": rows[0]["recorded_at"],
@@ -219,6 +220,11 @@ class CaseJournal:
                 state["previously_used_for_development"] = False
             if kind == "solution_pdf":
                 state["solution_pdf"] = dict(p, recorded_at=row["recorded_at"])
+            if kind == "listing_promotion":
+                mode = p.get("competition_mode")
+                if mode in ("official", "out_of_competition"):
+                    state["competition_mode"] = mode
+                state["listing_promotion"] = dict(p, recorded_at=row["recorded_at"])
             if kind == "dataset_promotion":
                 state["dataset_promotion"] = dict(p, recorded_at=row["recorded_at"])
         return state
@@ -303,15 +309,33 @@ class CaseJournal:
             return {"evaluation_class": "prospective_blind"}
 
     def store_solution_pdf(self, case_id, pdf_bytes, *, extracted=None):
-        """Persist a purchased-report PDF under the journal root (not git)."""
+        """Persist a purchased-report PDF under the journal root (not git).
+
+        Uploading a solution PDF moves out-of-competition cases into the official
+        listing (Meine Fälle / quality), because the operator now has the report.
+        """
         if not isinstance(pdf_bytes, (bytes, bytearray)) or not pdf_bytes:
             raise ValueError("solution PDF bytes required")
         sha = hashlib.sha256(bytes(pdf_bytes)).hexdigest()
         with self._lock():
             state = self.case(case_id)
             existing = state.get("solution_pdf") or {}
+            listed = False
             if existing.get("pdf_sha256") == sha:
-                return {k: v for k, v in existing.items() if k != "recorded_at"}
+                if state.get("competition_mode") == "out_of_competition":
+                    self._append(
+                        case_id,
+                        "listing_promotion",
+                        {
+                            "competition_mode": "official",
+                            "reason": "solution_pdf_uploaded",
+                            "pdf_sha256": sha,
+                        },
+                    )
+                    listed = True
+                result = {k: v for k, v in existing.items() if k != "recorded_at"}
+                result["listed_as_official"] = listed or state.get("competition_mode") == "official"
+                return result
             pdf_dir = self.root / "solution-pdfs" / case_id
             pdf_dir.mkdir(parents=True, exist_ok=True)
             path = pdf_dir / f"{sha}.pdf"
@@ -326,11 +350,24 @@ class CaseJournal:
                 "extracted": extracted or {},
             }
             self._append(case_id, "solution_pdf", payload)
+            if state.get("competition_mode") == "out_of_competition":
+                self._append(
+                    case_id,
+                    "listing_promotion",
+                    {
+                        "competition_mode": "official",
+                        "reason": "solution_pdf_uploaded",
+                        "pdf_sha256": sha,
+                    },
+                )
+                listed = True
+            payload["listed_as_official"] = listed or state.get("competition_mode") == "official"
             return payload
 
     def promote_to_dataset(self, case_id, promotion):
-        """Explicit operator action: export OOC case + stored PDF into a local dataset record.
+        """Explicit operator action: export case + stored PDF into a local dataset record.
 
+        Typically used after a purchased-report PDF moved an OOC teaser into listing.
         Does not mutate git-tracked teaser-cases.json or featured_calls.json.
         """
         if not isinstance(promotion, dict):
@@ -346,8 +383,6 @@ class CaseJournal:
             raise ValueError("invalid call WKN format")
         with self._lock():
             state = self.case(case_id)
-            if state.get("competition_mode") != "out_of_competition":
-                raise ValueError("dataset promotion requires out_of_competition case")
             if state.get("dataset_promotion"):
                 return {k: v for k, v in state["dataset_promotion"].items() if k != "recorded_at"}
             if not state.get("solution_pdf"):
@@ -359,9 +394,10 @@ class CaseJournal:
             export_path = export_dir / f"{case_id}.json"
             record = {
                 "schema_version": 1,
-                "kind": "hebeltrader_out_of_competition_dataset_export",
+                "kind": "hebeltrader_report_dataset_export",
                 "case_id": case_id,
-                "competition_mode": "out_of_competition",
+                "competition_mode": state.get("competition_mode") or "official",
+                "listing_promotion": state.get("listing_promotion"),
                 "promoted_at": self.clock().isoformat(),
                 "headline": (state.get("input") or {}).get("headline") or "",
                 "teaser_text": (state.get("input") or {}).get("teaser_text") or "",
@@ -485,6 +521,7 @@ class CaseJournal:
                     "prospective_classification",
                     "reference_promotion",
                     "solution_pdf",
+                    "listing_promotion",
                     "dataset_promotion",
                 ):
                     continue
