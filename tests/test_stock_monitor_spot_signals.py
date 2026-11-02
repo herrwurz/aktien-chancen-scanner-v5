@@ -50,3 +50,27 @@ def test_rejects_discontinuous_history():
 
 def test_rejects_missing_history():
     assert evaluate_spot_candidate([])["reason"] == "insufficient_history"
+
+
+def test_spike_reports_early_momentum_evidence():
+    result = evaluate_spot_candidate(bars(spike=True))
+    assert result["return_5m_pct"] == 2.0
+    assert result["return_60m_pct"] == 2.0
+    assert result["breakout_above_prior_20_bar_high_pct"] == 2.0
+    assert result["overheated"] is False
+
+
+def test_rejects_overheated_spike():
+    sample = bars(spike=True)
+    last = sample[-1]
+    sample[-1] = last.model_copy(
+        update={
+            "open": Decimal("120"),
+            "high": Decimal("120"),
+            "low": Decimal("120"),
+            "close": Decimal("120"),
+        }
+    )
+    result = evaluate_spot_candidate(sample)
+    assert result["qualified"] is False
+    assert result["reason"] == "overheated_move"
