@@ -167,13 +167,20 @@ def test_peer_budget_exhaustion_is_not_material_source_gap_with_primary_docs():
         {"query": "peer falsification", "error": "network disabled or request budget exhausted"},
         {"query": "earnings date", "error": "request budget exhausted"},
     ]
-    assert has_material_research_source_gaps(errors, primary_documents=2, offline=False) is False
-    assert has_material_research_source_gaps(errors, primary_documents=0, offline=False) is True
+    assert (
+        has_material_research_source_gaps(errors, primary_documents=0, offline=False, documents=87)
+        is False
+    )
+    assert (
+        has_material_research_source_gaps(errors, primary_documents=0, offline=False, documents=0)
+        is True
+    )
     assert (
         has_material_research_source_gaps(
             [{"url": "x", "error": "HTTP 500"}],
             primary_documents=2,
             offline=False,
+            documents=10,
         )
         is True
     )
