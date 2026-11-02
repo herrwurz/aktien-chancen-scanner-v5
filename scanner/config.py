@@ -3,13 +3,13 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", populate_by_name=True)
 
     database_url: SecretStr | None = None
     postgres_host: str = "db"
@@ -45,9 +45,19 @@ class Settings(BaseSettings):
     detective_public_allow_network: bool = False
     detective_public_max_requests: int = Field(default=70, ge=1, le=100)
     detective_search_provider: Literal["public", "tavily"] = "public"
-    detective_search_api_key: SecretStr | None = None
+    detective_search_api_key: SecretStr | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "detective_search_api_key", "DETECTIVE_SEARCH_API_KEY", "TAVILY_API_KEY"
+        ),
+    )
     detective_source_ai_enabled: bool = False
-    detective_source_ai_api_key: SecretStr | None = None
+    detective_source_ai_api_key: SecretStr | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "detective_source_ai_api_key", "DETECTIVE_SOURCE_AI_API_KEY", "OPENAI_API_KEY"
+        ),
+    )
     detective_extraction_model: Literal["gpt-4.1-mini-2025-04-14", "gpt-4.1-2025-04-14"] = (
         "gpt-4.1-mini-2025-04-14"
     )

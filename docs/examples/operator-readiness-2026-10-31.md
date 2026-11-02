@@ -23,7 +23,7 @@ python3 -m scanner.hebeltrader.detective.corpus_report readiness
 | Item | Status |
 |---|---|
 | Original teasers | **0/26** with ≥2 native named anchors |
-| Live Stufe 3b | needs Tavily/OpenAI in Cursor environment Secrets |
+| Live Stufe 3b | needs Tavily/OpenAI Secrets; with keys: `live_falsification --approve-cost` |
 
 ## Smoke
 
@@ -48,7 +48,7 @@ operator readiness
     - [corpus_gap] original_teaser_anchor_gap: 0/26 originals have ≥2 native named anchors
     - [blocked] live_3b_api_keys: Tavily/OpenAI absent; use simulated_falsification offline
   next:
-    - For live Stufe 3b: set TAVILY_API_KEY and/or OPENAI_API_KEY in the Cursor Cloud Agent environment Secrets
+    - For live Stufe 3b: provide TAVILY_API_KEY/DETECTIVE_SEARCH_API_KEY and/or OPENAI_API_KEY/DETECTIVE_SOURCE_AI_API_KEY in the Cursor Cloud Agent environment Secrets
     - Secure next real teaser before reading Call-PDF (≥2 named anchors)
   pad800 market Top1/3/8: 2/3/7 of 26
 ```
