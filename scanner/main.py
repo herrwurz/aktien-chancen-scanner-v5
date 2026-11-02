@@ -19,6 +19,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
+from scanner.hebeltrader.detective.call_search import search_calls_for_report
 from scanner.hebeltrader.detective.case_journal import CaseJournal
 from scanner.hebeltrader.detective.external_research import (
     ApiConfigurationError,
@@ -114,6 +115,11 @@ class DatasetPromotionRequest(BaseModel):
     stock_wkn: str | None = Field(default=None, max_length=12)
     call_wkn: str | None = Field(default=None, pattern=r"^[A-Z0-9]{6}$")
     notes: str | None = Field(default=None, max_length=2000)
+
+
+class CallSearchRequest(BaseModel):
+    report: dict
+    enabled: bool = True
 
 
 def create_app(settings: Settings | None = None, engine=None):
@@ -419,5 +425,42 @@ def create_app(settings: Settings | None = None, engine=None):
             return detective.analyze(payload)
         except ValueError as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    @app.post("/api/hebeltrader/calls/search")
+    def call_search(payload: CallSearchRequest, request: Request):
+        """Dry-run Call search for top underlyings — never a trading recommendation."""
+        if settings.detective_public_allow_network:
+            expected = settings.detective_live_api_token
+            if expected is None or not expected.get_secret_value().strip():
+                raise HTTPException(503, "Public research API authorization is not configured")
+            provided = request.headers.get("X-Research-Authorization", "")
+            if not hmac.compare_digest(expected.get_secret_value(), provided):
+                raise HTTPException(403, "Research authorization required")
+        try:
+            domains = (
+                json.loads(settings.detective_primary_domains.read_text())
+                if settings.detective_primary_domains
+                else {}
+            )
+            web = (
+                build_public_research(settings, domains)
+                if settings.detective_public_allow_network
+                else None
+            )
+            issuers = (
+                json.loads(settings.detective_product_issuers.read_text())
+                if settings.detective_product_issuers
+                else {}
+            )
+            return search_calls_for_report(
+                payload.report,
+                web=web,
+                issuer_domains=issuers,
+                enabled=payload.enabled,
+            )
+        except ApiConfigurationError as exc:
+            raise HTTPException(503, str(exc)) from None
+        except (ValueError, httpx.HTTPError, TypeError) as exc:
+            raise HTTPException(422, "Call search unavailable: " + type(exc).__name__) from None
 
     return app

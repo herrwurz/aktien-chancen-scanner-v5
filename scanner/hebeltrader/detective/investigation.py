@@ -2195,10 +2195,12 @@ class Investigator:
                     "keine unabhängige Primärbestätigung."
                 )
         from .product_research import research_calls
+        from .prose_briefing import prose_briefing
 
         report["derivative_candidate"] = research_calls(
             report, self.web, self.product_issuers, text
         )
+        report["prose"] = prose_briefing(report)
         exclusive(folder / "sources.json", canonical(fetched))
         from .history import freeze_analysis
 

@@ -25,6 +25,11 @@
     .case-controls{display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:end}
     .case-controls label{margin:0}.inline-check{display:flex;align-items:center;gap:.5rem;margin:.75rem 0;font-weight:650}
     .inline-check input{width:auto;margin:0}.case-actions{display:grid;gap:.5rem;margin-top:.75rem}
+    .prose{line-height:1.55;font-size:1.05rem}.prose h3{margin:1.1rem 0 .4rem;font-size:1.15rem}
+    .prose p{margin:.55rem 0}.prose ul{margin:.4rem 0 .8rem 1.2rem}
+    .prose strong{font-weight:750}.result-actions{display:grid;gap:.5rem;margin:1rem 0}
+    .result-actions button{background:#0f766e}.result-actions button.secondary{background:#164e63}
+    #call-search-result{margin-top:1rem}
     @media(max-width:600px){body{padding:.5rem}.case-controls{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -178,6 +183,27 @@ const asBase64=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.o
   r.onload=()=>resolve(r.result.split(',')[1]);r.readAsDataURL(file)});
 const el=(tag,text)=>{const node=document.createElement(tag);if(text!=null)node.textContent=text;return node};
 const list=(items)=>{const ul=el('ul');(items||[]).forEach(item=>{ul.append(el('li',item));});return ul;};
+let latestReport=null;
+const escapeHtml=value=>String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const inlineMarkdown=text=>escapeHtml(text).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>');
+const renderProse=(text,root)=>{
+  const box=el('article');box.className='prose meta';
+  const blocks=String(text||'').trim().split(/\n{2,}/);
+  blocks.forEach(block=>{
+    const lines=block.split('\n');
+    if(lines.length===1&&lines[0].startsWith('### ')){
+      box.append(el('h3',lines[0].slice(4)));
+      return;
+    }
+    if(lines.every(line=>line.trim().startsWith('- '))){
+      const ul=el('ul');
+      lines.forEach(line=>{const li=el('li');li.innerHTML=inlineMarkdown(line.replace(/^\s*-\s*/,''));ul.append(li);});
+      box.append(ul);return;
+    }
+    const p=el('p');p.innerHTML=lines.map(inlineMarkdown).join('<br>');box.append(p);
+  });
+  root.append(box);
+};
 const clueLabel=item=>{
   if(!item)return '';
   if(typeof item==='string')return item;
@@ -191,161 +217,85 @@ const sourceLine=record=>{
   if(record.source_available_at)parts.push(`verfügbar ${record.source_available_at}`);
   return parts.join(' · ');
 };
-const renderOverview=data=>{
-  const box=el('article');box.className='meta';
+const renderTechnicalDetails=data=>{
+  const detail=el('details');detail.append(el('summary','Technische Details'));
+  const box=el('div');box.className='muted';
   const id=data.identification||{};
-  box.append(el('h2','Ergebnis'));
-  box.append(el('p',(data.decision||{}).label||id.label||`Status: ${id.status||'unbekannt'}`));
-  if(data.ranking_tie)box.append(el('p','Die führenden Kandidaten haben denselben Evidenzwert. Es gibt derzeit keinen eindeutigen Rang 1.'));
   box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'unbekannt'} · ${data.case_status||''}`));
-  if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
   box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
-  if(data.peer_comparison){
-    const peers=data.peer_comparison;
-    box.append(el('p',`Wettbewerberrecherche: ${peers.queries.length} Suchanfragen · ${peers.candidates_after_discovery} Kandidaten danach`));
-    if(peers.status==='not_performed_offline')box.append(el('p','Offline-Analyse: keine aktive Wettbewerbersuche.'));
-    if(peers.status==='searched_with_source_gaps')box.append(el('p','Wettbewerbersuche mit Quellenlücken.'));
-    if(peers.queries.length){
-      const detail=el('details');detail.append(el('summary','Suchanfragen zu Wettbewerbern'));
-      detail.append(list(peers.queries));box.append(detail);
-    }
+  if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode}`));
+  if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
+  if((data.search_queries||[]).length){box.append(el('h4','Suchqueries'));box.append(list(data.search_queries));}
+  const warnings=[...((data.candidate_source&&data.candidate_source.coverage&&data.candidate_source.coverage.coverage_warnings)||[]),...(data.review_hints||[]),...(data.limitations||[])];
+  if(warnings.length){box.append(el('h4','Hinweise'));box.append(list(warnings));}
+  (data.candidates||[]).slice(0,3).forEach((c,index)=>{
+    const identity=c.identity||c;
+    box.append(el('h4',`${index+1}. ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
+    box.append(el('p',`Evidenz ${c.evidence_score??c.relevance_score_not_probability??'–'} · ${c.ranking_reason||''}`));
+    if((c.evidence_matrix||[]).length)box.append(list(c.evidence_matrix.map(cell=>`${cell.quote||cell.clue_id}: ${cell.status}`)));
+  });
+  detail.append(box);return detail;
+};
+const runCallSearch=async data=>{
+  const mount=document.querySelector('#call-search-result')||result;
+  const status=el('p','Call-Suche läuft …');status.className='muted';
+  const existing=document.querySelector('#call-search-result');
+  if(existing)existing.replaceChildren(status); else {const wrap=el('div');wrap.id='call-search-result';wrap.append(status);result.append(wrap);}
+  try{
+    const headers={'content-type':'application/json',...authHeaders()};
+    const response=await fetch('/api/hebeltrader/calls/search',{method:'POST',headers,body:JSON.stringify({report:data,enabled:true})});
+    if(!response.ok)throw new Error(await readResponseError(response));
+    const payload=await response.json();
+    const root=document.querySelector('#call-search-result');root.replaceChildren();
+    root.append(el('h2','Calls'));
+    renderProse(payload.prose||'Keine Call-Prosa verfügbar.',root);
+    const tech=el('details');tech.append(el('summary','Call-JSON'));
+    const pre=el('pre');pre.textContent=JSON.stringify(payload,null,2);tech.append(pre);root.append(tech);
+  }catch(error){
+    const root=document.querySelector('#call-search-result');
+    root.replaceChildren(el('p',error.message||'Call-Suche fehlgeschlagen.'));
   }
-  if(data.falsification){
-    const states={not_performed_offline:'Nicht ausgeführt: Offline-Analyse',
-      not_performed_no_candidates:'Nicht möglich: Recherche lieferte keine Kandidaten',
-      performed:'Ausgeführt',performed_with_source_gaps:'Ausgeführt mit Quellenlücken'};
-    box.append(el('p',`Gegenprüfung: ${states[data.falsification.status]||data.falsification.status}`));
-  }
-  if(data.semantic_research?.enabled){
-    const models=data.semantic_research.models||{};
-    box.append(el('p',`KI-Quellenauswertung: ${data.semantic_research.validated_teaser_clues} belegte Eingabehinweise · ${data.semantic_research.search_api_calls} Such-API-Aufrufe · ${data.semantic_research.ai_api_calls} KI-Aufrufe. Extraktion: ${models.extraction||'unbekannt'} · Schlussprüfung: ${models.reasoning||'unbekannt'}. Befunde bleiben vorläufig.`));
-  }
-  if(data.reasoning_review?.status==='advisory'){
-    const review=data.reasoning_review;
-    box.append(el('h3','Abschließende KI-Gegenprüfung'));
-    box.append(el('p',`${review.model}: ${review.reason||'Kein Kandidat ausreichend unterscheidbar.'}`));
-    if(review.counterarguments?.length)box.append(list(review.counterarguments));
-    box.append(el('p','Diese Gegenprüfung verändert die deterministische Rangfolge nicht.'));
-  }
-  if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode==='public_web'?'Öffentliche Online-Recherche':data.research_mode}`));
-  if(data.research_diagnostics){
-    const diagnostic=data.research_diagnostics;
-    box.append(el('p',`Abgerufene Dokumente: ${diagnostic.documents} · mit Unternehmenszuordnung: ${diagnostic.documents_with_company_identity}`));
-    if(diagnostic.source_errors.length){
-      const detail=el('details');detail.append(el('summary','Quellenprobleme anzeigen'));
-      const lines=diagnostic.source_errors.map(row=>`${row.source||row.url||row.query||'Recherche'}: ${row.error}`);
-      detail.append(list([...new Set(lines)]));box.append(detail);
-    }
-  }
-  if((data.researched_sources||[]).length){
-    const detail=el('details');detail.append(el('summary','Recherchierte Quellen anzeigen'));
-    (data.researched_sources||[]).forEach(source=>{
-      detail.append(el('p',`Klasse ${source.source_class||'unbekannt'} · ${source.title||source.url}`));
-      detail.append(el('p',source.url||''));
-      if(source.text_excerpt)detail.append(el('blockquote',source.text_excerpt));
+};
+const fallbackProse=data=>{
+  const ooc=(data.competition_mode||'')==='out_of_competition';
+  const lines=[ooc
+    ?'**Außer Konkurrenz** — Analyse zur Orientierung; nicht in Meine Fälle, Quality oder Blind-Listing.'
+    :'**Arbeitsanalyse** — Identifikationshilfe, keine Kaufempfehlung.'];
+  const label=(data.decision||{}).label||(data.identification||{}).label;
+  if(label)lines.push(`Status: **${label}**.`);
+  const candidates=(data.candidates||[]).slice(0,3);
+  if(!candidates.length){
+    lines.push('','### Ergebnis','Keine belastbaren Kandidaten.');
+  }else{
+    lines.push('','### Ranking');
+    candidates.forEach((c,i)=>{const id=c.identity||c;
+      lines.push(`**${i+1}. ${id.name||'Unbekannt'}**${id.ticker?` (\`${id.ticker}\`)`:''} — Evidenz ${c.evidence_score??'–'}.`);
+      if(c.ranking_reason)lines.push(c.ranking_reason);
     });
-    box.append(detail);
   }
-  const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';
+  lines.push('','Evidenzscore ist keine Trefferwahrscheinlichkeit. Keine Anlage- oder Kaufempfehlung.');
+  return lines.join('\n\n');
+};
+const renderOverview=data=>{
+  latestReport=data;
+  if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
+  renderProse(data.prose||fallbackProse(data),result);
+  const actions=el('div');actions.className='result-actions';
+  const callBtn=el('button','Calls suchen');callBtn.type='button';
+  callBtn.addEventListener('click',()=>runCallSearch(data));
+  const resolveBtn=activeResolutionRow?makeResolutionButton(activeResolutionRow):null;
+  const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';exportButton.className='secondary';
   exportButton.addEventListener('click',()=>{
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
     const link=el('a');link.href=url;link.download=`teaser-${data.case_id||'analyse'}.json`;
     link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  });box.append(exportButton);
-  if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
-  else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
-  if(id.status==='hypothesis_top3')box.append(el('p',
-    'Hypothesen-Top-3: manuell prüfbare Kandidaten, keine bestätigte Identifikation.'));
-  box.append(el('p', data.publication_at
-    ? `Zeitbezug: ${data.publication_at}`
-    : 'Ohne Publikationszeit (Hypothesenmodus nutzt Analysezeit, nicht historical_blind)'));
-  if((data.search_queries||[]).length){
-    box.append(el('h3','Suchqueries'));
-    box.append(list(data.search_queries));
-  }
-  const coverage=(data.candidate_source&&data.candidate_source.coverage)||{};
-  const coverageBits=[
-    coverage.visible_universe_size!=null?`sichtbares Universum ${coverage.visible_universe_size}`:null,
-    coverage.matched_before_limit!=null?`Treffer vor Cutoff ${coverage.matched_before_limit}`:null,
-    coverage.channel_limit!=null?`Kanal-Limit ${coverage.channel_limit}`:null,
-    coverage.investigated_count!=null?`untersucht ${coverage.investigated_count}`:null,
-  ].filter(Boolean);
-  if(coverageBits.length)box.append(el('p',`Abdeckung: ${coverageBits.join(' · ')}`));
-  const channelCounts=coverage.channel_counts||{};
-  const channelLines=Object.keys(channelCounts).sort().map(key=>{
-    const matched=(coverage.channel_matched_before_limit||{})[key];
-    return matched==null?`${key}: ${channelCounts[key]}`:`${key}: ${channelCounts[key]} (vor Cutoff ${matched})`;
   });
-  if(channelLines.length){box.append(el('h3','Kanäle'));box.append(list(channelLines));}
-  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[]),...(data.limitations||[])];
-  const inputWarnings=[];
-  (data.input_sources||[]).forEach(source=>{
-    if(source.type==='screenshot_ocr')inputWarnings.push(`OCR (${source.engine||'lokal'}): visuelle Prüfung nötig`);
-    (source.pages||[]).forEach(page=>{
-      (page.warnings||[]).forEach(warning=>inputWarnings.push(`Seite ${page.number}: ${warning}`));
-      if(page.requires_manual_review)inputWarnings.push(`Seite ${page.number}: manuelle Prüfung der Extraktion`);
-    });
-  });
-  const allWarnings=[...warnings,...inputWarnings];
-  if(allWarnings.length){box.append(el('h3','Hinweise und Warnungen'));box.append(list(allWarnings));}
-  result.append(box);
+  actions.append(callBtn);if(resolveBtn)actions.append(resolveBtn);actions.append(exportButton);
+  result.append(actions);
+  const callMount=el('div');callMount.id='call-search-result';result.append(callMount);
+  result.append(renderTechnicalDetails(data));
 };
-const renderCandidate=(c,index)=>{
-  const article=el('article');article.className='candidate';
-  const identity=c.identity||c;
-  article.append(el('h3',`${c.rank_label||`${index+1}.`} ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
-  const wknNote=identity.wkn
-    ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
-    : 'WKN unbekannt';
-  article.append(el('p',`${wknNote} · Evidenzwert ${c.evidence_score??c.relevance_score_not_probability}`));
-  if(c.hard_contradictions&&c.hard_contradictions.length){
-    article.append(el('h4','Harte Widersprüche'));
-    article.append(list(c.hard_contradictions.map(clueLabel)));
-  }
-  const contradictions=c.contradictions||[];
-  if(contradictions.length){
-    article.append(el('h4','Widersprüche'));
-    article.append(list(contradictions.map(clueLabel)));
-  }
-  const supporting=c.supporting_clues||c.hard_facts||[];
-  if(supporting.length){
-    article.append(el('h4','Bestätigte Hinweise'));
-    article.append(list(supporting.map(clueLabel)));
-  }
-  if(c.hypothesis_reasons&&c.hypothesis_reasons.length){
-    article.append(el('h4','Hypothesengründe'));
-    article.append(list(c.hypothesis_reasons));
-  }
-  if(c.evidence_matrix&&c.evidence_matrix.length){
-    article.append(el('h4','Evidenzmatrix'));
-    article.append(list(c.evidence_matrix.map(cell=>{
-      const reason=cell.reason?` (${cell.reason})`:'';
-      return `${cell.quote||cell.clue_id}: ${cell.status}${reason}`;
-    })));
-  }
-  if((c.cited_findings||[]).length){
-    article.append(el('h4','KI-Auswertung mit Belegstellen – vorläufig, manuell prüfen'));
-    c.cited_findings.forEach(finding=>{
-      article.append(el('p',`${finding.status==='supported'?'Stützt Hinweis':'Gegenargument'} · Quellenklasse ${finding.source_class||'unbekannt'} · ${finding.url}`));
-      article.append(el('blockquote',finding.quote));
-      if(!finding.usable_for_ranking)article.append(el('p','Zeitliche Verfügbarkeit nicht belegt: nicht für Rangfolge oder Gegenkandidatenzahl verwendet.'));
-      if(finding.temporal_eligibility==='current_hypothesis_only')article.append(el('p','Nur für die aktuelle Hypothesenbildung verwendet; keine historische Verfügbarkeit belegt.'));
-      article.append(el('p',`Zeitprüfung: ${finding.temporal_eligibility}; Quelle publiziert: ${finding.published_at||'unbekannt'}; abgerufen: ${finding.retrieved_at||'unbekannt'}`));
-    });
-  }
-  const sources=c.sources||c.eligible_evidence||[];
-  const primary=sources.filter(source=>['issuer','regulatory','product_document'].includes(source.source_kind));
-  const other=sources.filter(source=>!primary.includes(source));
-  if(primary.length){article.append(el('h4','Primärbelege'));article.append(list(primary.map(sourceLine)));}
-  if(other.length){article.append(el('h4','Weitere Quellen'));article.append(list(other.map(sourceLine)));}
-  sources.forEach(source=>{
-    const quotes=Object.values((source.facts||{}).support_quotes||{});
-    quotes.forEach(quote=>article.append(el('blockquote',quote)));
-  });
-  if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
-  article.append(el('p','Bestätigung: manuell erforderlich'));
-  result.append(article);
-};
+const renderCandidate=(c,index)=>{/* prose briefing is primary; details stay collapsed */};
 const referenceButton=document.querySelector('#import-references');
 const referenceOutcomes={correct:'Richtig',wrong:'Falsch',unresolved:'Ungelöst'};
 const renderReferences=data=>{
@@ -437,8 +387,8 @@ const selectCase=caseId=>{
   const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
     result.replaceChildren();
     if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
-    resolutionOriginalSha=report.teaser_sha256||null;renderOverview({...report,journal_case_id:row.case_id});
-    (report.candidates||[]).forEach(renderCandidate);result.prepend(makeResolutionButton(row));
+    resolutionOriginalSha=report.teaser_sha256||null;
+    renderOverview({...report,journal_case_id:row.case_id,competition_mode:row.competition_mode||report.competition_mode||'official',prose:report.prose});
     result.scrollIntoView({behavior:'smooth',block:'start'});
   });actions.prepend(show);
   const token=document.querySelector('#authorization').value;const headers={};if(token)headers['X-Research-Authorization']=token;
@@ -500,8 +450,8 @@ const selectOocCase=caseId=>{
   const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
     result.replaceChildren();
     if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
-    resolutionOriginalSha=report.teaser_sha256||null;renderOverview({...report,journal_case_id:row.case_id,competition_mode:'out_of_competition'});
-    (report.candidates||[]).forEach(renderCandidate);result.prepend(makeResolutionButton(row));
+    resolutionOriginalSha=report.teaser_sha256||null;
+    renderOverview({...report,journal_case_id:row.case_id,competition_mode:'out_of_competition',prose:report.prose});
     result.scrollIntoView({behavior:'smooth',block:'start'});
   });actions.append(show);
   actions.append(makeResolutionButton(row));
@@ -621,27 +571,21 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   if(ooc)await loadOocCases(); else await loadCases(document.querySelector('#include-archived').checked);
   result.replaceChildren();
   renderOverview(data);
-  if(ooc)result.prepend(el('p','Außer Konkurrenz – nicht in Meine Fälle / Quality / Blind-Listing.'));
-  result.append(el('h2','Kandidaten'));
   setAnalysisStatus('success',ooc
-    ?'Außer-Konkurrenz-Analyse abgeschlossen. Ergebnis angezeigt, Listing unverändert.'
-    :'Analyse abgeschlossen. Das Ergebnis steht direkt unter dem Formular.');
+    ?'Außer-Konkurrenz-Analyse abgeschlossen. Ergebnis in Prosa unter dem Formular.'
+    :'Analyse abgeschlossen. Ergebnis in Prosa unter dem Formular.');
   result.scrollIntoView({behavior:'smooth',block:'start'});
-  result.prepend(makeResolutionButton({case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode}));
-  if(!data.candidates.length){
-    result.append(el('p','Keine belastbaren Kandidaten. Siehe Failure-Code und Abdeckung oben.'));
-    return;
+  if((data.checked_candidates||[]).length){
+    const comparison=el('details');
+    comparison.append(el('summary',`Alle geprüften Unternehmen (${data.checked_candidates.length})`));
+    data.checked_candidates.forEach(candidate=>{
+      comparison.append(el('h3',candidate.identity?.name||candidate.asset_id||'Kandidat'));
+      comparison.append(el('p',`Aktien-ID: ${candidate.asset_id||'unbekannt'}`));
+      comparison.append(list((candidate.evidence_matrix||[]).map(cell=>
+        `${cell.quote||cell.clue_id}: ${cell.status}`)));
+    });
+    result.append(comparison);
   }
-  data.candidates.forEach((candidate,index)=>renderCandidate(candidate,index));
-  const comparison=el('details');
-  comparison.append(el('summary',`Alle geprüften Unternehmen (${(data.checked_candidates||[]).length})`));
-  (data.checked_candidates||[]).forEach(candidate=>{
-    comparison.append(el('h3',candidate.identity.name));
-    comparison.append(el('p',`Aktien-ID: ${candidate.asset_id}`));
-    comparison.append(list((candidate.evidence_matrix||[]).map(cell=>
-      `${cell.quote||cell.clue_id}: ${cell.status}`)));
-  });
-  result.append(comparison);
   }catch(error){const message=error?.message||'Unbekannter Verbindungsfehler';result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);}
   finally{submit.disabled=false;submit.textContent=originalLabel;}
 });

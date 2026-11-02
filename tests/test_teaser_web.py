@@ -383,9 +383,12 @@ def test_analysis_status_has_visible_states_and_safe_error_details():
 def test_candidate_resolution_shortcut_prefills_candidate_identity():
     html = Path("scanner/templates/detective.html").read_text()
 
-    assert "makeResolutionButton(activeResolutionRow,c)" in html
+    assert "makeResolutionButton" in html
+    assert "Calls suchen" in html
     assert "identity.asset_id||candidate?.asset_id" in html
     assert "if(identity.name)" in html
+    assert "renderProse" in html
+    assert "/api/hebeltrader/calls/search" in html
 
 
 def test_case_actions_report_failures_and_preserve_archive_filter():
