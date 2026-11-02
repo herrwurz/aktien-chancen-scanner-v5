@@ -834,12 +834,13 @@ def _pool_seed_queries(seeds, text, *, limit=8):
 
 
 def _mark_chart_comparison_evidence(ranked, text):
-    """Peers with a confirmed teaser chart clue count as comparison evidence.
+    """Chart-fitting peers count as comparison evidence (not an identification).
 
-    Does not identify a stock; only unblocks the countercandidate gate when several
-    chart-fitting issuers are in the ranked set.
+    Exact teaser-clue hits (e.g. Golden Cross) always qualify. Other ok charts with a
+    positive teaser-conditioned match_score also qualify so the ≥5-countercandidate
+    gate can use the chart-first pool instead of only exact-signal twins.
     """
-    clues = set(teaser_chart_clues(text))
+    clues = teaser_chart_clues(text)
     if not clues:
         return
     for row in ranked:
@@ -848,12 +849,19 @@ def _mark_chart_comparison_evidence(ranked, text):
             continue
         if row.get("hard_contradictions"):
             continue
-        if any(chart.get(clue) for clue in clues):
-            row["comparison_evidence_available"] = True
-            row.setdefault("counterarguments", [])
-            note = "Chart-Clue am Kandidaten bestätigt; Web-/IR-Belege weiter prüfen."
-            if note not in row["counterarguments"]:
-                row["counterarguments"].append(note)
+        exact = any(chart.get(clue) for clue in clues)
+        scored = match_score(chart, clues) > 0
+        if not (exact or scored):
+            continue
+        row["comparison_evidence_available"] = True
+        row.setdefault("counterarguments", [])
+        note = (
+            "Chart-Clue am Kandidaten bestätigt; Web-/IR-Belege weiter prüfen."
+            if exact
+            else "Chart passt zu Teaser-Signalen; als Gegenkandidat mitgeprüft."
+        )
+        if note not in row["counterarguments"]:
+            row["counterarguments"].append(note)
 
 
 def _apply_chart(ranked, cache, text, top=6, as_of=None):

@@ -93,17 +93,50 @@ def test_apply_utility_fingerprints_boosts_matching_row():
     assert ranked[0]["evidence_score"] > ranked[1]["evidence_score"]
 
 
-def test_chart_comparison_evidence_marks_gc_peers():
+def test_chart_comparison_evidence_marks_gc_and_positive_match_peers():
     text = "Charttechnisch hat sich zudem ein kraftvolles Golden Cross gebildet."
     ranked = [
         {
-            "chart": {"status": "ok", "golden_cross": True},
+            "chart": {
+                "status": "ok",
+                "golden_cross": True,
+                "above_gd50": True,
+                "above_gd200": True,
+                "gd200_rising": True,
+                "return_1y_pct": 10,
+                "near_high_pct": -2,
+                "breakout": False,
+            },
             "hard_contradictions": [],
             "comparison_evidence_available": False,
             "counterarguments": [],
         },
         {
-            "chart": {"status": "ok", "golden_cross": False},
+            "chart": {
+                "status": "ok",
+                "golden_cross": False,
+                "above_gd50": True,
+                "above_gd200": True,
+                "gd200_rising": True,
+                "return_1y_pct": 5,
+                "near_high_pct": -5,
+                "breakout": False,
+            },
+            "hard_contradictions": [],
+            "comparison_evidence_available": False,
+            "counterarguments": [],
+        },
+        {
+            "chart": {
+                "status": "ok",
+                "golden_cross": False,
+                "above_gd50": False,
+                "above_gd200": False,
+                "gd200_rising": False,
+                "return_1y_pct": -20,
+                "near_high_pct": -40,
+                "breakout": False,
+            },
             "hard_contradictions": [],
             "comparison_evidence_available": False,
             "counterarguments": [],
@@ -111,4 +144,5 @@ def test_chart_comparison_evidence_marks_gc_peers():
     ]
     _mark_chart_comparison_evidence(ranked, text)
     assert ranked[0]["comparison_evidence_available"] is True
-    assert ranked[1]["comparison_evidence_available"] is False
+    assert ranked[1]["comparison_evidence_available"] is True
+    assert ranked[2]["comparison_evidence_available"] is False
