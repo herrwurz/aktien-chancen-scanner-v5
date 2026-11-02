@@ -57,14 +57,24 @@ async def discover_spot_symbols(
                 continue
             if not quote.is_finite() or not change.is_finite() or quote < min_quote_volume:
                 continue
-            rows.append((symbol, quote, change))
+            try:
+                last_price = Decimal(str(item["lastPrice"]))
+            except (KeyError, InvalidOperation, TypeError):
+                last_price = Decimal(0)
+            if not last_price.is_finite() or last_price < 0:
+                last_price = Decimal(0)
+            rows.append((symbol, quote, change, last_price))
         # Prioritize unusual 24h moves without restricting the market overview to top volume.
         # Quote-volume floor protects against trivially illiquid prints; 5m confirmation follows.
         rows.sort(key=lambda row: (-abs(row[2]), -row[1], row[0]))
         return {
             "status": "complete",
             "source": "binance_spot_24h_ticker",
-            "symbols": [symbol for symbol, _, _ in rows],
+            "symbols": [symbol for symbol, _, _, _ in rows],
+            "ticker_snapshot": {
+                symbol: {"price": str(price), "quote_volume_24h": str(quote)}
+                for symbol, quote, _, price in rows
+            },
             "screened_symbols": len(payload),
             "eligible_symbols": len(rows),
             "trading_pairs": len(trading),
