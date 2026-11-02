@@ -29,15 +29,27 @@ def evaluate_spot_candidate(candles: list[Candle]) -> dict:
         return {"qualified": False, "reason": "no_baseline_liquidity"}
     volume_ratio = current.quote_volume / avg_quote
     return_pct = (current.close / bars[-4].close - 1) * 100
+    return_5m_pct = (current.close / baseline[-1].close - 1) * 100
+    return_60m_pct = (current.close / bars[-13].close - 1) * 100
+    prior_peak = max(bar.high for bar in baseline)
+    breakout_pct = (current.close / prior_peak - 1) * 100
+    overheated = return_60m_pct > Decimal("15") or return_5m_pct > Decimal("8")
     qualified = (
-        current.quote_volume >= Decimal("100000")
+        not overheated
+        and current.quote_volume >= Decimal("100000")
         and volume_ratio >= Decimal("3")
         and return_pct >= Decimal("1.5")
     )
     return {
         "qualified": qualified,
-        "reason": "momentum_candidate" if qualified else "thresholds_not_met",
+        "reason": "overheated_move" if overheated else (
+            "momentum_candidate" if qualified else "thresholds_not_met"
+        ),
         "volume_ratio": round(float(volume_ratio), 3),
+        "return_5m_pct": round(float(return_5m_pct), 3),
+        "return_60m_pct": round(float(return_60m_pct), 3),
+        "breakout_above_prior_20_bar_high_pct": round(float(breakout_pct), 3),
+        "overheated": overheated,
         "return_15m_pct": round(float(return_pct), 3),
         "quote_volume_5m": round(float(current.quote_volume), 2),
         "candle_closed_at": current.close_time.isoformat(),
