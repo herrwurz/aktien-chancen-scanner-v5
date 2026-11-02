@@ -41,15 +41,11 @@ def test_recent_only_and_no_future_leakage():
 def test_future_retrieval_rejected():
     record = {
         "retrieved_at": "2026-11-04T08:00:00+00:00",
-        "payload": {
-            "filings": {
-                "recent": {
-                    "form": [],
-                    "acceptanceDateTime": [],
-                    "accessionNumber": [],
-                }
-            }
-        },
+        "payload": {"filings": {"recent": {
+            "form": [],
+            "acceptanceDateTime": [],
+            "accessionNumber": [],
+        }}},
     }
     with pytest.raises(ValueError, match="not yet observable"):
         recent_filing_events(
