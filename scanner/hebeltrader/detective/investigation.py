@@ -17,6 +17,7 @@ from scanner.research import AssetIdentity, EvidenceRecord
 
 from .chart_check import check as chart_check
 from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clues
+from .clue_aliases import term_pattern
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
@@ -37,6 +38,7 @@ from .structure_screen import (
     ticker_for,
 )
 from .temporal import assess_document, timestamp
+from .utility_fingerprint import apply_utility_fingerprints
 from .verification import verify_candidates
 
 
@@ -77,8 +79,11 @@ def _documents_by_asset(fetched):
     return grouped
 
 
-def _apply_metric_fingerprints(ranked, fetched):
-    return apply_metric_fingerprints(ranked, _documents_by_asset(fetched))
+def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
+    docs = _documents_by_asset(fetched)
+    metric = apply_metric_fingerprints(ranked, docs)
+    utility = apply_utility_fingerprints(ranked, docs, teaser_text=teaser_text)
+    return {"metric": metric, "utility": utility}
 
 
 def apply_tie_labels(ranked):
@@ -794,13 +799,25 @@ def _merge_pool_seed_rows(ranked, seeds, *, retrieved, text):
 
 
 def _pool_seed_queries(seeds, text, *, limit=8):
-    """Discovery queries for chart-ranked pool names (no hard-coded issuers)."""
+    """IR/SEC-first discovery queries for chart-ranked pool names (no issuer whitelist)."""
     entities = _entities(text)[:2]
     queries = []
     for seed in seeds[:limit]:
         asset = seed["asset"]
         name = asset["name"]
         ticker = asset.get("ticker") or ""
+        # Prefer primary IR/earnings/SEC surfaces before generic web chatter.
+        queries.append(
+            " ".join(
+                part
+                for part in (
+                    f'"{name}"',
+                    ticker,
+                    "investor relations earnings data center power purchase agreement",
+                )
+                if part
+            )
+        )
         queries.append(
             " ".join(
                 part
@@ -808,12 +825,35 @@ def _pool_seed_queries(seeds, text, *, limit=8):
                     f'"{name}"',
                     ticker,
                     *entities,
-                    "utility earnings data center power contract",
+                    "8-K OR 10-Q offtake OR capex OR hyperscale",
                 )
                 if part
             )
         )
-    return queries
+    return queries[: limit + 4]
+
+
+def _mark_chart_comparison_evidence(ranked, text):
+    """Peers with a confirmed teaser chart clue count as comparison evidence.
+
+    Does not identify a stock; only unblocks the countercandidate gate when several
+    chart-fitting issuers are in the ranked set.
+    """
+    clues = set(teaser_chart_clues(text))
+    if not clues:
+        return
+    for row in ranked:
+        chart = row.get("chart") or {}
+        if chart.get("status") != "ok":
+            continue
+        if row.get("hard_contradictions"):
+            continue
+        if any(chart.get(clue) for clue in clues):
+            row["comparison_evidence_available"] = True
+            row.setdefault("counterarguments", [])
+            note = "Chart-Clue am Kandidaten bestätigt; Web-/IR-Belege weiter prüfen."
+            if note not in row["counterarguments"]:
+                row["counterarguments"].append(note)
 
 
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
@@ -851,6 +891,7 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
     ranked.sort(
         key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
     )
+    _mark_chart_comparison_evidence(ranked, text)
 
 
 def _interleave(planned, screened, fallback, cap=10):
@@ -919,11 +960,7 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 for c in clues
                 if c.instrument_scope == "stock"
                 and c.category in {"fact_claims", "financial_metric", "sectors", "business"}
-                and re.search(
-                    r"(?<!\w)" + re.escape((c.value or c.normalized).split("|")[-1]) + r"(?!\w)",
-                    text,
-                    re.I,
-                )
+                and term_pattern((c.value or c.normalized).split("|")[-1]).search(text)
             }
         ),
     }
@@ -951,7 +988,7 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 if not _usable_product_token(clue.quote or term):
                     continue
                 confirmed = None
-                for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
+                for match in term_pattern(term).finditer(text):
                     context = text[max(0, match.start() - 400) : match.end() + 160]
                     if re.search(
                         r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
@@ -986,12 +1023,15 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
             pattern = _RELATIONS[relation]
             confirmed_context = None
             contradicted = False
-            for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
+            # German teaser terms (Rechenzentrum…) must also match English IR/SEC prose.
+            for match in term_pattern(term).finditer(text):
                 # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
                 # Merger write-ups also need a wider window for issuer self-reference.
                 window = 1200 if relation == "acquisition" else 400
                 context = text[max(0, match.start() - window) : match.end() + 120]
-                subject = _fact_claim_subject(company, context, pattern, term)
+                # Subject check uses the matched surface form (DE or EN alias).
+                matched_term = match.group(0)
+                subject = _fact_claim_subject(company, context, pattern, matched_term)
                 # SEC headlines ("Acquisition of Target" / "Target Acquisition|Merger")
                 # still need issuer self-reference (blocks "Other Corp acquired X").
                 sec_headline = bool(
@@ -1494,7 +1534,7 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
-            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -1522,7 +1562,7 @@ class Investigator:
                     lookup=self.earnings_lookup,
                     ath_bars_fetcher=self.ath_bars_fetcher,
                 )
-                metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+                metric_fingerprints = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
             peer_comparison.update(
                 status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
                 queries=peer_queries,
@@ -1583,7 +1623,7 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
-            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
             falsification["earnings_pit"] = earnings_pit
             falsification["metric_fingerprints"] = metric_fingerprints
         reasoning_review = {

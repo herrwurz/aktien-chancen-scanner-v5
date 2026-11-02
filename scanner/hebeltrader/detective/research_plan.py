@@ -91,10 +91,19 @@ def build_queries(text, named, fallback):
     # pipeline / natural-gas suppliers can enter the universe without naming a winner.
     if sector == "power infrastructure" and any(ctx in contexts for ctx in ("AI data centers",)):
         queries += [
+            "US electric utility data center power purchase agreement earnings IR",
+            "utility hyperscale offtake contract capital expenditure plan billion",
+            "electric utility long-term data center electricity contract 8-K",
             "natural gas midstream pipeline data center power demand earnings",
             "gas transmission pipeline company long-term contracts power generation AI",
             "midstream energy infrastructure supplier electricity demand data centers",
         ]
+    if re.search(r"abnahmevertr\w*|offtake|power purchase|\bPPA\b", clean, re.I):
+        queries.append(sector + " power purchase agreement offtake long-term contract earnings")
+    if re.search(
+        r"investitionsoffensive|capex|capital expenditure|milliarden\w*\s+invest", clean, re.I
+    ):
+        queries.append(sector + " multi-billion capital investment plan investor relations")
     if re.search(r"wiederkehrend\w*|recurring revenue|\bARR\b", clean, re.I):
         queries.append(sector + ' "recurring revenue" quarterly results')
     if len(contexts) >= 2:
