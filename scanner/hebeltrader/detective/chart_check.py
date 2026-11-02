@@ -12,25 +12,144 @@ def _sma(values, n):
     return sum(values[-n:]) / n if len(values) >= n else None
 
 
-def _golden_cross(closes, *, lookback=20):
-    """True when SMA50 crosses above SMA200 within ``lookback`` closed days.
+def _ema_series(values, n):
+    """EMA series aligned with ``values``; leading entries before seed are None."""
+    if len(values) < n:
+        return [None] * len(values)
+    k = 2.0 / (n + 1)
+    ema = sum(values[:n]) / n
+    out = [None] * (n - 1) + [ema]
+    for price in values[n:]:
+        ema = price * k + ema * (1.0 - k)
+        out.append(ema)
+    return out
 
-    Scans each bar in the lookback window for a state change from
-    SMA50 ≤ SMA200 on the prior bar to SMA50 > SMA200 on that bar.
-    """
-    if lookback < 1 or len(closes) < 201:
+
+def _ma_cross(closes, fast=50, slow=200, *, lookback=20, bullish=True):
+    """True when SMA``fast`` crosses SMA``slow`` within ``lookback`` bars."""
+    if lookback < 1 or len(closes) < slow + 1:
         return False
-    start = max(200, len(closes) - lookback)
+    start = max(slow, len(closes) - lookback)
     for end in range(start, len(closes)):
-        prev = closes[:end]
-        curr = closes[: end + 1]
-        p50, p200 = _sma(prev, 50), _sma(prev, 200)
-        c50, c200 = _sma(curr, 50), _sma(curr, 200)
-        if None in (p50, p200, c50, c200):
+        prev, curr = closes[:end], closes[: end + 1]
+        p_fast, p_slow = _sma(prev, fast), _sma(prev, slow)
+        c_fast, c_slow = _sma(curr, fast), _sma(curr, slow)
+        if None in (p_fast, p_slow, c_fast, c_slow):
             continue
-        if p50 <= p200 and c50 > c200:
+        if bullish and p_fast <= p_slow and c_fast > c_slow:
+            return True
+        if not bullish and p_fast >= p_slow and c_fast < c_slow:
             return True
     return False
+
+
+def _golden_cross(closes, *, lookback=20):
+    """True when SMA50 crosses above SMA200 within ``lookback`` closed days."""
+    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=True)
+
+
+def _death_cross(closes, *, lookback=20):
+    """True when SMA50 crosses below SMA200 within ``lookback`` closed days."""
+    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=False)
+
+
+def _gd200_reclaim(closes, *, lookback=20):
+    """Price was ≤ SMA200 within lookback, then closes above SMA200 at as-of."""
+    if lookback < 1 or len(closes) < 200 + lookback:
+        return False
+    last, gd200 = closes[-1], _sma(closes, 200)
+    if gd200 is None or last <= gd200:
+        return False
+    for i in range(1, lookback + 1):
+        window = closes[:-i]
+        avg = _sma(window, 200)
+        if avg is not None and window[-1] <= avg:
+            return True
+    return False
+
+
+def _macd_bullish_cross(closes, *, lookback=20):
+    """MACD(12,26) line crosses above signal(9) within ``lookback`` bars."""
+    if len(closes) < 26 + 9 + lookback:
+        return False
+    ema12, ema26 = _ema_series(closes, 12), _ema_series(closes, 26)
+    macd = [
+        (a - b) if a is not None and b is not None else None
+        for a, b in zip(ema12, ema26, strict=True)
+    ]
+    # Signal EMA is computed on the MACD values after the first defined point.
+    defined = [(i, v) for i, v in enumerate(macd) if v is not None]
+    if len(defined) < 9 + lookback:
+        return False
+    macd_vals = [v for _, v in defined]
+    signal_vals = _ema_series(macd_vals, 9)
+    # Map back to full index for cross scan on the last ``lookback`` defined bars.
+    start = max(1, len(macd_vals) - lookback)
+    for i in range(start, len(macd_vals)):
+        prev_m, prev_s = macd_vals[i - 1], signal_vals[i - 1]
+        cur_m, cur_s = macd_vals[i], signal_vals[i]
+        if None in (prev_m, prev_s, cur_m, cur_s):
+            continue
+        if prev_m <= prev_s and cur_m > cur_s:
+            return True
+    return False
+
+
+def _rsi(closes, period=14):
+    """Wilder RSI of the last bar, or None if history is too short."""
+    if len(closes) < period + 1:
+        return None
+    gains, losses = [], []
+    for i in range(1, len(closes)):
+        delta = closes[i] - closes[i - 1]
+        gains.append(max(delta, 0.0))
+        losses.append(max(-delta, 0.0))
+    avg_gain = sum(gains[:period]) / period
+    avg_loss = sum(losses[:period]) / period
+    for i in range(period, len(gains)):
+        avg_gain = (avg_gain * (period - 1) + gains[i]) / period
+        avg_loss = (avg_loss * (period - 1) + losses[i]) / period
+    if avg_loss == 0:
+        return 100.0
+    rs = avg_gain / avg_loss
+    return 100.0 - (100.0 / (1.0 + rs))
+
+
+def _rsi_series(closes, period=14):
+    """RSI value at each bar (None until seeded)."""
+    out = [None] * len(closes)
+    if len(closes) < period + 1:
+        return out
+    gains, losses = [], []
+    for i in range(1, len(closes)):
+        delta = closes[i] - closes[i - 1]
+        gains.append(max(delta, 0.0))
+        losses.append(max(-delta, 0.0))
+    avg_gain = sum(gains[:period]) / period
+    avg_loss = sum(losses[:period]) / period
+
+    def value(avg_g, avg_l):
+        if avg_l == 0:
+            return 100.0
+        rs = avg_g / avg_l
+        return 100.0 - (100.0 / (1.0 + rs))
+
+    out[period] = value(avg_gain, avg_loss)
+    for i in range(period, len(gains)):
+        avg_gain = (avg_gain * (period - 1) + gains[i]) / period
+        avg_loss = (avg_loss * (period - 1) + losses[i]) / period
+        out[i + 1] = value(avg_gain, avg_loss)
+    return out
+
+
+def _rsi_oversold_rebound(closes, *, lookback=20, period=14, floor=30):
+    """RSI was ≤ ``floor`` within lookback and current RSI is back above ``floor``."""
+    series = _rsi_series(closes, period=period)
+    current = series[-1]
+    if current is None or current <= floor:
+        return False
+    window = [v for v in series[-lookback - 1 : -1] if v is not None]
+    return any(v <= floor for v in window)
 
 
 def trend_features(closes):
@@ -40,8 +159,10 @@ def trend_features(closes):
         return None
     last, gd50, gd200 = closes[-1], _sma(closes, 50), _sma(closes, 200)
     prior_gd200 = sum(closes[-220:-20]) / 200 if len(closes) >= 220 else None
-    year = closes[-252:]
+    year = closes[-252:] if len(closes) >= 252 else closes[:]
     recent = closes[-60:]
+    near_high_pct = round((last / max(year) - 1) * 100, 1)
+    rsi14 = _rsi(closes)
     return {
         "last": round(last, 2),
         "gd50": round(gd50, 2),
@@ -50,8 +171,21 @@ def trend_features(closes):
         "above_gd200": last > gd200,
         "gd200_rising": prior_gd200 is not None and gd200 > prior_gd200,
         "golden_cross": _golden_cross(closes),
+        "death_cross": _death_cross(closes),
+        "gd200_reclaim": _gd200_reclaim(closes),
+        "macd_bullish_cross": _macd_bullish_cross(closes),
+        "rsi_14": None if rsi14 is None else round(rsi14, 1),
+        "rsi_oversold_rebound": _rsi_oversold_rebound(closes),
         "return_1y_pct": round((last / year[0] - 1) * 100, 1),
-        "near_high_pct": round((last / max(year) - 1) * 100, 1),
+        "near_high_pct": near_high_pct,
+        "in_correction": near_high_pct < -5,
+        "new_52w_high": last >= max(year) * 0.999,
+        "steady_uptrend": (
+            prior_gd200 is not None
+            and gd200 > prior_gd200
+            and last > gd200
+            and (last / year[0] - 1) * 100 > 15
+        ),
         # Breakout: close above the prior 60-day consolidation high, excluding the last 5 days.
         "breakout": last >= max(recent[:-5]) if len(recent) > 5 else False,
     }

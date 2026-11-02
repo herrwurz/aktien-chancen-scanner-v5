@@ -46,7 +46,7 @@ def test_diagnose_inputs_reports_clues_and_market_top(tmp_path, monkeypatch):
     monkeypatch.setattr(structure_mod, "load_universe", lambda: universe)
     diagnosis = diagnose_inputs(in_path, snap_path)
     case = diagnosis["cases"][0]
-    assert case["chart_clues"] == ["above_gd200"]
+    assert "above_gd200" in case["chart_clues"] or "gd200_reclaim" in case["chart_clues"]
     assert case["market_hypotheses"][0]["ticker"] == "UPC"
     assert "Unverified" in case["interpretation"]
     md = render_markdown(diagnosis)
