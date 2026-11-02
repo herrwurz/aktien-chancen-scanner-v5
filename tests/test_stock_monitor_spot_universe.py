@@ -9,6 +9,21 @@ from scanner.stock_monitor.spot_universe import discover_spot_symbols
 
 def test_discovery_screens_all_and_ranks_movers():
     def handler(request):
+        if request.url.path.endswith("/exchangeInfo"):
+            return httpx.Response(
+                200,
+                json={
+                    "symbols": [
+                        {
+                            "symbol": name,
+                            "status": "TRADING",
+                            "isSpotTradingAllowed": True,
+                            "quoteAsset": "USDT",
+                        }
+                        for name in ("SMALLUSDT", "BIGUSDT")
+                    ]
+                },
+            )
         return httpx.Response(
             200,
             json=[
