@@ -518,6 +518,11 @@ _KNOWN_NON_US_ISSUER = re.compile(
     r"national grid|rwe|e\.?on|ørsted|orsted|vestas)\b",
     re.I,
 )
+_KNOWN_NON_UTILITY = re.compile(
+    r"\b(equinix|digital realty|american tower|crown castle|sba communications|"
+    r"amazon|walmart|microsoft|alphabet|nvidia|apple|meta platforms)\b",
+    re.I,
+)
 
 
 def _teaser_requires_us_issuer(text: str) -> bool:
@@ -539,38 +544,68 @@ def _issuer_looks_non_us(identity: dict) -> bool:
     return bool(_KNOWN_NON_US_ISSUER.search(identity.get("name") or ""))
 
 
+def _issuer_looks_non_utility(identity: dict) -> bool:
+    return bool(_KNOWN_NON_UTILITY.search(identity.get("name") or ""))
+
+
 def _apply_us_issuer_hard_filter(ranked, text):
-    """Hard-demote non-US names when the teaser explicitly requires a US utility."""
+    """Hard-demote non-US / non-utility names when the teaser requires a US utility."""
     if not _teaser_requires_us_issuer(text):
         return
     for row in ranked:
         data = row.get("identity")
         data = data if isinstance(data, dict) else (data.model_dump() if data else {})
-        if not _issuer_looks_non_us(data):
-            continue
         hard = list(row.get("hard_contradictions") or [])
-        if "teaser_requires_us_issuer" not in hard:
+        counters = list(row.get("counterarguments") or [])
+        changed = False
+        if _issuer_looks_non_us(data) and "teaser_requires_us_issuer" not in hard:
             hard.append("teaser_requires_us_issuer")
             row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
+            counters.append("Teaser verlangt US-Versorger; Kandidat wirkt nicht US-basiert.")
+            changed = True
+            for cell in row.get("evidence_matrix") or []:
+                quote = cell.get("quote") or ""
+                if cell.get("category") == "countries" and re.search(r"\bUSA\b", quote, re.I):
+                    cell["status"] = "contradicted"
+                    cell["reason"] = "issuer_not_us_despite_teaser_usa_claim"
+                elif _US_ISSUER_CLAIM.search(quote):
+                    cell["status"] = "contradicted"
+                    cell["reason"] = "issuer_not_us_despite_teaser_us_utility_claim"
+        if _issuer_looks_non_utility(data) and "teaser_requires_utility_issuer" not in hard:
+            hard.append("teaser_requires_utility_issuer")
+            row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
+            counters.append("Teaser verlangt Versorger; Kandidat ist kein Utility-Emittent.")
+            changed = True
+            for cell in row.get("evidence_matrix") or []:
+                if _US_ISSUER_CLAIM.search(cell.get("quote") or ""):
+                    cell["status"] = "contradicted"
+                    cell["reason"] = "issuer_not_utility_despite_teaser_us_utility_claim"
+        if not changed and hard == (row.get("hard_contradictions") or []):
+            continue
         row["hard_contradictions"] = hard
-        counters = list(row.get("counterarguments") or [])
-        note = "Teaser verlangt US-Versorger; Kandidat wirkt nicht US-basiert."
-        if note not in counters:
-            counters.append(note)
-        row["counterarguments"] = counters
-        for cell in row.get("evidence_matrix") or []:
-            quote = cell.get("quote") or ""
-            if cell.get("category") == "countries" and re.search(r"\bUSA\b", quote, re.I):
-                cell["status"] = "contradicted"
-                cell["reason"] = "issuer_not_us_despite_teaser_usa_claim"
-            elif _US_ISSUER_CLAIM.search(quote):
-                cell["status"] = "contradicted"
-                cell["reason"] = "issuer_not_us_despite_teaser_us_utility_claim"
+        row["counterarguments"] = list(dict.fromkeys(counters))
         row["unknown_clues"] = [
             cell["clue_id"]
             for cell in row.get("evidence_matrix") or []
             if cell.get("status") == "unknown"
         ]
+
+
+def _chart_rows(ranked, cache, text, *, top, chart_opts, clues):
+    """Attach PIT chart features and teaser-conditioned scores to ``ranked[:top]``."""
+    for row in ranked[:top]:
+        if row.get("chart"):
+            continue
+        identity = row["identity"]
+        data = identity if isinstance(identity, dict) else identity.model_dump()
+        ticker = _resolve_ticker(data)
+        key = row["asset_id"]
+        if key not in cache:
+            cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
+        result = cache[key]
+        row["chart"] = result
+        if result["status"] == "ok":
+            row["evidence_score"] += match_score(result, clues)
 
 
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
@@ -586,19 +621,16 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
     chart_opts = {}
     if as_of is not None:
         chart_opts["today"] = as_of.date() if hasattr(as_of, "date") else as_of
-    for row in ranked[:top]:
-        identity = row["identity"]
-        data = identity if isinstance(identity, dict) else identity.model_dump()
-        ticker = _resolve_ticker(data)
-        key = row["asset_id"]
-        if key not in cache:
-            cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
-        result = cache[key]
-        row["chart"] = result
-        if result["status"] == "ok":
-            row["evidence_score"] += match_score(result, clues)
+    _chart_rows(ranked, cache, text, top=top, chart_opts=chart_opts, clues=clues)
     _apply_chart_signal_matrix(ranked[:top], text)
     _apply_us_issuer_hard_filter(ranked, text)
+    ranked.sort(
+        key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
+    )
+    # Hard filters / earnings demotions can promote rows that were outside the first
+    # chart window — chart those new leaders too, then re-rank.
+    _chart_rows(ranked, cache, text, top=top, chart_opts=chart_opts, clues=clues)
+    _apply_chart_signal_matrix(ranked[:top], text)
     ranked.sort(
         key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
     )

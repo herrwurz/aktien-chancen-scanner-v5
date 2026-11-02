@@ -157,3 +157,29 @@ def test_us_issuer_hard_filter_demotes_iberdrola():
     assert ranked[0]["evidence_score"] < 0
     assert ranked[0]["evidence_matrix"][0]["status"] == "contradicted"
     assert ranked[1]["hard_contradictions"] == []
+
+
+def test_us_utility_filter_demotes_equinix():
+    from scanner.hebeltrader.detective.investigation import _apply_us_issuer_hard_filter
+
+    ranked = [
+        {
+            "identity": {"name": "Equinix", "ticker": "EQIX", "country": "US"},
+            "evidence_score": 20,
+            "hard_contradictions": [],
+            "evidence_matrix": [
+                {
+                    "clue_id": "ai:us",
+                    "quote": "sitzt ein US-Versorger an einer Schaltstelle",
+                    "status": "unknown",
+                }
+            ],
+            "unknown_clues": ["ai:us"],
+            "counterarguments": [],
+        }
+    ]
+    _apply_us_issuer_hard_filter(
+        ranked, "genau dort sitzt ein US-Versorger an einer der lukrativsten Schaltstellen"
+    )
+    assert "teaser_requires_utility_issuer" in ranked[0]["hard_contradictions"]
+    assert ranked[0]["evidence_score"] < 0
