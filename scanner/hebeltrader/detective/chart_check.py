@@ -43,14 +43,40 @@ def _ma_cross(closes, fast=50, slow=200, *, lookback=20, bullish=True):
     return False
 
 
+def _ema_cross(closes, fast=50, slow=200, *, lookback=20, bullish=True):
+    """True when EMA``fast`` crosses EMA``slow`` within ``lookback`` bars."""
+    if lookback < 1 or len(closes) < slow + 1:
+        return False
+    fast_s, slow_s = _ema_series(closes, fast), _ema_series(closes, slow)
+    start = max(slow, len(closes) - lookback)
+    for end in range(start, len(closes)):
+        p_fast, p_slow = fast_s[end - 1], slow_s[end - 1]
+        c_fast, c_slow = fast_s[end], slow_s[end]
+        if None in (p_fast, p_slow, c_fast, c_slow):
+            continue
+        if bullish and p_fast <= p_slow and c_fast > c_slow:
+            return True
+        if not bullish and p_fast >= p_slow and c_fast < c_slow:
+            return True
+    return False
+
+
 def _golden_cross(closes, *, lookback=20):
-    """True when SMA50 crosses above SMA200 within ``lookback`` closed days."""
-    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=True)
+    """True when SMA or EMA 50 crosses above 200 within ``lookback`` days.
+
+    Retail TA (e.g. finanzradar.de) often uses EMA for Golden Cross; HEBELTRADER
+    teasers rarely specify SMA vs EMA, so either cross confirms the claim.
+    """
+    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=True) or _ema_cross(
+        closes, 50, 200, lookback=lookback, bullish=True
+    )
 
 
 def _death_cross(closes, *, lookback=20):
-    """True when SMA50 crosses below SMA200 within ``lookback`` closed days."""
-    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=False)
+    """True when SMA or EMA 50 crosses below 200 within ``lookback`` days."""
+    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=False) or _ema_cross(
+        closes, 50, 200, lookback=lookback, bullish=False
+    )
 
 
 def _gd200_reclaim(closes, *, lookback=20):
@@ -170,6 +196,8 @@ def trend_features(closes):
         "above_gd50": last > gd50,
         "above_gd200": last > gd200,
         "gd200_rising": prior_gd200 is not None and gd200 > prior_gd200,
+        "golden_cross_sma": _ma_cross(closes, 50, 200, lookback=20, bullish=True),
+        "golden_cross_ema": _ema_cross(closes, 50, 200, lookback=20, bullish=True),
         "golden_cross": _golden_cross(closes),
         "death_cross": _death_cross(closes),
         "gd200_reclaim": _gd200_reclaim(closes),

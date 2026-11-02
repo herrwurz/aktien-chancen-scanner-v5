@@ -36,7 +36,7 @@ def test_matrix_confirms_when_chart_shows_recent_cross():
     )
     cell = ranked[0]["evidence_matrix"][0]
     assert cell["status"] == "confirmed"
-    assert cell["reason"] == "eod_golden_cross_within_20d_pit"
+    assert cell["reason"] == "eod_golden_cross_sma_or_ema_within_20d_pit"
     assert ranked[0]["unknown_clues"] == []
 
 

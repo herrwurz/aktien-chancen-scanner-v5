@@ -45,7 +45,14 @@ def _bound_availability(document, proof, declared):
     return None
 
 
-def assess_document(document, cutoff):
+def assess_document(document, cutoff, *, live_publisher_recall: bool = False):
+    """Assess PIT eligibility.
+
+    ``live_publisher_recall``: for live web runs that re-fetch after the teaser
+    ``publication_at``, a publisher timestamp ``published_at <= cutoff`` may provisionally
+    stand in for archival availability. Offline/historical packets must leave this False
+    so publication alone never proves historical availability.
+    """
     published = timestamp(document.get("published_at"))
     retrieved = timestamp(document.get("retrieved_at"))
     event = timestamp(document.get("event_at"))
@@ -55,6 +62,18 @@ def assess_document(document, cutoff):
     binding = _bound_availability(document, proof, declared)
     available = declared if binding else retrieved if retrieved and retrieved <= cutoff else None
     basis = binding if binding else ("observed_original" if available else "unknown")
+    if (
+        live_publisher_recall
+        and available is None
+        and published is not None
+        and published <= cutoff
+        and retrieved is not None
+        and not (revision and revision > cutoff)
+        and not (event and event > cutoff)
+    ):
+        # Late live recall of an article that already carries a pre-cutoff publisher date.
+        available = published
+        basis = "publisher_dated_live_recall"
     after = any(t and t > cutoff for t in (published, event, revision, available, declared))
     eligible = bool(published and retrieved and available and not after)
     return {

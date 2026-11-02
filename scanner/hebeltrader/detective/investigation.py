@@ -17,6 +17,7 @@ from scanner.research import AssetIdentity, EvidenceRecord
 
 from .chart_check import check as chart_check
 from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clues
+from .clue_aliases import term_pattern
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
@@ -29,8 +30,15 @@ from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
 from .sources import UnavailableResearchSource
-from .structure_screen import screen_queries, screened_names, structure_bonus, ticker_for
+from .structure_screen import (
+    screen_queries,
+    screened_names,
+    sectors_in,
+    structure_bonus,
+    ticker_for,
+)
 from .temporal import assess_document, timestamp
+from .utility_fingerprint import apply_utility_fingerprints
 from .verification import verify_candidates
 
 
@@ -71,8 +79,19 @@ def _documents_by_asset(fetched):
     return grouped
 
 
-def _apply_metric_fingerprints(ranked, fetched):
-    return apply_metric_fingerprints(ranked, _documents_by_asset(fetched))
+def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
+    docs = _documents_by_asset(fetched)
+    metric = apply_metric_fingerprints(ranked, docs)
+    utility = apply_utility_fingerprints(ranked, docs, teaser_text=teaser_text)
+    return {"metric": metric, "utility": utility}
+
+
+def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_recall=False):
+    """Fingerprints + utility clue confirms + refresh specific clue ids."""
+    summary = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
+    _apply_utility_clue_matrix(ranked, text)
+    _refresh_confirmed_specific_clues(ranked, clues, live_publisher_recall=live_publisher_recall)
+    return summary
 
 
 def apply_tie_labels(ranked):
@@ -90,6 +109,14 @@ _LIVE_ID_BLOCKS = frozenset(
         "fewer_than_five_countercandidates",
         "new_leader_needs_falsification",
         "new_top3_candidate_needs_falsification",
+    }
+)
+# Soft limits still require manual review but must not veto an otherwise ready live ID.
+_SOFT_LIVE_LIMITS = frozenset(
+    {
+        "ai_interpretation_requires_manual_verification",
+        "research_source_gaps",
+        "input_excerpt_truncated",
     }
 )
 
@@ -118,6 +145,7 @@ def packet_evidence_result(ranked, *, offline, limits):
     n_specific = len(leader.get("confirmed_specific_clues") or [])
     score = int(leader.get("evidence_score") or 0)
     margin = score - int(ranked[1]["evidence_score"] if len(ranked) > 1 else 0)
+    ready = _leader_evidence_ready(leader, clues=None) and margin >= 35
     base = {
         "ticker": identity.get("ticker"),
         "name": identity.get("name"),
@@ -126,12 +154,7 @@ def packet_evidence_result(ranked, *, offline, limits):
         "score_margin": margin,
         "blocks_full_identification": live_blocks,
     }
-    if (
-        n_specific >= 2
-        and margin >= 35
-        and not leader.get("hard_contradictions")
-        and identity.get("ticker")
-    ):
+    if ready and not leader.get("hard_contradictions") and identity.get("ticker"):
         return base | {
             "status": "ticker_hypothesis_ready",
             "label": "Ticker-Hypothese aus Primärevidenz",
@@ -177,10 +200,16 @@ def source_class(document):
     }.get(document.get("source_kind"), "D")
 
 
-def finding_timing(document, cutoff, *, current_hypothesis):
-    assessment = assess_document(document, cutoff)
+def finding_timing(document, cutoff, *, current_hypothesis, live_publisher_recall=False):
+    assessment = assess_document(document, cutoff, live_publisher_recall=live_publisher_recall)
     if assessment["eligibility"] == "eligible":
-        return {"temporal_eligibility": "eligible", "usable_for_ranking": True}
+        out = {
+            "temporal_eligibility": "eligible",
+            "usable_for_ranking": True,
+        }
+        if assessment.get("availability_basis"):
+            out["availability_basis"] = assessment["availability_basis"]
+        return out
     if (
         current_hypothesis
         and assessment["eligibility"] == "uncertain"
@@ -334,7 +363,12 @@ def canonical_company(name, ticker=None):
 
 _RELATIONS = {
     "acquisition": r"übernah\w*|zukäuf\w*|acquir\w*|acquisition|merger|erwarb",
-    "investment": r"invest\w*|beteilig\w*|minority stake",
+    # Include power-deal / offtake language used in English IR for German
+    # Investition/Abnahmevertrag/Rechenzentrum teasers.
+    "investment": (
+        r"invest\w*|beteilig\w*|minority stake|capex|capital\s+plan|"
+        r"(?:power\s+)?deal|offtake|agreement|contract|\bppas?\b"
+    ),
     "partnership": r"partner\w*|kooper\w*|collaborat\w*",
 }
 
@@ -507,6 +541,427 @@ def _teaser_claims_golden_cross(text):
 
 _apply_golden_cross_matrix = _apply_chart_signal_matrix
 
+_US_ISSUER_CLAIM = re.compile(
+    r"US[\s-]*Versorger|US[\s-]*Utility|US[\s-]*Stromversorger|"
+    r"amerikanische[rn]?\s+Versorger|amerikanischer?\s+Utility",
+    re.I,
+)
+_EU_VENUE = re.compile(r"\.(MC|PA|XETRA|DE|L|AS|BR|MI|ST|HE|CO|OL|LS|WA)$", re.I)
+_KNOWN_NON_US_ISSUER = re.compile(
+    r"\b(iberdrola|schneider electric|siemens energy|enel|edf|engie|"
+    r"national grid|rwe|e\.?on|ørsted|orsted|vestas)\b",
+    re.I,
+)
+_KNOWN_NON_UTILITY = re.compile(
+    r"\b(equinix|digital realty|american tower|crown castle|sba communications|"
+    r"amazon|walmart|microsoft|alphabet|nvidia|apple|meta platforms)\b",
+    re.I,
+)
+
+
+def _teaser_requires_us_issuer(text: str) -> bool:
+    return bool(_US_ISSUER_CLAIM.search(text or ""))
+
+
+def _issuer_looks_non_us(identity: dict) -> bool:
+    country = (identity.get("country") or "").strip().upper()
+    if country and country not in {
+        "US",
+        "USA",
+        "UNITED STATES",
+        "UNITED STATES OF AMERICA",
+    }:
+        return True
+    ticker = identity.get("ticker") or ""
+    if _EU_VENUE.search(ticker):
+        return True
+    return bool(_KNOWN_NON_US_ISSUER.search(identity.get("name") or ""))
+
+
+def _issuer_looks_non_utility(identity: dict) -> bool:
+    return bool(_KNOWN_NON_UTILITY.search(identity.get("name") or ""))
+
+
+def _apply_us_issuer_hard_filter(ranked, text):
+    """Hard-demote non-US / non-utility names when the teaser requires a US utility."""
+    if not _teaser_requires_us_issuer(text):
+        return
+    for row in ranked:
+        data = row.get("identity")
+        data = data if isinstance(data, dict) else (data.model_dump() if data else {})
+        hard = list(row.get("hard_contradictions") or [])
+        counters = list(row.get("counterarguments") or [])
+        changed = False
+        if _issuer_looks_non_us(data) and "teaser_requires_us_issuer" not in hard:
+            hard.append("teaser_requires_us_issuer")
+            row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
+            counters.append("Teaser verlangt US-Versorger; Kandidat wirkt nicht US-basiert.")
+            changed = True
+            for cell in row.get("evidence_matrix") or []:
+                quote = cell.get("quote") or ""
+                if cell.get("category") == "countries" and re.search(r"\bUSA\b", quote, re.I):
+                    cell["status"] = "contradicted"
+                    cell["reason"] = "issuer_not_us_despite_teaser_usa_claim"
+                elif _US_ISSUER_CLAIM.search(quote):
+                    cell["status"] = "contradicted"
+                    cell["reason"] = "issuer_not_us_despite_teaser_us_utility_claim"
+        if _issuer_looks_non_utility(data) and "teaser_requires_utility_issuer" not in hard:
+            hard.append("teaser_requires_utility_issuer")
+            row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
+            counters.append("Teaser verlangt Versorger; Kandidat ist kein Utility-Emittent.")
+            changed = True
+            for cell in row.get("evidence_matrix") or []:
+                if _US_ISSUER_CLAIM.search(cell.get("quote") or ""):
+                    cell["status"] = "contradicted"
+                    cell["reason"] = "issuer_not_utility_despite_teaser_us_utility_claim"
+        if not changed and hard == (row.get("hard_contradictions") or []):
+            continue
+        row["hard_contradictions"] = hard
+        row["counterarguments"] = list(dict.fromkeys(counters))
+        row["unknown_clues"] = [
+            cell["clue_id"]
+            for cell in row.get("evidence_matrix") or []
+            if cell.get("status") == "unknown"
+        ]
+
+
+def _chart_rows(ranked, cache, text, *, top, chart_opts, clues):
+    """Attach PIT chart features and teaser-conditioned scores to ``ranked[:top]``."""
+    for row in ranked[:top]:
+        if row.get("chart"):
+            continue
+        identity = row["identity"]
+        data = identity if isinstance(identity, dict) else identity.model_dump()
+        ticker = _resolve_ticker(data)
+        key = row["asset_id"]
+        if key not in cache:
+            cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
+        result = cache[key]
+        row["chart"] = result
+        if result["status"] == "ok":
+            row["evidence_score"] += match_score(result, clues)
+
+
+_ELECTRIC_UTILITY_GICS = re.compile(
+    r"electric utilit|multi-utilit|gas utilit|independent power|independent electricity",
+    re.I,
+)
+_NON_ELECTRIC_UTILITY_GICS = re.compile(
+    r"water utilit|equipment|component|retail",
+    re.I,
+)
+_UTILITY_WORDING = re.compile(r"versorger|utilit|stromversorger", re.I)
+_POWER_WORDING = re.compile(r"strom\w*|energie\w*|power\s+grid|electric", re.I)
+
+
+def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
+    """Sector slice of the index pool (no issuer whitelist) for chart-first seeding.
+
+    When the teaser requires a US utility / Stromversorger, keep US-listed electric
+    power-infra names and drop retail false-positives, water utilities, and
+    grid-equipment rows. Names only — chart ranking happens next.
+    """
+    sectors = sectors_in(text)
+    if not sectors:
+        return []
+    us_only = _teaser_requires_us_issuer(text)
+    utility_claim = bool(_UTILITY_WORDING.search(text or ""))
+    power_claim = bool(_POWER_WORDING.search(text or ""))
+    # Strom-/Versorger-Teaser: do not dilute with co-detected retail/finance sectors.
+    if utility_claim or power_claim:
+        if "power infrastructure" in sectors:
+            sectors = ["power infrastructure"]
+        else:
+            return []
+    assets = []
+    for raw in market_universe_list():
+        if raw.get("sector") not in sectors:
+            continue
+        ticker = normalize_ticker(raw.get("ticker"))
+        if not ticker:
+            continue
+        asset = dict(raw)
+        asset["ticker"] = ticker
+        if us_only:
+            if "." in ticker:
+                continue
+            countries = asset.get("countries") or []
+            if countries and not any(
+                str(c).casefold() in {"united states", "usa", "us"} for c in countries
+            ):
+                continue
+        if utility_claim or power_claim:
+            if asset.get("layer") == "grid-equipment" or _issuer_looks_non_utility(asset):
+                continue
+            gics = asset.get("gics_sub") or ""
+            if gics and _NON_ELECTRIC_UTILITY_GICS.search(gics):
+                continue
+            if gics and not _ELECTRIC_UTILITY_GICS.search(gics):
+                continue
+        if is_blocked(asset, blocked):
+            continue
+        assets.append(asset)
+    return assets
+
+
+def _chart_rank_pool_assets(assets, text, *, as_of=None, cache=None, limit=12):
+    """PIT-rank pool assets by teaser chart clues. Returns (scored rows, cache)."""
+    clues = teaser_chart_clues(text)
+    cache = {} if cache is None else cache
+    chart_opts = {}
+    if as_of is not None:
+        chart_opts["today"] = as_of.date() if hasattr(as_of, "date") else as_of
+    scored = []
+    for asset in assets:
+        ticker = asset["ticker"]
+        cache_key = f"pool:{ticker}"
+        if cache_key not in cache:
+            cache[cache_key] = chart_check(ticker, **chart_opts)
+        result = cache[cache_key]
+        score = match_score(result, clues) if result.get("status") == "ok" else -10_000
+        scored.append({"asset": asset, "chart": result, "score": score})
+    scored.sort(key=lambda row: (-row["score"], row["asset"]["name"]))
+    return scored[:limit], cache
+
+
+def _pool_seed_row(seed, *, retrieved, clues):
+    """Synthetic comparison row so chart-matching pool names enter ranking without web hits."""
+    asset = seed["asset"]
+    chart = seed["chart"]
+    name = asset["name"]
+    ticker = asset.get("ticker")
+    canonical_name = canonical_company(name, ticker)
+    asset_id = "company:" + hashlib.sha256(canonical_name.encode()).hexdigest()
+    score = match_score(chart, clues) if chart.get("status") == "ok" else 0
+    country = None
+    countries = asset.get("countries") or []
+    if any(str(c).casefold() in {"united states", "usa", "us"} for c in countries):
+        country = "US"
+    elif ticker and "." not in ticker:
+        country = "US"
+    identity = AssetIdentity(
+        asset_type="stock",
+        name=name,
+        ticker=ticker,
+        country=country,
+        source_id="index_pool_chart_seed",
+        retrieved_at=retrieved if isinstance(retrieved, datetime) else None,
+        instrument_type_status="unknown",
+        quality_status="candidate",
+    ).model_dump(mode="json")
+    return {
+        "asset_id": asset_id,
+        "identity": identity,
+        "evidence_score": score,
+        "evidence_matrix": [],
+        "confirmed_specific_clues": [],
+        "cited_findings": [],
+        "hard_contradictions": [],
+        "unknown_clues": [],
+        "sources": [],
+        "comparison_evidence_available": False,
+        "counterarguments": [
+            "Sektor-/Chart-Hypothese aus Index-Pool; Web-Belege und Falsifikation prüfen."
+        ],
+        "chart": chart,
+        "pool_seed": True,
+    }
+
+
+def _merge_pool_seed_rows(ranked, seeds, *, retrieved, text):
+    """Append missing pool seeds; copy PIT charts onto existing web rows when tickers match."""
+    if not seeds:
+        return ranked
+    clues = teaser_chart_clues(text)
+    by_id = {row["asset_id"]: row for row in ranked}
+    by_ticker = {}
+    by_name = {}
+    for row in ranked:
+        data = _identity_dict(row.get("identity"))
+        ticker = normalize_ticker(data.get("ticker") or _resolve_ticker(data))
+        if ticker:
+            by_ticker[ticker] = row
+        key = canonical_company(data.get("name") or "")
+        if key:
+            by_name[key] = row
+    merged = list(ranked)
+    for seed in seeds:
+        asset = seed["asset"]
+        ticker = normalize_ticker(asset.get("ticker"))
+        name_key = canonical_company(asset["name"], ticker)
+        existing = (ticker and by_ticker.get(ticker)) or by_name.get(name_key)
+        if existing is not None:
+            if not existing.get("chart") and seed["chart"].get("status") == "ok":
+                existing["chart"] = seed["chart"]
+                existing["evidence_score"] = int(existing.get("evidence_score") or 0) + match_score(
+                    seed["chart"], clues
+                )
+            data = _identity_dict(existing.get("identity"))
+            if ticker and not data.get("ticker"):
+                if isinstance(existing.get("identity"), dict):
+                    existing["identity"]["ticker"] = ticker
+                    if not existing["identity"].get("country") and "." not in ticker:
+                        existing["identity"]["country"] = "US"
+            continue
+        row = _pool_seed_row(seed, retrieved=retrieved, clues=clues)
+        if row["asset_id"] in by_id:
+            continue
+        by_id[row["asset_id"]] = row
+        merged.append(row)
+        if ticker:
+            by_ticker[ticker] = row
+        by_name[name_key] = row
+    merged.sort(
+        key=lambda row: (
+            bool(row.get("hard_contradictions")),
+            -row["evidence_score"],
+            row["asset_id"],
+        )
+    )
+    return merged
+
+
+def _pool_seed_queries(seeds, text, *, limit=8):
+    """IR/SEC-first discovery queries for chart-ranked pool names (no issuer whitelist)."""
+    entities = _entities(text)[:2]
+    queries = []
+    for seed in seeds[:limit]:
+        asset = seed["asset"]
+        name = asset["name"]
+        ticker = asset.get("ticker") or ""
+        # Prefer primary IR/earnings/SEC surfaces before generic web chatter.
+        queries.append(
+            " ".join(
+                part
+                for part in (
+                    f'"{name}"',
+                    ticker,
+                    "investor relations earnings data center power purchase agreement",
+                )
+                if part
+            )
+        )
+        queries.append(
+            " ".join(
+                part
+                for part in (
+                    f'"{name}"',
+                    ticker,
+                    *entities,
+                    "8-K OR 10-Q offtake OR capex OR hyperscale",
+                )
+                if part
+            )
+        )
+    return queries[: limit + 4]
+
+
+def _mark_chart_comparison_evidence(ranked, text):
+    """Chart-fitting peers count as comparison evidence (not an identification).
+
+    Exact teaser-clue hits (e.g. Golden Cross) always qualify. Other ok charts with a
+    positive teaser-conditioned match_score also qualify so the ≥5-countercandidate
+    gate can use the chart-first pool instead of only exact-signal twins.
+    """
+    clues = teaser_chart_clues(text)
+    if not clues:
+        return
+    for row in ranked:
+        chart = row.get("chart") or {}
+        if chart.get("status") != "ok":
+            continue
+        if row.get("hard_contradictions"):
+            continue
+        exact = any(chart.get(clue) for clue in clues)
+        scored = match_score(chart, clues) > 0
+        if not (exact or scored):
+            continue
+        row["comparison_evidence_available"] = True
+        row.setdefault("counterarguments", [])
+        note = (
+            "Chart-Clue am Kandidaten bestätigt; Web-/IR-Belege weiter prüfen."
+            if exact
+            else "Chart passt zu Teaser-Signalen; als Gegenkandidat mitgeprüft."
+        )
+        if note not in row["counterarguments"]:
+            row["counterarguments"].append(note)
+
+
+_UTILITY_CLUE_HINT = re.compile(
+    r"rechenzentr|abnahmevertr|data\s*cent|offtake|power\s+purchase|investitionsoffensive",
+    re.I,
+)
+
+
+def _apply_utility_clue_matrix(ranked, text):
+    """Confirm utility offtake/RZ fact cells from fingerprint clusters (not auto-ID)."""
+    from .utility_fingerprint import teaser_wants_utility_fingerprint
+
+    if not teaser_wants_utility_fingerprint(text):
+        return
+    for row in ranked:
+        if row.get("hard_contradictions"):
+            continue
+        fp = row.get("utility_fingerprint") or {}
+        if not (fp.get("has_offtake") and fp.get("has_data_center_link")):
+            continue
+        for cell in row.get("evidence_matrix") or []:
+            if cell.get("status") == "confirmed":
+                continue
+            quote = cell.get("quote") or ""
+            category = cell.get("category")
+            if category not in {"fact_claims", "semantic_fact"}:
+                continue
+            if not _UTILITY_CLUE_HINT.search(quote):
+                continue
+            cell["status"] = "confirmed"
+            cell["reason"] = "utility_offtake_data_center_fingerprint"
+            cell["evidence_cluster_ids"] = ["fingerprint:utility_offtake"]
+        row["unknown_clues"] = [
+            cell["clue_id"]
+            for cell in row.get("evidence_matrix") or []
+            if cell.get("status") == "unknown"
+        ]
+
+
+def _refresh_confirmed_specific_clues(ranked, clues, *, live_publisher_recall=False):
+    """Recompute specific clue ids after chart/utility matrix updates."""
+    del live_publisher_recall  # reserved for future gating; clusters already encode provenance
+    by_clue = {c.clue_id: c for c in clues}
+    for row in ranked:
+        specific = []
+        for cell in row.get("evidence_matrix") or []:
+            if cell.get("status") != "confirmed":
+                continue
+            clue = by_clue.get(cell.get("clue_id"))
+            if not clue or clue.category not in {"fact_claims", "financial_metric"}:
+                continue
+            clusters = cell.get("evidence_cluster_ids") or []
+            if not clusters:
+                continue
+            # Pure chart clusters belong to semantic_fact cells; ignore if they appear here.
+            if clusters and all(str(cid).startswith("chart:") for cid in clusters):
+                continue
+            specific.append(cell["clue_id"])
+        row["confirmed_specific_clues"] = list(dict.fromkeys(specific))
+
+
+def _leader_evidence_ready(row, clues):
+    """True when specific fact clues clear the bar, optionally with chart+fingerprint."""
+    if not row:
+        return False
+    specific_n = len(row.get("confirmed_specific_clues") or [])
+    if specific_n >= 2:
+        return True
+    if specific_n < 1:
+        return False
+    chart_ok = any(
+        cell.get("status") == "confirmed" and str(cell.get("reason") or "").startswith("eod_")
+        for cell in row.get("evidence_matrix") or []
+    )
+    fp = row.get("utility_fingerprint") or {}
+    return bool(chart_ok and fp.get("components", 0) >= 2)
+
 
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
     # Chart buy-signals (GD200, crosses, breakout, MACD, RSI, …) use market data, not web text.
@@ -521,21 +976,29 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
     chart_opts = {}
     if as_of is not None:
         chart_opts["today"] = as_of.date() if hasattr(as_of, "date") else as_of
-    for row in ranked[:top]:
-        identity = row["identity"]
-        data = identity if isinstance(identity, dict) else identity.model_dump()
+    # Reuse PIT results already fetched during chart-first pool seeding.
+    for row in ranked:
+        if row.get("chart"):
+            continue
+        data = _identity_dict(row.get("identity"))
         ticker = _resolve_ticker(data)
-        key = row["asset_id"]
-        if key not in cache:
-            cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
-        result = cache[key]
-        row["chart"] = result
-        if result["status"] == "ok":
-            row["evidence_score"] += match_score(result, clues)
+        pool_key = f"pool:{ticker}" if ticker else None
+        if pool_key and pool_key in cache and row["asset_id"] not in cache:
+            cache[row["asset_id"]] = cache[pool_key]
+    _chart_rows(ranked, cache, text, top=top, chart_opts=chart_opts, clues=clues)
+    _apply_chart_signal_matrix(ranked[:top], text)
+    _apply_us_issuer_hard_filter(ranked, text)
+    ranked.sort(
+        key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
+    )
+    # Hard filters / earnings demotions can promote rows that were outside the first
+    # chart window — chart those new leaders too, then re-rank.
+    _chart_rows(ranked, cache, text, top=top, chart_opts=chart_opts, clues=clues)
     _apply_chart_signal_matrix(ranked[:top], text)
     ranked.sort(
         key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
     )
+    _mark_chart_comparison_evidence(ranked, text)
 
 
 def _interleave(planned, screened, fallback, cap=10):
@@ -567,7 +1030,11 @@ def _match_text(raw):
 
 
 def _fact_claim_subject(company, context, pattern, term):
-    """Issuer name or SEC self-reference must own the relation before the named term."""
+    """Issuer name or SEC self-reference must own the relation before the named term.
+
+    Title and body are joined with a newline for matching; do not let a title issuer
+    own a competitor deal in the next paragraph (stop ``link`` at newlines too).
+    """
     subjects = []
     if company:
         subjects.append(re.escape(company))
@@ -575,22 +1042,27 @@ def _fact_claim_subject(company, context, pattern, term):
     subject_alt = "(?:" + "|".join(subjects) + ")"
     return re.search(
         subject_alt
-        + r"(?P<link>[^.!?]{0,320})\b(?:"
+        + r"(?P<link>[^.!?\n]{0,320})\b(?:"
         + pattern
-        + r")\b(?:\s+(?:of|from))?[^.!?]{0,280}"
+        + r")\b(?:\s+(?:of|from))?[^.!?\n]{0,280}"
         + re.escape(term),
         context,
         re.I,
     )
 
 
-def _evidence(document, clues, cutoff, *, allow_undated=False):
+def _evidence(document, clues, cutoff, *, allow_undated=False, live_publisher_recall=False):
     undated = allow_undated and not document.get("published_at") and document.get("retrieved_at")
     if undated:
         # Live hypothesis mode: undated issuer pages are provisional evidence dated at retrieval.
         document = dict(document, published_at=document["retrieved_at"])
-    timing = assess_document(document, cutoff)
-    text = _match_text(document.get("text", ""))
+    timing = assess_document(document, cutoff, live_publisher_recall=live_publisher_recall)
+    # Titles often carry the only usable clue surface when the body fetch is thin/blocked.
+    text = _match_text(
+        "\n".join(
+            part for part in (document.get("title") or "", document.get("text") or "") if part
+        )
+    )
     facts = {
         "origin_id": document["url"],
         "fact_claims": [],
@@ -604,11 +1076,7 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 for c in clues
                 if c.instrument_scope == "stock"
                 and c.category in {"fact_claims", "financial_metric", "sectors", "business"}
-                and re.search(
-                    r"(?<!\w)" + re.escape((c.value or c.normalized).split("|")[-1]) + r"(?!\w)",
-                    text,
-                    re.I,
-                )
+                and term_pattern((c.value or c.normalized).split("|")[-1]).search(text)
             }
         ),
     }
@@ -636,7 +1104,7 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                 if not _usable_product_token(clue.quote or term):
                     continue
                 confirmed = None
-                for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
+                for match in term_pattern(term).finditer(text):
                     context = text[max(0, match.start() - 400) : match.end() + 160]
                     if re.search(
                         r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
@@ -671,20 +1139,32 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
             pattern = _RELATIONS[relation]
             confirmed_context = None
             contradicted = False
-            for match in re.finditer(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.I):
+            # German teaser terms (Rechenzentrum…) must also match English IR/SEC prose.
+            title = document.get("title") or ""
+            title_prefix = len(title) + (1 if title and (document.get("text") or "") else 0)
+            for match in term_pattern(term).finditer(text):
                 # SEC MD&A often puts "the company acquired … from Target" many clauses earlier.
                 # Merger write-ups also need a wider window for issuer self-reference.
                 window = 1200 if relation == "acquisition" else 400
-                context = text[max(0, match.start() - window) : match.end() + 120]
-                subject = _fact_claim_subject(company, context, pattern, term)
+                match_in_title = bool(title) and match.start() < title_prefix
+                # Body matches must not let the title issuer bind a competitor deal below.
+                if match_in_title:
+                    context = text[max(0, match.start() - window) : match.end() + 120]
+                else:
+                    body = document.get("text") or ""
+                    body_at = match.start() - title_prefix
+                    context = body[max(0, body_at - window) : body_at + len(match.group(0)) + 120]
+                # Subject check uses the matched surface form (DE or EN alias).
+                matched_term = match.group(0)
+                subject = _fact_claim_subject(company, context, pattern, matched_term)
                 # SEC headlines ("Acquisition of Target" / "Target Acquisition|Merger")
                 # still need issuer self-reference (blocks "Other Corp acquired X").
                 sec_headline = bool(
                     relation == "acquisition"
                     and company
                     and re.search(
-                        rf"(?:\bacquisition of\b|\bacquired\b)\s+{re.escape(term)}"
-                        rf"|{re.escape(term)}\s+(?:Acquisitions?|Merger)",
+                        rf"(?:\bacquisition of\b|\bacquired\b)\s+{re.escape(matched_term)}"
+                        rf"|{re.escape(matched_term)}\s+(?:Acquisitions?|Merger)",
                         context,
                         re.I,
                     )
@@ -697,18 +1177,20 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                         re.I,
                     )
                 )
-                owned = (
+                competitor = bool(re.search(r"\b(?:competitor|konkurrent)\b", context, re.I))
+                hearsay_link = bool(
                     subject
-                    and not re.search(
-                        r"\b(?:competitor|konkurrent|according|says|said)\b",
-                        subject.group("link"),
-                        re.I,
-                    )
-                ) or (
-                    sec_headline
-                    and not re.search(
-                        r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
-                    )
+                    and re.search(r"\b(?:according|says|said)\b", subject.group("link"), re.I)
+                )
+                # Headline-only form: "Data Center Power Deal Will Impact {Company}".
+                headline_owned = bool(
+                    match_in_title
+                    and company
+                    and re.search(r"(?<!\w)" + re.escape(company) + r"(?!\w)", title, re.I)
+                    and re.search(r"\b(?:" + pattern + r")\b", title, re.I)
+                )
+                owned = (not competitor) and (
+                    (subject and not hearsay_link) or sec_headline or headline_owned
                 )
                 if not owned:
                     continue
@@ -846,6 +1328,10 @@ class Investigator:
         as_of = request.publication_at or retrieved
         blocked = blocked_features(as_of)
         active_call_dropped: list[dict] = []
+        pool_assets = _pool_assets_for_teaser(text, blocked=blocked)
+        chart_cache: dict = {}
+        chart_as_of = request.publication_at
+        pool_seeds: list[dict] = []
         apis = getattr(self.web, "apis", None)
         if not offline and apis is not None and apis.ai_key:
             try:
@@ -855,12 +1341,16 @@ class Investigator:
                     dict.fromkeys(
                         planned.get("candidate_hypotheses", [])
                         + screened_names(text, blocked=blocked)
+                        + [asset["name"] for asset in pool_assets]
                     )
                 )
                 hypotheses = [
                     name
                     for name in seed_names
-                    if not is_blocked({"name": name, "ticker": ticker_for(name)}, blocked)
+                    if not is_blocked(
+                        {"name": name, "ticker": ticker_for(name) or _pool_ticker(name)},
+                        blocked,
+                    )
                 ]
                 for item in semantic_clues:
                     start = text.index(item["quote"])
@@ -886,6 +1376,30 @@ class Investigator:
                 )
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"source": "ai_planner", "error": str(exc)[:120]})
+        elif pool_assets:
+            # Offline / no AI planner: still keep sector-pool names as literal-mention seeds.
+            hypotheses = [asset["name"] for asset in pool_assets if not is_blocked(asset, blocked)]
+
+        # Chart-first: PIT-rank the sector pool before web discovery so matching
+        # issuers enter hypotheses AND get dedicated verification queries.
+        if not offline and pool_assets and teaser_chart_clues(text):
+            pool_seeds, chart_cache = _chart_rank_pool_assets(
+                pool_assets,
+                text,
+                as_of=chart_as_of,
+                cache=chart_cache,
+                limit=12,
+            )
+            hypotheses = list(
+                dict.fromkeys(hypotheses + [seed["asset"]["name"] for seed in pool_seeds])
+            )
+            seed_queries = [
+                q
+                for q in _pool_seed_queries(pool_seeds, text)
+                if not _query_targets_blocked(q, blocked)
+            ]
+            if seed_queries:
+                queries = _interleave(seed_queries, queries, queries, cap=14)
 
         set_phase = getattr(self.web, "set_phase", lambda phase: None)
         set_phase("discovery")
@@ -934,6 +1448,9 @@ class Investigator:
                 research(query)
 
         cutoff = request.publication_at or retrieved
+        # Live web recall after teaser publication_at: dated publisher timestamps may
+        # provisionally unlock Stage-B. Offline packets / historical_blind stay strict.
+        live_publisher_recall = bool(not offline and not historical_blind)
 
         def compare():
             nonlocal cutoff
@@ -983,7 +1500,13 @@ class Investigator:
                     {"name": name, "ticker": doc.get("ticker"), "records": [], "documents": []},
                 )
                 group["documents"].append(doc)
-                record = _evidence(doc, clues, cutoff, allow_undated=request.publication_at is None)
+                record = _evidence(
+                    doc,
+                    clues,
+                    cutoff,
+                    allow_undated=request.publication_at is None,
+                    live_publisher_recall=live_publisher_recall,
+                )
                 if record:
                     group["records"].append(record)
             identities = {
@@ -1046,6 +1569,7 @@ class Investigator:
                                     doc,
                                     cutoff,
                                     current_hypothesis=request.publication_at is None,
+                                    live_publisher_recall=live_publisher_recall,
                                 )
                                 cited.append(
                                     dict(
@@ -1077,7 +1601,12 @@ class Investigator:
                     for cell in row.evidence_matrix
                     if cell.status == "confirmed"
                     and by_clue[cell.clue_id].category in {"fact_claims", "financial_metric"}
-                    and bool(primary_ids.intersection(cell.evidence_cluster_ids))
+                    and (
+                        bool(primary_ids.intersection(cell.evidence_cluster_ids))
+                        # Live recall: dated news clusters may confirm fact_claims without
+                        # being issuer/SEC primary; still require a non-empty cluster id.
+                        or (live_publisher_recall and bool(cell.evidence_cluster_ids))
+                    )
                 ]
                 score = sum(50 if by_clue[c].category == "fact_claims" else 35 for c in specific)
                 score += min(10, row.evidence_score // 10)
@@ -1135,8 +1664,7 @@ class Investigator:
         if not offline:
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
-        chart_cache = {}
-        chart_as_of = request.publication_at
+            ranked = _merge_pool_seed_rows(ranked, pool_seeds, retrieved=retrieved, text=text)
         earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
         metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}
         if not offline:
@@ -1148,7 +1676,13 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
-            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+            metric_fingerprints = _apply_post_chart_evidence(
+                ranked,
+                fetched,
+                clues,
+                text,
+                live_publisher_recall=live_publisher_recall,
+            )
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -1166,6 +1700,7 @@ class Investigator:
             ranked = compare()
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
+            ranked = _merge_pool_seed_rows(ranked, pool_seeds, retrieved=retrieved, text=text)
             if not offline:
                 _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
                 earnings_pit = apply_earnings_pit(
@@ -1175,7 +1710,13 @@ class Investigator:
                     lookup=self.earnings_lookup,
                     ath_bars_fetcher=self.ath_bars_fetcher,
                 )
-                metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+                metric_fingerprints = _apply_post_chart_evidence(
+                    ranked,
+                    fetched,
+                    clues,
+                    text,
+                    live_publisher_recall=live_publisher_recall,
+                )
             peer_comparison.update(
                 status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
                 queries=peer_queries,
@@ -1226,6 +1767,7 @@ class Investigator:
             ranked = compare()
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
+            ranked = _merge_pool_seed_rows(ranked, pool_seeds, retrieved=retrieved, text=text)
         if not offline:
             _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
             earnings_pit = apply_earnings_pit(
@@ -1235,7 +1777,13 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
-            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched)
+            metric_fingerprints = _apply_post_chart_evidence(
+                ranked,
+                fetched,
+                clues,
+                text,
+                live_publisher_recall=live_publisher_recall,
+            )
             falsification["earnings_pit"] = earnings_pit
             falsification["metric_fingerprints"] = metric_fingerprints
         reasoning_review = {
@@ -1271,7 +1819,7 @@ class Investigator:
             limits.append("active_falsification_not_performed")
         if errors:
             limits.append("research_source_gaps")
-        if not ranked or len(ranked[0]["confirmed_specific_clues"]) < 2:
+        if not ranked or not _leader_evidence_ready(ranked[0] if ranked else None, clues):
             limits.append("insufficient_specific_primary_evidence")
         if ranked and not ranked[0]["identity"].get("ticker"):
             limits.append("listed_underlying_identity_unverified")
@@ -1295,15 +1843,18 @@ class Investigator:
         )
         evidence_bar = bool(
             ranked
-            and len(ranked[0]["confirmed_specific_clues"]) >= 2
+            and _leader_evidence_ready(ranked[0], clues)
             and not ranked[0]["hard_contradictions"]
             and request.publication_at
             and ranked[0]["identity"].get("ticker")
             and margin_ok
-            and not errors
         )
+        hard_live_limits = [item for item in limits if item not in _SOFT_LIVE_LIMITS]
         # Live path: falsification + comparison countercandidates required.
-        live_identified = bool(not limits and evidence_bar and counter_count >= 5 and not offline)
+        # Soft limits (AI review / source gaps) keep requires_manual_review but do not veto.
+        live_identified = bool(
+            not hard_live_limits and evidence_bar and counter_count >= 5 and not offline
+        )
         # Historical packet path: dated operator packet already holds ≥5 peer issuers.
         # Falsification is still listed in limitations, but identification is allowed.
         packet_peer_count = max(0, len(ranked) - 1) if ranked else 0
@@ -1398,7 +1949,10 @@ class Investigator:
                 "findings_are_provisional": True,
                 "budget": apis.budget.summary() if apis is not None else None,
             },
-            "source_timing": [assess_document(doc, cutoff) for doc in fetched],
+            "source_timing": [
+                assess_document(doc, cutoff, live_publisher_recall=live_publisher_recall)
+                for doc in fetched
+            ],
             "researched_sources": [
                 {
                     "url": doc.get("url"),

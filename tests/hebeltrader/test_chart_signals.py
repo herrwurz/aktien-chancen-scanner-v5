@@ -102,3 +102,84 @@ def test_macd_and_rsi_features_present_on_uptrend():
     assert "rsi_14" in features
     assert "death_cross" in features
     assert features["death_cross"] is False
+
+
+def test_ema_only_golden_cross_still_confirms():
+    # Soft decline then sharp rally: EMA50/200 can cross before SMA50/200.
+    closes = (
+        [100.0] * 180
+        + [100.0 - i * 0.35 for i in range(1, 41)]
+        + [86.0 + i * 2.2 for i in range(1, 36)]
+    )
+    features = trend_features(closes)
+    assert features is not None
+    assert features["golden_cross_ema"] or features["golden_cross_sma"]
+    assert features["golden_cross"] is True
+
+
+def test_us_issuer_hard_filter_demotes_iberdrola():
+    from scanner.hebeltrader.detective.investigation import _apply_us_issuer_hard_filter
+
+    ranked = [
+        {
+            "identity": {"name": "Iberdrola", "ticker": "IBE.MC", "country": "ES"},
+            "evidence_score": 17,
+            "hard_contradictions": [],
+            "evidence_matrix": [
+                {
+                    "clue_id": "c:usa",
+                    "category": "countries",
+                    "quote": "USA",
+                    "status": "unknown",
+                },
+                {
+                    "clue_id": "ai:us",
+                    "category": "semantic_fact",
+                    "quote": "sitzt ein US-Versorger an einer der lukrativsten Schaltstellen",
+                    "status": "unknown",
+                },
+            ],
+            "unknown_clues": ["c:usa", "ai:us"],
+            "counterarguments": [],
+        },
+        {
+            "identity": {"name": "NextEra Energy", "ticker": "NEE", "country": "US"},
+            "evidence_score": 6,
+            "hard_contradictions": [],
+            "evidence_matrix": [],
+            "unknown_clues": [],
+            "counterarguments": [],
+        },
+    ]
+    text = "genau dort sitzt ein US-Versorger an einer der lukrativsten Schaltstellen"
+    _apply_us_issuer_hard_filter(ranked, text)
+    assert "teaser_requires_us_issuer" in ranked[0]["hard_contradictions"]
+    assert ranked[0]["evidence_score"] < 0
+    assert ranked[0]["evidence_matrix"][0]["status"] == "contradicted"
+    assert ranked[1]["hard_contradictions"] == []
+
+
+def test_us_utility_filter_demotes_equinix():
+    from scanner.hebeltrader.detective.investigation import _apply_us_issuer_hard_filter
+
+    ranked = [
+        {
+            "identity": {"name": "Equinix", "ticker": "EQIX", "country": "US"},
+            "evidence_score": 20,
+            "hard_contradictions": [],
+            "evidence_matrix": [
+                {
+                    "clue_id": "ai:us",
+                    "quote": "sitzt ein US-Versorger an einer Schaltstelle",
+                    "status": "unknown",
+                }
+            ],
+            "unknown_clues": ["ai:us"],
+            "counterarguments": [],
+        }
+    ]
+    _apply_us_issuer_hard_filter(
+        ranked, "genau dort sitzt ein US-Versorger an einer der lukrativsten Schaltstellen"
+    )
+    assert "teaser_requires_utility_issuer" in ranked[0]["hard_contradictions"]
+    assert ranked[0]["evidence_score"] < 0
