@@ -56,10 +56,8 @@ def select_targets(company_tickers: dict, *, slot: int, limit: int = 10) -> list
     if not available:
         raise ValueError("No configured watch symbols resolved from SEC")
     start = (slot * limit) % len(available)
-    return [
-        available[(start + index) % len(available)]
-        for index in range(min(limit, len(available)))
-    ]
+    count = min(limit, len(available))
+    return [available[(start + index) % len(available)] for index in range(count)]
 
 
 def discover_sec_targets(*, user_agent: str, slot: int) -> list[SecTarget]:
