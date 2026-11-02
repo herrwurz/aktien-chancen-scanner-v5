@@ -149,3 +149,4 @@ def test_utility_fingerprint_confirms_fact_cell_and_evidence_ready():
     assert ranked[0]["evidence_matrix"][0]["status"] == "confirmed"
     assert ranked[0]["confirmed_specific_clues"] == ["rz"]
     assert _leader_evidence_ready(ranked[0], clues) is True
+    assert _leader_evidence_ready(ranked[0], None) is True

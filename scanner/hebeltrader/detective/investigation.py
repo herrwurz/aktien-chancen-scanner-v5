@@ -111,6 +111,14 @@ _LIVE_ID_BLOCKS = frozenset(
         "new_top3_candidate_needs_falsification",
     }
 )
+# Soft limits still require manual review but must not veto an otherwise ready live ID.
+_SOFT_LIVE_LIMITS = frozenset(
+    {
+        "ai_interpretation_requires_manual_verification",
+        "research_source_gaps",
+        "input_excerpt_truncated",
+    }
+)
 
 
 def packet_evidence_result(ranked, *, offline, limits):
@@ -137,6 +145,7 @@ def packet_evidence_result(ranked, *, offline, limits):
     n_specific = len(leader.get("confirmed_specific_clues") or [])
     score = int(leader.get("evidence_score") or 0)
     margin = score - int(ranked[1]["evidence_score"] if len(ranked) > 1 else 0)
+    ready = _leader_evidence_ready(leader, clues=None) and margin >= 35
     base = {
         "ticker": identity.get("ticker"),
         "name": identity.get("name"),
@@ -145,12 +154,7 @@ def packet_evidence_result(ranked, *, offline, limits):
         "score_margin": margin,
         "blocks_full_identification": live_blocks,
     }
-    if (
-        n_specific >= 2
-        and margin >= 35
-        and not leader.get("hard_contradictions")
-        and identity.get("ticker")
-    ):
+    if ready and not leader.get("hard_contradictions") and identity.get("ticker"):
         return base | {
             "status": "ticker_hypothesis_ready",
             "label": "Ticker-Hypothese aus Primärevidenz",
@@ -1830,10 +1834,13 @@ class Investigator:
             and request.publication_at
             and ranked[0]["identity"].get("ticker")
             and margin_ok
-            and not errors
         )
+        hard_live_limits = [item for item in limits if item not in _SOFT_LIVE_LIMITS]
         # Live path: falsification + comparison countercandidates required.
-        live_identified = bool(not limits and evidence_bar and counter_count >= 5 and not offline)
+        # Soft limits (AI review / source gaps) keep requires_manual_review but do not veto.
+        live_identified = bool(
+            not hard_live_limits and evidence_bar and counter_count >= 5 and not offline
+        )
         # Historical packet path: dated operator packet already holds ≥5 peer issuers.
         # Falsification is still listed in limitations, but identification is allowed.
         packet_peer_count = max(0, len(ranked) - 1) if ranked else 0
