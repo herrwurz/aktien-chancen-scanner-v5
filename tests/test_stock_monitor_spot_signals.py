@@ -63,12 +63,14 @@ def test_spike_reports_early_momentum_evidence():
 def test_rejects_overheated_spike():
     sample = bars(spike=True)
     last = sample[-1]
-    sample[-1] = last.model_copy(update={
-        "open": Decimal("120"),
-        "high": Decimal("120"),
-        "low": Decimal("120"),
-        "close": Decimal("120"),
-    })
+    sample[-1] = last.model_copy(
+        update={
+            "open": Decimal("120"),
+            "high": Decimal("120"),
+            "low": Decimal("120"),
+            "close": Decimal("120"),
+        }
+    )
     result = evaluate_spot_candidate(sample)
     assert result["qualified"] is False
     assert result["reason"] == "overheated_move"
