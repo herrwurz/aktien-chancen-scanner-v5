@@ -3,7 +3,7 @@
   "kind": "hebeltrader_featured_calls_blocklist",
   "note": "Past HEBELTRADER featured underlyings used ONLY to exclude hypothesis candidates. Never treated as solutions or scan inputs. Scan loads this file, never teaser-cases.json.",
   "default_lookback_days": 180,
-  "policy": "As of a teaser publication_date D, exclude any featured call with featured_date < D and D - featured_date <= lookback_days. Rationale: publisher rarely re-issues a new call on an underlying while a prior call is still running.",
+  "policy": "As of a teaser publication_date D, exclude any featured call with featured_date < D and D - featured_date <= lookback_days. Rationale: featured Calls are typically labeled ~4–6 months (corpus median 5); the publisher rarely re-features the same underlying while that warrant thesis is still live. 180 days (~6 months) is a conservative buffer slightly above the median tenor—not a legal holding period and not derived from a fixed publisher rulebook.",
   "calls": [
     {
       "company": "Adidas",
@@ -167,6 +167,20 @@
       "source_case_id": "HT-018"
     },
     {
+      "company": "SLB",
+      "ticker": "SLB",
+      "featured_date": "2026-10-26",
+      "featured_issue": "198/26",
+      "source_case_id": "HT-019"
+    },
+    {
+      "company": "Nasdaq, Inc.",
+      "ticker": "NDAQ",
+      "featured_date": "2026-10-27",
+      "featured_issue": "199/26",
+      "source_case_id": "OK-001"
+    },
+    {
       "company": "Analog Devices",
       "ticker": "ADI",
       "featured_date": "2026-10-28",
@@ -186,6 +200,13 @@
       "featured_date": "2026-10-30",
       "featured_issue": "202/26",
       "source_case_id": "BLIND-202-26"
+    },
+    {
+      "company": "American Electric Power",
+      "ticker": "AEP",
+      "featured_date": "2026-11-02",
+      "featured_issue": "203/26",
+      "source_case_id": "HT-203-26"
     }
   ]
 }
