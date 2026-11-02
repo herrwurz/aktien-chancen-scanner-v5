@@ -12,6 +12,27 @@ def _sma(values, n):
     return sum(values[-n:]) / n if len(values) >= n else None
 
 
+def _golden_cross(closes, *, lookback=20):
+    """True when SMA50 crosses above SMA200 within ``lookback`` closed days.
+
+    Scans each bar in the lookback window for a state change from
+    SMA50 ≤ SMA200 on the prior bar to SMA50 > SMA200 on that bar.
+    """
+    if lookback < 1 or len(closes) < 201:
+        return False
+    start = max(200, len(closes) - lookback)
+    for end in range(start, len(closes)):
+        prev = closes[:end]
+        curr = closes[: end + 1]
+        p50, p200 = _sma(prev, 50), _sma(prev, 200)
+        c50, c200 = _sma(curr, 50), _sma(curr, 200)
+        if None in (p50, p200, c50, c200):
+            continue
+        if p50 <= p200 and c50 > c200:
+            return True
+    return False
+
+
 def trend_features(closes):
     """Return trend facts for oldest-to-newest closes, or None if history is too short."""
     closes = [float(c) for c in closes if c]
@@ -28,6 +49,7 @@ def trend_features(closes):
         "above_gd50": last > gd50,
         "above_gd200": last > gd200,
         "gd200_rising": prior_gd200 is not None and gd200 > prior_gd200,
+        "golden_cross": _golden_cross(closes),
         "return_1y_pct": round((last / year[0] - 1) * 100, 1),
         "near_high_pct": round((last / max(year) - 1) * 100, 1),
         # Breakout: close above the prior 60-day consolidation high, excluding the last 5 days.
@@ -52,6 +74,7 @@ def chart_score(features):
     score += 2 if features["gd200_rising"] else 0
     score += 1 if features["return_1y_pct"] > 15 else 0
     score += 2 if features["breakout"] else 0
+    score += 3 if features.get("golden_cross") else 0
     score -= 4 if features["near_high_pct"] < -25 else 0
     return max(0, score)
 

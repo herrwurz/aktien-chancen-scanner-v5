@@ -8,7 +8,39 @@ def test_uptrend_with_breakout_scores_high():
     closes = [100 + i * 0.3 for i in range(300)]
     features = trend_features(closes)
     assert features["above_gd200"] and features["gd200_rising"] and features["breakout"]
+    assert features["golden_cross"] is False  # long-standing uptrend, not a fresh cross
     assert chart_score(features) == 17
+
+
+def test_recent_golden_cross_detected_and_scored():
+    # Soft decline keeps SMA50 ≤ SMA200, then a sharp rally forces a cross
+    # inside the last ~20 sessions (not a long-standing uptrend).
+    closes = (
+        [100.0] * 180
+        + [100.0 - i * 0.5 for i in range(1, 41)]
+        + [80.0 + i * 3.0 for i in range(1, 41)]
+    )
+    features = trend_features(closes)
+    assert features is not None
+    assert features["golden_cross"] is True
+    assert features["above_gd50"] and features["above_gd200"]
+    assert chart_score(features) >= 15
+
+
+def test_long_standing_uptrend_is_not_a_fresh_golden_cross():
+    closes = [100.0 + i * 0.3 for i in range(300)]
+    assert trend_features(closes)["golden_cross"] is False
+
+
+def test_stale_cross_outside_lookback_is_ignored():
+    # Cross happens early, then price drifts with SMA50 staying above SMA200.
+    closes = (
+        [100.0] * 180
+        + [100.0 - i * 0.5 for i in range(1, 41)]
+        + [80.0 + i * 3.0 for i in range(1, 41)]
+        + [200.0 + i * 0.2 for i in range(1, 61)]
+    )
+    assert trend_features(closes)["golden_cross"] is False
 
 
 def test_downtrend_scores_zero_and_short_history_is_none():
