@@ -24,8 +24,9 @@ SECTORS = (
     (r"strom\w*|energie\w*|versorger|utilit\w*|power grid", "power infrastructure"),
     (r"software\w*", "software"),
     # Avoid false hits like "Handelsstrategie" / "Handelstag" — require retail issuer cues.
+    # Optional hyphen/space so "Handels-Gigant" (HT-003) still matches.
     (
-        r"einzelhandel\w*|retail\w*|handels(?:gigant|riese|konzern|unternehmen)\w*|"
+        r"einzelhandel\w*|retail\w*|handels[\s-]*(?:gigant|riese|konzern|unternehmen)\w*|"
         r"supermärkte?\b|warenhaus\w*|großhandel\w*|discounter\w*",
         "retail",
     ),

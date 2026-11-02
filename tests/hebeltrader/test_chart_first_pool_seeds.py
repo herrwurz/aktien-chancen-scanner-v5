@@ -39,6 +39,13 @@ def test_handelsstrategie_does_not_add_retail_sector():
     assert "power infrastructure" in sectors_in(text)
 
 
+def test_handels_gigant_still_maps_to_retail():
+    from scanner.hebeltrader.detective.structure_screen import sectors_in
+
+    assert "retail" in sectors_in("Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!")
+    assert "retail" not in sectors_in("Handelstag mit klarer Handelsstrategie")
+
+
 def test_pool_assets_inactive_without_sector_cue():
     assert _pool_assets_for_teaser("Allgemeiner Tech-Titel ohne Branchenhinweis") == []
 
