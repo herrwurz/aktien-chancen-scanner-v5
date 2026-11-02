@@ -40,11 +40,10 @@ def evaluate_spot_candidate(candles: list[Candle]) -> dict:
         and volume_ratio >= Decimal("3")
         and return_pct >= Decimal("1.5")
     )
+    reason = "overheated_move" if overheated else "momentum_candidate" if qualified else "thresholds_not_met"
     return {
         "qualified": qualified,
-        "reason": "overheated_move" if overheated else (
-            "momentum_candidate" if qualified else "thresholds_not_met"
-        ),
+        "reason": reason,
         "volume_ratio": round(float(volume_ratio), 3),
         "return_5m_pct": round(float(return_5m_pct), 3),
         "return_60m_pct": round(float(return_60m_pct), 3),
