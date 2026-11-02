@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
-from scanner.stock_monitor.sec_replay import replay_sec_snapshot
 from scanner.stock_monitor.sec_event_triage import recent_filing_events
+from scanner.stock_monitor.sec_replay import replay_sec_snapshot
 
 
 @dataclass(frozen=True)
