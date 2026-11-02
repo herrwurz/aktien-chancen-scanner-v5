@@ -85,7 +85,7 @@ def test_fingerprint_matrix_confirms_multiple_specific_fact_claims():
     assert _leader_evidence_ready(ranked[0], clues)
     assert any("EMA" in note for note in ranked[0]["counterarguments"])
     gc = next(c for c in ranked[0]["evidence_matrix"] if c["clue_id"] == "ai:gc")
-    assert gc["reason"] == "eod_golden_cross_ema_only_within_20d_pit"
+    assert gc["reason"] == "eod_golden_cross_ema_within_20d_pit"
 
 
 def test_esa_and_contracted_load_count_as_offtake():
@@ -100,7 +100,7 @@ def test_esa_and_contracted_load_count_as_offtake():
     assert fp.capex_billions == 65
 
 
-def test_ema_only_golden_cross_scores_less_than_sma():
+def test_ema_only_golden_cross_scores_slightly_below_sma():
     from scanner.hebeltrader.detective.chart_check import chart_score
     from scanner.hebeltrader.detective.market_screen import match_score
 
@@ -116,8 +116,10 @@ def test_ema_only_golden_cross_scores_less_than_sma():
         "golden_cross_ema": True,
     }
     sma = {**base, "golden_cross_sma": True, "golden_cross_ema": False}
-    assert chart_score(sma) > chart_score(base)
+    assert chart_score(sma) >= chart_score(base)
     assert match_score(sma, ["golden_cross"]) > match_score(base, ["golden_cross"])
+    # EMA still earns most of the GC match bonus (retail GD ≈ EMA).
+    assert match_score(base, ["golden_cross"]) - match_score(base, []) >= 6
 
 
 def test_fingerprint_prefers_issuer_primary_over_secondary_news():

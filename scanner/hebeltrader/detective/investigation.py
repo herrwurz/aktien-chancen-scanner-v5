@@ -608,11 +608,11 @@ def _apply_chart_signal_matrix(ranked, text=None):
                     if chart.get("golden_cross_sma"):
                         reason = "eod_golden_cross_sma_within_20d_pit"
                     elif chart.get("golden_cross_ema"):
-                        reason = "eod_golden_cross_ema_only_within_20d_pit"
+                        reason = "eod_golden_cross_ema_within_20d_pit"
                         row.setdefault("counterarguments", [])
                         note = (
-                            "Golden Cross nur als EMA 50/200 bestätigt; "
-                            "klassisches SMA-Golden-Cross fehlt — manuell prüfen."
+                            "Golden Cross via EMA 50/200 (SMA noch nicht gekreuzt); "
+                            "HEBELTRADER-GD-Tabellen liegen oft näher an EMA — Claim ok."
                         )
                         if note not in row["counterarguments"]:
                             row["counterarguments"].append(note)

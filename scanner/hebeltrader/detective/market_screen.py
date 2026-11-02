@@ -42,11 +42,11 @@ def match_score(features, clues):
         if spec["clue"] not in claimed:
             continue
         if spec["clue"] == "golden_cross":
-            # Prefer SMA confirmation; EMA-only still supports the claim at half weight.
+            # SMA preferred; EMA still near-full credit (retail GD often EMA-like).
             if features.get("golden_cross_sma"):
                 score += spec["match_bonus"]
             elif features.get("golden_cross_ema") or features.get("golden_cross"):
-                score += max(1, spec["match_bonus"] // 2)
+                score += max(2, (spec["match_bonus"] * 3) // 4)
             else:
                 score += spec["match_penalty"]
             continue
