@@ -40,6 +40,22 @@ def test_blocks_recent_features_before_as_of_within_lookback():
     assert not is_blocked({"name": "Eli Lilly", "ticker": "LLY"}, blocked)
 
 
+def test_packaged_featured_calls_include_recent_resolutions():
+    from scanner.hebeltrader.detective.featured_calls import load_featured_calls
+
+    payload = load_featured_calls()
+    issues = {c.get("featured_issue") for c in payload["calls"]}
+    tickers = {c.get("ticker") for c in payload["calls"]}
+    assert {"198/26", "199/26", "203/26"} <= issues
+    assert {"SLB", "NDAQ", "AEP"} <= tickers
+    # AEP featured 2026-11-02 must block on a later as_of inside 180d
+    blocked = blocked_features("2026-11-03", lookback_days=180)
+    assert "AEP" in blocked["tickers"]
+    assert "NDAQ" in blocked["tickers"]
+    # same-day AEP feature must not self-block
+    assert "AEP" not in blocked_features("2026-11-02", lookback_days=180)["tickers"]
+
+
 def test_same_day_feature_is_not_blocked():
     blocked = blocked_features("2026-10-28", lookback_days=180, featured=FEATURED)
     assert "ADI" not in blocked["tickers"]
