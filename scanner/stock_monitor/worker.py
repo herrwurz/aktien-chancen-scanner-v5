@@ -57,9 +57,7 @@ def run_sec_monitor(
                 run_id=f"{run_id}:sec:{target.cik}",
                 code_version=code_version,
             )
-            recent_events = recent_filing_events(
-                record, symbol=target.symbol, cutoff=target_cutoff
-            )
+            recent_events = recent_filing_events(record, symbol=target.symbol, cutoff=target_cutoff)
             outcomes.append(
                 {
                     "symbol": target.symbol,
