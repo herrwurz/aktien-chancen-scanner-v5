@@ -184,8 +184,18 @@ const asBase64=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.o
 const el=(tag,text)=>{const node=document.createElement(tag);if(text!=null)node.textContent=text;return node};
 const list=(items)=>{const ul=el('ul');(items||[]).forEach(item=>{ul.append(el('li',item));});return ul;};
 let latestReport=null;
-const escapeHtml=value=>String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const inlineMarkdown=text=>escapeHtml(text).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>');
+const appendInline=(node,text)=>{
+  const source=String(text||'');
+  const pattern=/\*\*(.+?)\*\*|`([^`]+)`/g;
+  let last=0,match;
+  while((match=pattern.exec(source))){
+    if(match.index>last)node.append(document.createTextNode(source.slice(last,match.index)));
+    if(match[1]!=null)node.append(el('strong',match[1]));
+    else node.append(el('code',match[2]));
+    last=match.index+match[0].length;
+  }
+  if(last<source.length)node.append(document.createTextNode(source.slice(last)));
+};
 const renderProse=(text,root)=>{
   const box=el('article');box.className='prose meta';
   const blocks=String(text||'').trim().split(/\n{2,}/);
@@ -197,10 +207,12 @@ const renderProse=(text,root)=>{
     }
     if(lines.every(line=>line.trim().startsWith('- '))){
       const ul=el('ul');
-      lines.forEach(line=>{const li=el('li');li.innerHTML=inlineMarkdown(line.replace(/^\s*-\s*/,''));ul.append(li);});
+      lines.forEach(line=>{const li=el('li');appendInline(li,line.replace(/^\s*-\s*/,''));ul.append(li);});
       box.append(ul);return;
     }
-    const p=el('p');p.innerHTML=lines.map(inlineMarkdown).join('<br>');box.append(p);
+    const p=el('p');
+    lines.forEach((line,index)=>{if(index)p.append(document.createElement('br'));appendInline(p,line);});
+    box.append(p);
   });
   root.append(box);
 };
@@ -225,15 +237,22 @@ const renderTechnicalDetails=data=>{
   box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
   if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode}`));
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
+  else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
+  if(id.status==='hypothesis_top3')box.append(el('p',
+    'Hypothesen-Top-3: manuell prüfbare Kandidaten, keine bestätigte Identifikation.'));
   if((data.search_queries||[]).length){box.append(el('h4','Suchqueries'));box.append(list(data.search_queries));}
-  const warnings=[...((data.candidate_source&&data.candidate_source.coverage&&data.candidate_source.coverage.coverage_warnings)||[]),...(data.review_hints||[]),...(data.limitations||[])];
-  if(warnings.length){box.append(el('h4','Hinweise'));box.append(list(warnings));}
-  (data.candidates||[]).slice(0,3).forEach((c,index)=>{
-    const identity=c.identity||c;
-    box.append(el('h4',`${index+1}. ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
-    box.append(el('p',`Evidenz ${c.evidence_score??c.relevance_score_not_probability??'–'} · ${c.ranking_reason||''}`));
-    if((c.evidence_matrix||[]).length)box.append(list(c.evidence_matrix.map(cell=>`${cell.quote||cell.clue_id}: ${cell.status}`)));
+  const coverage=(data.candidate_source&&data.candidate_source.coverage)||{};
+  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[]),...(data.limitations||[])];
+  const inputWarnings=[];
+  (data.input_sources||[]).forEach(source=>{
+    if(source.type==='screenshot_ocr')inputWarnings.push(`OCR (${source.engine||'lokal'}): visuelle Prüfung nötig`);
+    (source.pages||[]).forEach(page=>{
+      (page.warnings||[]).forEach(warning=>inputWarnings.push(`Seite ${page.number}: ${warning}`));
+      if(page.requires_manual_review)inputWarnings.push(`Seite ${page.number}: manuelle Prüfung der Extraktion`);
+    });
   });
+  const allWarnings=[...warnings,...inputWarnings];
+  if(allWarnings.length){box.append(el('h4','Hinweise und Warnungen'));box.append(list(allWarnings));}
   detail.append(box);return detail;
 };
 const runCallSearch=async data=>{
@@ -294,8 +313,55 @@ const renderOverview=data=>{
   result.append(actions);
   const callMount=el('div');callMount.id='call-search-result';result.append(callMount);
   result.append(renderTechnicalDetails(data));
+  if((data.candidates||[]).length){
+    const candidatesDetail=el('details');
+    candidatesDetail.append(el('summary',`Kandidatendetails (${Math.min(3,(data.candidates||[]).length)})`));
+    (data.candidates||[]).slice(0,3).forEach((candidate,index)=>candidatesDetail.append(renderCandidate(candidate,index)));
+    result.append(candidatesDetail);
+  }
 };
-const renderCandidate=(c,index)=>{/* prose briefing is primary; details stay collapsed */};
+const renderCandidate=(c,index)=>{
+  const article=el('article');article.className='candidate';
+  const identity=c.identity||c;
+  article.append(el('h3',`${c.rank_label||`${index+1}.`} ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
+  const wknNote=identity.wkn
+    ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
+    : 'WKN unbekannt';
+  article.append(el('p',`${wknNote} · Evidenzwert ${c.evidence_score??c.relevance_score_not_probability}`));
+  if(c.hard_contradictions&&c.hard_contradictions.length){
+    article.append(el('h4','Harte Widersprüche'));
+    article.append(list(c.hard_contradictions.map(clueLabel)));
+  }
+  const contradictions=c.contradictions||[];
+  if(contradictions.length){
+    article.append(el('h4','Widersprüche'));
+    article.append(list(contradictions.map(clueLabel)));
+  }
+  const supporting=c.supporting_clues||c.hard_facts||[];
+  if(supporting.length){
+    article.append(el('h4','Bestätigte Hinweise'));
+    article.append(list(supporting.map(clueLabel)));
+  }
+  if(c.hypothesis_reasons&&c.hypothesis_reasons.length){
+    article.append(el('h4','Hypothesengründe'));
+    article.append(list(c.hypothesis_reasons));
+  }
+  if(c.evidence_matrix&&c.evidence_matrix.length){
+    article.append(el('h4','Evidenzmatrix'));
+    article.append(list(c.evidence_matrix.map(cell=>{
+      const reason=cell.reason?` (${cell.reason})`:'';
+      return `${cell.quote||cell.clue_id}: ${cell.status}${reason}`;
+    })));
+  }
+  const sources=c.sources||c.eligible_evidence||[];
+  const primary=sources.filter(source=>['issuer','regulatory','product_document'].includes(source.source_kind));
+  const other=sources.filter(source=>!primary.includes(source));
+  if(primary.length){article.append(el('h4','Primärbelege'));article.append(list(primary.map(sourceLine)));}
+  if(other.length){article.append(el('h4','Weitere Quellen'));article.append(list(other.map(sourceLine)));}
+  if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
+  article.append(el('p','Bestätigung: manuell erforderlich'));
+  return article;
+};
 const referenceButton=document.querySelector('#import-references');
 const referenceOutcomes={correct:'Richtig',wrong:'Falsch',unresolved:'Ungelöst'};
 const renderReferences=data=>{
