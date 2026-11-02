@@ -100,18 +100,87 @@ def test_esa_and_contracted_load_count_as_offtake():
     assert fp.capex_billions == 65
 
 
+def test_ema_only_golden_cross_scores_less_than_sma():
+    from scanner.hebeltrader.detective.chart_check import chart_score
+    from scanner.hebeltrader.detective.market_screen import match_score
+
+    base = {
+        "above_gd50": True,
+        "above_gd200": True,
+        "gd200_rising": True,
+        "return_1y_pct": 10,
+        "near_high_pct": -2,
+        "breakout": False,
+        "golden_cross": True,
+        "golden_cross_sma": False,
+        "golden_cross_ema": True,
+    }
+    sma = {**base, "golden_cross_sma": True, "golden_cross_ema": False}
+    assert chart_score(sma) > chart_score(base)
+    assert match_score(sma, ["golden_cross"]) > match_score(base, ["golden_cross"])
+
+
+def test_fingerprint_prefers_issuer_primary_over_secondary_news():
+    from scanner.hebeltrader.detective.utility_fingerprint import (
+        apply_utility_fingerprints,
+        fingerprint_from_documents,
+    )
+
+    secondary_only = [
+        {
+            "source_kind": "news",
+            "title": "Wire",
+            "text": "Utility signed offtake with data center; $40 billion capital plan.",
+        }
+    ]
+    with_primary = secondary_only + [
+        {
+            "source_kind": "issuer",
+            "title": "IR",
+            "text": "We executed take-or-pay ESAs with hyperscale data centers.",
+        }
+    ]
+    fp = fingerprint_from_documents(with_primary)
+    assert fp.has_offtake and fp.has_data_center_link
+    # Capex only on secondary must not override a stronger primary combo preference
+    # when primary already has 2+ components — capex may still come from all-docs
+    # fallback only when primary is thin.
+    ranked = [
+        {"asset_id": "sec", "evidence_score": 0, "hard_contradictions": []},
+        {"asset_id": "pri", "evidence_score": 0, "hard_contradictions": []},
+    ]
+    apply_utility_fingerprints(
+        ranked,
+        {"sec": secondary_only, "pri": with_primary},
+        teaser_text="US-Versorger Abnahmeverträge Rechenzentren",
+    )
+    by_id = {r["asset_id"]: r for r in ranked}
+    assert by_id["pri"]["utility_fingerprint"]["provenance"] == "primary"
+    assert by_id["sec"]["utility_fingerprint"]["provenance"] == "secondary_only"
+    assert (
+        by_id["pri"]["utility_fingerprint"]["bonus"] > by_id["sec"]["utility_fingerprint"]["bonus"]
+    )
+
+
 def test_peer_budget_exhaustion_is_not_material_source_gap_with_primary_docs():
     errors = [
         {"query": "peer falsification", "error": "network disabled or request budget exhausted"},
         {"query": "earnings date", "error": "request budget exhausted"},
     ]
-    assert has_material_research_source_gaps(errors, primary_documents=2, offline=False) is False
-    assert has_material_research_source_gaps(errors, primary_documents=0, offline=False) is True
+    assert (
+        has_material_research_source_gaps(errors, primary_documents=0, offline=False, documents=87)
+        is False
+    )
+    assert (
+        has_material_research_source_gaps(errors, primary_documents=0, offline=False, documents=0)
+        is True
+    )
     assert (
         has_material_research_source_gaps(
             [{"url": "x", "error": "HTTP 500"}],
             primary_documents=2,
             offline=False,
+            documents=10,
         )
         is True
     )

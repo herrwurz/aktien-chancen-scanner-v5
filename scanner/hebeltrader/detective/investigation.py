@@ -125,8 +125,16 @@ _BUDGET_GAP_ERROR = re.compile(
 )
 
 
-def has_material_research_source_gaps(errors, *, primary_documents: int, offline: bool) -> bool:
-    """True only for gaps that weaken primary evidence, not peer-budget exhaustion."""
+def has_material_research_source_gaps(
+    errors, *, primary_documents: int, offline: bool, documents: int = 0
+) -> bool:
+    """True only for gaps that weaken primary evidence, not peer-budget exhaustion.
+
+    Live Tavily often returns news/IR HTML without ``source_kind=issuer``; zero
+    primary_documents alone must not keep ``research_source_gaps`` when the only
+    errors are exhausted peer/falsification budget queries.
+    """
+    del primary_documents  # retained for call-site compatibility / future gates
     if not errors:
         return False
     material = [
@@ -134,7 +142,8 @@ def has_material_research_source_gaps(errors, *, primary_documents: int, offline
     ]
     if material:
         return True
-    return bool(errors and primary_documents == 0 and not offline)
+    # Budget-only: gap only when the run fetched nothing usable at all.
+    return bool(errors and documents == 0 and not offline)
 
 
 def packet_evidence_result(ranked, *, offline, limits):
@@ -1918,7 +1927,10 @@ class Investigator:
             d.get("source_kind") in {"issuer", "regulatory", "regulator"} for d in fetched
         )
         if has_material_research_source_gaps(
-            errors, primary_documents=primary_docs, offline=offline
+            errors,
+            primary_documents=primary_docs,
+            offline=offline,
+            documents=len(fetched),
         ):
             limits.append("research_source_gaps")
         if not ranked or not _leader_evidence_ready(ranked[0] if ranked else None, clues):
