@@ -78,6 +78,15 @@
     <p id="analysis-status" class="analysis-status" aria-live="assertive"></p>
   </form>
   <section id="result" aria-live="polite"></section>
+  <section id="call-search-panel">
+    <h2>Calls suchen</h2>
+    <p class="muted">Für die Top-Kandidaten der letzten Analyse oder des ausgewählten Falls. Dry-Run nach HT-Muster — keine Kaufempfehlung, kein bestätigter Original-Call.</p>
+    <div class="result-actions">
+      <button type="button" id="search-calls">Calls suchen</button>
+    </div>
+    <p id="call-search-status" class="muted" aria-live="polite">Zuerst analysieren oder einen Fall mit Bericht auswählen.</p>
+    <div id="call-search-panel-result"></div>
+  </section>
   <section><h2>Meine Fälle</h2>
     <div class="case-controls"><label for="case-select">Fall auswählen
       <select id="case-select"><option value="">Fälle laden …</option></select></label>
@@ -255,24 +264,50 @@ const renderTechnicalDetails=data=>{
   if(allWarnings.length){box.append(el('h4','Hinweise und Warnungen'));box.append(list(allWarnings));}
   detail.append(box);return detail;
 };
+const callSearchTargets=()=>{
+  const panel=document.querySelector('#call-search-panel-result');
+  const inline=document.querySelector('#call-search-result');
+  return [panel,inline].filter(Boolean);
+};
+const setCallSearchStatus=message=>{
+  const status=document.querySelector('#call-search-status');
+  if(status)status.textContent=message||'';
+};
+const reportForCallSearch=()=>{
+  if(latestReport&&((latestReport.candidates||[]).length||latestReport.prose||latestReport.decision))return latestReport;
+  const row=activeResolutionRow;
+  if(!row)return null;
+  const report=row.latest_prediction||row.first_prediction;
+  if(!report)return null;
+  return {...report,journal_case_id:row.case_id,competition_mode:row.competition_mode||report.competition_mode||'official',prose:report.prose};
+};
 const runCallSearch=async data=>{
-  const mount=document.querySelector('#call-search-result')||result;
-  const status=el('p','Call-Suche läuft …');status.className='muted';
-  const existing=document.querySelector('#call-search-result');
-  if(existing)existing.replaceChildren(status); else {const wrap=el('div');wrap.id='call-search-result';wrap.append(status);result.append(wrap);}
+  const report=data||reportForCallSearch();
+  if(!report){
+    setCallSearchStatus('Keine Analyse geladen. Zuerst „Hinweise analysieren“ oder einen Fall mit Bericht auswählen.');
+    return;
+  }
+  latestReport=report;
+  setCallSearchStatus('Call-Suche läuft …');
+  callSearchTargets().forEach(root=>root.replaceChildren(el('p','Call-Suche läuft …')));
+  document.querySelector('#call-search-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
   try{
     const headers={'content-type':'application/json',...authHeaders()};
-    const response=await fetch('/api/hebeltrader/calls/search',{method:'POST',headers,body:JSON.stringify({report:data,enabled:true})});
+    const response=await fetch('/api/hebeltrader/calls/search',{method:'POST',headers,body:JSON.stringify({report,enabled:true})});
     if(!response.ok)throw new Error(await readResponseError(response));
     const payload=await response.json();
-    const root=document.querySelector('#call-search-result');root.replaceChildren();
-    root.append(el('h2','Calls'));
-    renderProse(payload.prose||'Keine Call-Prosa verfügbar.',root);
-    const tech=el('details');tech.append(el('summary','Call-JSON'));
-    const pre=el('pre');pre.textContent=JSON.stringify(payload,null,2);tech.append(pre);root.append(tech);
+    setCallSearchStatus(payload.status==='abstain'
+      ?`Call-Suche abgeschlossen: abstain (${payload.reason||'keine klassischen Calls'}).`
+      :`Call-Suche abgeschlossen: ${payload.status}.`);
+    callSearchTargets().forEach(root=>{
+      root.replaceChildren();
+      renderProse(payload.prose||'Keine Call-Prosa verfügbar.',root);
+      const tech=el('details');tech.append(el('summary','Call-JSON'));
+      const pre=el('pre');pre.textContent=JSON.stringify(payload,null,2);tech.append(pre);root.append(tech);
+    });
   }catch(error){
-    const root=document.querySelector('#call-search-result');
-    root.replaceChildren(el('p',error.message||'Call-Suche fehlgeschlagen.'));
+    setCallSearchStatus(error.message||'Call-Suche fehlgeschlagen.');
+    callSearchTargets().forEach(root=>root.replaceChildren(el('p',error.message||'Call-Suche fehlgeschlagen.')));
   }
 };
 const fallbackProse=data=>{
@@ -299,6 +334,7 @@ const renderOverview=data=>{
   latestReport=data;
   if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
   renderProse(data.prose||fallbackProse(data),result);
+  setCallSearchStatus('Analyse geladen — im Abschnitt „Calls suchen“ starten oder Button unten nutzen.');
   const actions=el('div');actions.className='result-actions';
   const callBtn=el('button','Calls suchen');callBtn.type='button';
   callBtn.addEventListener('click',()=>runCallSearch(data));
@@ -457,6 +493,13 @@ const selectCase=caseId=>{
     renderOverview({...report,journal_case_id:row.case_id,competition_mode:row.competition_mode||report.competition_mode||'official',prose:report.prose});
     result.scrollIntoView({behavior:'smooth',block:'start'});
   });actions.prepend(show);
+  if(report){
+    latestReport={...report,journal_case_id:row.case_id,competition_mode:row.competition_mode||report.competition_mode||'official',prose:report.prose};
+    const calls=el('button','Calls suchen');calls.type='button';
+    calls.addEventListener('click',()=>runCallSearch(latestReport));
+    actions.append(calls);
+    setCallSearchStatus('Fall geladen — „Calls suchen“ starten.');
+  }
   const token=document.querySelector('#authorization').value;const headers={};if(token)headers['X-Research-Authorization']=token;
   if(!row.archived){
     const archive=el('button','Testfall archivieren');archive.type='button';archive.addEventListener('click',async()=>{
@@ -521,6 +564,13 @@ const selectOocCase=caseId=>{
     result.scrollIntoView({behavior:'smooth',block:'start'});
   });actions.append(show);
   actions.append(makeResolutionButton(row));
+  if(report){
+    latestReport={...report,journal_case_id:row.case_id,competition_mode:'out_of_competition',prose:report.prose};
+    const calls=el('button','Calls suchen');calls.type='button';
+    calls.addEventListener('click',()=>runCallSearch(latestReport));
+    actions.append(calls);
+    setCallSearchStatus('Außer-Konkurrenz-Fall geladen — „Calls suchen“ starten.');
+  }
   const pdfLabel=el('label','Report-PDF speichern (gekaufter Report)');
   const pdfInput=el('input');pdfInput.type='file';pdfInput.accept='application/pdf';
   const pdfStatus=el('p');pdfStatus.id='ooc-pdf-status';pdfStatus.setAttribute('aria-live','polite');
@@ -595,6 +645,7 @@ document.querySelector('#load-ooc-cases').addEventListener('click',()=>loadOocCa
 document.querySelector('#ooc-case-select').addEventListener('change',event=>selectOocCase(event.target.value));
 loadCases(false);
 loadOocCases();
+document.querySelector('#search-calls').addEventListener('click',()=>runCallSearch());
 const setAnalysisStatus=(state,message)=>{
   const status=document.querySelector('#analysis-status');
   status.className=`analysis-status ${state||''}`.trim();status.textContent=message||'';
