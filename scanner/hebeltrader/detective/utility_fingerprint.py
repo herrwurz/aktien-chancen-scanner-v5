@@ -38,7 +38,18 @@ _CAPEX = re.compile(
     r"(?P<unit2>billion|bn\b|mrd\.?)\s*(?:dollar|usd|\$)?"
     r"[^\n]{0,48}?"
     r"(?:capital\s+(?:investment|expenditure|plan)|capex|investment\s+plan)"
-    r")",
+    r"|"
+    # "$100 billion five-year capital plan" / "five-year, $72 billion capital plan"
+    r"(?:five[\s-]*year|5[\s-]*year|multi[\s-]*year)[^\d$]{0,40}"
+    r"(?:\$|usd)?\s*(?P<value3>\d+(?:[.,]\d+)?)\s*"
+    r"(?P<unit3>billion|bn\b|mrd\.?)"
+    r")"
+    r"(?!\s*\d+(?:[.,]\d+)?\s*%)",  # reject table cells like "$2.5 billion 200.0%"
+    re.I,
+)
+_CAPEX_PLAN_HINT = re.compile(
+    r"capital\s+plan|capex\s+plan|five[\s-]*year|5[\s-]*year|multi[\s-]*year|"
+    r"investment\s+(?:plan|program)",
     re.I,
 )
 _DATA_CENTER = re.compile(
@@ -75,23 +86,53 @@ class UtilityFingerprint:
 
 
 def _capex_billions(match: re.Match) -> float | None:
-    value = match.groupdict().get("value") or match.groupdict().get("value2")
+    groups = match.groupdict()
+    value = groups.get("value") or groups.get("value2") or groups.get("value3")
     if value is None:
         return None
     return float(value.replace(",", "."))
 
 
+def _capex_match_quality(match: re.Match) -> int:
+    """Prefer multi-year capital *plans* over proxy-table „Capital Investment“ noise."""
+    # Include a short tail so "… capital investment plan" still counts as a plan.
+    span = (match.group(0) + match.string[match.end() : match.end() + 16]).casefold()
+    after = match.string[match.end() : match.end() + 24]
+    if re.search(r"^\s*\d+(?:[.,]\d+)?\s*%", after):
+        return -10
+    quality = 0
+    if _CAPEX_PLAN_HINT.search(span):
+        quality += 3
+    if re.search(r"five[\s-]*year|5[\s-]*year|multi[\s-]*year", span):
+        quality += 2
+    if "plan" in span or "program" in span:
+        quality += 1
+    # Bare "capital investment $X billion" without plan/years is weak.
+    if "capital investment" in span and "plan" not in span and quality < 3:
+        quality -= 2
+    return quality
+
+
 def extract_utility_fingerprint(text: str) -> UtilityFingerprint:
     blob = text or ""
-    capex = None
+    best: tuple[int, float] | None = None
     for match in _CAPEX.finditer(blob):
         amount = _capex_billions(match)
-        if amount is not None and (capex is None or amount > capex):
-            capex = amount
+        if amount is None:
+            continue
+        quality = _capex_match_quality(match)
+        if quality < 0:
+            continue
+        # Utility mega-plans are typically ≥$5bn; keep smaller only with strong plan cues.
+        if amount < 5 and quality < 3:
+            continue
+        key = (quality, amount)
+        if best is None or key > best:
+            best = key
     return UtilityFingerprint(
         has_offtake=bool(_OFFTAKE.search(blob)),
         has_data_center_link=bool(_DATA_CENTER.search(blob)),
-        capex_billions=capex,
+        capex_billions=None if best is None else best[1],
     )
 
 

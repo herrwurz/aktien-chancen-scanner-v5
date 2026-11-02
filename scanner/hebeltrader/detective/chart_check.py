@@ -25,58 +25,92 @@ def _ema_series(values, n):
     return out
 
 
+def _ma_cross_at(closes, end, fast=50, slow=200):
+    """Return ``golden`` / ``death`` / None for the SMA cross on bar ``end``."""
+    if end < 1 or len(closes) < slow + 1 or end >= len(closes):
+        return None
+    prev, curr = closes[:end], closes[: end + 1]
+    p_fast, p_slow = _sma(prev, fast), _sma(prev, slow)
+    c_fast, c_slow = _sma(curr, fast), _sma(curr, slow)
+    if None in (p_fast, p_slow, c_fast, c_slow):
+        return None
+    if p_fast <= p_slow and c_fast > c_slow:
+        return "golden"
+    if p_fast >= p_slow and c_fast < c_slow:
+        return "death"
+    return None
+
+
+def _ema_cross_at(closes, end, fast_s, slow_s):
+    """Return ``golden`` / ``death`` / None for the EMA cross on bar ``end``."""
+    if end < 1 or end >= len(closes):
+        return None
+    p_fast, p_slow = fast_s[end - 1], slow_s[end - 1]
+    c_fast, c_slow = fast_s[end], slow_s[end]
+    if None in (p_fast, p_slow, c_fast, c_slow):
+        return None
+    if p_fast <= p_slow and c_fast > c_slow:
+        return "golden"
+    if p_fast >= p_slow and c_fast < c_slow:
+        return "death"
+    return None
+
+
 def _ma_cross(closes, fast=50, slow=200, *, lookback=20, bullish=True):
     """True when SMA``fast`` crosses SMA``slow`` within ``lookback`` bars."""
+    want = "golden" if bullish else "death"
     if lookback < 1 or len(closes) < slow + 1:
         return False
     start = max(slow, len(closes) - lookback)
     for end in range(start, len(closes)):
-        prev, curr = closes[:end], closes[: end + 1]
-        p_fast, p_slow = _sma(prev, fast), _sma(prev, slow)
-        c_fast, c_slow = _sma(curr, fast), _sma(curr, slow)
-        if None in (p_fast, p_slow, c_fast, c_slow):
-            continue
-        if bullish and p_fast <= p_slow and c_fast > c_slow:
-            return True
-        if not bullish and p_fast >= p_slow and c_fast < c_slow:
+        if _ma_cross_at(closes, end, fast=fast, slow=slow) == want:
             return True
     return False
 
 
 def _ema_cross(closes, fast=50, slow=200, *, lookback=20, bullish=True):
     """True when EMA``fast`` crosses EMA``slow`` within ``lookback`` bars."""
+    want = "golden" if bullish else "death"
     if lookback < 1 or len(closes) < slow + 1:
         return False
     fast_s, slow_s = _ema_series(closes, fast), _ema_series(closes, slow)
     start = max(slow, len(closes) - lookback)
     for end in range(start, len(closes)):
-        p_fast, p_slow = fast_s[end - 1], slow_s[end - 1]
-        c_fast, c_slow = fast_s[end], slow_s[end]
-        if None in (p_fast, p_slow, c_fast, c_slow):
-            continue
-        if bullish and p_fast <= p_slow and c_fast > c_slow:
-            return True
-        if not bullish and p_fast >= p_slow and c_fast < c_slow:
+        if _ema_cross_at(closes, end, fast_s, slow_s) == want:
             return True
     return False
 
 
-def _golden_cross(closes, *, lookback=20):
-    """True when SMA or EMA 50 crosses above 200 within ``lookback`` days.
+def _latest_cross(closes, *, lookback=20):
+    """Most recent SMA or EMA 50/200 cross in ``lookback`` (``golden``/``death``/None).
 
-    Retail TA (e.g. finanzradar.de) often uses EMA for Golden Cross; HEBELTRADER
-    teasers rarely specify SMA vs EMA, so either cross confirms the claim.
+    If both fire in the window, the chronologically later event wins so flags stay
+    mutually exclusive (AEP: EMA death then EMA golden within 20d).
     """
-    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=True) or _ema_cross(
-        closes, 50, 200, lookback=lookback, bullish=True
-    )
+    if lookback < 1 or len(closes) < 201:
+        return None
+    fast_s, slow_s = _ema_series(closes, 50), _ema_series(closes, 200)
+    start = max(200, len(closes) - lookback)
+    latest = None
+    for end in range(start, len(closes)):
+        event = _ma_cross_at(closes, end) or _ema_cross_at(closes, end, fast_s, slow_s)
+        if event:
+            latest = event
+    return latest
+
+
+def _golden_cross(closes, *, lookback=20):
+    """True when the latest SMA/EMA 50/200 cross in ``lookback`` is bullish.
+
+    Retail TA (finanzradar / many HEBELTRADER GD tables) often tracks EMA-like
+    levels; teasers rarely specify SMA vs EMA.
+    """
+    return _latest_cross(closes, lookback=lookback) == "golden"
 
 
 def _death_cross(closes, *, lookback=20):
-    """True when SMA or EMA 50 crosses below 200 within ``lookback`` days."""
-    return _ma_cross(closes, 50, 200, lookback=lookback, bullish=False) or _ema_cross(
-        closes, 50, 200, lookback=lookback, bullish=False
-    )
+    """True when the latest SMA/EMA 50/200 cross in ``lookback`` is bearish."""
+    return _latest_cross(closes, lookback=lookback) == "death"
 
 
 def _gd200_reclaim(closes, *, lookback=20):
@@ -184,6 +218,8 @@ def trend_features(closes):
     if len(closes) < 200:
         return None
     last, gd50, gd200 = closes[-1], _sma(closes, 50), _sma(closes, 200)
+    ema50_s, ema200_s = _ema_series(closes, 50), _ema_series(closes, 200)
+    ema50, ema200 = ema50_s[-1], ema200_s[-1]
     prior_gd200 = sum(closes[-220:-20]) / 200 if len(closes) >= 220 else None
     year = closes[-252:] if len(closes) >= 252 else closes[:]
     recent = closes[-60:]
@@ -193,6 +229,8 @@ def trend_features(closes):
         "last": round(last, 2),
         "gd50": round(gd50, 2),
         "gd200": round(gd200, 2),
+        "gd50_ema": None if ema50 is None else round(ema50, 2),
+        "gd200_ema": None if ema200 is None else round(ema200, 2),
         "above_gd50": last > gd50,
         "above_gd200": last > gd200,
         "gd200_rising": prior_gd200 is not None and gd200 > prior_gd200,
@@ -236,13 +274,11 @@ def chart_score(features):
     score += 2 if features["gd200_rising"] else 0
     score += 1 if features["return_1y_pct"] > 15 else 0
     score += 2 if features["breakout"] else 0
-    # Classic SMA Golden Cross earns full credit; EMA-only is weaker retail signal.
+    # SMA GC full credit; EMA GC still strong (HEBELTRADER GD tables often track EMA).
     if features.get("golden_cross_sma"):
         score += 3
-    elif features.get("golden_cross_ema"):
-        score += 1
-    elif features.get("golden_cross"):
-        score += 3
+    elif features.get("golden_cross_ema") or features.get("golden_cross"):
+        score += 2
     score -= 4 if features["near_high_pct"] < -25 else 0
     return max(0, score)
 
