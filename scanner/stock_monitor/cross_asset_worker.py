@@ -24,6 +24,7 @@ from scanner.stock_monitor.sec_client_runner import run_with_sec_client
 from scanner.stock_monitor.spot_signals import evaluate_spot_candidate
 from scanner.stock_monitor.spot_snapshots import rank_snapshot
 from scanner.stock_monitor.spot_universe import discover_spot_symbols
+from scanner.stock_monitor.stock_universe import discover_sec_targets
 from scanner.stock_monitor.worker import SecTarget
 
 
@@ -110,9 +111,23 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
 
 
 def _stock_pass(*, root: Path, targets: list[SecTarget], run_id: str, cutoff: datetime) -> dict:
+    allow_network = os.getenv("SEC_ALLOW_NETWORK", "false").lower() == "true"
+    if not targets and os.getenv("STOCK_AUTO_DISCOVERY", "false").lower() == "true":
+        if not allow_network:
+            return {"status": "unavailable", "reason": "sec_network_not_enabled"}
+        try:
+            targets = discover_sec_targets(
+                user_agent=os.getenv("SEC_USER_AGENT", ""),
+                slot=int(cutoff.timestamp() // 3600),
+            )
+        except (ValueError, httpx.HTTPError) as exc:
+            return {
+                "status": "unavailable",
+                "reason": "sec_auto_discovery_failed",
+                "error_type": type(exc).__name__,
+            }
     if not targets:
         return {"status": "unavailable", "reason": "no_sec_targets_configured"}
-    allow_network = os.getenv("SEC_ALLOW_NETWORK", "false").lower() == "true"
     result = run_with_sec_client(
         cache_root=root / "sec-cache",
         journal_path=root / "sec-journal.jsonl",
