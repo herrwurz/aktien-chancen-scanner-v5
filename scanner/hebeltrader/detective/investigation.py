@@ -15,12 +15,14 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 from scanner.research import AssetIdentity, EvidenceRecord
 
-from .chart_check import chart_score
 from .chart_check import check as chart_check
+from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clues
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
 from .featured_calls import blocked_features, is_blocked
+from .index_pool import market_universe_list
+from .market_screen import match_score
 from .metric_fingerprint import apply_metric_fingerprints
 from .research_plan import build_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
@@ -444,35 +446,54 @@ def _query_targets_blocked(query: str, blocked: dict) -> bool:
     return False
 
 
-_GOLDEN_CROSS_CLAIM = re.compile(r"golden[\s-]*cross|goldenes?\s+kreuz", re.I)
+def _pool_ticker(name: str) -> str | None:
+    """Fall back to the market index pool when the curated universe has no ticker."""
+    tokens = re.findall(r"[a-z0-9]+", (name or "").casefold())
+    if not tokens:
+        return None
+    best, best_len = None, 0
+    for asset in market_universe_list():
+        for alias in [asset.get("name"), *(asset.get("aliases") or [])]:
+            parts = re.findall(r"[a-z0-9]+", (alias or "").casefold())
+            if parts and tokens[: len(parts)] == parts and len(parts) > best_len:
+                best, best_len = asset, len(parts)
+    return normalize_ticker(best.get("ticker") if best else None)
 
 
-def _teaser_claims_golden_cross(text):
-    return bool(_GOLDEN_CROSS_CLAIM.search(text or ""))
+def _resolve_ticker(identity: dict) -> str | None:
+    raw = identity.get("ticker") or ticker_for(identity.get("name") or "")
+    ticker = normalize_ticker(raw)
+    if ticker:
+        return ticker
+    return _pool_ticker(identity.get("name") or "")
 
 
-def _apply_golden_cross_matrix(ranked, text):
-    """Confirm/contradict Golden-Cross semantic clues from PIT EOD features."""
-    if not _teaser_claims_golden_cross(text):
-        return
+def _apply_chart_signal_matrix(ranked, text=None):
+    """Confirm/contradict technical buy-signal claims from PIT EOD features.
+
+    A quote may mention several signals (e.g. Korrektur + 200-Tage-Linie). Any
+    confirming signal wins; otherwise the first missing signal contradicts.
+    """
+    del text  # teaser-level clues drive scoring; matrix cells are quote-driven
     for row in ranked:
         chart = row.get("chart") or {}
         for cell in row.get("evidence_matrix") or []:
-            quote = cell.get("quote") or ""
-            if not _GOLDEN_CROSS_CLAIM.search(quote):
+            matched = signals_in_quote(cell.get("quote") or "")
+            if not matched:
                 continue
             if chart.get("status") != "ok":
                 cell["status"] = "unknown"
                 cell["reason"] = f"chart_{chart.get('status', 'unavailable')}"
                 continue
-            if chart.get("golden_cross"):
+            confirmed = [spec for spec in matched if chart.get(spec["feature"])]
+            spec = confirmed[0] if confirmed else matched[0]
+            if confirmed:
                 cell["status"] = "confirmed"
-                cell["reason"] = "eod_golden_cross_within_20d_pit"
-                cell["evidence_cluster_ids"] = ["chart:eodhd_sma50_sma200"]
+                cell["reason"] = spec["confirm_reason"]
             else:
                 cell["status"] = "contradicted"
-                cell["reason"] = "eod_no_recent_golden_cross_pit"
-                cell["evidence_cluster_ids"] = ["chart:eodhd_sma50_sma200"]
+                cell["reason"] = spec["contradict_reason"]
+            cell["evidence_cluster_ids"] = [spec["cluster"]]
         row["unknown_clues"] = [
             cell["clue_id"]
             for cell in row.get("evidence_matrix") or []
@@ -480,8 +501,16 @@ def _apply_golden_cross_matrix(ranked, text):
         ]
 
 
+def _teaser_claims_golden_cross(text):
+    return "golden_cross" in teaser_chart_clues(text)
+
+
+_apply_golden_cross_matrix = _apply_chart_signal_matrix
+
+
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
-    # Chart clues (long uptrend, breakout, golden cross) use market data, not web text.
+    # Chart buy-signals (GD200, crosses, breakout, MACD, RSI, …) use market data, not web text.
+    clues = teaser_chart_clues(text)
     for row in ranked:
         data = row["identity"]
         data = data if isinstance(data, dict) else data.model_dump()
@@ -495,17 +524,15 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
     for row in ranked[:top]:
         identity = row["identity"]
         data = identity if isinstance(identity, dict) else identity.model_dump()
-        ticker = data.get("ticker") or ticker_for(data.get("name") or "")
+        ticker = _resolve_ticker(data)
         key = row["asset_id"]
         if key not in cache:
             cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
         result = cache[key]
         row["chart"] = result
         if result["status"] == "ok":
-            row["evidence_score"] += chart_score(result)
-            if _teaser_claims_golden_cross(text) and result.get("golden_cross"):
-                row["evidence_score"] += 4
-    _apply_golden_cross_matrix(ranked[:top], text)
+            row["evidence_score"] += match_score(result, clues)
+    _apply_chart_signal_matrix(ranked[:top], text)
     ranked.sort(
         key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
     )

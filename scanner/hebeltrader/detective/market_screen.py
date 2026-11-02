@@ -10,37 +10,26 @@ ticker so each case can use closes ≤ its ``publication_date`` only.
 
 import json
 import os
-import re
 import sys
 import time
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from .chart_check import chart_score, closes_through, trend_features
+from .chart_signals import SIGNAL_SPECS_COMPILED
+from .chart_signals import teaser_chart_clues as _signal_clues
 from .index_pool import market_universe_list
 from .research_plan import stock_text
 from .structure_screen import sectors_in
 
-CLUES = (
-    (
-        "above_gd200",
-        r"200[\s-]*tage[\s-]*linie\s+(?:\w+\s+){0,2}(?:zurückerobert|verteidigt|überwunden)",
-    ),
-    (
-        "golden_cross",
-        r"golden[\s-]*cross|goldenes?\s+kreuz",
-    ),
-    ("breakout", r"ausbruch|befreiungsschlag|rallye|rally|kaufsignal"),
-    ("correction", r"korrektur|rücksetzer|konsolidierung"),
-    ("steady_uptrend", r"seit\s+jahren\s+(?:\w+\s+)?(?:kontinuierlich\s+)?nach\s+oben"),
-)
+# Back-compat: older tests may still iterate CLUES pairs.
+CLUES = tuple((spec["clue"], spec["pattern"]) for spec in SIGNAL_SPECS_COMPILED)
 
 PIT_FORMAT = "hebeltrader-market-snapshots-pit-v1"
 
 
 def teaser_chart_clues(text):
-    clean = stock_text(text)
-    return [name for name, pattern in CLUES if re.search(pattern, clean, re.I)]
+    return _signal_clues(stock_text(text))
 
 
 def match_score(features, clues):
@@ -48,16 +37,12 @@ def match_score(features, clues):
     if not features:
         return 0
     score = chart_score(features)
-    if "above_gd200" in clues:
-        score += 6 if features["above_gd200"] else -6
-    if "golden_cross" in clues:
-        score += 8 if features.get("golden_cross") else -4
-    if "breakout" in clues and features["breakout"]:
-        score += 3
-    if "correction" in clues and features["near_high_pct"] < -5:
-        score += 2
-    if "steady_uptrend" in clues and features["return_1y_pct"] > 15 and features["gd200_rising"]:
-        score += 4
+    claimed = set(clues or [])
+    for spec in SIGNAL_SPECS_COMPILED:
+        if spec["clue"] not in claimed:
+            continue
+        present = bool(features.get(spec["feature"]))
+        score += spec["match_bonus"] if present else spec["match_penalty"]
     return score
 
 
