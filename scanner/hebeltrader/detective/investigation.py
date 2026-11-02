@@ -417,13 +417,27 @@ _UTILITY_THEME_FACT = re.compile(
     r"Rechenzentrum"
     r")\b"
 )
+# Rechenzentrum alone appears in chip/software teasers; require a utility issuer cue.
+_UTILITY_ISSUER_THEME_GATE = re.compile(
+    r"versorger|utilit|strom[\s-]*gigant|stromversorger|electric\s+utilit|"
+    r"abnahmevertr|investitionsoffensive",
+    re.I,
+)
+_RZ_ONLY_THEME = re.compile(r"^rechenzentr", re.I)
 
 
 def _utility_theme_fact_clues(text):
+    blob = text or ""
+    if not _UTILITY_ISSUER_THEME_GATE.search(blob):
+        return []
     clues = []
-    for match in _UTILITY_THEME_FACT.finditer(text or ""):
+    for match in _UTILITY_THEME_FACT.finditer(blob):
         term = match.group("term")
-        relation = _relation(text, match.start())
+        # With only Abnahme/Investition cues, still allow RZ terms; issuer gate already
+        # required a utility-ish cue above.
+        if _RZ_ONLY_THEME.match(term) and not _UTILITY_ISSUER_THEME_GATE.search(blob):
+            continue
+        relation = _relation(blob, match.start())
         if relation == "unknown_relation":
             relation = "investment"
         target = relation + "|" + term.casefold()

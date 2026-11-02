@@ -27,6 +27,16 @@ def test_utility_theme_nouns_become_fact_claims():
     assert any("rechenzentrum" in (v or "") for v in fact_values)
 
 
+def test_chip_teaser_rechenzentren_does_not_spawn_utility_theme_facts():
+    chip = (
+        "Halbleiter-Schwergewicht bei KI-Rechenzentren und Robotik. "
+        "Mit der Übernahme von Empower."
+    )
+    from scanner.hebeltrader.detective.investigation import _utility_theme_fact_clues
+
+    assert _utility_theme_fact_clues(chip) == []
+
+
 def test_fingerprint_matrix_confirms_multiple_specific_fact_claims():
     clues = _clues(TEASER, [SourceSpan(source_id="teaser_text", start=0, end=len(TEASER))])
     fact_clues = [c for c in clues if c.category == "fact_claims"]
