@@ -10,8 +10,8 @@ from pathlib import Path
 
 import httpx
 
-from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 from scanner.research import AssetIdentity, CompanyEvent, EvidenceRecord, ProviderStatus
+from scanner.util.hashio import canonical, exclusive, sha
 
 BASE = "https://data.sec.gov"
 TICKERS_URL = "https://www.sec.gov/files/company_tickers_exchange.json"

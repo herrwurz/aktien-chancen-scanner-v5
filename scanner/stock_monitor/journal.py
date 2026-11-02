@@ -43,12 +43,15 @@ class Evidence:
             c not in "0123456789abcdef" for c in self.content_sha256
         ):
             raise ValueError("Invalid SHA256")
-        if not (
-            as_utc(self.published_at)
-            <= as_utc(self.first_seen_at)
-            <= as_utc(self.retrieved_at)
-            <= as_utc(cutoff)
-        ):
+        published = as_utc(self.published_at)
+        first_seen = as_utc(self.first_seen_at)
+        retrieved = as_utc(self.retrieved_at)
+        limit = as_utc(cutoff)
+        if published > first_seen:
+            raise ValueError("Evidence chronology published_after_first_seen")
+        if first_seen > retrieved:
+            raise ValueError("Evidence chronology first_seen_after_retrieved")
+        if retrieved > limit:
             raise ValueError("Evidence unavailable at cutoff")
 
 
@@ -114,24 +117,29 @@ def append_run(
     }
     serialized = json.dumps(payload, default=serial, sort_keys=True, separators=(",", ":"))
     path.parent.mkdir(parents=True, exist_ok=True)
-    previous = "0" * 64
-    if path.exists():
-        with path.open(encoding="utf-8") as reader:
-            for line in reader:
-                item = json.loads(line)
-                expected = sha256((item["previous_sha256"] + item["payload"]).encode()).hexdigest()
-                if item["record_sha256"] != expected or item["previous_sha256"] != previous:
-                    raise ValueError("Corrupted journal chain")
-                if json.loads(item["payload"])["run_id"] == run_id:
-                    raise ValueError("Duplicate run_id")
-                previous = expected
-    digest = sha256((previous + serialized).encode()).hexdigest()
-    with path.open("a", encoding="utf-8") as writer:
-        writer.write(
-            json.dumps(
-                {"previous_sha256": previous, "payload": serialized, "record_sha256": digest},
-                sort_keys=True,
+    from scanner.stock_monitor.file_lock import exclusive_file_lock
+
+    with exclusive_file_lock(path):
+        previous = "0" * 64
+        if path.exists():
+            with path.open(encoding="utf-8") as reader:
+                for line in reader:
+                    item = json.loads(line)
+                    expected = sha256(
+                        (item["previous_sha256"] + item["payload"]).encode()
+                    ).hexdigest()
+                    if item["record_sha256"] != expected or item["previous_sha256"] != previous:
+                        raise ValueError("Corrupted journal chain")
+                    if json.loads(item["payload"])["run_id"] == run_id:
+                        raise ValueError("Duplicate run_id")
+                    previous = expected
+        digest = sha256((previous + serialized).encode()).hexdigest()
+        with path.open("a", encoding="utf-8") as writer:
+            writer.write(
+                json.dumps(
+                    {"previous_sha256": previous, "payload": serialized, "record_sha256": digest},
+                    sort_keys=True,
+                )
+                + "\n"
             )
-            + "\n"
-        )
     return digest

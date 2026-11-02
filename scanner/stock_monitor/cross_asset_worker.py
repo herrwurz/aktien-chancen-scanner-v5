@@ -33,7 +33,17 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
     if os.getenv("CRYPTO_DISCOVER_UNIVERSE", "false").lower() == "true":
         async with httpx.AsyncClient() as client:
             discovery = await discover_spot_symbols(client)
-        symbols = discovery["symbols"]
+        # Only replace the configured watchlist on a successful discovery pass.
+        # A failed discover must not wipe CRYPTO_SYMBOLS into an empty market.
+        if discovery.get("status") == "complete":
+            symbols = discovery["symbols"]
+        else:
+            return {
+                "status": "unavailable",
+                "reason": "crypto_discovery_failed",
+                "discovery": discovery,
+                "configured_symbols_preserved": len(symbols),
+            }
     if discovery and discovery.get("status") == "complete" and root is not None:
         snapshot_path = root / "spot-ticker-snapshot.json"
         previous = None
@@ -52,7 +62,9 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
             "observed_at": cutoff.isoformat(),
             "ticker_snapshot": discovery.get("ticker_snapshot", {}),
         }
-        snapshot_path.write_text(json.dumps(snapshot_payload), encoding="utf-8")
+        tmp_path = snapshot_path.with_suffix(".json.tmp")
+        tmp_path.write_text(json.dumps(snapshot_payload), encoding="utf-8")
+        tmp_path.replace(snapshot_path)
     universe_count = len(symbols)
     if discovery:
         symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff)
@@ -64,7 +76,8 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
             "reason": "no_crypto_symbols_available",
             "discovery": discovery,
         }
-    # Bound concurrent API calls, not market coverage. Every eligible symbol is attempted.
+    # Bound concurrent API calls. Detail coverage is the scheduled subset
+    # (full Vienna hours, otherwise top-20 + rotating ≤60), not every eligible symbol.
     concurrency = int(os.getenv("CRYPTO_DETAIL_CONCURRENCY", "4"))
     if not 1 <= concurrency <= 8:
         raise ValueError("CRYPTO_DETAIL_CONCURRENCY must be 1..8")
@@ -95,8 +108,14 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
         outcomes = await asyncio.gather(*(inspect(symbol) for symbol in symbols))
     checked = sum(item["status"] == "checked" for item in outcomes)
     candidates = [item["symbol"] for item in outcomes if item.get("candidate", {}).get("qualified")]
+    if checked == len(symbols):
+        status = "complete"
+    elif checked == 0:
+        status = "unavailable"
+    else:
+        status = "partial"
     return {
-        "status": "complete" if checked == len(symbols) else "partial",
+        "status": status,
         "source": "binance_spot",
         "scan_mode": scan_mode,
         "universe_symbols": universe_count,
@@ -140,7 +159,7 @@ def _stock_pass(*, root: Path, targets: list[SecTarget], run_id: str, cutoff: da
         cutoff=cutoff,
         live_mode=True,
     )
-    result["status"] = "complete" if result["status"] == "complete" else "partial"
+    # Preserve complete / partial / unavailable from the SEC monitor.
     result["signal_status"] = "research_only_no_trade_validation"
     return result
 

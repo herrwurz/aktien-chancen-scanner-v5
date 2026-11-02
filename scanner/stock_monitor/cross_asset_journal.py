@@ -38,8 +38,8 @@ def read_run_journal(path: Path) -> list[dict]:
 def append_cross_asset_run(path: Path, run: dict) -> str:
     """Persist a finished run; never replace or silently deduplicate history.
 
-    Caller must ensure single-writer access (for example a scheduled worker
-    with a process lock). This function does not implement cross-process locks.
+    Uses an advisory exclusive lock beside the journal so concurrent one-shots
+    fail closed on chain verification instead of interleaving writes.
     """
     if not isinstance(run, dict) or not run.get("run_id"):
         raise ValueError("Missing run identity")
@@ -47,22 +47,25 @@ def append_cross_asset_run(path: Path, run: dict) -> str:
         raise ValueError("Only completed runs can be persisted")
     if set(run.get("results", {})) != {"stock", "crypto"}:
         raise ValueError("Both asset classes must have a recorded outcome")
-    existing = read_run_journal(path)
-    if any(item["run_id"] == run["run_id"] for item in existing):
-        raise ValueError("Duplicate run_id")
-    previous = "0" * 64
-    if path.exists():
-        with path.open(encoding="utf-8") as stream:
-            for line in stream:
-                previous = json.loads(line)["record_sha256"]
-    payload = _canonical(run)
-    digest = sha256((previous + payload).encode()).hexdigest()
-    record = {
-        "previous_sha256": previous,
-        "payload": payload,
-        "record_sha256": digest,
-    }
+    from scanner.stock_monitor.file_lock import exclusive_file_lock
+
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as stream:
-        stream.write(_canonical(record) + "\n")
+    with exclusive_file_lock(path):
+        existing = read_run_journal(path)
+        if any(item["run_id"] == run["run_id"] for item in existing):
+            raise ValueError("Duplicate run_id")
+        previous = "0" * 64
+        if path.exists():
+            with path.open(encoding="utf-8") as stream:
+                for line in stream:
+                    previous = json.loads(line)["record_sha256"]
+        payload = _canonical(run)
+        digest = sha256((previous + payload).encode()).hexdigest()
+        record = {
+            "previous_sha256": previous,
+            "payload": payload,
+            "record_sha256": digest,
+        }
+        with path.open("a", encoding="utf-8") as stream:
+            stream.write(_canonical(record) + "\n")
     return digest

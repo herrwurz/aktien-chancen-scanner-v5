@@ -1,6 +1,6 @@
 # Stock monitor ↔ ChatGPT: integration contract and rollout
 
-**Scope:** stock monitor only. The HEBELTRADER detective is owned by Cursor and MUST NOT be modified or exposed through this integration. No changes to crypto services without a separate review.
+**Scope:** stock monitor only. The HEBELTRADER detective is owned by Cursor and MUST NOT be modified or exposed through this integration. No changes to crypto services without a separate review. Shared hash/cache helpers live in `scanner.util.hashio` so SEC/GLEIF adapters do not import `scanner.hebeltrader`.
 
 ## Architecture decision
 1. GitHub repo is the **source code**; Hetzner worker + persistent journal/database is the **runtime source of truth**.

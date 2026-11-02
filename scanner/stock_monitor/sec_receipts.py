@@ -31,8 +31,8 @@ def receipts_from_submissions(record: dict, *, cik: int, symbol: str) -> list[Ev
     retrieved = datetime.fromisoformat(record["retrieved_at"])
     if retrieved.tzinfo is None or retrieved.utcoffset() is None:
         raise ValueError("Retrieval timestamp must include timezone")
-    # The SEC archive snapshot hash is a provenance receipt for the submissions
-    # response, not a hash of each filing's full text.
+    # Provenance hash of the submissions JSON response only — never a digest of
+    # individual filing bodies. Callers must not treat it as content verification.
     raw_hash = record.get("raw_sha256")
     if (
         not isinstance(raw_hash, str)

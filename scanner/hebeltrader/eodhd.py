@@ -1,6 +1,5 @@
 """Optional, fixed-host EODHD collector. Never enabled by imports or a scheduler."""
 
-import hashlib
 import json
 import logging
 import os
@@ -11,6 +10,8 @@ from decimal import Decimal
 from pathlib import Path
 
 import httpx
+
+from scanner.util.hashio import canonical, exclusive, sha
 
 from .market_snapshot import _credentials
 
@@ -33,34 +34,6 @@ def _safe_path(root, relative):
     if path.is_symlink() or not path.resolve().is_relative_to(root):
         raise ValueError("cache path escapes root")
     return path
-
-
-def canonical(value):
-    return (
-        json.dumps(
-            value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
-        )
-        + "\n"
-    ).encode()
-
-
-def sha(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def exclusive(path, raw):
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    if path.is_symlink():
-        raise ValueError("unsafe cache path")
-    try:
-        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    except FileExistsError:
-        if path.read_bytes() != raw:
-            raise ValueError("immutable cache conflict") from None
-    else:
-        with os.fdopen(fd, "wb") as stream:
-            stream.write(raw)
 
 
 def read_record(root, manifest_sha256):

@@ -47,7 +47,10 @@ def run_sec_monitor(
                 continue
             # Live polling must not use a cutoff taken before the HTTP response.
             # Historical replay keeps the caller-supplied point-in-time cutoff.
+            # Live journals share the 72h triage window so stale caches cannot
+            # re-append the entire SEC submissions history every pass.
             target_cutoff = max(observed_at, datetime.now(UTC)) if live_mode else observed_at
+            lookback_hours = 72 if live_mode else None
             result = replay_sec_snapshot(
                 record=record,
                 cik=target.cik,
@@ -56,6 +59,7 @@ def run_sec_monitor(
                 journal_path=journal_path,
                 run_id=f"{run_id}:sec:{target.cik}",
                 code_version=code_version,
+                lookback_hours=lookback_hours,
             )
             recent_events = recent_filing_events(record, symbol=target.symbol, cutoff=target_cutoff)
             outcomes.append(
@@ -75,16 +79,20 @@ def run_sec_monitor(
                     "error_type": type(exc).__name__,
                 }
             )
+    successful = sum(item["status"] == "research_only" for item in outcomes)
+    if not outcomes:
+        status = "unavailable"
+    elif successful == len(outcomes):
+        status = "complete"
+    elif successful == 0 and all(item["status"] == "unavailable" for item in outcomes):
+        status = "unavailable"
+    else:
+        status = "partial"
     return {
         "run_id": run_id,
         "cutoff": observed_at.isoformat(),
-        "status": (
-            "complete"
-            if len(outcomes) == len(targets)
-            and all(item["status"] == "research_only" for item in outcomes)
-            else "partial"
-        ),
+        "status": status,
         "outcomes": outcomes,
         "requested_targets": len(targets),
-        "successful_targets": sum(item["status"] == "research_only" for item in outcomes),
+        "successful_targets": successful,
     }

@@ -18,7 +18,7 @@ def test_network_requires_explicit_budget(tmp_path):
         )
 
 
-def test_offline_missing_cache_is_partial(tmp_path):
+def test_offline_missing_cache_is_unavailable(tmp_path):
     from scanner.stock_monitor.worker import SecTarget
 
     result = run_with_sec_client(
@@ -28,13 +28,14 @@ def test_offline_missing_cache_is_partial(tmp_path):
         run_id="test",
         code_version="test",
     )
-    assert result["status"] == "partial"
+    assert result["status"] == "unavailable"
     assert result["outcomes"][0]["status"] == "unavailable"
     assert result["successful_targets"] == 0
 
 
 def test_live_cutoff_is_after_fetch_but_historical_cutoff_is_strict(tmp_path):
     from datetime import UTC, datetime, timedelta
+    from zoneinfo import ZoneInfo
 
     from scanner.stock_monitor import worker
     from scanner.stock_monitor.sec_receipts import record_sha256
@@ -42,11 +43,18 @@ def test_live_cutoff_is_after_fetch_but_historical_cutoff_is_strict(tmp_path):
 
     initial = datetime.now(UTC) - timedelta(seconds=30)
     retrieved = datetime.now(UTC) - timedelta(seconds=2)
+    # Naive Eastern acceptance inside the live 72h window, but after the
+    # historical cutoff so only live_mode journals it.
+    accepted_ny = (
+        (datetime.now(UTC) - timedelta(hours=1))
+        .astimezone(ZoneInfo("America/New_York"))
+        .replace(tzinfo=None)
+    )
     payload = {
         "filings": {
             "recent": {
                 "accessionNumber": ["0001234567-26-000001"],
-                "acceptanceDateTime": ["2026-10-27T16:15:00"],
+                "acceptanceDateTime": [accepted_ny.isoformat(timespec="seconds")],
                 "form": ["8-K"],
             }
         }
@@ -72,3 +80,4 @@ def test_live_cutoff_is_after_fetch_but_historical_cutoff_is_strict(tmp_path):
     assert historic["outcomes"][0]["excluded_after_cutoff"] == 1
     assert live["outcomes"][0]["event_count"] == 1
     assert live["outcomes"][0]["excluded_after_cutoff"] == 0
+    assert live["outcomes"][0]["excluded_outside_lookback"] == 0
