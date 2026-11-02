@@ -1,16 +1,27 @@
 {
-  "schema_version": 1,
-  "kind": "hebeltrader-call-selection-model-v1",
-  "recorded_at": "2026-11-02T16:05:00+01:00",
-  "purpose": "Observed HEBELTRADER featured-call selection criteria for a future Call-proposal module. Derived from publisher PDFs (esp. 199/26, 203/26), public Leseprobe 04/26, pdf-resolution-index WKNs, and onvista product terms. Not a trading recommendation.",
+  "schema_version": 2,
+  "kind": "hebeltrader-call-selection-model-v2",
+  "recorded_at": "2026-11-02T16:50:00+01:00",
+  "purpose": "Empirical HEBELTRADER featured-call selection criteria for a future Call-proposal module. Built from the operator Drive PDF corpus (gitignored locally). Not a trading recommendation.",
+  "corpus": {
+    "source": "Google Drive folder 1Oy_RQn5Md3gGmxcDjl83jF0lGHrkb_rB downloaded 2026-11-02",
+    "pdfs_on_disk": 144,
+    "unique_issue_wkn_calls": 134,
+    "local_dirs": [
+      "data/hebeltrader/publisher-pdfs/ (gitignored)",
+      "data/hebeltrader/publisher-pdf-extracts/ (gitignored)"
+    ],
+    "artifact_summary": "/opt/cursor/artifacts/call-selection-corpus.json"
+  },
   "policy": [
     "Stock identification and call selection remain separate stages.",
     "Do not use featured WKNs as scan inputs for anonymous teasers.",
-    "Product terms at recommendation time come from the publisher PDF; live quote screens drift.",
-    "Issuer preference is opportunistic liquidity/terms, not a single house bank."
+    "Product terms at recommendation time come from the publisher PDF Stand Uhr.",
+    "Issuer preference is opportunistic liquidity/terms, not a single house bank.",
+    "Never commit PDF bytes or full extract text."
   ],
   "publisher_stated_process": {
-    "source": "Hebeltrader_2026-04_LESEPROBE.pdf page on Anlagegrundsätze / So handeln Sie",
+    "source": "Hebeltrader_2026-04_LESEPROBE.pdf Anlagegrundsätze / So handeln Sie",
     "steps": [
       "Daily screening of a stock universe",
       "Keep names with solid chart uptrend, supportive fundamentals, and stock-level CRV > 2",
@@ -18,138 +29,125 @@
       "Derivative targets/stops derived from MA50/MA200 plus historical volatility"
     ]
   },
+  "empirical_stats": {
+    "omega": {
+      "n": 124,
+      "median": 10.1,
+      "p25": 7.9,
+      "p75": 12.1,
+      "mean": 10.09,
+      "min": 3.7,
+      "max": 18.2,
+      "share_7_to_14": 0.75,
+      "share_8_to_15": 0.677,
+      "share_10_to_13": 0.363
+    },
+    "labeled_months": {
+      "n": 104,
+      "median": 5,
+      "hist": {"3": 7, "4": 27, "5": 36, "6": 14, "7": 12, "8": 4, "9": 3, "10": 1},
+      "share_4_to_6": 0.74
+    },
+    "crv": {
+      "n": 69,
+      "median": 14.8,
+      "p25": 12.3,
+      "p75": 20.1,
+      "mean": 16.44,
+      "min": 4.6,
+      "max": 45.6,
+      "share_ge_10": 0.884,
+      "share_ge_12": 0.783,
+      "share_ge_15": 0.493
+    },
+    "stop_risk": {
+      "n": 38,
+      "median": 0.64,
+      "p25": 0.6,
+      "p75": 0.7,
+      "mean": 0.645,
+      "min": 0.45,
+      "max": 0.72
+    },
+    "warrant_px_eur": {
+      "n": 134,
+      "median": 0.26,
+      "p25": 0.16,
+      "p75": 0.48,
+      "min": 0.034,
+      "max": 5.53,
+      "share_le_0_40": 0.687,
+      "share_0_10_to_0_50": 0.672
+    },
+    "maturity_style": "standard mid-month quarterly expiries; top dates include 2025-12-19, 2026-09-18, 2026-03-20, 2026-06-18/19, 2026-12-18, 2027-03-19, 2027-01-15",
+    "issuers": [
+      {"issuer": "Morgan Stanley", "count": 33},
+      {"issuer": "J.P. Morgan", "count": 21},
+      {"issuer": "Société Générale", "count": 18},
+      {"issuer": "HSBC", "count": 16},
+      {"issuer": "UBS", "count": 11},
+      {"issuer": "Vontobel", "count": 10},
+      {"issuer": "DZ BANK", "count": 8},
+      {"issuer": "BNP Paribas", "count": 8},
+      {"issuer": "Goldman Sachs", "count": 5},
+      {"issuer": "UniCredit", "count": 4}
+    ]
+  },
   "observed_product_template": {
-    "instrument": "classic Call Optionsschein (not Knock-Out/Turbo as primary pick)",
-    "labeled_tenor": "~5 months remaining at Stand Uhr",
-    "maturity_style": "standard mid-month quarterly expiries (observed: 18.12., 15.01., 17./19.03.)",
-    "omega_hebel_sweet_spot": {"typical_min": 10.0, "typical_max": 13.0, "observed_broader": [6.0, 20.0]},
-    "strike_style": "moderately out-of-the-money",
-    "otm_pct_at_feature": {"pdf_sample": [14.6, 15.2, 33.2], "working_band_pct": [10, 35]},
-    "conversion_ratio": {"dominant": 0.1, "also_seen": [1.0, 0.01]},
-    "warrant_eur_price_band": {"typical_min": 0.15, "typical_max": 0.35},
-    "advertised_crv": {"typical_min": 12.0, "typical_max": 22.0, "pdf_sample": [12.25, 13.1, 16.95]},
-    "stop_risk_on_warrant": {"typical_min": 0.55, "typical_max": 0.71, "pdf_sample": [0.59, 0.64, 0.66]},
-    "stock_move_to_target_1": {"typical_pct": 17},
+    "instrument": "classic Call Optionsschein",
+    "labeled_tenor": "median 5 months; common band 4–6 months (~74% of labeled cases)",
+    "omega_hebel": "median ~10.1; working band ~7–14 covers ~75%",
+    "strike_style": "moderately OTM Call (exact OTM% needs spot at Stand Uhr; PDF samples ~15–33%)",
+    "conversion_ratio": "often 0.1; also 1.0 / 0.01 for price scaling",
+    "warrant_eur_price": "median 0.26 €; majority ≤ 0.40 €",
+    "advertised_crv": "median ~14.8; ~78% ≥ 12; ~88% ≥ 10",
+    "stop_risk_on_warrant": "median ~64%; typical 60–70%",
     "stock_exclusion_while_prior_call_active_days": 180
   },
-  "issuer_pattern": {
-    "locked_to_one_issuer": false,
-    "inventory_prefix_guess_n_pdfs": 133,
-    "dominant_houses_guess": [
-      {"issuer": "Morgan Stanley", "approx_count": 31},
-      {"issuer": "J.P. Morgan", "approx_count": 16},
-      {"issuer": "HSBC", "approx_count": 16},
-      {"issuer": "Société Générale", "approx_count": 15},
-      {"issuer": "Vontobel", "approx_count": 10},
-      {"issuer": "DZ BANK", "approx_count": 10},
-      {"issuer": "BNP Paribas", "approx_count": 8},
-      {"issuer": "UBS", "approx_count": 10},
-      {"issuer": "UniCredit", "approx_count": 4}
-    ],
-    "verified_sample_issuers": [
-      "Morgan Stanley",
-      "J.P. Morgan",
-      "Vontobel",
-      "UBS",
-      "UniCredit",
-      "HSBC",
-      "DZ BANK",
-      "Société Générale",
-      "BNP Paribas"
-    ],
-    "selection_rule": "Pick the liquid Call that best matches tenor/omega/OTM/CRV; rotate across major warrant issuers."
-  },
-  "anchor_cases_at_feature_time": [
-    {
-      "issue": "199/26",
-      "publication_date": "2026-10-27",
-      "underlying": "Nasdaq, Inc.",
-      "ticker": "NDAQ",
-      "wkn": "JY7FDN",
-      "issuer": "J.P. Morgan",
-      "strike": 120.0,
-      "strike_ccy": "USD",
-      "spot": 104.72,
-      "otm_pct": 14.6,
-      "omega": 10.0,
-      "maturity": "2027-03-19",
-      "labeled_months": 5,
-      "warrant_px_eur": 0.22,
-      "crv": 12.25,
-      "stop_risk": 0.64,
-      "ratio": 0.1,
-      "source": "uploads/Hebeltrader_2026-199_35b4.pdf"
-    },
-    {
-      "issue": "203/26",
-      "publication_date": "2026-11-02",
-      "underlying": "American Electric Power",
-      "ticker": "AEP",
-      "wkn": "MN6D8E",
-      "issuer": "Morgan Stanley",
-      "strike": 150.0,
-      "strike_ccy": "USD",
-      "spot": 130.21,
-      "otm_pct": 15.2,
-      "omega": 12.7,
-      "maturity": "2027-03-19",
-      "labeled_months": 5,
-      "warrant_px_eur": 0.17,
-      "crv": 16.95,
-      "stop_risk": 0.59,
-      "ratio": 0.1,
-      "source": "uploads/Hebeltrader_2026-203_eef3.pdf"
-    },
-    {
-      "issue": "04/26",
-      "publication_date": "2026-01-12",
-      "underlying": "Deere",
-      "ticker": "DE",
-      "wkn": "PL893C",
-      "issuer": "BNP Paribas",
-      "strike": 650.0,
-      "strike_ccy": "USD",
-      "spot": 488.08,
-      "otm_pct": 33.2,
-      "omega": 12.5,
-      "maturity": "2026-06-18",
-      "labeled_months": 5,
-      "warrant_px_eur": 0.29,
-      "crv": 13.1,
-      "stop_risk": 0.66,
-      "ratio": null,
-      "source": "public Leseprobe Hebeltrader_2026-04_LESEPROBE.pdf"
-    },
-    {
-      "issue": "198/26",
-      "publication_date": "2026-10-26",
-      "underlying": "SLB",
-      "ticker": "SLB",
-      "wkn": "VY95PV",
-      "issuer": "Vontobel",
-      "strike": 65.0,
-      "strike_ccy": "USD",
-      "maturity": "2027-03-19",
-      "labeled_months": 5,
-      "ratio": 0.1,
-      "source": "docs/hebeltrader-19826-resolution.md + onvista"
-    }
-  ],
   "proposal_ranking_checklist": [
     "After stock ID is secured, search classic Calls only.",
-    "Prefer ~4–6 months to expiry (publisher label ≈ 5 Monate).",
-    "Prefer Omega ≈ 10–13 at recommendation time.",
-    "Prefer strike ~10–35% OTM vs Stand-Uhr spot.",
+    "Prefer 4–6 months labeled remaining tenor (median publisher pick = 5).",
+    "Prefer Omega roughly 8–13 (median ~10); demote <7 or >15 unless CRV is exceptional.",
+    "Prefer strike moderately OTM vs Stand-Uhr spot.",
     "Prefer conversion ratio 0.1 when available for the underlying.",
-    "Prefer warrant ask roughly 0.15–0.35 EUR.",
-    "Score by publisher-style CRV (Ziel-2 upside / stop risk); target ≥ ~12.",
-    "Require tradeable spread/liquidity; issuer may be any major house.",
+    "Prefer warrant ask roughly 0.10–0.50 EUR (median ~0.26).",
+    "Score by publisher-style CRV; target ≥ ~12 (median featured ~15).",
+    "Expect stop risk on the warrant around 60–70%.",
+    "Require tradeable spread/liquidity; issuer may be any major house (MS/JPM/SG/HSBC/UBS/Vontobel/…).",
     "Exclude underlyings with an active featured call inside the 180-day lookback.",
     "Independently verify ISIN/WKN, issuer terms, AT tradability, and risk before any suggestion."
   ],
+  "anchor_cases_at_feature_time": [
+    {
+      "issue": "199/26",
+      "underlying": "Nasdaq, Inc.",
+      "wkn": "JY7FDN",
+      "issuer": "J.P. Morgan",
+      "strike": 120.0,
+      "omega": 10.0,
+      "maturity": "2027-03-19",
+      "labeled_months": 5,
+      "crv": 12.25,
+      "stop_risk": 0.64,
+      "warrant_px_eur": 0.22
+    },
+    {
+      "issue": "203/26",
+      "underlying": "American Electric Power",
+      "wkn": "MN6D8E",
+      "issuer": "Morgan Stanley",
+      "strike": 150.0,
+      "omega": 12.7,
+      "maturity": "2027-03-19",
+      "labeled_months": 5,
+      "crv": 16.95,
+      "stop_risk": 0.59,
+      "warrant_px_eur": 0.17
+    }
+  ],
   "limits": [
-    "Full publisher-pdf extract corpus is gitignored; only 2 recent upload PDFs plus public Leseprobe have complete feature-time CRV/omega boxes in this run.",
-    "Onvista snapshots after feature date show drifted Omega; use PDF Stand Uhr for calibration.",
-    "WKN-prefix → issuer mapping for the full 133 inventory is heuristic except for the verified sample."
+    "CRV/stop phrases are not extractable from every PDF layout (coverage CRV 69/134, stop 38/134).",
+    "Omega/months/strike coverage is high; OTM% needs paired spot at Stand Uhr for full distribution.",
+    "Issuer mapping uses WKN prefix heuristics validated against onvista samples."
   ]
 }
