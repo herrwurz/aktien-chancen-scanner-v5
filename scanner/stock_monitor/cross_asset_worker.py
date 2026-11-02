@@ -62,7 +62,9 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
             "observed_at": cutoff.isoformat(),
             "ticker_snapshot": discovery.get("ticker_snapshot", {}),
         }
-        snapshot_path.write_text(json.dumps(snapshot_payload), encoding="utf-8")
+        tmp_path = snapshot_path.with_suffix(".json.tmp")
+        tmp_path.write_text(json.dumps(snapshot_payload), encoding="utf-8")
+        tmp_path.replace(snapshot_path)
     universe_count = len(symbols)
     if discovery:
         symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff)

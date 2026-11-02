@@ -32,8 +32,11 @@ def test_replay_restricts_cutoff_and_never_creates_entry(tmp_path):
         code_version="test",
     )
     assert result["event_count"] == 1
-    assert result["excluded_after_cutoff"] == 1
+    # Second acceptance is after retrieval → chronology reject, not cutoff leak.
+    assert result["excluded_after_cutoff"] == 0
+    assert result["excluded_chronology"] == 1
     assert result["excluded_outside_lookback"] == 0
+    assert result["hash_scope"] == "submissions_response_not_filing_body"
     exported = export_runs(path)
     assert exported["runs"][0]["decisions"][0]["status"] == "event_detected"
     assert exported["runs"][0]["decisions"][0]["quote_kind"] == "unavailable"

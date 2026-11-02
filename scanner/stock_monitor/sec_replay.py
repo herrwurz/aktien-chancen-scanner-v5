@@ -34,6 +34,7 @@ def replay_sec_snapshot(
     receipts = receipts_from_submissions(record, cik=cik, symbol=symbol)
     eligible = []
     future = 0
+    chronology = 0
     outside_lookback = 0
     window_start = (
         as_utc(cutoff) - timedelta(hours=lookback_hours) if lookback_hours is not None else None
@@ -42,10 +43,14 @@ def replay_sec_snapshot(
         try:
             evidence.validate(cutoff)
         except ValueError as exc:
-            if str(exc) != "Evidence unavailable at cutoff":
-                raise
-            future += 1
-            continue
+            message = str(exc)
+            if message == "Evidence unavailable at cutoff":
+                future += 1
+                continue
+            if message.startswith("Evidence chronology"):
+                chronology += 1
+                continue
+            raise
         if window_start is not None and as_utc(evidence.published_at) < window_start:
             outside_lookback += 1
             continue
@@ -62,7 +67,8 @@ def replay_sec_snapshot(
     coverage = (
         f"SEC cached snapshot only; symbol={symbol}; "
         f"visible={len(eligible)}; after_cutoff={future}; "
-        f"outside_lookback={outside_lookback}; no executable quotes"
+        f"chronology_rejected={chronology}; outside_lookback={outside_lookback}; "
+        f"hash_scope=submissions_response_not_filing_body; no executable quotes"
     )
     digest = append_run(
         journal_path,
@@ -78,7 +84,9 @@ def replay_sec_snapshot(
         "record_sha256": digest,
         "event_count": len(eligible),
         "excluded_after_cutoff": future,
+        "excluded_chronology": chronology,
         "excluded_outside_lookback": outside_lookback,
         "lookback_hours": lookback_hours,
+        "hash_scope": "submissions_response_not_filing_body",
         "status": "research_only",
     }

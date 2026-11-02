@@ -7,8 +7,8 @@ from pathlib import Path
 
 import httpx
 
-from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 from scanner.research import AssetIdentity
+from scanner.util.hashio import canonical, exclusive, sha
 
 BASE = "https://api.gleif.org/api/v1/lei-records"
 TERMS = "https://www.gleif.org/en/meta/lei-data-terms-of-use"
