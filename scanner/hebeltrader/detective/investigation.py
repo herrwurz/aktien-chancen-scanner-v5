@@ -269,6 +269,14 @@ class InvestigationRequest(BaseModel):
         pattern="^(unclassified|development_regression|retrospective|prospective_blind)$",
     )
     previously_used_for_development: bool | None = None
+    competition_mode: str = Field(
+        default="official",
+        pattern="^(official|out_of_competition)$",
+        description=(
+            "official = listed in Meine Fälle / quality; "
+            "out_of_competition = analyze and store, but exclude from listing metrics"
+        ),
+    )
     publication_at: datetime | None = None
     publication_date: date | None = None
     advertised_return: str | None = Field(default=None, max_length=100)
@@ -2187,10 +2195,12 @@ class Investigator:
                     "keine unabhängige Primärbestätigung."
                 )
         from .product_research import research_calls
+        from .prose_briefing import prose_briefing
 
         report["derivative_candidate"] = research_calls(
             report, self.web, self.product_issuers, text
         )
+        report["prose"] = prose_briefing(report)
         exclusive(folder / "sources.json", canonical(fetched))
         from .history import freeze_analysis
 

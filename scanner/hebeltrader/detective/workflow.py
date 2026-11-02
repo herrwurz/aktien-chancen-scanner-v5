@@ -3,39 +3,21 @@
 from pathlib import Path
 
 from .case_journal import CaseJournal, input_keys
+from .prose_briefing import prose_briefing
 
 
 def compact_report(report):
-    lines = [
-        f"# Teaser: {report.get('headline') or 'Ohne Überschrift'}",
+    """Prefer chat-style prose; keep a short machine appendix for artifacts."""
+    prose = report.get("prose") or prose_briefing(report)
+    appendix = [
         "",
-        f"Fall: {report['case_id']}",
-        f"Status: {report['decision']['label']}",
+        "---",
+        f"Fall: {report.get('case_id')}",
+        f"Status: {(report.get('decision') or {}).get('label')}",
         f"Geprüfte Gegenkandidaten: {report.get('countercandidate_count', 0)}",
         "",
-        "## Top-Kandidaten",
-        "",
     ]
-    for rank, row in enumerate(report.get("candidates", [])[:3], 1):
-        identity = row.get("identity", {})
-        lines += [
-            f"{rank}. {identity.get('name')} "
-            f"({identity.get('ticker') or 'Ticker unbestätigt'}) "
-            f"– Evidenzscore {row.get('evidence_score')}",
-            f"   Begründung: {row.get('ranking_reason', 'Evidenzmatrix prüfen')}",
-            f"   Gegenargumente: {'; '.join(row.get('counterarguments', []))}",
-            "   Fehlende Hinweise: "
-            + (", ".join(row.get("unknown_clues", [])) or "keine ausgewiesen"),
-        ]
-        for source in row.get("sources", []):
-            lines.append(
-                f"   Quelle: {source.get('url')} (publiziert {source.get('published_at')}; "
-                f"verfügbar {source.get('source_available_at')}; "
-                f"abgerufen {source.get('retrieved_at')})"
-            )
-    lines += ["", "## Offene Belege", ""] + [f"- {item}" for item in report.get("limitations", [])]
-    lines += ["", "Evidenzscore ist keine Trefferwahrscheinlichkeit. Keine Kaufempfehlung.", ""]
-    return "\n".join(lines)
+    return prose.rstrip() + "\n" + "\n".join(appendix)
 
 
 def run_case(engine, request, *, documents=None, historical_blind=False, register_path=None):
@@ -63,8 +45,11 @@ def run_case(engine, request, *, documents=None, historical_blind=False, registe
     else:
         canonical_id = case_id
     journal.record_analysis(canonical_id, Path(report["artifact_directory"]) / "ranking.json")
+    case_state = journal.case(canonical_id)
     report["journal_case_id"] = canonical_id
-    report["case_status"] = journal.case(canonical_id)["status"]
+    report["case_status"] = case_state["status"]
+    report["competition_mode"] = case_state.get("competition_mode") or "official"
+    report["prose"] = prose_briefing(report)
     report["journal_integrity"] = journal.verify()
     journal.export_register(engine.root / "case-register.md")
     if register_path:
