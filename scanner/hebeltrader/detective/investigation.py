@@ -507,6 +507,71 @@ def _teaser_claims_golden_cross(text):
 
 _apply_golden_cross_matrix = _apply_chart_signal_matrix
 
+_US_ISSUER_CLAIM = re.compile(
+    r"US[\s-]*Versorger|US[\s-]*Utility|US[\s-]*Stromversorger|"
+    r"amerikanische[rn]?\s+Versorger|amerikanischer?\s+Utility",
+    re.I,
+)
+_EU_VENUE = re.compile(r"\.(MC|PA|XETRA|DE|L|AS|BR|MI|ST|HE|CO|OL|LS|WA)$", re.I)
+_KNOWN_NON_US_ISSUER = re.compile(
+    r"\b(iberdrola|schneider electric|siemens energy|enel|edf|engie|"
+    r"national grid|rwe|e\.?on|ørsted|orsted|vestas)\b",
+    re.I,
+)
+
+
+def _teaser_requires_us_issuer(text: str) -> bool:
+    return bool(_US_ISSUER_CLAIM.search(text or ""))
+
+
+def _issuer_looks_non_us(identity: dict) -> bool:
+    country = (identity.get("country") or "").strip().upper()
+    if country and country not in {
+        "US",
+        "USA",
+        "UNITED STATES",
+        "UNITED STATES OF AMERICA",
+    }:
+        return True
+    ticker = identity.get("ticker") or ""
+    if _EU_VENUE.search(ticker):
+        return True
+    return bool(_KNOWN_NON_US_ISSUER.search(identity.get("name") or ""))
+
+
+def _apply_us_issuer_hard_filter(ranked, text):
+    """Hard-demote non-US names when the teaser explicitly requires a US utility."""
+    if not _teaser_requires_us_issuer(text):
+        return
+    for row in ranked:
+        data = row.get("identity")
+        data = data if isinstance(data, dict) else (data.model_dump() if data else {})
+        if not _issuer_looks_non_us(data):
+            continue
+        hard = list(row.get("hard_contradictions") or [])
+        if "teaser_requires_us_issuer" not in hard:
+            hard.append("teaser_requires_us_issuer")
+            row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
+        row["hard_contradictions"] = hard
+        counters = list(row.get("counterarguments") or [])
+        note = "Teaser verlangt US-Versorger; Kandidat wirkt nicht US-basiert."
+        if note not in counters:
+            counters.append(note)
+        row["counterarguments"] = counters
+        for cell in row.get("evidence_matrix") or []:
+            quote = cell.get("quote") or ""
+            if cell.get("category") == "countries" and re.search(r"\bUSA\b", quote, re.I):
+                cell["status"] = "contradicted"
+                cell["reason"] = "issuer_not_us_despite_teaser_usa_claim"
+            elif _US_ISSUER_CLAIM.search(quote):
+                cell["status"] = "contradicted"
+                cell["reason"] = "issuer_not_us_despite_teaser_us_utility_claim"
+        row["unknown_clues"] = [
+            cell["clue_id"]
+            for cell in row.get("evidence_matrix") or []
+            if cell.get("status") == "unknown"
+        ]
+
 
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
     # Chart buy-signals (GD200, crosses, breakout, MACD, RSI, …) use market data, not web text.
@@ -533,6 +598,7 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
         if result["status"] == "ok":
             row["evidence_score"] += match_score(result, clues)
     _apply_chart_signal_matrix(ranked[:top], text)
+    _apply_us_issuer_hard_filter(ranked, text)
     ranked.sort(
         key=lambda row: (bool(row["hard_contradictions"]), -row["evidence_score"], row["asset_id"])
     )
