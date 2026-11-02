@@ -86,6 +86,14 @@ def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
     return {"metric": metric, "utility": utility}
 
 
+def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_recall=False):
+    """Fingerprints + utility clue confirms + refresh specific clue ids."""
+    summary = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
+    _apply_utility_clue_matrix(ranked, text)
+    _refresh_confirmed_specific_clues(ranked, clues, live_publisher_recall=live_publisher_recall)
+    return summary
+
+
 def apply_tie_labels(ranked):
     tied = bool(len(ranked) > 1 and ranked[0]["evidence_score"] == ranked[1]["evidence_score"])
     if tied:
@@ -188,10 +196,14 @@ def source_class(document):
     }.get(document.get("source_kind"), "D")
 
 
-def finding_timing(document, cutoff, *, current_hypothesis):
-    assessment = assess_document(document, cutoff)
+def finding_timing(document, cutoff, *, current_hypothesis, live_publisher_recall=False):
+    assessment = assess_document(document, cutoff, live_publisher_recall=live_publisher_recall)
     if assessment["eligibility"] == "eligible":
-        return {"temporal_eligibility": "eligible", "usable_for_ranking": True}
+        return {
+            "temporal_eligibility": "eligible",
+            "usable_for_ranking": True,
+            "availability_basis": assessment.get("availability_basis"),
+        }
     if (
         current_hypothesis
         and assessment["eligibility"] == "uncertain"
@@ -206,6 +218,7 @@ def finding_timing(document, cutoff, *, current_hypothesis):
     return {
         "temporal_eligibility": assessment["eligibility"],
         "usable_for_ranking": False,
+        "availability_basis": assessment.get("availability_basis"),
     }
 
 
@@ -345,7 +358,12 @@ def canonical_company(name, ticker=None):
 
 _RELATIONS = {
     "acquisition": r"übernah\w*|zukäuf\w*|acquir\w*|acquisition|merger|erwarb",
-    "investment": r"invest\w*|beteilig\w*|minority stake",
+    # Include power-deal / offtake language used in English IR for German
+    # Investition/Abnahmevertrag/Rechenzentrum teasers.
+    "investment": (
+        r"invest\w*|beteilig\w*|minority stake|capex|capital\s+plan|"
+        r"(?:power\s+)?deal|offtake|agreement|contract|\bppas?\b"
+    ),
     "partnership": r"partner\w*|kooper\w*|collaborat\w*",
 }
 
@@ -864,6 +882,82 @@ def _mark_chart_comparison_evidence(ranked, text):
             row["counterarguments"].append(note)
 
 
+_UTILITY_CLUE_HINT = re.compile(
+    r"rechenzentr|abnahmevertr|data\s*cent|offtake|power\s+purchase|investitionsoffensive",
+    re.I,
+)
+
+
+def _apply_utility_clue_matrix(ranked, text):
+    """Confirm utility offtake/RZ fact cells from fingerprint clusters (not auto-ID)."""
+    from .utility_fingerprint import teaser_wants_utility_fingerprint
+
+    if not teaser_wants_utility_fingerprint(text):
+        return
+    for row in ranked:
+        if row.get("hard_contradictions"):
+            continue
+        fp = row.get("utility_fingerprint") or {}
+        if not (fp.get("has_offtake") and fp.get("has_data_center_link")):
+            continue
+        for cell in row.get("evidence_matrix") or []:
+            if cell.get("status") == "confirmed":
+                continue
+            quote = cell.get("quote") or ""
+            category = cell.get("category")
+            if category not in {"fact_claims", "semantic_fact"}:
+                continue
+            if not _UTILITY_CLUE_HINT.search(quote):
+                continue
+            cell["status"] = "confirmed"
+            cell["reason"] = "utility_offtake_data_center_fingerprint"
+            cell["evidence_cluster_ids"] = ["fingerprint:utility_offtake"]
+        row["unknown_clues"] = [
+            cell["clue_id"]
+            for cell in row.get("evidence_matrix") or []
+            if cell.get("status") == "unknown"
+        ]
+
+
+def _refresh_confirmed_specific_clues(ranked, clues, *, live_publisher_recall=False):
+    """Recompute specific clue ids after chart/utility matrix updates."""
+    del live_publisher_recall  # reserved for future gating; clusters already encode provenance
+    by_clue = {c.clue_id: c for c in clues}
+    for row in ranked:
+        specific = []
+        for cell in row.get("evidence_matrix") or []:
+            if cell.get("status") != "confirmed":
+                continue
+            clue = by_clue.get(cell.get("clue_id"))
+            if not clue or clue.category not in {"fact_claims", "financial_metric"}:
+                continue
+            clusters = cell.get("evidence_cluster_ids") or []
+            if not clusters:
+                continue
+            # Pure chart clusters belong to semantic_fact cells; ignore if they appear here.
+            if clusters and all(str(cid).startswith("chart:") for cid in clusters):
+                continue
+            specific.append(cell["clue_id"])
+        row["confirmed_specific_clues"] = list(dict.fromkeys(specific))
+
+
+def _leader_evidence_ready(row, clues):
+    """True when specific fact clues clear the bar, optionally with chart+fingerprint."""
+    if not row:
+        return False
+    specific_n = len(row.get("confirmed_specific_clues") or [])
+    if specific_n >= 2:
+        return True
+    if specific_n < 1:
+        return False
+    chart_ok = any(
+        cell.get("status") == "confirmed" and str(cell.get("reason") or "").startswith("eod_")
+        for cell in row.get("evidence_matrix") or []
+    )
+    fp = row.get("utility_fingerprint") or {}
+    return bool(chart_ok and fp.get("components", 0) >= 2)
+
+
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
     # Chart buy-signals (GD200, crosses, breakout, MACD, RSI, …) use market data, not web text.
     clues = teaser_chart_clues(text)
@@ -948,13 +1042,18 @@ def _fact_claim_subject(company, context, pattern, term):
     )
 
 
-def _evidence(document, clues, cutoff, *, allow_undated=False):
+def _evidence(document, clues, cutoff, *, allow_undated=False, live_publisher_recall=False):
     undated = allow_undated and not document.get("published_at") and document.get("retrieved_at")
     if undated:
         # Live hypothesis mode: undated issuer pages are provisional evidence dated at retrieval.
         document = dict(document, published_at=document["retrieved_at"])
-    timing = assess_document(document, cutoff)
-    text = _match_text(document.get("text", ""))
+    timing = assess_document(document, cutoff, live_publisher_recall=live_publisher_recall)
+    # Titles often carry the only usable clue surface when the body fetch is thin/blocked.
+    text = _match_text(
+        "\n".join(
+            part for part in (document.get("title") or "", document.get("text") or "") if part
+        )
+    )
     facts = {
         "origin_id": document["url"],
         "fact_claims": [],
@@ -1060,18 +1159,20 @@ def _evidence(document, clues, cutoff, *, allow_undated=False):
                         re.I,
                     )
                 )
-                owned = (
+                competitor = bool(re.search(r"\b(?:competitor|konkurrent)\b", context, re.I))
+                hearsay_link = bool(
                     subject
-                    and not re.search(
-                        r"\b(?:competitor|konkurrent|according|says|said)\b",
-                        subject.group("link"),
-                        re.I,
-                    )
-                ) or (
-                    sec_headline
-                    and not re.search(
-                        r"\b(?:competitor|konkurrent|according|says|said)\b", context, re.I
-                    )
+                    and re.search(r"\b(?:according|says|said)\b", subject.group("link"), re.I)
+                )
+                # Headline form: "Data Center Power Deal Will Impact {Company}" — issuer
+                # sits after the deal term; document.company_name already binds the page.
+                issuer_in_context = bool(
+                    company
+                    and re.search(r"(?<!\w)" + re.escape(company) + r"(?!\w)", context, re.I)
+                    and re.search(r"\b(?:" + pattern + r")\b", context, re.I)
+                )
+                owned = (not competitor) and (
+                    (subject and not hearsay_link) or sec_headline or issuer_in_context
                 )
                 if not owned:
                     continue
@@ -1329,6 +1430,9 @@ class Investigator:
                 research(query)
 
         cutoff = request.publication_at or retrieved
+        # Live web recall after teaser publication_at: dated publisher timestamps may
+        # provisionally unlock Stage-B. Offline packets / historical_blind stay strict.
+        live_publisher_recall = bool(not offline and not historical_blind)
 
         def compare():
             nonlocal cutoff
@@ -1378,7 +1482,13 @@ class Investigator:
                     {"name": name, "ticker": doc.get("ticker"), "records": [], "documents": []},
                 )
                 group["documents"].append(doc)
-                record = _evidence(doc, clues, cutoff, allow_undated=request.publication_at is None)
+                record = _evidence(
+                    doc,
+                    clues,
+                    cutoff,
+                    allow_undated=request.publication_at is None,
+                    live_publisher_recall=live_publisher_recall,
+                )
                 if record:
                     group["records"].append(record)
             identities = {
@@ -1441,6 +1551,7 @@ class Investigator:
                                     doc,
                                     cutoff,
                                     current_hypothesis=request.publication_at is None,
+                                    live_publisher_recall=live_publisher_recall,
                                 )
                                 cited.append(
                                     dict(
@@ -1472,7 +1583,12 @@ class Investigator:
                     for cell in row.evidence_matrix
                     if cell.status == "confirmed"
                     and by_clue[cell.clue_id].category in {"fact_claims", "financial_metric"}
-                    and bool(primary_ids.intersection(cell.evidence_cluster_ids))
+                    and (
+                        bool(primary_ids.intersection(cell.evidence_cluster_ids))
+                        # Live recall: dated news clusters may confirm fact_claims without
+                        # being issuer/SEC primary; still require a non-empty cluster id.
+                        or (live_publisher_recall and bool(cell.evidence_cluster_ids))
+                    )
                 ]
                 score = sum(50 if by_clue[c].category == "fact_claims" else 35 for c in specific)
                 score += min(10, row.evidence_score // 10)
@@ -1542,7 +1658,13 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
-            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
+            metric_fingerprints = _apply_post_chart_evidence(
+                ranked,
+                fetched,
+                clues,
+                text,
+                live_publisher_recall=live_publisher_recall,
+            )
         set_phase("peers")
         peer_comparison = {
             "status": "not_performed_offline" if offline else "not_performed_no_candidates",
@@ -1570,7 +1692,13 @@ class Investigator:
                     lookup=self.earnings_lookup,
                     ath_bars_fetcher=self.ath_bars_fetcher,
                 )
-                metric_fingerprints = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
+                metric_fingerprints = _apply_post_chart_evidence(
+                    ranked,
+                    fetched,
+                    clues,
+                    text,
+                    live_publisher_recall=live_publisher_recall,
+                )
             peer_comparison.update(
                 status="searched_with_source_gaps" if len(errors) > previous_errors else "searched",
                 queries=peer_queries,
@@ -1631,7 +1759,13 @@ class Investigator:
                 lookup=self.earnings_lookup,
                 ath_bars_fetcher=self.ath_bars_fetcher,
             )
-            metric_fingerprints = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
+            metric_fingerprints = _apply_post_chart_evidence(
+                ranked,
+                fetched,
+                clues,
+                text,
+                live_publisher_recall=live_publisher_recall,
+            )
             falsification["earnings_pit"] = earnings_pit
             falsification["metric_fingerprints"] = metric_fingerprints
         reasoning_review = {
@@ -1667,7 +1801,7 @@ class Investigator:
             limits.append("active_falsification_not_performed")
         if errors:
             limits.append("research_source_gaps")
-        if not ranked or len(ranked[0]["confirmed_specific_clues"]) < 2:
+        if not ranked or not _leader_evidence_ready(ranked[0] if ranked else None, clues):
             limits.append("insufficient_specific_primary_evidence")
         if ranked and not ranked[0]["identity"].get("ticker"):
             limits.append("listed_underlying_identity_unverified")
@@ -1691,7 +1825,7 @@ class Investigator:
         )
         evidence_bar = bool(
             ranked
-            and len(ranked[0]["confirmed_specific_clues"]) >= 2
+            and _leader_evidence_ready(ranked[0], clues)
             and not ranked[0]["hard_contradictions"]
             and request.publication_at
             and ranked[0]["identity"].get("ticker")
@@ -1794,7 +1928,10 @@ class Investigator:
                 "findings_are_provisional": True,
                 "budget": apis.budget.summary() if apis is not None else None,
             },
-            "source_timing": [assess_document(doc, cutoff) for doc in fetched],
+            "source_timing": [
+                assess_document(doc, cutoff, live_publisher_recall=live_publisher_recall)
+                for doc in fetched
+            ],
             "researched_sources": [
                 {
                     "url": doc.get("url"),
