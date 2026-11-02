@@ -269,6 +269,14 @@ class InvestigationRequest(BaseModel):
         pattern="^(unclassified|development_regression|retrospective|prospective_blind)$",
     )
     previously_used_for_development: bool | None = None
+    competition_mode: str = Field(
+        default="official",
+        pattern="^(official|out_of_competition)$",
+        description=(
+            "official = listed in Meine Fälle / quality; "
+            "out_of_competition = analyze and store, but exclude from listing metrics"
+        ),
+    )
     publication_at: datetime | None = None
     publication_date: date | None = None
     advertised_return: str | None = Field(default=None, max_length=100)

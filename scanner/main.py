@@ -103,6 +103,17 @@ def filtered(statement, values):
 
 class SolutionPdfRequest(BaseModel):
     pdf_base64: str = Field(min_length=1, max_length=28_000_000)
+    case_id: str | None = Field(default=None, min_length=3, max_length=80)
+    persist: bool = False
+
+
+class DatasetPromotionRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=300)
+    source: str = Field(min_length=3, max_length=500)
+    ticker: str | None = Field(default=None, max_length=32)
+    stock_wkn: str | None = Field(default=None, max_length=12)
+    call_wkn: str | None = Field(default=None, pattern=r"^[A-Z0-9]{6}$")
+    notes: str | None = Field(default=None, max_length=2000)
 
 
 def create_app(settings: Settings | None = None, engine=None):
@@ -267,19 +278,45 @@ def create_app(settings: Settings | None = None, engine=None):
         issue = (
             f"{extraction.issue_number}/{extraction.issue_year}" if extraction.issue_number else ""
         )
-        return {
+        extracted = {
             "name": recommendation.get("stock_name"),
             "stock_wkn": recommendation.get("stock_wkn"),
             "call_wkn": recommendation.get("derivative_wkn"),
             "issue": issue,
-            "pdf_sha256": hashlib.sha256(data).hexdigest(),
             "flags": [flag.get("code") for flag in extraction.flags],
         }
+        result = {
+            **extracted,
+            "pdf_sha256": hashlib.sha256(data).hexdigest(),
+            "persisted": False,
+            "solution_pdf": None,
+        }
+        if payload.persist:
+            if not payload.case_id:
+                raise HTTPException(422, "case_id required when persisting solution PDF")
+            try:
+                stored = CaseJournal(settings.detective_public_root / "cases").store_solution_pdf(
+                    payload.case_id, data, extracted=extracted
+                )
+            except ValueError as exc:
+                raise HTTPException(422, str(exc)) from None
+            result["persisted"] = True
+            result["solution_pdf"] = stored
+        return result
 
     @app.get("/api/hebeltrader/cases")
-    def case_list(request: Request, include_archived: bool = False):
+    def case_list(
+        request: Request,
+        include_archived: bool = False,
+        listing: Literal["official", "out_of_competition", "all"] = "official",
+    ):
         case_access(request)
-        return CaseJournal(settings.detective_public_root / "cases").cases(include_archived)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").cases(
+                include_archived, listing=listing
+            )
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
 
     @app.get("/api/hebeltrader/quality")
     def case_quality(request: Request):
@@ -360,6 +397,16 @@ def create_app(settings: Settings | None = None, engine=None):
             raise HTTPException(
                 422, "Resolution requires a valid frozen case and provenance"
             ) from None
+
+    @app.post("/api/hebeltrader/cases/{case_id}/dataset-promotion")
+    def case_dataset_promotion(case_id: str, payload: DatasetPromotionRequest, request: Request):
+        case_access(request)
+        try:
+            return CaseJournal(settings.detective_public_root / "cases").promote_to_dataset(
+                case_id, payload.model_dump(exclude_none=True)
+            )
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
 
     @app.post("/api/hebeltrader/detective/analyze")
     def analyze_hebeltrader_teaser(payload: DetectiveRequest, request: Request):

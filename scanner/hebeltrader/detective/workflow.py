@@ -63,8 +63,10 @@ def run_case(engine, request, *, documents=None, historical_blind=False, registe
     else:
         canonical_id = case_id
     journal.record_analysis(canonical_id, Path(report["artifact_directory"]) / "ranking.json")
+    case_state = journal.case(canonical_id)
     report["journal_case_id"] = canonical_id
-    report["case_status"] = journal.case(canonical_id)["status"]
+    report["case_status"] = case_state["status"]
+    report["competition_mode"] = case_state.get("competition_mode") or "official"
     report["journal_integrity"] = journal.verify()
     journal.export_register(engine.root / "case-register.md")
     if register_path:

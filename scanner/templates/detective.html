@@ -68,6 +68,7 @@
       wird archiviert; bezahlte Inhalte und Zugänge werden nicht umgangen.</p>
     <label for="image">Screenshot oder PDF (Bilder maximal 2 MiB; PDF maximal 20 MiB/40 Seiten)</label>
     <input id="image" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
+    <label class="inline-check"><input type="checkbox" id="out-of-competition"> Außer Konkurrenz (Analyse anzeigen, nicht in Listing/Quality)</label>
     <button>Hinweise analysieren</button>
     <p id="analysis-status" class="analysis-status" aria-live="assertive"></p>
   </form>
@@ -78,6 +79,13 @@
       <button type="button" id="load-cases">Aktualisieren</button></div>
     <label class="inline-check"><input type="checkbox" id="include-archived"> Archivierte Fälle einbeziehen</label>
     <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
+  </section>
+  <section><h2>Außer Konkurrenz</h2>
+    <p class="muted">Analysiert und gespeichert, aber nicht in Meine Fälle, Quality oder Blind-Listing. Nach Reportkauf: PDF speichern, Auflösung eintragen, dann explizit in den Datensatz übernehmen.</p>
+    <div class="case-controls"><label for="ooc-case-select">Fall auswählen
+      <select id="ooc-case-select"><option value="">Fälle laden …</option></select></label>
+      <button type="button" id="load-ooc-cases">Aktualisieren</button></div>
+    <p id="ooc-case-message" aria-live="polite"></p><div id="active-ooc-case"></div>
   </section>
   <section><h2>Prospektive Referenzfälle</h2><ul id="prospective-references"><li>Noch keine freigegebenen Fälle.</li></ul></section>
   {% if request.scope.get("teaser_web") %}
@@ -377,14 +385,18 @@ if(referenceButton){
     finally{referenceButton.disabled=false;}
   });
 }
-let loadedCases=[];
+let loadedCases=[],loadedOocCases=[];
+const allLoadedCases=()=>[...loadedCases,...loadedOocCases];
 const fillResolutionCases=()=>{
   const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
-  loadedCases.filter(row=>!row.resolution).forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}`,row.case_id)));
+  allLoadedCases().filter(row=>!row.resolution).forEach(row=>{
+    const tag=row.competition_mode==='out_of_competition'?' · außer Konkurrenz':'';
+    select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
+  });
   select.value=current;
 };
 const fillResolutionCandidates=()=>{
-  const row=loadedCases.find(item=>item.case_id===document.querySelector('#case-id').value);
+  const row=allLoadedCases().find(item=>item.case_id===document.querySelector('#case-id').value);
   const select=document.querySelector('#resolved-candidate');
   select.replaceChildren(new Option('Anderes Unternehmen (Namen eintragen)',''));
   const report=row?.first_prediction||{};
@@ -443,14 +455,14 @@ const selectCase=caseId=>{
       if(response.ok)await loadCases(true);else await showCaseActionError(response,'Wiederherstellung fehlgeschlagen');
     });actions.append(restore);
   }
-  if(!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
+  if(row.competition_mode!=='out_of_competition'&&!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
     const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
       if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
       else await showCaseActionError(response,'Blindtest-Markierung nicht möglich');
     });actions.append(blind);
   }
-  if(row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
+  if(row.competition_mode!=='out_of_competition'&&row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
     const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';promote.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
       if(response.ok){await loadCases(document.querySelector('#include-archived').checked);await loadProspectiveReferences();}
@@ -459,18 +471,96 @@ const selectCase=caseId=>{
   }
   root.append(actions);
 };
+const authHeaders=()=>{const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;return headers;};
 const loadCases=async(includeArchived=false)=>{
   const message=document.querySelector('#case-message'),select=document.querySelector('#case-select');
   message.textContent='Fälle werden geladen …';
-  const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;
+  const headers=authHeaders();
   try{
-    const response=await fetch(`/api/hebeltrader/cases?include_archived=${includeArchived}`,{headers});
+    const response=await fetch(`/api/hebeltrader/cases?listing=official&include_archived=${includeArchived}`,{headers});
     if(!response.ok)throw new Error('Fälle konnten nicht geladen werden. Anmeldung prüfen.');
     loadedCases=(await response.json()).reverse();select.replaceChildren();
     select.append(new Option(loadedCases.length?'Fall auswählen …':'Keine gespeicherten Fälle',''));
     loadedCases.forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${row.archived?' · archiviert':''}`,row.case_id)));
     message.textContent=loadedCases.length?`${loadedCases.length} gespeicherte Fälle`:'Noch keine gespeicherten Fälle.';
     document.querySelector('#active-case').replaceChildren();fillResolutionCases();
+  }catch(error){message.textContent=error.message;}
+};
+const selectOocCase=caseId=>{
+  const root=document.querySelector('#active-ooc-case');root.replaceChildren();
+  const row=loadedOocCases.find(item=>item.case_id===caseId);if(!row)return;
+  const heading=(row.input||{}).headline||row.case_id;
+  root.append(el('h3',heading));
+  root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status} · außer Konkurrenz`));
+  if(row.solution_pdf)root.append(el('p',`Gespeichertes Lösungs-PDF: ${row.solution_pdf.pdf_sha256?.slice(0,12)}…`));
+  if(row.dataset_promotion)root.append(el('p',`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}`));
+  const report=row.latest_prediction||row.first_prediction;
+  activeResolutionRow=row;
+  const actions=el('div');actions.className='case-actions';
+  const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
+    result.replaceChildren();
+    if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
+    resolutionOriginalSha=report.teaser_sha256||null;renderOverview({...report,journal_case_id:row.case_id,competition_mode:'out_of_competition'});
+    (report.candidates||[]).forEach(renderCandidate);result.prepend(makeResolutionButton(row));
+    result.scrollIntoView({behavior:'smooth',block:'start'});
+  });actions.append(show);
+  actions.append(makeResolutionButton(row));
+  const pdfLabel=el('label','Report-PDF speichern (gekaufter Report)');
+  const pdfInput=el('input');pdfInput.type='file';pdfInput.accept='application/pdf';
+  const pdfStatus=el('p');pdfStatus.id='ooc-pdf-status';pdfStatus.setAttribute('aria-live','polite');
+  pdfInput.addEventListener('change',async event=>{
+    const file=event.target.files[0];if(!file)return;pdfStatus.textContent='PDF wird gespeichert …';
+    try{
+      const response=await fetch('/api/hebeltrader/cases/solution-pdf',{method:'POST',
+        headers:{...authHeaders(),'content-type':'application/json'},
+        body:JSON.stringify({pdf_base64:await asBase64(file),case_id:row.case_id,persist:true})});
+      const data=await response.json();
+      if(!response.ok){pdfStatus.textContent=typeof data.detail==='string'?data.detail:JSON.stringify(data.detail||data);return;}
+      const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v;};
+      set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
+      set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
+      pdfStatus.textContent=data.persisted
+        ?`Gespeichert${data.name?': '+data.name:''}. Bitte Auflösung prüfen und speichern.`
+        :'PDF gelesen, aber nicht persistiert.';
+      await loadOocCases();
+      document.querySelector('#ooc-case-select').value=row.case_id;
+      selectOocCase(row.case_id);
+    }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
+  });
+  actions.append(pdfLabel);actions.append(pdfInput);actions.append(pdfStatus);
+  if(row.solution_pdf&&row.resolution&&!row.dataset_promotion){
+    const promote=el('button','In Datensatz übernehmen');promote.type='button';
+    promote.addEventListener('click',async()=>{
+      const name=prompt('Firmenname für Datensatz:',row.resolution?.name||'');
+      if(!name)return;
+      const ticker=prompt('Ticker (optional):','')||null;
+      const source=row.resolution?.source||'Gekaufter HEBELTRADER-Report';
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/dataset-promotion`,{
+        method:'POST',headers:{...authHeaders(),'content-type':'application/json'},
+        body:JSON.stringify({name,ticker,source,call_wkn:row.resolution?.call_wkn||null,
+          stock_wkn:row.solution_pdf?.extracted?.stock_wkn||null})});
+      if(response.ok){
+        document.querySelector('#ooc-case-message').textContent='Datensatz-Export gespeichert (lokal, nicht auto-commit).';
+        await loadOocCases();document.querySelector('#ooc-case-select').value=row.case_id;selectOocCase(row.case_id);
+      }else{
+        document.querySelector('#ooc-case-message').textContent=await readResponseError(response);
+      }
+    });
+    actions.append(promote);
+  }
+  root.append(actions);
+};
+const loadOocCases=async()=>{
+  const message=document.querySelector('#ooc-case-message'),select=document.querySelector('#ooc-case-select');
+  message.textContent='Außer-Konkurrenz-Fälle werden geladen …';
+  try{
+    const response=await fetch('/api/hebeltrader/cases?listing=out_of_competition',{headers:authHeaders()});
+    if(!response.ok)throw new Error('Außer-Konkurrenz-Fälle konnten nicht geladen werden.');
+    loadedOocCases=(await response.json()).reverse();select.replaceChildren();
+    select.append(new Option(loadedOocCases.length?'Fall auswählen …':'Keine außer Konkurrenz',''));
+    loadedOocCases.forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}`,row.case_id)));
+    message.textContent=loadedOocCases.length?`${loadedOocCases.length} außer Konkurrenz`:'Noch keine außer Konkurrenz.';
+    document.querySelector('#active-ooc-case').replaceChildren();fillResolutionCases();
   }catch(error){message.textContent=error.message;}
 };
 const loadProspectiveReferences=async()=>{
@@ -485,7 +575,10 @@ loadProspectiveReferences();
 document.querySelector('#load-cases').addEventListener('click',()=>loadCases(document.querySelector('#include-archived').checked));
 document.querySelector('#include-archived').addEventListener('change',event=>loadCases(event.target.checked));
 document.querySelector('#case-select').addEventListener('change',event=>selectCase(event.target.value));
+document.querySelector('#load-ooc-cases').addEventListener('click',()=>loadOocCases());
+document.querySelector('#ooc-case-select').addEventListener('change',event=>selectOocCase(event.target.value));
 loadCases(false);
+loadOocCases();
 const setAnalysisStatus=(state,message)=>{
   const status=document.querySelector('#analysis-status');
   status.className=`analysis-status ${state||''}`.trim();status.textContent=message||'';
@@ -504,6 +597,7 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   try{
   const file=document.querySelector('#image').files[0];
   const published=document.querySelector('#published').value;
+  const ooc=document.querySelector('#out-of-competition').checked;
   const body={teaser_text:document.querySelector('#text').value,
     teaser_url:document.querySelector('#url').value||null,
     headline:document.querySelector('#headline').value,
@@ -511,7 +605,8 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
     author:document.querySelector('#author').value,
     issue:document.querySelector('#issue').value,
     advertised_return:document.querySelector('#advertised').value||null,
-    publication_at:published?new Date(published).toISOString():null};
+    publication_at:published?new Date(published).toISOString():null,
+    competition_mode:ooc?'out_of_competition':'official'};
   if(file&&file.type==='application/pdf'){body.pdf_base64=await asBase64(file);
     body.pdf_media_type=file.type}else if(file){body.screenshot_base64=await asBase64(file);
     body.screenshot_media_type=file.type}
@@ -521,14 +616,18 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const response=await fetch('/api/hebeltrader/investigate',{method:'POST',headers,body:JSON.stringify(body)});
   if(!response.ok){const message=await readResponseError(response);result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);return}
   const data=await response.json();
-  activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data};
+  activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
   await loadApiCosts();
+  if(ooc)await loadOocCases(); else await loadCases(document.querySelector('#include-archived').checked);
   result.replaceChildren();
   renderOverview(data);
+  if(ooc)result.prepend(el('p','Außer Konkurrenz – nicht in Meine Fälle / Quality / Blind-Listing.'));
   result.append(el('h2','Kandidaten'));
-  setAnalysisStatus('success','Analyse abgeschlossen. Das Ergebnis steht direkt unter dem Formular.');
+  setAnalysisStatus('success',ooc
+    ?'Außer-Konkurrenz-Analyse abgeschlossen. Ergebnis angezeigt, Listing unverändert.'
+    :'Analyse abgeschlossen. Das Ergebnis steht direkt unter dem Formular.');
   result.scrollIntoView({behavior:'smooth',block:'start'});
-  result.prepend(makeResolutionButton({case_id:data.journal_case_id||data.case_id,latest_prediction:data}));
+  result.prepend(makeResolutionButton({case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode}));
   if(!data.candidates.length){
     result.append(el('p','Keine belastbaren Kandidaten. Siehe Failure-Code und Abdeckung oben.'));
     return;
@@ -573,8 +672,9 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
   const caseId=encodeURIComponent(value('case-id'));
   const headers={'content-type':'application/json','X-Research-Authorization':value('authorization')};
   const post=(path,payload)=>fetch(`/api/hebeltrader/cases/${caseId}/${path}`,{method:'POST',headers,body:JSON.stringify(payload)});
-  const row=loadedCases.find(item=>item.case_id===value('case-id'));
-  const asReference=document.querySelector('#resolved-reference').checked;
+  const row=allLoadedCases().find(item=>item.case_id===value('case-id'));
+  const ooc=row?.competition_mode==='out_of_competition';
+  const asReference=!ooc&&document.querySelector('#resolved-reference').checked;
   const body={name:value('resolved-name'),basis:'user',
     source:value('resolved-source'),error_analysis:value('resolved-error'),
     algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null,
@@ -595,7 +695,8 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
       const r=await post('reference-promotion',{source:value('resolved-source')});
       text+=r.ok?' · als Referenzlösung gespeichert':' · Referenz nicht gespeichert: '+(await r.json()).detail;
     }
-    status.textContent=text;loadCases();
+    if(ooc)text+=' · außer Konkurrenz (kein Blind-/Referenz-Listing)';
+    status.textContent=text;loadCases();loadOocCases();
   }catch(error){status.textContent='Auflösung konnte nicht gespeichert werden.';}
 });
 </script></body></html>

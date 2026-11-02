@@ -164,10 +164,11 @@ class CaseJournal:
         rows = [r for r in self.events() if r["case_id"] == case_id]
         if not rows or rows[0]["kind"] != "intake":
             raise ValueError("unknown case")
+        intake_input = rows[0]["payload"]["input"]
         state = {
             "case_id": case_id,
             "status": "neu",
-            "input": rows[0]["payload"]["input"],
+            "input": intake_input,
             "input_sha256": rows[0]["payload"]["input_sha256"],
             "first_prediction": None,
             "latest_prediction": None,
@@ -175,16 +176,21 @@ class CaseJournal:
             "archived": False,
             "archive": None,
             "reference_status": None,
-            "evaluation_class": rows[0]["payload"]["input"].get("evaluation_class", "unclassified"),
-            "previously_used_for_development": rows[0]["payload"]["input"].get(
-                "previously_used_for_development"
-            ),
+            "evaluation_class": intake_input.get("evaluation_class", "unclassified"),
+            "competition_mode": intake_input.get("competition_mode") or "official",
+            "previously_used_for_development": intake_input.get("previously_used_for_development"),
+            "solution_pdf": None,
+            "dataset_promotion": None,
             "analyses": 0,
             "opened_at": rows[0]["recorded_at"],
             "first_frozen_at": None,
         }
         for row in rows:
             kind, p = row["kind"], row["payload"]
+            if kind in ("intake", "input_revision"):
+                mode = (p.get("input") or {}).get("competition_mode")
+                if mode in ("official", "out_of_competition"):
+                    state["competition_mode"] = mode
             if kind == "begin" and state["resolution"] is None:
                 state["status"] = "in_analyse"
             if kind == "analysis":
@@ -211,11 +217,30 @@ class CaseJournal:
             if kind == "prospective_classification":
                 state["evaluation_class"] = "prospective_blind"
                 state["previously_used_for_development"] = False
+            if kind == "solution_pdf":
+                state["solution_pdf"] = dict(p, recorded_at=row["recorded_at"])
+            if kind == "dataset_promotion":
+                state["dataset_promotion"] = dict(p, recorded_at=row["recorded_at"])
         return state
 
-    def cases(self, include_archived=False):
+    def cases(self, include_archived=False, *, listing="official"):
+        """List cases for the operator UI.
+
+        listing:
+          - official: default Meine Fälle (excludes out_of_competition)
+          - out_of_competition: only außer-Konkurrenz cases
+          - all: both modes
+        """
+        if listing not in ("official", "out_of_competition", "all"):
+            raise ValueError("listing must be official, out_of_competition, or all")
         rows = [self.case(r["case_id"]) for r in self.events() if r["kind"] == "intake"]
-        return rows if include_archived else [row for row in rows if not row["archived"]]
+        if not include_archived:
+            rows = [row for row in rows if not row["archived"]]
+        if listing == "official":
+            return [row for row in rows if row.get("competition_mode", "official") == "official"]
+        if listing == "out_of_competition":
+            return [row for row in rows if row.get("competition_mode") == "out_of_competition"]
+        return rows
 
     def archive(self, case_id, reason):
         if not isinstance(reason, str) or not reason.strip():
@@ -237,7 +262,8 @@ class CaseJournal:
             return {"archived": False}
 
     def references(self):
-        promoted = [row for row in self.cases(True) if row["reference_status"]]
+        # Official listing only — out-of-competition cases never enter the blind register.
+        promoted = [row for row in self.cases(True, listing="official") if row["reference_status"]]
         return [dict(row, reference_number=19 + index) for index, row in enumerate(promoted)]
 
     def promote_reference(self, case_id, source):
@@ -245,6 +271,8 @@ class CaseJournal:
             raise ValueError("reference source required")
         with self._lock():
             state = self.case(case_id)
+            if state.get("competition_mode") == "out_of_competition":
+                raise ValueError("out_of_competition cases cannot become prospective references")
             if state["reference_status"]:
                 return {"reference_status": state["reference_status"]}
             if state["resolution"] is None:
@@ -263,6 +291,8 @@ class CaseJournal:
             raise ValueError("classification basis required")
         with self._lock():
             state = self.case(case_id)
+            if state.get("competition_mode") == "out_of_competition":
+                raise ValueError("out_of_competition cases cannot be marked prospective blind")
             if state["resolution"] is not None:
                 raise ValueError("resolved case cannot be reclassified")
             if state["first_prediction"] is None:
@@ -271,6 +301,109 @@ class CaseJournal:
                 return {"evaluation_class": "prospective_blind"}
             self._append(case_id, "prospective_classification", {"basis": basis.strip()})
             return {"evaluation_class": "prospective_blind"}
+
+    def store_solution_pdf(self, case_id, pdf_bytes, *, extracted=None):
+        """Persist a purchased-report PDF under the journal root (not git)."""
+        if not isinstance(pdf_bytes, (bytes, bytearray)) or not pdf_bytes:
+            raise ValueError("solution PDF bytes required")
+        sha = hashlib.sha256(bytes(pdf_bytes)).hexdigest()
+        with self._lock():
+            state = self.case(case_id)
+            existing = state.get("solution_pdf") or {}
+            if existing.get("pdf_sha256") == sha:
+                return {k: v for k, v in existing.items() if k != "recorded_at"}
+            pdf_dir = self.root / "solution-pdfs" / case_id
+            pdf_dir.mkdir(parents=True, exist_ok=True)
+            path = pdf_dir / f"{sha}.pdf"
+            if not path.exists():
+                partial = path.with_suffix(".partial")
+                partial.write_bytes(bytes(pdf_bytes))
+                partial.replace(path)
+            payload = {
+                "pdf_sha256": sha,
+                "relative_path": str(path.relative_to(self.root)),
+                "byte_length": len(pdf_bytes),
+                "extracted": extracted or {},
+            }
+            self._append(case_id, "solution_pdf", payload)
+            return payload
+
+    def promote_to_dataset(self, case_id, promotion):
+        """Explicit operator action: export OOC case + stored PDF into a local dataset record.
+
+        Does not mutate git-tracked teaser-cases.json or featured_calls.json.
+        """
+        if not isinstance(promotion, dict):
+            raise ValueError("dataset promotion payload required")
+        name = promotion.get("name")
+        source = promotion.get("source")
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("dataset promotion needs name")
+        if not isinstance(source, str) or not source.strip():
+            raise ValueError("dataset promotion needs source")
+        call_wkn = promotion.get("call_wkn")
+        if call_wkn and not re.fullmatch(r"[A-Z0-9]{6}", str(call_wkn)):
+            raise ValueError("invalid call WKN format")
+        with self._lock():
+            state = self.case(case_id)
+            if state.get("competition_mode") != "out_of_competition":
+                raise ValueError("dataset promotion requires out_of_competition case")
+            if state.get("dataset_promotion"):
+                return {k: v for k, v in state["dataset_promotion"].items() if k != "recorded_at"}
+            if not state.get("solution_pdf"):
+                raise ValueError("solution PDF required before dataset promotion")
+            if state.get("resolution") is None:
+                raise ValueError("resolve the case before dataset promotion")
+            export_dir = self.root / "dataset-exports"
+            export_dir.mkdir(parents=True, exist_ok=True)
+            export_path = export_dir / f"{case_id}.json"
+            record = {
+                "schema_version": 1,
+                "kind": "hebeltrader_out_of_competition_dataset_export",
+                "case_id": case_id,
+                "competition_mode": "out_of_competition",
+                "promoted_at": self.clock().isoformat(),
+                "headline": (state.get("input") or {}).get("headline") or "",
+                "teaser_text": (state.get("input") or {}).get("teaser_text") or "",
+                "issue": (state.get("input") or {}).get("issue") or "",
+                "author": (state.get("input") or {}).get("author") or "",
+                "actual_company": name.strip(),
+                "actual_ticker": (promotion.get("ticker") or "").strip() or None,
+                "stock_wkn": (promotion.get("stock_wkn") or "").strip() or None,
+                "derivative_wkn": call_wkn or state["resolution"].get("call_wkn"),
+                "source": source.strip(),
+                "notes": (promotion.get("notes") or "").strip() or None,
+                "solution_pdf": {
+                    "pdf_sha256": state["solution_pdf"].get("pdf_sha256"),
+                    "relative_path": state["solution_pdf"].get("relative_path"),
+                },
+                "resolution": {
+                    "asset_id": state["resolution"].get("asset_id"),
+                    "name": state["resolution"].get("name"),
+                    "correct_rank": state["resolution"].get("correct_rank"),
+                    "prediction_outcome": state["resolution"].get("prediction_outcome"),
+                    "case_status": state["resolution"].get("case_status"),
+                },
+                "original_top3": (state.get("first_prediction") or {}).get("candidates", [])[:3],
+                "git_note": (
+                    "Local export only. Operator may copy into teaser-cases.json manually; "
+                    "this path is never auto-committed."
+                ),
+            }
+            export_path.write_text(
+                json.dumps(record, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+            )
+            payload = {
+                "export_relative_path": str(export_path.relative_to(self.root)),
+                "name": name.strip(),
+                "ticker": record["actual_ticker"],
+                "stock_wkn": record["stock_wkn"],
+                "call_wkn": record["derivative_wkn"],
+                "source": source.strip(),
+                "pdf_sha256": state["solution_pdf"].get("pdf_sha256"),
+            }
+            self._append(case_id, "dataset_promotion", payload)
+            return payload
 
     def begin(self, case_id):
         with self._lock():
@@ -351,6 +484,8 @@ class CaseJournal:
                     "restore",
                     "prospective_classification",
                     "reference_promotion",
+                    "solution_pdf",
+                    "dataset_promotion",
                 ):
                     continue
                 marker = f"<!-- TI-JOURNAL:{row['sha256']} -->"

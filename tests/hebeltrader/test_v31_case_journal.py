@@ -259,3 +259,105 @@ def test_existing_unresolved_case_can_be_marked_prospective_before_resolution(tm
     j.record_analysis(case, frozen(tmp_path, "live", ["ASML"]))
     j.mark_prospective(case, "operator confirms solution was not known")
     assert j.case(case)["evaluation_class"] == "prospective_blind"
+
+
+def test_out_of_competition_hidden_from_listing_quality_and_blind_paths(tmp_path):
+    j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
+    official = j.intake({"teaser_text": "official teaser"})
+    j.record_analysis(official, frozen(tmp_path, "official", ["A"]))
+    ooc = j.intake(
+        {
+            "teaser_text": "midterms ooc teaser",
+            "competition_mode": "out_of_competition",
+            "headline": "Außer Konkurrenz",
+        }
+    )
+    j.record_analysis(ooc, frozen(tmp_path, "ooc", ["B", "C"]))
+    assert [row["case_id"] for row in j.cases()] == [official]
+    assert [row["case_id"] for row in j.cases(listing="out_of_competition")] == [ooc]
+    assert {row["case_id"] for row in j.cases(listing="all")} == {official, ooc}
+    quality = j.quality()
+    assert [row["case_id"] for row in quality["cases"]] == [official]
+    with pytest.raises(ValueError, match="out_of_competition"):
+        j.mark_prospective(ooc, "must not become blind")
+    j.resolve(
+        ooc,
+        {
+            "asset_id": "B",
+            "name": "OOC Co",
+            "source": "purchased report",
+            "basis": "user",
+            "error_analysis": "ooc only",
+        },
+    )
+    with pytest.raises(ValueError, match="out_of_competition"):
+        j.promote_reference(ooc, "must not enter references")
+    assert j.references() == []
+
+
+def test_out_of_competition_solution_pdf_and_dataset_promotion(tmp_path):
+    j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
+    ooc = j.intake(
+        {"teaser_text": "iran ooc", "competition_mode": "out_of_competition", "headline": "Iran"}
+    )
+    j.record_analysis(ooc, frozen(tmp_path, "iran", ["GOLD"]))
+    pdf = b"%PDF-1.4 ooc-report"
+    stored = j.store_solution_pdf(
+        ooc, pdf, extracted={"name": "Gold Co", "call_wkn": "ABC123", "stock_wkn": "A0AAAA"}
+    )
+    assert stored["pdf_sha256"] == __import__("hashlib").sha256(pdf).hexdigest()
+    assert (tmp_path / "j" / stored["relative_path"]).read_bytes() == pdf
+    assert j.store_solution_pdf(ooc, pdf)["pdf_sha256"] == stored["pdf_sha256"]
+    assert len([e for e in j.events() if e["kind"] == "solution_pdf"]) == 1
+    with pytest.raises(ValueError, match="resolve"):
+        j.promote_to_dataset(ooc, {"name": "Gold Co", "source": "purchased report"})
+    j.resolve(
+        ooc,
+        {
+            "asset_id": "GOLD",
+            "name": "Gold Co",
+            "call_wkn": "ABC123",
+            "source": "purchased report",
+            "basis": "user",
+            "error_analysis": "confirmed from PDF",
+        },
+    )
+    official = j.intake({"teaser_text": "official for promote reject"})
+    j.record_analysis(official, frozen(tmp_path, "off2", ["X"]))
+    j.store_solution_pdf(official, pdf)
+    j.resolve(
+        official,
+        {
+            "asset_id": "X",
+            "name": "X",
+            "source": "x",
+            "basis": "user",
+            "error_analysis": "x",
+        },
+    )
+    with pytest.raises(ValueError, match="out_of_competition"):
+        j.promote_to_dataset(official, {"name": "X", "source": "x"})
+    promoted = j.promote_to_dataset(
+        ooc,
+        {
+            "name": "Gold Co",
+            "ticker": "GOLD",
+            "source": "purchased report",
+            "call_wkn": "ABC123",
+            "stock_wkn": "A0AAAA",
+        },
+    )
+    assert promoted["export_relative_path"].endswith(f"{ooc}.json")
+    export = json.loads((tmp_path / "j" / promoted["export_relative_path"]).read_text())
+    assert export["kind"] == "hebeltrader_out_of_competition_dataset_export"
+    assert export["actual_company"] == "Gold Co"
+    assert export["derivative_wkn"] == "ABC123"
+    assert (
+        j.promote_to_dataset(ooc, {"name": "Gold Co", "source": "purchased report"})["pdf_sha256"]
+        == stored["pdf_sha256"]
+    )
+    assert len([e for e in j.events() if e["kind"] == "dataset_promotion"]) == 1
+    register = tmp_path / "register.md"
+    j.export_register(register)
+    text = register.read_text()
+    assert "solution_pdf" in text and "dataset_promotion" in text

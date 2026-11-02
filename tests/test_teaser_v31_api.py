@@ -86,10 +86,17 @@ def test_solution_pdf_prefills_resolution_and_requires_token(tmp_path):
         ok = client.post("/api/hebeltrader/cases/solution-pdf", headers=headers, json=body)
         assert ok.status_code == 200
         assert len(ok.json()["pdf_sha256"]) == 64
+        assert ok.json()["persisted"] is False
         bad = client.post(
             "/api/hebeltrader/cases/solution-pdf", headers=headers, json={"pdf_base64": "!!"}
         )
         assert bad.status_code == 422
+        missing_case = client.post(
+            "/api/hebeltrader/cases/solution-pdf",
+            headers=headers,
+            json={**body, "persist": True},
+        )
+        assert missing_case.status_code == 422
 
 
 def test_resolution_without_asset_id_can_be_saved_as_reference(tmp_path):

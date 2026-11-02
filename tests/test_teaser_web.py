@@ -90,6 +90,78 @@ def test_browser_submission_persists_and_reopens_case(tmp_path, monkeypatch):
     assert reopened.get("/api/hebeltrader/cases/" + case_id, auth=auth).status_code == 200
 
 
+def test_out_of_competition_analyze_without_official_listing(tmp_path, monkeypatch):
+    import base64
+    import glob
+
+    client = web(tmp_path, monkeypatch)
+    auth = ("admin", "private-password")
+    origin = {"Origin": "http://testserver"}
+    response = client.post(
+        "/api/hebeltrader/investigate",
+        auth=auth,
+        headers=origin,
+        json={
+            "headline": "Midterms außer Konkurrenz",
+            "teaser_text": "Silberförderer und Seltene Erden außer Konkurrenz.",
+            "competition_mode": "out_of_competition",
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    case_id = body["journal_case_id"]
+    assert body["competition_mode"] == "out_of_competition"
+    assert client.get("/api/hebeltrader/cases", auth=auth).json() == []
+    ooc = client.get("/api/hebeltrader/cases?listing=out_of_competition", auth=auth).json()
+    assert len(ooc) == 1 and ooc[0]["case_id"] == case_id
+    quality = client.get("/api/hebeltrader/quality", auth=auth).json()
+    assert quality["cases"] == []
+    pdfs = glob.glob("tests/fixtures/**/*.pdf", recursive=True)
+    assert pdfs
+    pdf_b64 = base64.b64encode(Path(pdfs[0]).read_bytes()).decode()
+    stored = client.post(
+        "/api/hebeltrader/cases/solution-pdf",
+        auth=auth,
+        headers=origin,
+        json={"pdf_base64": pdf_b64, "case_id": case_id, "persist": True},
+    )
+    assert stored.status_code == 200
+    assert stored.json()["persisted"] is True
+    assert (
+        client.post(
+            f"/api/hebeltrader/cases/{case_id}/prospective",
+            auth=auth,
+            headers=origin,
+            json={"basis": "must fail for ooc"},
+        ).status_code
+        == 422
+    )
+    resolved = client.post(
+        f"/api/hebeltrader/cases/{case_id}/resolution",
+        auth=auth,
+        headers=origin,
+        json={
+            "name": "Test Company",
+            "source": "purchased report",
+            "error_analysis": "ooc dataset path",
+            "basis": "user",
+        },
+    )
+    assert resolved.status_code == 200
+    promoted = client.post(
+        f"/api/hebeltrader/cases/{case_id}/dataset-promotion",
+        auth=auth,
+        headers=origin,
+        json={"name": "Test Company", "source": "purchased report", "ticker": "TEST"},
+    )
+    assert promoted.status_code == 200
+    assert promoted.json()["export_relative_path"].endswith(f"{case_id}.json")
+    assert client.get("/api/hebeltrader/cases", auth=auth).json() == []
+    page = client.get("/", auth=auth)
+    assert "Außer Konkurrenz" in page.text
+    assert "out-of-competition" in page.text
+
+
 def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_path, monkeypatch):
     from pathlib import Path
 
