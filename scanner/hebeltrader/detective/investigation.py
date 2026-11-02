@@ -202,7 +202,9 @@ def packet_evidence_result(ranked, *, offline, limits):
 
 def evidence_source_kind(document):
     """Map packet/live source_kind onto EvidenceRecord primary kinds."""
-    kind = document.get("source_kind", "unknown")
+    from .source_kind import effective_source_kind
+
+    kind = effective_source_kind(document)
     if kind == "regulator":
         # Operator packet contract uses "regulator"; Stage-B primary set uses "regulatory".
         return "regulatory"
@@ -1923,9 +1925,9 @@ class Investigator:
             limits.append("teaser_publication_time_unknown")
         if offline:
             limits.append("active_falsification_not_performed")
-        primary_docs = sum(
-            d.get("source_kind") in {"issuer", "regulatory", "regulator"} for d in fetched
-        )
+        from .source_kind import document_is_primary
+
+        primary_docs = sum(document_is_primary(d) for d in fetched)
         if has_material_research_source_gaps(
             errors,
             primary_documents=primary_docs,
@@ -2105,9 +2107,7 @@ class Investigator:
             "discovery_source_gaps": getattr(self.web, "discovery_errors", []),
             "configured_discovery_feeds": getattr(self.web, "discovery_feeds", []),
             "source_quality": {
-                "primary_documents": sum(
-                    d.get("source_kind") in {"issuer", "regulatory", "regulator"} for d in fetched
-                ),
+                "primary_documents": sum(document_is_primary(d) for d in fetched),
                 "documents": len(fetched),
                 "scope": "global_public_search_not_complete_world_market",
             },

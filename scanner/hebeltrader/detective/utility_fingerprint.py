@@ -114,9 +114,6 @@ def utility_fingerprint_score(fingerprint: UtilityFingerprint) -> int:
     return score
 
 
-_PRIMARY_SOURCE_KINDS = frozenset({"issuer", "regulatory", "regulator"})
-
-
 def _fingerprint_scan(documents: list[dict]) -> UtilityFingerprint:
     offtake = dc = False
     capex = None
@@ -134,8 +131,10 @@ def _fingerprint_scan(documents: list[dict]) -> UtilityFingerprint:
 
 def fingerprint_from_documents(documents: list[dict]) -> UtilityFingerprint:
     """Prefer issuer/SEC for offtake/DC; allow capex figures from any fetched doc."""
+    from .source_kind import document_is_primary
+
     docs = list(documents or [])
-    primary = [d for d in docs if str(d.get("source_kind") or "") in _PRIMARY_SOURCE_KINDS]
+    primary = [d for d in docs if document_is_primary(d)]
     primary_fp = _fingerprint_scan(primary)
     all_fp = _fingerprint_scan(docs)
     # Rare combo on primary wins; still pick up a larger $bn plan from IR decks/news.
@@ -159,6 +158,8 @@ def apply_utility_fingerprints(
     ranked: list[dict], documents_by_asset: dict[str, list[dict]], *, teaser_text: str = ""
 ) -> dict:
     """Score offtake/capex fingerprints when the teaser cues a utility power story."""
+    from .source_kind import document_is_primary
+
     summary = {"status": "applied", "scored": []}
     if not teaser_wants_utility_fingerprint(teaser_text):
         summary["status"] = "skipped_no_utility_cues"
@@ -169,7 +170,7 @@ def apply_utility_fingerprints(
     for row in ranked:
         docs = documents_by_asset.get(row.get("asset_id")) or []
         docs = docs if isinstance(docs, list) else []
-        primary = [d for d in docs if str(d.get("source_kind") or "") in _PRIMARY_SOURCE_KINDS]
+        primary = [d for d in docs if document_is_primary(d)]
         primary_fp = _fingerprint_scan(primary)
         fingerprint = fingerprint_from_documents(docs)
         bonus = utility_fingerprint_score(fingerprint)
