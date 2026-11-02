@@ -236,7 +236,13 @@ def chart_score(features):
     score += 2 if features["gd200_rising"] else 0
     score += 1 if features["return_1y_pct"] > 15 else 0
     score += 2 if features["breakout"] else 0
-    score += 3 if features.get("golden_cross") else 0
+    # Classic SMA Golden Cross earns full credit; EMA-only is weaker retail signal.
+    if features.get("golden_cross_sma"):
+        score += 3
+    elif features.get("golden_cross_ema"):
+        score += 1
+    elif features.get("golden_cross"):
+        score += 3
     score -= 4 if features["near_high_pct"] < -25 else 0
     return max(0, score)
 

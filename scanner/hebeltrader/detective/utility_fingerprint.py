@@ -114,7 +114,10 @@ def utility_fingerprint_score(fingerprint: UtilityFingerprint) -> int:
     return score
 
 
-def fingerprint_from_documents(documents: list[dict]) -> UtilityFingerprint:
+_PRIMARY_SOURCE_KINDS = frozenset({"issuer", "regulatory", "regulator"})
+
+
+def _fingerprint_scan(documents: list[dict]) -> UtilityFingerprint:
     offtake = dc = False
     capex = None
     for doc in documents or []:
@@ -127,6 +130,29 @@ def fingerprint_from_documents(documents: list[dict]) -> UtilityFingerprint:
         if found.capex_billions is not None and (capex is None or found.capex_billions > capex):
             capex = found.capex_billions
     return UtilityFingerprint(has_offtake=offtake, has_data_center_link=dc, capex_billions=capex)
+
+
+def fingerprint_from_documents(documents: list[dict]) -> UtilityFingerprint:
+    """Prefer issuer/SEC for offtake/DC; allow capex figures from any fetched doc."""
+    docs = list(documents or [])
+    primary = [d for d in docs if str(d.get("source_kind") or "") in _PRIMARY_SOURCE_KINDS]
+    primary_fp = _fingerprint_scan(primary)
+    all_fp = _fingerprint_scan(docs)
+    # Rare combo on primary wins; still pick up a larger $bn plan from IR decks/news.
+    if primary_fp.has_offtake and primary_fp.has_data_center_link:
+        capex = all_fp.capex_billions
+        if primary_fp.capex_billions is not None and (
+            capex is None or primary_fp.capex_billions > capex
+        ):
+            capex = primary_fp.capex_billions
+        return UtilityFingerprint(
+            has_offtake=True,
+            has_data_center_link=True,
+            capex_billions=capex,
+        )
+    if primary_fp.components and primary_fp.components >= all_fp.components:
+        return primary_fp
+    return all_fp
 
 
 def apply_utility_fingerprints(
@@ -142,14 +168,28 @@ def apply_utility_fingerprints(
         return summary
     for row in ranked:
         docs = documents_by_asset.get(row.get("asset_id")) or []
-        fingerprint = fingerprint_from_documents(docs if isinstance(docs, list) else [])
+        docs = docs if isinstance(docs, list) else []
+        primary = [d for d in docs if str(d.get("source_kind") or "") in _PRIMARY_SOURCE_KINDS]
+        primary_fp = _fingerprint_scan(primary)
+        fingerprint = fingerprint_from_documents(docs)
         bonus = utility_fingerprint_score(fingerprint)
+        # Full combo only from secondary news is weaker than issuer/SEC primary.
+        provenance = "primary" if primary_fp.components >= 2 else "secondary_or_mixed"
+        if (
+            fingerprint.components >= 2
+            and primary_fp.components < 2
+            and provenance == "secondary_or_mixed"
+        ):
+            bonus = max(0, bonus - 14)
+            provenance = "secondary_only"
         row["utility_fingerprint"] = {
             "has_offtake": fingerprint.has_offtake,
             "has_data_center_link": fingerprint.has_data_center_link,
             "capex_billions": fingerprint.capex_billions,
             "components": fingerprint.components,
             "bonus": bonus,
+            "provenance": provenance,
+            "primary_components": primary_fp.components,
         }
         if bonus and not row.get("hard_contradictions"):
             row["evidence_score"] = int(row.get("evidence_score") or 0) + bonus
@@ -158,6 +198,7 @@ def apply_utility_fingerprints(
                 "asset_id": row.get("asset_id"),
                 "bonus": bonus,
                 "components": fingerprint.components,
+                "provenance": provenance,
             }
         )
     ranked.sort(
