@@ -22,16 +22,36 @@ from scanner.stock_monitor.cross_asset_journal import append_cross_asset_run
 from scanner.stock_monitor.crypto_schedule import choose_detail_symbols
 from scanner.stock_monitor.sec_client_runner import run_with_sec_client
 from scanner.stock_monitor.spot_signals import evaluate_spot_candidate
+from scanner.stock_monitor.spot_snapshots import rank_snapshot
 from scanner.stock_monitor.spot_universe import discover_spot_symbols
 from scanner.stock_monitor.worker import SecTarget
 
 
-async def _crypto_pass(symbols: list[str], *, cutoff: datetime) -> dict:
+async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | None = None) -> dict:
     discovery = None
     if os.getenv("CRYPTO_DISCOVER_UNIVERSE", "false").lower() == "true":
         async with httpx.AsyncClient() as client:
             discovery = await discover_spot_symbols(client)
         symbols = discovery["symbols"]
+    if discovery and discovery.get("status") == "complete" and root is not None:
+        snapshot_path = root / "spot-ticker-snapshot.json"
+        previous = None
+        try:
+            if snapshot_path.exists():
+                stored = json.loads(snapshot_path.read_text(encoding="utf-8"))
+                previous = stored.get("ticker_snapshot")
+        except (OSError, ValueError, TypeError, AttributeError):
+            previous = None
+        symbols, ranking_mode = rank_snapshot(
+            symbols, discovery.get("ticker_snapshot", {}), previous
+        )
+        discovery["ranking_mode"] = ranking_mode
+        snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+        snapshot_payload = {
+            "observed_at": cutoff.isoformat(),
+            "ticker_snapshot": discovery.get("ticker_snapshot", {}),
+        }
+        snapshot_path.write_text(json.dumps(snapshot_payload), encoding="utf-8")
     universe_count = len(symbols)
     if discovery:
         symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff)
@@ -117,7 +137,7 @@ async def run_once(*, root: Path, symbols: list[str], targets: list[SecTarget]) 
     stock_task = asyncio.create_task(
         asyncio.to_thread(_stock_pass, root=root, targets=targets, run_id=run_id, cutoff=cutoff)
     )
-    crypto_task = asyncio.create_task(_crypto_pass(symbols, cutoff=cutoff))
+    crypto_task = asyncio.create_task(_crypto_pass(symbols, cutoff=cutoff, root=root))
     stock_result, crypto_result = await asyncio.gather(
         stock_task, crypto_task, return_exceptions=True
     )
