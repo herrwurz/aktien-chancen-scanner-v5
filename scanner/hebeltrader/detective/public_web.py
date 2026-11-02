@@ -76,13 +76,18 @@ def _date(value):
 
 def parse_page(raw, url, *, retrieved_at=None, raw_file="", primary_domains=None):
     """Parse explicit metadata only; missing identity/date is intentionally unknown."""
+    from .source_kind import classify_live_source_kind
+
     p = _Page()
     p.feed(raw.decode("utf-8", errors="replace"))
     host = (urlsplit(url).hostname or "").lower()
     approved = primary_domains or {}
     name = approved.get(host)
+    classified = classify_live_source_kind(url)
     kind = (
-        "regulatory"
+        classified
+        if classified
+        else "regulatory"
         if host == "sec.gov" or host.endswith(".sec.gov")
         else "issuer"
         if name

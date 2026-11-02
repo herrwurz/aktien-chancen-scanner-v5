@@ -14,6 +14,7 @@ import httpx
 from .clues import EXPLICIT_WKN
 from .provider_usage import MODEL_PRICES_USD_PER_MILLION
 from .public_web import PublicWebResearch
+from .source_kind import classify_live_source_kind
 from .temporal import timestamp
 
 
@@ -548,7 +549,8 @@ class ApiPublicResearch(PublicWebResearch):
             "retrieved_at": self.clock().isoformat(),
             "raw_sha256": hashlib.sha256(raw).hexdigest(),
             "raw_file": str(archived),
-            "source_kind": "tavily_extract" if extracted else "search_snippet",
+            "source_kind": classify_live_source_kind(url)
+            or ("tavily_extract" if extracted else "search_snippet"),
             "source_class": provider_source_class(url, self.primary_domains, extracted=extracted),
             "provider_score": hit.get("score"),
         }

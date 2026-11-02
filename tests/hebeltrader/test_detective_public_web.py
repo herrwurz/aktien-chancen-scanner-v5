@@ -29,7 +29,8 @@ def test_no_identity_or_invented_date():
     )
     assert "company_name" not in doc
     assert doc["published_at"] is None
-    assert doc["source_kind"] != "issuer"
+    # /investors path marks issuer-class evidence without inventing a company name.
+    assert doc["source_kind"] == "issuer"
 
 
 def test_top_level_news_publisher_is_not_treated_as_stock_identity():
