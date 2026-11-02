@@ -7,10 +7,36 @@ import httpx
 from scanner.stock_monitor.worker import SecTarget
 
 WATCH_SYMBOLS = (
-    "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "TSLA", "AVGO",
-    "AMD", "PLTR", "CRM", "ORCL", "NFLX", "COST", "JPM", "V",
-    "MA", "UNH", "LLY", "ABBV", "XOM", "CAT", "GE", "UBER",
-    "COIN", "HOOD", "MU", "INTC", "ADBE", "PANW",
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "TSLA",
+    "AVGO",
+    "AMD",
+    "PLTR",
+    "CRM",
+    "ORCL",
+    "NFLX",
+    "COST",
+    "JPM",
+    "V",
+    "MA",
+    "UNH",
+    "LLY",
+    "ABBV",
+    "XOM",
+    "CAT",
+    "GE",
+    "UBER",
+    "COIN",
+    "HOOD",
+    "MU",
+    "INTC",
+    "ADBE",
+    "PANW",
 )
 
 
@@ -30,7 +56,10 @@ def select_targets(company_tickers: dict, *, slot: int, limit: int = 10) -> list
     if not available:
         raise ValueError("No configured watch symbols resolved from SEC")
     start = (slot * limit) % len(available)
-    return [available[(start + index) % len(available)] for index in range(min(limit, len(available)))]
+    return [
+        available[(start + index) % len(available)]
+        for index in range(min(limit, len(available)))
+    ]
 
 
 def discover_sec_targets(*, user_agent: str, slot: int) -> list[SecTarget]:
