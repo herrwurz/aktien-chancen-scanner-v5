@@ -614,25 +614,37 @@ def _chart_rows(ranked, cache, text, *, top, chart_opts, clues):
             row["evidence_score"] += match_score(result, clues)
 
 
-_UTILITY_GICS = re.compile(
-    r"utilit|electric|independent power|multi-util|gas utilit",
+_ELECTRIC_UTILITY_GICS = re.compile(
+    r"electric utilit|multi-utilit|gas utilit|independent power|independent electricity",
     re.I,
 )
-_NON_UTILITY_GICS = re.compile(r"water utilit|equipment|component", re.I)
+_NON_ELECTRIC_UTILITY_GICS = re.compile(
+    r"water utilit|equipment|component|retail",
+    re.I,
+)
 _UTILITY_WORDING = re.compile(r"versorger|utilit|stromversorger", re.I)
+_POWER_WORDING = re.compile(r"strom\w*|energie\w*|power\s+grid|electric", re.I)
 
 
 def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
     """Sector slice of the index pool (no issuer whitelist) for chart-first seeding.
 
-    When the teaser requires a US utility, keep US-listed power-infra names and drop
-    grid-equipment / non-utility GICS rows. Names only — chart ranking happens next.
+    When the teaser requires a US utility / Stromversorger, keep US-listed electric
+    power-infra names and drop retail false-positives, water utilities, and
+    grid-equipment rows. Names only — chart ranking happens next.
     """
     sectors = sectors_in(text)
     if not sectors:
         return []
     us_only = _teaser_requires_us_issuer(text)
     utility_claim = bool(_UTILITY_WORDING.search(text or ""))
+    power_claim = bool(_POWER_WORDING.search(text or ""))
+    # Strom-/Versorger-Teaser: do not dilute with co-detected retail/finance sectors.
+    if utility_claim or power_claim:
+        if "power infrastructure" in sectors:
+            sectors = ["power infrastructure"]
+        else:
+            return []
     assets = []
     for raw in market_universe_list():
         if raw.get("sector") not in sectors:
@@ -650,13 +662,13 @@ def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
                 str(c).casefold() in {"united states", "usa", "us"} for c in countries
             ):
                 continue
-        if utility_claim:
+        if utility_claim or power_claim:
             if asset.get("layer") == "grid-equipment" or _issuer_looks_non_utility(asset):
                 continue
             gics = asset.get("gics_sub") or ""
-            if gics and _NON_UTILITY_GICS.search(gics) and not _UTILITY_GICS.search(gics):
+            if gics and _NON_ELECTRIC_UTILITY_GICS.search(gics):
                 continue
-            if gics and not _UTILITY_GICS.search(gics):
+            if gics and not _ELECTRIC_UTILITY_GICS.search(gics):
                 continue
         if is_blocked(asset, blocked):
             continue

@@ -24,9 +24,19 @@ def test_pool_assets_us_utility_excludes_eu_and_grid_equipment():
     assert "Iberdrola" not in names
     assert "Eaton" not in names
     assert "Vertiv" not in names
+    assert "Costco Wholesale" not in names
+    assert "American Water Works" not in names  # water ≠ Stromversorger
     # Curated-thin utilities must still appear via index_pool, not a hard-coded list.
     assert "Ameren" in names or "AEE" in tickers
     assert "American Electric Power" in names or "AEP" in tickers
+
+
+def test_handelsstrategie_does_not_add_retail_sector():
+    from scanner.hebeltrader.detective.structure_screen import sectors_in
+
+    text = TEASER + " Smarte Anleger sichern sich die Analyse mit klarer Handelsstrategie."
+    assert "retail" not in sectors_in(text)
+    assert "power infrastructure" in sectors_in(text)
 
 
 def test_pool_assets_inactive_without_sector_cue():

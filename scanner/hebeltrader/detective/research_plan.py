@@ -23,7 +23,12 @@ SECTORS = (
     (r"rüstung\w*|verteidigung\w*|defen[sc]e|waffen\w*", "defense"),
     (r"strom\w*|energie\w*|versorger|utilit\w*|power grid", "power infrastructure"),
     (r"software\w*", "software"),
-    (r"handels\w*|einzelhandel\w*|retail\w*", "retail"),
+    # Avoid false hits like "Handelsstrategie" / "Handelstag" — require retail issuer cues.
+    (
+        r"einzelhandel\w*|retail\w*|handels(?:gigant|riese|konzern|unternehmen)\w*|"
+        r"supermärkte?\b|warenhaus\w*|großhandel\w*|discounter\w*",
+        "retail",
+    ),
     (r"bank\w*|finanz\w*", "financial services"),
 )
 DOMINANCE = (
