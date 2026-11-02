@@ -40,6 +40,16 @@ def test_both_complete():
     assert result["status"] == "complete"
 
 
+def test_both_unavailable_envelope():
+    result = run_cross_asset(
+        run_id="test",
+        stock_scan=lambda: {"status": "unavailable", "reason": "no_sec_targets"},
+        crypto_scan=lambda: {"status": "unavailable", "reason": "no_crypto_symbols"},
+        now=lambda: datetime(2026, 11, 1, 12, tzinfo=UTC),
+    )
+    assert result["status"] == "unavailable"
+
+
 def test_invalid_scanner_result_does_not_count_as_no_signal():
     result = run_cross_asset(
         run_id="test",

@@ -38,7 +38,10 @@ The command prints a short JSON summary. Detailed run envelopes and SEC
 research evidence are stored in the named volume
 `cross_asset_research` (under `/data` inside the container).
 A `partial` status means at least one market scan was unavailable or
-incomplete. Never interpret unavailable data as a no-signal outcome.
+incomplete. An envelope `unavailable` means **both** asset classes failed or
+had no configured coverage. Never interpret unavailable data as a no-signal
+outcome. Live SEC journaling is limited to the last 72 hours of filings so a
+stale submissions cache cannot re-append the full historical form set each run.
 
 For a scheduled pilot, run the one-shot command via a host systemd timer or
 cron under a **single-writer lock**. Do not start multiple simultaneous runs:

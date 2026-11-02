@@ -46,15 +46,18 @@ def run_cross_asset(
         raise ValueError("Timezone-aware clock required")
     if finished_at < started_at:
         raise ValueError("Clock moved backwards")
+    statuses = [item["status"] for item in results.values()]
+    if all(status == "complete" for status in statuses):
+        envelope_status = "complete"
+    elif all(status == "unavailable" for status in statuses):
+        envelope_status = "unavailable"
+    else:
+        envelope_status = "partial"
     return {
         "run_id": run_id,
         "started_at": started_at.astimezone(UTC).isoformat(),
         "completed_at": finished_at.astimezone(UTC).isoformat(),
-        "status": (
-            "complete"
-            if all(item["status"] == "complete" for item in results.values())
-            else "partial"
-        ),
+        "status": envelope_status,
         "results": results,
         "order_execution": False,
     }

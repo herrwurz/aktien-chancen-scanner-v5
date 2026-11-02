@@ -59,6 +59,6 @@ def test_failed_fetch_does_not_claim_coverage(tmp_path):
         code_version="test",
         cutoff=CUTOFF,
     )
-    assert result["status"] == "partial"
+    assert result["status"] == "unavailable"
     assert result["outcomes"][0]["status"] == "unavailable"
     assert result["successful_targets"] == 0
