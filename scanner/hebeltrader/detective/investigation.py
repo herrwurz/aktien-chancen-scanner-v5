@@ -29,7 +29,13 @@ from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
 from .sources import UnavailableResearchSource
-from .structure_screen import screen_queries, screened_names, structure_bonus, ticker_for
+from .structure_screen import (
+    screen_queries,
+    screened_names,
+    sectors_in,
+    structure_bonus,
+    ticker_for,
+)
 from .temporal import assess_document, timestamp
 from .verification import verify_candidates
 
@@ -608,6 +614,195 @@ def _chart_rows(ranked, cache, text, *, top, chart_opts, clues):
             row["evidence_score"] += match_score(result, clues)
 
 
+_UTILITY_GICS = re.compile(
+    r"utilit|electric|independent power|multi-util|gas utilit",
+    re.I,
+)
+_NON_UTILITY_GICS = re.compile(r"water utilit|equipment|component", re.I)
+_UTILITY_WORDING = re.compile(r"versorger|utilit|stromversorger", re.I)
+
+
+def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
+    """Sector slice of the index pool (no issuer whitelist) for chart-first seeding.
+
+    When the teaser requires a US utility, keep US-listed power-infra names and drop
+    grid-equipment / non-utility GICS rows. Names only — chart ranking happens next.
+    """
+    sectors = sectors_in(text)
+    if not sectors:
+        return []
+    us_only = _teaser_requires_us_issuer(text)
+    utility_claim = bool(_UTILITY_WORDING.search(text or ""))
+    assets = []
+    for raw in market_universe_list():
+        if raw.get("sector") not in sectors:
+            continue
+        ticker = normalize_ticker(raw.get("ticker"))
+        if not ticker:
+            continue
+        asset = dict(raw)
+        asset["ticker"] = ticker
+        if us_only:
+            if "." in ticker:
+                continue
+            countries = asset.get("countries") or []
+            if countries and not any(
+                str(c).casefold() in {"united states", "usa", "us"} for c in countries
+            ):
+                continue
+        if utility_claim:
+            if asset.get("layer") == "grid-equipment" or _issuer_looks_non_utility(asset):
+                continue
+            gics = asset.get("gics_sub") or ""
+            if gics and _NON_UTILITY_GICS.search(gics) and not _UTILITY_GICS.search(gics):
+                continue
+            if gics and not _UTILITY_GICS.search(gics):
+                continue
+        if is_blocked(asset, blocked):
+            continue
+        assets.append(asset)
+    return assets
+
+
+def _chart_rank_pool_assets(assets, text, *, as_of=None, cache=None, limit=12):
+    """PIT-rank pool assets by teaser chart clues. Returns (scored rows, cache)."""
+    clues = teaser_chart_clues(text)
+    cache = {} if cache is None else cache
+    chart_opts = {}
+    if as_of is not None:
+        chart_opts["today"] = as_of.date() if hasattr(as_of, "date") else as_of
+    scored = []
+    for asset in assets:
+        ticker = asset["ticker"]
+        cache_key = f"pool:{ticker}"
+        if cache_key not in cache:
+            cache[cache_key] = chart_check(ticker, **chart_opts)
+        result = cache[cache_key]
+        score = match_score(result, clues) if result.get("status") == "ok" else -10_000
+        scored.append({"asset": asset, "chart": result, "score": score})
+    scored.sort(key=lambda row: (-row["score"], row["asset"]["name"]))
+    return scored[:limit], cache
+
+
+def _pool_seed_row(seed, *, retrieved, clues):
+    """Synthetic comparison row so chart-matching pool names enter ranking without web hits."""
+    asset = seed["asset"]
+    chart = seed["chart"]
+    name = asset["name"]
+    ticker = asset.get("ticker")
+    canonical_name = canonical_company(name, ticker)
+    asset_id = "company:" + hashlib.sha256(canonical_name.encode()).hexdigest()
+    score = match_score(chart, clues) if chart.get("status") == "ok" else 0
+    country = None
+    countries = asset.get("countries") or []
+    if any(str(c).casefold() in {"united states", "usa", "us"} for c in countries):
+        country = "US"
+    elif ticker and "." not in ticker:
+        country = "US"
+    return {
+        "asset_id": asset_id,
+        "identity": {
+            "asset_type": "stock",
+            "name": name,
+            "ticker": ticker,
+            "country": country,
+            "source_id": "index_pool_chart_seed",
+            "retrieved_at": retrieved,
+            "instrument_type_status": "unknown",
+            "quality_status": "candidate",
+        },
+        "evidence_score": score,
+        "evidence_matrix": [],
+        "confirmed_specific_clues": [],
+        "cited_findings": [],
+        "hard_contradictions": [],
+        "unknown_clues": [],
+        "sources": [],
+        "comparison_evidence_available": False,
+        "counterarguments": [
+            "Sektor-/Chart-Hypothese aus Index-Pool; Web-Belege und Falsifikation prüfen."
+        ],
+        "chart": chart,
+        "pool_seed": True,
+    }
+
+
+def _merge_pool_seed_rows(ranked, seeds, *, retrieved, text):
+    """Append missing pool seeds; copy PIT charts onto existing web rows when tickers match."""
+    if not seeds:
+        return ranked
+    clues = teaser_chart_clues(text)
+    by_id = {row["asset_id"]: row for row in ranked}
+    by_ticker = {}
+    by_name = {}
+    for row in ranked:
+        data = _identity_dict(row.get("identity"))
+        ticker = normalize_ticker(data.get("ticker") or _resolve_ticker(data))
+        if ticker:
+            by_ticker[ticker] = row
+        key = canonical_company(data.get("name") or "")
+        if key:
+            by_name[key] = row
+    merged = list(ranked)
+    for seed in seeds:
+        asset = seed["asset"]
+        ticker = normalize_ticker(asset.get("ticker"))
+        name_key = canonical_company(asset["name"], ticker)
+        existing = (ticker and by_ticker.get(ticker)) or by_name.get(name_key)
+        if existing is not None:
+            if not existing.get("chart") and seed["chart"].get("status") == "ok":
+                existing["chart"] = seed["chart"]
+                existing["evidence_score"] = int(existing.get("evidence_score") or 0) + match_score(
+                    seed["chart"], clues
+                )
+            data = _identity_dict(existing.get("identity"))
+            if ticker and not data.get("ticker"):
+                if isinstance(existing.get("identity"), dict):
+                    existing["identity"]["ticker"] = ticker
+                    if not existing["identity"].get("country") and "." not in ticker:
+                        existing["identity"]["country"] = "US"
+            continue
+        row = _pool_seed_row(seed, retrieved=retrieved, clues=clues)
+        if row["asset_id"] in by_id:
+            continue
+        by_id[row["asset_id"]] = row
+        merged.append(row)
+        if ticker:
+            by_ticker[ticker] = row
+        by_name[name_key] = row
+    merged.sort(
+        key=lambda row: (
+            bool(row.get("hard_contradictions")),
+            -row["evidence_score"],
+            row["asset_id"],
+        )
+    )
+    return merged
+
+
+def _pool_seed_queries(seeds, text, *, limit=8):
+    """Discovery queries for chart-ranked pool names (no hard-coded issuers)."""
+    entities = _entities(text)[:2]
+    queries = []
+    for seed in seeds[:limit]:
+        asset = seed["asset"]
+        name = asset["name"]
+        ticker = asset.get("ticker") or ""
+        queries.append(
+            " ".join(
+                part
+                for part in (
+                    f'"{name}"',
+                    ticker,
+                    *entities,
+                    "utility earnings data center power contract",
+                )
+                if part
+            )
+        )
+    return queries
+
+
 def _apply_chart(ranked, cache, text, top=6, as_of=None):
     # Chart buy-signals (GD200, crosses, breakout, MACD, RSI, …) use market data, not web text.
     clues = teaser_chart_clues(text)
@@ -621,6 +816,15 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
     chart_opts = {}
     if as_of is not None:
         chart_opts["today"] = as_of.date() if hasattr(as_of, "date") else as_of
+    # Reuse PIT results already fetched during chart-first pool seeding.
+    for row in ranked:
+        if row.get("chart"):
+            continue
+        data = _identity_dict(row.get("identity"))
+        ticker = _resolve_ticker(data)
+        pool_key = f"pool:{ticker}" if ticker else None
+        if pool_key and pool_key in cache and row["asset_id"] not in cache:
+            cache[row["asset_id"]] = cache[pool_key]
     _chart_rows(ranked, cache, text, top=top, chart_opts=chart_opts, clues=clues)
     _apply_chart_signal_matrix(ranked[:top], text)
     _apply_us_issuer_hard_filter(ranked, text)
@@ -944,6 +1148,10 @@ class Investigator:
         as_of = request.publication_at or retrieved
         blocked = blocked_features(as_of)
         active_call_dropped: list[dict] = []
+        pool_assets = _pool_assets_for_teaser(text, blocked=blocked)
+        chart_cache: dict = {}
+        chart_as_of = request.publication_at
+        pool_seeds: list[dict] = []
         apis = getattr(self.web, "apis", None)
         if not offline and apis is not None and apis.ai_key:
             try:
@@ -953,12 +1161,16 @@ class Investigator:
                     dict.fromkeys(
                         planned.get("candidate_hypotheses", [])
                         + screened_names(text, blocked=blocked)
+                        + [asset["name"] for asset in pool_assets]
                     )
                 )
                 hypotheses = [
                     name
                     for name in seed_names
-                    if not is_blocked({"name": name, "ticker": ticker_for(name)}, blocked)
+                    if not is_blocked(
+                        {"name": name, "ticker": ticker_for(name) or _pool_ticker(name)},
+                        blocked,
+                    )
                 ]
                 for item in semantic_clues:
                     start = text.index(item["quote"])
@@ -984,6 +1196,30 @@ class Investigator:
                 )
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"source": "ai_planner", "error": str(exc)[:120]})
+        elif pool_assets:
+            # Offline / no AI planner: still keep sector-pool names as literal-mention seeds.
+            hypotheses = [asset["name"] for asset in pool_assets if not is_blocked(asset, blocked)]
+
+        # Chart-first: PIT-rank the sector pool before web discovery so matching
+        # issuers enter hypotheses AND get dedicated verification queries.
+        if not offline and pool_assets and teaser_chart_clues(text):
+            pool_seeds, chart_cache = _chart_rank_pool_assets(
+                pool_assets,
+                text,
+                as_of=chart_as_of,
+                cache=chart_cache,
+                limit=12,
+            )
+            hypotheses = list(
+                dict.fromkeys(hypotheses + [seed["asset"]["name"] for seed in pool_seeds])
+            )
+            seed_queries = [
+                q
+                for q in _pool_seed_queries(pool_seeds, text)
+                if not _query_targets_blocked(q, blocked)
+            ]
+            if seed_queries:
+                queries = _interleave(seed_queries, queries, queries, cap=14)
 
         set_phase = getattr(self.web, "set_phase", lambda phase: None)
         set_phase("discovery")
@@ -1233,8 +1469,7 @@ class Investigator:
         if not offline:
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
-        chart_cache = {}
-        chart_as_of = request.publication_at
+            ranked = _merge_pool_seed_rows(ranked, pool_seeds, retrieved=retrieved, text=text)
         earnings_pit = {"status": "not_applicable_offline" if offline else "pending"}
         metric_fingerprints = {"status": "not_applicable_offline" if offline else "pending"}
         if not offline:
@@ -1264,6 +1499,7 @@ class Investigator:
             ranked = compare()
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
+            ranked = _merge_pool_seed_rows(ranked, pool_seeds, retrieved=retrieved, text=text)
             if not offline:
                 _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
                 earnings_pit = apply_earnings_pit(
@@ -1324,6 +1560,7 @@ class Investigator:
             ranked = compare()
             ranked, dropped = _filter_active_call_blocked(ranked, blocked)
             active_call_dropped.extend(dropped)
+            ranked = _merge_pool_seed_rows(ranked, pool_seeds, retrieved=retrieved, text=text)
         if not offline:
             _apply_chart(ranked, chart_cache, text, as_of=chart_as_of)
             earnings_pit = apply_earnings_pit(
