@@ -21,12 +21,32 @@ async def discover_spot_symbols(
         payload = response.json()
         if not isinstance(payload, list):
             raise ValueError("Invalid ticker response")
+        exchange_response = await client.get(
+            "https://data-api.binance.vision/api/v3/exchangeInfo", timeout=20
+        )
+        exchange_response.raise_for_status()
+        exchange_payload = exchange_response.json()
+        if not isinstance(exchange_payload, dict) or not isinstance(
+            exchange_payload.get("symbols"), list
+        ):
+            raise ValueError("Invalid exchange info")
+        trading = {
+            row["symbol"]
+            for row in exchange_payload["symbols"]
+            if isinstance(row, dict)
+            and isinstance(row.get("symbol"), str)
+            and row.get("status") == "TRADING"
+            and row.get("isSpotTradingAllowed") is True
+            and row.get("quoteAsset") == "USDT"
+        }
         rows = []
         for item in payload:
             if not isinstance(item, dict):
                 continue
             symbol = item.get("symbol")
             if not isinstance(symbol, str) or not symbol.endswith("USDT"):
+                continue
+            if symbol not in trading:
                 continue
             if symbol.endswith(("UPUSDT", "DOWNUSDT", "BULLUSDT", "BEARUSDT")):
                 continue
@@ -47,10 +67,12 @@ async def discover_spot_symbols(
             "symbols": [symbol for symbol, _, _ in rows],
             "screened_symbols": len(payload),
             "eligible_symbols": len(rows),
+            "trading_pairs": len(trading),
+            "eligibility_source": "binance_exchange_info_trading_spot",
             "selection": "absolute_24h_price_change_then_quote_volume",
             "limitations": (
                 "24h change is not early momentum; one exchange only; "
-                "spot eligibility not independently confirmed"
+                "Bitpanda listing and executable spread not confirmed"
             ),
         }
     except (httpx.HTTPError, ValueError) as exc:
