@@ -385,10 +385,13 @@ def test_candidate_resolution_shortcut_prefills_candidate_identity():
 
     assert "makeResolutionButton" in html
     assert "Calls suchen" in html
+    assert 'id="search-calls"' in html
+    assert 'id="call-search-panel"' in html
     assert "identity.asset_id||candidate?.asset_id" in html
     assert "if(identity.name)" in html
     assert "renderProse" in html
     assert "/api/hebeltrader/calls/search" in html
+    assert "innerHTML" not in html
 
 
 def test_case_actions_report_failures_and_preserve_archive_filter():
