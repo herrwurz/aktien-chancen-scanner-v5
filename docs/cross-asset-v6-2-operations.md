@@ -3,7 +3,7 @@
 - Scan all Binance USDT ticker rows returned by the source, not only top-volume assets.
 - Apply a minimum 24h quote-volume floor of 100,000 USDT to the discovery candidate pool.
 - Rank the discovery candidates by absolute 24h price change, then quote volume.
-- Fetch expensive 5m candles for at most 40 candidates per run. This is a **request budget**, not a market-overview cap.
+- Outside 07:00/19:00 Vienna full scans, fetch expensive 5m candles for the top 20 absolute-move names plus up to 60 rotating names (≤80). This is a **request budget**, not a market-overview cap.
 - Set `CRYPTO_DISCOVER_UNIVERSE=true` to override the default static BTC/ETH symbol list.
 - This is Binance-only coverage, not a global CEX/DEX market scan. 24h change is a lagging ranking signal, not an early-entry guarantee.
 - Momentum candidates are research-only; do not call them executable Bitpanda buy signals without listing, spread, liquidity, and risk checks.
