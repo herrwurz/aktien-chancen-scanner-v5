@@ -432,9 +432,7 @@ def _apply_chart(ranked, cache, text, top=6, as_of=None):
         ticker = data.get("ticker") or ticker_for(data.get("name") or "")
         key = row["asset_id"]
         if key not in cache:
-            cache[key] = (
-                chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
-            )
+            cache[key] = chart_check(ticker, **chart_opts) if ticker else {"status": "no_ticker"}
         result = cache[key]
         row["chart"] = result
         if result["status"] == "ok":
