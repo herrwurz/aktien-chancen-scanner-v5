@@ -47,13 +47,11 @@ async def _crypto_pass(symbols: list[str], *, cutoff: datetime, root: Path | Non
         )
         discovery["ranking_mode"] = ranking_mode
         snapshot_path.parent.mkdir(parents=True, exist_ok=True)
-        snapshot_path.write_text(
-            json.dumps({
-                "observed_at": cutoff.isoformat(),
-                "ticker_snapshot": discovery.get("ticker_snapshot", {}),
-            }),
-            encoding="utf-8",
-        )
+        snapshot_payload = {
+            "observed_at": cutoff.isoformat(),
+            "ticker_snapshot": discovery.get("ticker_snapshot", {}),
+        }
+        snapshot_path.write_text(json.dumps(snapshot_payload), encoding="utf-8")
     universe_count = len(symbols)
     if discovery:
         symbols, scan_mode = choose_detail_symbols(symbols, cutoff=cutoff)
