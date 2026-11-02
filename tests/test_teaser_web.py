@@ -127,15 +127,11 @@ def test_out_of_competition_analyze_without_official_listing(tmp_path, monkeypat
     )
     assert stored.status_code == 200
     assert stored.json()["persisted"] is True
-    assert (
-        client.post(
-            f"/api/hebeltrader/cases/{case_id}/prospective",
-            auth=auth,
-            headers=origin,
-            json={"basis": "must fail for ooc"},
-        ).status_code
-        == 422
-    )
+    assert stored.json()["listed_as_official"] is True
+    assert stored.json()["competition_mode"] == "official"
+    listed = client.get("/api/hebeltrader/cases", auth=auth).json()
+    assert len(listed) == 1 and listed[0]["case_id"] == case_id
+    assert client.get("/api/hebeltrader/cases?listing=out_of_competition", auth=auth).json() == []
     resolved = client.post(
         f"/api/hebeltrader/cases/{case_id}/resolution",
         auth=auth,
@@ -156,10 +152,11 @@ def test_out_of_competition_analyze_without_official_listing(tmp_path, monkeypat
     )
     assert promoted.status_code == 200
     assert promoted.json()["export_relative_path"].endswith(f"{case_id}.json")
-    assert client.get("/api/hebeltrader/cases", auth=auth).json() == []
+    assert client.get("/api/hebeltrader/cases", auth=auth).json()[0]["case_id"] == case_id
     page = client.get("/", auth=auth)
     assert "Außer Konkurrenz" in page.text
     assert "out-of-competition" in page.text
+    assert "ins Listing" in page.text or "Meine Fälle aufgenommen" in page.text
 
 
 def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_path, monkeypatch):

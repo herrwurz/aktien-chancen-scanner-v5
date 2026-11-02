@@ -300,14 +300,15 @@ def create_app(settings: Settings | None = None, engine=None):
         if payload.persist:
             if not payload.case_id:
                 raise HTTPException(422, "case_id required when persisting solution PDF")
+            journal = CaseJournal(settings.detective_public_root / "cases")
             try:
-                stored = CaseJournal(settings.detective_public_root / "cases").store_solution_pdf(
-                    payload.case_id, data, extracted=extracted
-                )
+                stored = journal.store_solution_pdf(payload.case_id, data, extracted=extracted)
             except ValueError as exc:
                 raise HTTPException(422, str(exc)) from None
             result["persisted"] = True
             result["solution_pdf"] = stored
+            result["listed_as_official"] = bool(stored.get("listed_as_official"))
+            result["competition_mode"] = journal.case(payload.case_id).get("competition_mode")
         return result
 
     @app.get("/api/hebeltrader/cases")
