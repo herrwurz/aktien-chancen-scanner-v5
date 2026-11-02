@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from scanner.stock_monitor.sec_replay import replay_sec_snapshot
+from scanner.stock_monitor.sec_event_triage import recent_filing_events
 
 
 @dataclass(frozen=True)
@@ -56,8 +57,17 @@ def run_sec_monitor(
                 run_id=f"{run_id}:sec:{target.cik}",
                 code_version=code_version,
             )
+            recent_events = recent_filing_events(
+                record, symbol=target.symbol, cutoff=target_cutoff
+            )
             outcomes.append(
-                {"symbol": target.symbol, **result, "cutoff": target_cutoff.isoformat()}
+                {
+                    "symbol": target.symbol,
+                    **result,
+                    "cutoff": target_cutoff.isoformat(),
+                    "recent_events": recent_events,
+                    "recent_event_count": len(recent_events),
+                }
             )
         except (ValueError, KeyError, TypeError, OSError) as exc:
             outcomes.append(
