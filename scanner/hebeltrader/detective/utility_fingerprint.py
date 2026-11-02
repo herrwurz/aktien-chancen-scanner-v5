@@ -16,6 +16,8 @@ _OFFTAKE = re.compile(
     r"power\s+purchase\s+agreements?|\bPPAs?\b|"
     r"offtake\s+agreements?|\bofftake\b|"
     r"take[\s-]*or[\s-]*pay|"
+    r"electric\s+service\s+agreements?|\bESAs?\b|"
+    r"contracted\s+load|incremental\s+contracted\s+load|"
     r"long[\s-]*term\s+(?:power|electricity|energy)\s+contracts?|"
     r"data[\s-]*cent(?:er|re)s?\s+(?:power|electricity|energy)\s+"
     r"(?:contracts?|agreements?|deals?|demand)|"

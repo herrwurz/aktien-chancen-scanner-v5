@@ -119,6 +119,22 @@ _SOFT_LIVE_LIMITS = frozenset(
         "input_excerpt_truncated",
     }
 )
+_BUDGET_GAP_ERROR = re.compile(
+    r"budget exhausted|network disabled|request budget",
+    re.I,
+)
+
+
+def has_material_research_source_gaps(errors, *, primary_documents: int, offline: bool) -> bool:
+    """True only for gaps that weaken primary evidence, not peer-budget exhaustion."""
+    if not errors:
+        return False
+    material = [
+        item for item in errors if not _BUDGET_GAP_ERROR.search(str(item.get("error") or ""))
+    ]
+    if material:
+        return True
+    return bool(errors and primary_documents == 0 and not offline)
 
 
 def packet_evidence_result(ranked, *, offline, limits):
@@ -388,6 +404,57 @@ _PRODUCT_CUE = re.compile(
     re.I,
 )
 
+# German utility teasers name theme nouns (not CamelCase issuers). Lift them into
+# fact_claims so DE→EN aliases + fingerprints can confirm ≥2 specific primary clues.
+_UTILITY_THEME_FACT = re.compile(
+    r"\b(?P<term>"
+    r"Abnahmevertr(?:ag|äge|ägen)|"
+    r"Investitionsoffensive|"
+    r"Rechenzentrumsbetreib(?:er|ern)|"
+    r"Rechenzentren|"
+    r"Rechenzentrum"
+    r")\b"
+)
+# Rechenzentrum alone appears in chip/software teasers; require a utility issuer cue.
+_UTILITY_ISSUER_THEME_GATE = re.compile(
+    r"versorger|utilit|strom[\s-]*gigant|stromversorger|electric\s+utilit|"
+    r"abnahmevertr|investitionsoffensive",
+    re.I,
+)
+_RZ_ONLY_THEME = re.compile(r"^rechenzentr", re.I)
+
+
+def _utility_theme_fact_clues(text):
+    blob = text or ""
+    if not _UTILITY_ISSUER_THEME_GATE.search(blob):
+        return []
+    clues = []
+    for match in _UTILITY_THEME_FACT.finditer(blob):
+        term = match.group("term")
+        # With only Abnahme/Investition cues, still allow RZ terms; issuer gate already
+        # required a utility-ish cue above.
+        if _RZ_ONLY_THEME.match(term) and not _UTILITY_ISSUER_THEME_GATE.search(blob):
+            continue
+        relation = _relation(blob, match.start())
+        if relation == "unknown_relation":
+            relation = "investment"
+        target = relation + "|" + term.casefold()
+        clues.append(
+            AtomicClue(
+                clue_id=sha(target.encode()),
+                category="fact_claims",
+                normalized=target,
+                value=target,
+                quote=term,
+                source_id="teaser_text",
+                start=match.start(),
+                end=match.end(),
+                instrument_scope="stock",
+                extraction_method="utility_theme_noun_requires_issuer_filing_match",
+            )
+        )
+    return clues
+
 
 def _clues(text, spans):
     clues = extract_atomic_clues(text, spans)
@@ -419,6 +486,7 @@ def _clues(text, spans):
                 extraction_method=method,
             )
         )
+    clues.extend(_utility_theme_fact_clues(text))
     quarters = set(re.findall(r"\bQ[1-4]\s+20\d{2}\b", text, re.I))
     period = next(iter(quarters)).upper() if len(quarters) == 1 else None
     normalized = []
@@ -523,7 +591,21 @@ def _apply_chart_signal_matrix(ranked, text=None):
             spec = confirmed[0] if confirmed else matched[0]
             if confirmed:
                 cell["status"] = "confirmed"
-                cell["reason"] = spec["confirm_reason"]
+                reason = spec["confirm_reason"]
+                # Prefer SMA vs EMA specificity for Golden Cross (retail often means SMA).
+                if spec.get("clue") == "golden_cross":
+                    if chart.get("golden_cross_sma"):
+                        reason = "eod_golden_cross_sma_within_20d_pit"
+                    elif chart.get("golden_cross_ema"):
+                        reason = "eod_golden_cross_ema_only_within_20d_pit"
+                        row.setdefault("counterarguments", [])
+                        note = (
+                            "Golden Cross nur als EMA 50/200 bestätigt; "
+                            "klassisches SMA-Golden-Cross fehlt — manuell prüfen."
+                        )
+                        if note not in row["counterarguments"]:
+                            row["counterarguments"].append(note)
+                cell["reason"] = reason
             else:
                 cell["status"] = "contradicted"
                 cell["reason"] = spec["contradict_reason"]
@@ -903,7 +985,11 @@ def _apply_utility_clue_matrix(ranked, text):
         if row.get("hard_contradictions"):
             continue
         fp = row.get("utility_fingerprint") or {}
-        if not (fp.get("has_offtake") and fp.get("has_data_center_link")):
+        # Need a rare combo (offtake+DC) or offtake/DC plus named multi-$bn plan.
+        if not (
+            (fp.get("has_offtake") and fp.get("has_data_center_link"))
+            or (fp.get("components", 0) >= 2 and fp.get("capex_billions") is not None)
+        ):
             continue
         for cell in row.get("evidence_matrix") or []:
             if cell.get("status") == "confirmed":
@@ -913,6 +999,17 @@ def _apply_utility_clue_matrix(ranked, text):
             if category not in {"fact_claims", "semantic_fact"}:
                 continue
             if not _UTILITY_CLUE_HINT.search(quote):
+                continue
+            quote_l = quote.casefold()
+            if "investition" in quote_l and fp.get("capex_billions") is None:
+                continue
+            if re.search(r"abnahme|offtake|power\s+purchase", quote_l) and not fp.get(
+                "has_offtake"
+            ):
+                continue
+            if re.search(r"rechenzentr|data\s*cent|hyperscale", quote_l) and not fp.get(
+                "has_data_center_link"
+            ):
                 continue
             cell["status"] = "confirmed"
             cell["reason"] = "utility_offtake_data_center_fingerprint"
@@ -1817,7 +1914,12 @@ class Investigator:
             limits.append("teaser_publication_time_unknown")
         if offline:
             limits.append("active_falsification_not_performed")
-        if errors:
+        primary_docs = sum(
+            d.get("source_kind") in {"issuer", "regulatory", "regulator"} for d in fetched
+        )
+        if has_material_research_source_gaps(
+            errors, primary_documents=primary_docs, offline=offline
+        ):
             limits.append("research_source_gaps")
         if not ranked or not _leader_evidence_ready(ranked[0] if ranked else None, clues):
             limits.append("insufficient_specific_primary_evidence")
