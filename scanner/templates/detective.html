@@ -98,7 +98,7 @@
   </section>
   <section id="cases-panel">
     <h2>Fälle</h2>
-    <p class="muted">Eine Liste für alles: offizielle Fälle, außer Konkurrenz, Report nachgeliefert. PDF-Upload holt OOC-Fälle ins Listing.</p>
+    <p class="muted">Jeder eingegebene Fall landet automatisch hier — inklusive außer Konkurrenz, Blindtests und freigegebener Referenzen. Kein separates Nachladen.</p>
     <label for="case-view">Ansicht
       <select id="case-view">
         <option value="active">Alle aktiv</option>
@@ -107,6 +107,8 @@
         <option value="correct">Erraten</option>
         <option value="wrong">Falsch</option>
         <option value="waiting">Warten auf Report</option>
+        <option value="blind">Blindtest</option>
+        <option value="reference">Referenz</option>
         <option value="archive">Archiv</option>
       </select>
     </label>
@@ -119,14 +121,6 @@
       <button type="button" id="load-cases">Aktualisieren</button></div>
     <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
   </section>
-  <section><h2>Prospektive Referenzfälle</h2><ul id="prospective-references"><li>Noch keine freigegebenen Fälle.</li></ul></section>
-  {% if request.scope.get("teaser_web") %}
-  <section><h2>Historische Referenzfälle</h2>
-    <p>Rekonstruierte Gesprächshistorie: keine neue Scanner-Trefferquote.
-    Auflösungen werden nicht als Hinweise für neue Teaser übernommen.</p>
-    <button id="import-references" type="button">18 Referenzfälle laden</button>
-    <p id="reference-status" aria-live="polite"></p><div id="references"></div>
-  </section>{% endif %}
   <section id="resolution-panel" class="resolution-callout"><h2>Originalauflösung eintragen</h2>
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
       Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
@@ -416,45 +410,6 @@ const renderCandidate=(c,index)=>{
   article.append(el('p','Bestätigung: manuell erforderlich'));
   return article;
 };
-const referenceButton=document.querySelector('#import-references');
-const referenceOutcomes={correct:'Richtig',wrong:'Falsch',unresolved:'Ungelöst'};
-const renderReferences=data=>{
-  const root=document.querySelector('#references');root.replaceChildren();
-  const summary=data.summary;
-  document.querySelector('#reference-status').textContent=
-    `${data.cases.length} historische Fälle: ${summary.correct} richtig, ${summary.wrong} falsch, ${summary.unresolved} ungelöst. Kein unabhängiger Benchmark.`;
-  [...data.cases].sort((a,b)=>a.reference_number-b.reference_number).forEach(row=>{
-    const card=el('details');card.className='candidate';
-    card.append(el('summary',`${row.reference_number}. ${row.headline} · ${referenceOutcomes[row.outcome]}`));
-    card.append(el('p',`Fall-ID: ${row.case_id} · Ausgabe: ${row.publication_issue||'unbekannt'} · Datum: ${row.publication_date||'unbekannt'}`));
-    card.append(el('p',`Ursprünglicher Tipp: ${row.first_prediction||'unbekannt'}`));
-    card.append(el('p',`Spätere Auflösung: ${row.actual_company||'Nicht gesichert'}${row.actual_ticker?' ('+row.actual_ticker+')':''}`));
-    card.append(el('p',`Gemeldete Call-WKN: ${row.derivative_wkn||'unbekannt'} · Produktdaten nicht gesondert verifiziert`));
-    if(row.failure_analysis)card.append(el('p',`Fehleranalyse: ${row.failure_analysis}`));
-    card.append(el('h3','Originaltext'));
-    card.append(el('p',row.teaser_text||'Vollständiger Originalteaser fehlt; nur Überschrift vorhanden.'));
-    if((row.key_clues||[]).length){card.append(el('h3','Dokumentierte Hinweise'));card.append(list(row.key_clues));}
-    root.append(card);
-  });
-  referenceButton.textContent='Referenzbestand erneut prüfen';
-};
-if(referenceButton){
-  fetch('/api/hebeltrader/references').then(async response=>{
-    if(response.ok)renderReferences(await response.json());
-    else document.querySelector('#reference-status').textContent=response.status===404?
-      'Noch nicht geladen. Einmal auf „18 Referenzfälle laden“ drücken.':'Referenzbestand derzeit nicht verfügbar.';
-  }).catch(()=>{document.querySelector('#reference-status').textContent='Verbindung zum Referenzbestand fehlgeschlagen.';});
-  referenceButton.addEventListener('click',async()=>{
-    referenceButton.disabled=true;
-    document.querySelector('#reference-status').textContent='Referenzbestand wird geladen und geprüft …';
-    try{
-      const response=await fetch('/api/hebeltrader/references/import',{method:'POST'});
-      if(!response.ok)throw new Error('Import fehlgeschlagen. Bitte erneut versuchen.');
-      renderReferences(await response.json());
-    }catch(error){document.querySelector('#reference-status').textContent=error.message;}
-    finally{referenceButton.disabled=false;}
-  });
-}
 let allCases=[];
 const allLoadedCases=()=>allCases;
 const authHeaders=()=>{const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;return headers;};
@@ -467,6 +422,8 @@ const outcomeBucket=row=>{
   return 'open';
 };
 const isWaitingForReport=row=>!row.archived&&!row.resolution&&!row.solution_pdf;
+const isBlindCase=row=>row.evaluation_class==='prospective_blind';
+const isReferenceCase=row=>Boolean(row.reference_status);
 const filterCases=(view=currentCaseView())=>{
   const rows=allCases;
   if(view==='archive')return rows.filter(row=>row.archived);
@@ -476,12 +433,16 @@ const filterCases=(view=currentCaseView())=>{
   if(view==='correct')return active.filter(row=>outcomeBucket(row)==='correct');
   if(view==='wrong')return active.filter(row=>outcomeBucket(row)==='wrong');
   if(view==='waiting')return active.filter(isWaitingForReport);
+  if(view==='blind')return active.filter(isBlindCase);
+  if(view==='reference')return active.filter(isReferenceCase);
   return active;
 };
 const caseBadge=row=>{
   const bucket=outcomeBucket(row);
   if(row.archived){const b=el('span','Archiv');b.className='badge';return b;}
   if(bucket==='ooc'){const b=el('span','Außer Konkurrenz');b.className='badge ooc';return b;}
+  if(isReferenceCase(row)){const b=el('span','Referenz');b.className='badge open';return b;}
+  if(isBlindCase(row)&&!row.resolution){const b=el('span','Blindtest');b.className='badge open';return b;}
   if(bucket==='correct'){const b=el('span','Erraten');b.className='badge ok';return b;}
   if(bucket==='wrong'){const b=el('span','Falsch');b.className='badge bad';return b;}
   const b=el('span',row.listing_promotion?'Listing':'Offen');b.className='badge open';return b;
@@ -555,6 +516,8 @@ const refreshCaseSelect=(preferredId='')=>{
     const row=allCases.find(item=>item.case_id===keep);
     if(row.archived)viewSelect.value='archive';
     else if(row.competition_mode==='out_of_competition')viewSelect.value='ooc';
+    else if(isReferenceCase(row))viewSelect.value='reference';
+    else if(isBlindCase(row)&&!row.resolution)viewSelect.value='blind';
     else viewSelect.value='active';
   }
   const filtered=filterCases();
@@ -562,7 +525,12 @@ const refreshCaseSelect=(preferredId='')=>{
   select.append(new Option(filtered.length?'Fall auswählen …':'Keine Fälle in dieser Ansicht',''));
   filtered.forEach(row=>{
     const bucket=outcomeBucket(row);
-    const tag=bucket==='ooc'?' · OOC':bucket==='correct'?' · erraten':bucket==='wrong'?' · falsch':row.archived?' · archiviert':'';
+    const tag=row.archived?' · archiviert'
+      :bucket==='ooc'?' · OOC'
+      :isReferenceCase(row)?' · Referenz'
+      :isBlindCase(row)&&!row.resolution?' · Blind'
+      :bucket==='correct'?' · erraten'
+      :bucket==='wrong'?' · falsch':'';
     select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
   });
   renderCasesPie();
@@ -688,14 +656,14 @@ const selectCase=caseId=>{
   if(row.competition_mode!=='out_of_competition'&&!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
     const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
-      if(response.ok)await loadCases(row.case_id);
+      if(response.ok){document.querySelector('#case-view').value='blind';await loadCases(row.case_id);}
       else await showCaseActionError(response,'Blindtest-Markierung nicht möglich');
     });moreActions.append(blind);
   }
   if(row.competition_mode!=='out_of_competition'&&row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
     const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';promote.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
-      if(response.ok){await loadCases(row.case_id);await loadProspectiveReferences();}
+      if(response.ok){document.querySelector('#case-view').value='reference';await loadCases(row.case_id);}
       else await showCaseActionError(response,'Referenzfreigabe nicht möglich');
     });moreActions.append(promote);
   }
@@ -730,15 +698,6 @@ const loadCases=async(preferredId='')=>{
     refreshCaseSelect(preferredId);
   }catch(error){message.textContent=error.message;}
 };
-const loadProspectiveReferences=async()=>{
-  const root=document.querySelector('#prospective-references');
-  try{const response=await fetch('/api/hebeltrader/prospective-references');if(!response.ok)return;
-    const rows=await response.json();root.replaceChildren();
-    if(!rows.length){root.append(el('li','Noch keine freigegebenen Fälle.'));return;}
-    rows.forEach(row=>root.append(el('li',`Fall ${row.reference_number}: ${(row.input||{}).headline||row.case_id} · ${row.status}`)));
-  }catch(error){}
-};
-loadProspectiveReferences();
 document.querySelector('#load-cases').addEventListener('click',()=>loadCases(document.querySelector('#case-select').value));
 document.querySelector('#case-view').addEventListener('change',()=>refreshCaseSelect(document.querySelector('#case-select').value));
 document.querySelector('#case-select').addEventListener('change',event=>selectCase(event.target.value));

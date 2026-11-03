@@ -360,8 +360,16 @@ def test_cases_use_compact_single_case_selector():
     assert 'id="cases-legend"' in html
     assert 'id="case-select"' in html
     assert 'id="active-case"' in html
+    assert 'value="blind"' in html
+    assert 'value="reference"' in html
     assert 'id="include-archived"' not in html
     assert 'id="ooc-case-select"' not in html
+    assert 'id="prospective-references"' not in html
+    assert 'id="import-references"' not in html
+    assert "Historische Referenzfälle" not in html
+    assert "Prospektive Referenzfälle" not in html
+    assert "loadProspectiveReferences" not in html
+    assert "/api/hebeltrader/references" not in html
     assert "listing=all" in html
     assert "renderCasesPie" in html
     assert "selectCase" in html

@@ -130,19 +130,13 @@ Vor dem Start müssen die privaten Dateien `password` und `token` im Unterverzei
 Fehlende Dateien verhindern den Start der geschützten Web-App. Coolify übernimmt
 TLS und Routing. Keine zusätzlichen Ports oder Änderungen am bestehenden Proxy erforderlich.
 
-## Historische Referenzfälle anzeigen
+## Fälle in der Web-UI
 
-Nach Aktualisierung der Anwendung erscheint unter „Meine Fälle“ der separate Abschnitt
-„Historische Referenzfälle“. Einmal „18 Referenzfälle laden“ drücken. Der Server lädt
-nur die fest auf Commit `656d7ba` fixierte öffentliche Referenzdatei herunter, prüft deren
-SHA-256 und archiviert sie unverändernd im eigenen `/data/references`-Verzeichnis.
-Erneutes Laden verwendet das geprüfte lokale Archiv. Ohne Anmeldung kein Zugriff;
-fehlgeschlagene Downloads verändern weder Falljournal noch Referenzbestand.
+Jeder eingegebene Fall erscheint in der Sektion „Fälle“ und ist über die Combobox
+**Ansicht** erreichbar (aktiv, offiziell, außer Konkurrenz, erraten, falsch, warten,
+Blindtest, Referenz, Archiv). Es gibt kein separates Laden historischer oder
+prospektiver Listen.
 
-Angezeigt werden die 18 Überschriften, ursprünglicher Tipp, gemeldete Auflösung,
-Call-WKN, Fehleranalyse und verfügbarer Originaltext. HT-016 Williams ist aus dem
-aktiven Register entfernt.
-10 richtig / 7 falsch / 1 ungelöst bezeichnet ausschließlich die rekonstruierte
-Gesprächshistorie. Der Import erzeugt keine neuen Erstprognosen, keine Research-Kandidaten
-und keine neuen Blindtest-Treffer. Die Rankingsuche liest diese Bibliothek nicht.
-Für isolierte Blindtests weiterhin nur bereinigte Eingaben in den Scannercontainer mounten.
+Die API `/api/hebeltrader/references` bleibt für den fest auf Commit `656d7ba`
+fixierten Referenzbestand verfügbar, wird in der UI aber nicht mehr angeboten.
+Die Rankingsuche liest diese Bibliothek nicht.
