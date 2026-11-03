@@ -175,6 +175,8 @@ class CaseJournal:
             "resolution": None,
             "archived": False,
             "archive": None,
+            "deleted": False,
+            "delete": None,
             "reference_status": None,
             "evaluation_class": intake_input.get("evaluation_class", "unclassified"),
             "competition_mode": intake_input.get("competition_mode") or "official",
@@ -213,6 +215,9 @@ class CaseJournal:
             if kind == "restore":
                 state["archived"] = False
                 state["archive"] = None
+            if kind == "delete":
+                state["deleted"] = True
+                state["delete"] = dict(p, recorded_at=row["recorded_at"])
             if kind == "reference_promotion":
                 state["reference_status"] = "prospective_reference"
             if kind == "prospective_classification":
@@ -240,6 +245,7 @@ class CaseJournal:
         if listing not in ("official", "out_of_competition", "all"):
             raise ValueError("listing must be official, out_of_competition, or all")
         rows = [self.case(r["case_id"]) for r in self.events() if r["kind"] == "intake"]
+        rows = [row for row in rows if not row.get("deleted")]
         if not include_archived:
             rows = [row for row in rows if not row["archived"]]
         if listing == "official":
@@ -253,6 +259,8 @@ class CaseJournal:
             raise ValueError("archive reason required")
         with self._lock():
             state = self.case(case_id)
+            if state.get("deleted"):
+                raise ValueError("deleted case cannot be archived")
             if state["archived"]:
                 return state["archive"]
             return self._append(case_id, "archive", {"reason": reason.strip()})["payload"]
@@ -262,10 +270,21 @@ class CaseJournal:
             raise ValueError("restore reason required")
         with self._lock():
             state = self.case(case_id)
+            if state.get("deleted"):
+                raise ValueError("deleted case cannot be restored")
             if not state["archived"]:
                 return {"archived": False}
             self._append(case_id, "restore", {"reason": reason.strip()})
             return {"archived": False}
+
+    def delete(self, case_id, reason):
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("delete reason required")
+        with self._lock():
+            state = self.case(case_id)
+            if state.get("deleted"):
+                return state.get("delete") or {"deleted": True}
+            return self._append(case_id, "delete", {"reason": reason.strip()})["payload"]
 
     def references(self):
         # Official listing only — out-of-competition cases never enter the blind register.
@@ -470,6 +489,8 @@ class CaseJournal:
             raise ValueError("invalid call WKN format")
         with self._lock():
             state = self.case(case_id)
+            if state.get("deleted"):
+                raise ValueError("deleted case cannot be resolved")
             first = state["first_prediction"]
             if first is None:
                 raise ValueError("freeze first prediction before resolution")
@@ -518,6 +539,7 @@ class CaseJournal:
                     "failure",
                     "archive",
                     "restore",
+                    "delete",
                     "prospective_classification",
                     "reference_promotion",
                     "solution_pdf",

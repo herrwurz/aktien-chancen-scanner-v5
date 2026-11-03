@@ -355,14 +355,16 @@ def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch
 def test_cases_use_compact_single_case_selector():
     html = Path("scanner/templates/detective.html").read_text()
     assert 'id="cases-panel"' in html
-    assert 'id="case-view"' in html
+    assert 'id="case-scope"' in html
+    assert 'id="case-result"' in html
     assert 'id="cases-pie"' in html
     assert 'id="cases-legend"' in html
     assert 'id="case-select"' in html
     assert 'id="active-case"' in html
-    assert "Fall in diesem Filter" in html
-    assert 'value="blind"' in html
-    assert 'value="reference"' in html
+    assert 'id="case-view"' not in html
+    assert 'value="blind"' not in html
+    assert 'value="reference"' not in html
+    assert 'value="official"' not in html
     assert 'id="include-archived"' not in html
     assert 'id="ooc-case-select"' not in html
     assert 'id="prospective-references"' not in html
@@ -403,8 +405,8 @@ def test_candidate_resolution_shortcut_prefills_candidate_identity():
     assert "Calls suchen" in html
     assert 'id="search-calls"' in html
     assert 'id="call-search-panel"' in html
-    assert "identity.asset_id||candidate?.asset_id" in html
-    assert "if(identity.name)" in html
+    assert "identity.asset_id||candidate?.asset_id||prior.asset_id" in html
+    assert "identity.name||prior.name" in html
     assert "renderProse" in html
     assert "/api/hebeltrader/calls/search" in html
     assert "innerHTML" not in html
@@ -416,8 +418,12 @@ def test_case_actions_report_failures_and_preserve_archive_filter():
     assert "showCaseActionError" in html
     assert "Archivierung fehlgeschlagen" in html
     assert "Wiederherstellung fehlgeschlagen" in html
+    assert "Löschen fehlgeschlagen" in html
     assert "Blindtest-Markierung nicht möglich" in html
     assert "Referenzfreigabe nicht möglich" in html
-    assert "refreshCaseSelect" in html
+    assert "refreshCaseSelect({reset:true})" in html
+    assert "/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/delete" in html
+    assert "Auflösung bearbeiten" in html
+    assert "Fall endgültig löschen" in html
     assert "Weitere Aktionen" in html
     assert "Fall ins Listing aufgenommen" in html
