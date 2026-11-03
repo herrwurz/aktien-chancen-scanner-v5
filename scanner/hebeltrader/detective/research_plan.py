@@ -130,6 +130,20 @@ def build_queries(text, named, fallback):
         queries.append(sector + " analyst rating revision investor relations")
     if re.search(r"200[- ]?(?:tage|day)|GD\s*200", clean, re.I):
         queries.append(sector + " stock 200 day moving average support")
+    # HT-204 lesson: US defense primes look alike until multi-segment / aftermarket /
+    # backlog / guidance-raise cues are searched explicitly.
+    if sector == "defense" and re.search(
+        r"US[\s-]*Rüstung|amerikanische[rn]?\s+Rüstung|unter\s+einem\s+Dach|"
+        r"Wartungsvertr|Auftragsbestand|Prognose\w*\s+angehoben",
+        clean,
+        re.I,
+    ):
+        queries += [
+            "US aerospace defense conglomerate Raytheon Collins Pratt Whitney segments IR",
+            "defense aftermarket maintenance sustainment contracts backlog guidance raise",
+            "aerospace defense multi-segment commercial engines military technology earnings",
+            "US defense prime peers Lockheed Northrop General Dynamics backlog comparison",
+        ]
     safe_named = [name for name in named if name in clean]
     if safe_named:
         queries.append(" ".join('"' + n + '"' for n in safe_named[:3]) + " acquisition investment")

@@ -20,6 +20,11 @@ from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clue
 from .clue_aliases import term_pattern
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
+from .defense_fingerprint import (
+    apply_defense_fingerprints,
+    issuer_looks_non_us_defense,
+    teaser_requires_us_defense,
+)
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
 from .featured_calls import blocked_features, is_blocked
 from .index_pool import market_universe_list
@@ -83,7 +88,8 @@ def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
     docs = _documents_by_asset(fetched)
     metric = apply_metric_fingerprints(ranked, docs)
     utility = apply_utility_fingerprints(ranked, docs, teaser_text=teaser_text)
-    return {"metric": metric, "utility": utility}
+    defense = apply_defense_fingerprints(ranked, docs, teaser_text=teaser_text)
+    return {"metric": metric, "utility": utility, "defense": defense}
 
 
 def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_recall=False):
@@ -642,11 +648,13 @@ def _teaser_claims_golden_cross(text):
 
 _apply_golden_cross_matrix = _apply_chart_signal_matrix
 
-_US_ISSUER_CLAIM = re.compile(
+_US_UTILITY_CLAIM = re.compile(
     r"US[\s-]*Versorger|US[\s-]*Utility|US[\s-]*Stromversorger|"
     r"amerikanische[rn]?\s+Versorger|amerikanischer?\s+Utility",
     re.I,
 )
+# Back-compat alias used by older tests / call sites.
+_US_ISSUER_CLAIM = _US_UTILITY_CLAIM
 _EU_VENUE = re.compile(r"\.(MC|PA|XETRA|DE|L|AS|BR|MI|ST|HE|CO|OL|LS|WA)$", re.I)
 _KNOWN_NON_US_ISSUER = re.compile(
     r"\b(iberdrola|schneider electric|siemens energy|enel|edf|engie|"
@@ -660,8 +668,13 @@ _KNOWN_NON_UTILITY = re.compile(
 )
 
 
+def _teaser_requires_us_utility(text: str) -> bool:
+    return bool(_US_UTILITY_CLAIM.search(text or ""))
+
+
 def _teaser_requires_us_issuer(text: str) -> bool:
-    return bool(_US_ISSUER_CLAIM.search(text or ""))
+    """True when teaser demands a US issuer (utility and/or defense)."""
+    return _teaser_requires_us_utility(text) or teaser_requires_us_defense(text)
 
 
 def _issuer_looks_non_us(identity: dict) -> bool:
@@ -676,7 +689,9 @@ def _issuer_looks_non_us(identity: dict) -> bool:
     ticker = identity.get("ticker") or ""
     if _EU_VENUE.search(ticker):
         return True
-    return bool(_KNOWN_NON_US_ISSUER.search(identity.get("name") or ""))
+    if _KNOWN_NON_US_ISSUER.search(identity.get("name") or ""):
+        return True
+    return issuer_looks_non_us_defense(identity)
 
 
 def _issuer_looks_non_utility(identity: dict) -> bool:
@@ -684,8 +699,11 @@ def _issuer_looks_non_utility(identity: dict) -> bool:
 
 
 def _apply_us_issuer_hard_filter(ranked, text):
-    """Hard-demote non-US / non-utility names when the teaser requires a US utility."""
-    if not _teaser_requires_us_issuer(text):
+    """Hard-demote non-US names; utility-only demotion stays utility-gated."""
+    wants_us = _teaser_requires_us_issuer(text)
+    wants_utility = _teaser_requires_us_utility(text)
+    wants_defense = teaser_requires_us_defense(text)
+    if not wants_us:
         return
     for row in ranked:
         data = row.get("identity")
@@ -696,23 +714,32 @@ def _apply_us_issuer_hard_filter(ranked, text):
         if _issuer_looks_non_us(data) and "teaser_requires_us_issuer" not in hard:
             hard.append("teaser_requires_us_issuer")
             row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
-            counters.append("Teaser verlangt US-Versorger; Kandidat wirkt nicht US-basiert.")
+            if wants_defense and not wants_utility:
+                counters.append(
+                    "Teaser verlangt US-Rüstungskonzern; Kandidat wirkt nicht US-basiert."
+                )
+            else:
+                counters.append("Teaser verlangt US-Versorger; Kandidat wirkt nicht US-basiert.")
             changed = True
             for cell in row.get("evidence_matrix") or []:
                 quote = cell.get("quote") or ""
                 if cell.get("category") == "countries" and re.search(r"\bUSA\b", quote, re.I):
                     cell["status"] = "contradicted"
                     cell["reason"] = "issuer_not_us_despite_teaser_usa_claim"
-                elif _US_ISSUER_CLAIM.search(quote):
+                elif _US_UTILITY_CLAIM.search(quote) or teaser_requires_us_defense(quote):
                     cell["status"] = "contradicted"
-                    cell["reason"] = "issuer_not_us_despite_teaser_us_utility_claim"
-        if _issuer_looks_non_utility(data) and "teaser_requires_utility_issuer" not in hard:
+                    cell["reason"] = "issuer_not_us_despite_teaser_us_claim"
+        if (
+            wants_utility
+            and _issuer_looks_non_utility(data)
+            and "teaser_requires_utility_issuer" not in hard
+        ):
             hard.append("teaser_requires_utility_issuer")
             row["evidence_score"] = int(row.get("evidence_score") or 0) - 100
             counters.append("Teaser verlangt Versorger; Kandidat ist kein Utility-Emittent.")
             changed = True
             for cell in row.get("evidence_matrix") or []:
-                if _US_ISSUER_CLAIM.search(cell.get("quote") or ""):
+                if _US_UTILITY_CLAIM.search(cell.get("quote") or ""):
                     cell["status"] = "contradicted"
                     cell["reason"] = "issuer_not_utility_despite_teaser_us_utility_claim"
         if not changed and hard == (row.get("hard_contradictions") or []):

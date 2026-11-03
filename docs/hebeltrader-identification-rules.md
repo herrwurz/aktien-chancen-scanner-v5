@@ -83,6 +83,13 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 - **Ursache noch nicht hinreichend belegt:** vermutlich zu frühe Gewichtung des generischen „Comeback“-Narrativs; genaue damalige Quellen und Ranking rekonstruieren, nicht rückwirkend erfinden.
 - **Regressionstest:** Originalteaser 176/26 unverändert prüfen und Salesforce mit mindestens fünf Alternativen vergleichen.
 
+### FE-003 – Lockheed statt RTX (HEBELTRADER 204/26, 03.11.2026)
+- **Ursprüngliche Antwort:** Lockheed Martin Rang 1 (Evidenz 56), RTX Rang 2 (46), General Dynamics Rang 3; 0 bestätigte Kernhinweise.
+- **Tatsächliche Nutzerauflösung:** RTX.
+- **Ursache:** Generische US-Rüstungs-/Auftragsboom-Sprache trifft alle Primes gleich; der Teaser-Diskriminator **„mehrere Weltmarktführer unter einem Dach“** plus Wartungsverträge / Rekord-Auftragsbestand / angehobene Jahresprognose wurde nicht als Primärbeleg gegen Pure-Play-Primes (LMT/NOC/GD) gewichtet. KI-Belegstellen-Anzahl ≠ Score.
+- **Regel:** Bei US-Rüstung mit Multi-Segment-/Dach-Cue gezielt Raytheon/Collins/Pratt-/Aftermarket-/Guidance-Belege suchen; Pure-Play-Primes ohne Multi-Segment-Evidenz soft demoten; EU-Rüster hart filtern.
+- **Regressionstest:** `tests/hebeltrader/test_defense_fingerprint.py` — RTX-IR vor Lockheed bei HT-204-Teasertext.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.
@@ -94,6 +101,7 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 
 ## Änderungsjournal
 
+- **2026-11-03:** FE-003 Lockheed statt RTX (204/26) — Defense-Fingerprint (Multi-Segment/Aftermarket/Backlog/Guidance), US-Rüstungs-Hardfilter und Recherchequeries ergänzt; Regressionstest `test_defense_fingerprint.py`.
 - **2026-10-28 (erneute Vollständigkeitsprüfung):** Historische Check-16-/Check-17-Auflösungen ergänzt: JPMorgan Chase MN6CYX (Ersttipp Goldman Sachs falsch) und Johnson & Johnson JE11C1 (richtig). 18 Fälle insgesamt, 10 richtig, 7 falsch, 1 ungelöst; historische Quote 10/16 vor Analog Devices bezog sich auf abgeschlossene Fälle ohne Williams.
 - **2026-10-28 (Korrektur):** Vier fehlende Fälle Danaher, SAP, Leonardo und Williams nachgetragen; Gesamtbestand 16; historische Ersttest-Bilanz 9 richtig, 6 falsch, 1 offen; Zuordnung von JY3SF7, UP9A9X, VJ2RFH ergänzt; BASF-WKN auf MJ7DUX korrigiert.
 - **2026-10-28:** Initiale Wissensbasis aus dokumentierten Gesprächsauflösungen, früherer Fallübersicht und bestehender Repository-Dokumentation angelegt. Fall HT-001 samt Fehleranalyse und verbindlicher Gegenkandidatenregel aufgenommen. Historische unvollständige Fälle ausdrücklich gekennzeichnet.
