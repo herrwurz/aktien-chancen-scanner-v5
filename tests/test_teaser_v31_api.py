@@ -140,3 +140,25 @@ def test_resolution_without_asset_id_can_be_saved_as_reference(tmp_path):
             base + "/reference-promotion", headers=headers, json={"source": "Hebeltrader 201/2026"}
         )
         assert promoted.json() == {"reference_status": "prospective_reference"}
+
+
+def test_case_reconcile_requires_token_and_is_idempotent(tmp_path):
+    engine = create_engine(
+        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    Base.metadata.create_all(engine)
+    settings = Settings(
+        _env_file=None, detective_public_root=tmp_path, detective_live_api_token="local-test-only"
+    )
+    headers = {"X-Research-Authorization": "local-test-only"}
+    with TestClient(create_app(settings, engine)) as client:
+        assert client.post("/api/hebeltrader/cases/reconcile").status_code == 403
+        first = client.post("/api/hebeltrader/cases/reconcile", headers=headers)
+        assert first.status_code == 200
+        body = first.json()
+        assert body["pdf_case_count"] == 0
+        assert body["deleted"] == []
+        second = client.post("/api/hebeltrader/cases/reconcile", headers=headers)
+        assert second.status_code == 200
+        assert second.json()["deleted"] == []
+    engine.dispose()

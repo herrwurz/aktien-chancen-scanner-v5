@@ -46,6 +46,14 @@ def create_web_app():
     engine.dispose()
     app = create_app(settings)
     from scanner.hebeltrader.detective import provider_usage
+    from scanner.hebeltrader.detective.case_journal import CaseJournal
+
+    # One-shot journal repair on boot: PDF → Listing, klare Auflösungen, Rest löschen.
+    # Idempotent; failures must not block serving the UI.
+    try:
+        CaseJournal(settings.detective_public_root / "cases").reconcile_operator_listing()
+    except (ValueError, OSError):
+        pass
 
     tavily_usage = provider_usage.TavilyUsageMonitor()
     eodhd_usage = provider_usage.EodhdUsageMonitor()
