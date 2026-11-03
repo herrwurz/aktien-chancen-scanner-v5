@@ -7,8 +7,8 @@ from .prose_briefing import prose_briefing
 
 
 def compact_report(report):
-    """Prefer chat-style prose; keep a short machine appendix for artifacts."""
-    prose = report.get("prose") or prose_briefing(report)
+    """Always regenerate reader prose; keep a short machine appendix for artifacts."""
+    prose = prose_briefing(report)
     appendix = [
         "",
         "---",

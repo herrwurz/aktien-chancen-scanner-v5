@@ -409,6 +409,10 @@ def test_candidate_resolution_shortcut_prefills_candidate_identity():
     assert "identity.asset_id||candidate?.asset_id||prior.asset_id" in html
     assert "identity.name||prior.name" in html
     assert "renderProse" in html
+    assert "readerProse" in html
+    assert "renderProse(readerProse(data),result)" in html
+    assert "data.prose||fallbackProse" not in html
+    assert "Working hypothesis" not in html
     assert "/api/hebeltrader/calls/search" in html
     assert "innerHTML" not in html
 

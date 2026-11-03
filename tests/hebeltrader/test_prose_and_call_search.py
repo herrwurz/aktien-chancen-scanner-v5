@@ -50,6 +50,83 @@ def test_prose_briefing_reads_like_chat_ranking():
     assert "UNKNOWN_INTERNAL_CODE" not in prose
 
 
+def test_prose_briefing_strips_legacy_hashes_scores_and_codes():
+    """Loaded Lockheed/RTX-style reports must not dump hashes or tech jargon."""
+    hash_a = "d4dcb0367842a2f0eeab900d63847bd31c8d6bd9e58a2c4e16f43ef29868ec1d"
+    hash_b = "72dd5bf38c35532f08dbff3f84bea25e9b52a494b4c3b630c5db51084bfb58a8"
+    hash_ai = "ai:1c5b5e313e1162ec4f5acf179c80753b2c85b63dd4f34e75fb1720c83aeefdde"
+    report = {
+        "competition_mode": "official",
+        "decision": {"label": "Plausible Hypothese"},
+        "identification": {"status": "hypothesis_top3"},
+        "candidates": [
+            {
+                "identity": {"name": "Lockheed Martin", "ticker": "LMT"},
+                "evidence_score": 56,
+                "ranking_reason": (
+                    f"Rang 1: 0 bestätigte Kernhinweise, 0 harte Widersprüche, Score 56; "
+                    f"Widersprüche zuerst, danach spezifische Primärevidenz. "
+                    f"6 vorläufige KI-Belegstellen; keine unabhängige Primärbestätigung; "
+                    f"Gegenargument: Unbestätigte Hinweise in der Matrix prüfen; "
+                    f"offen: {hash_a}, {hash_b}, {hash_ai}."
+                ),
+                "cited_findings": [{"status": "supported", "usable_for_ranking": True}] * 6,
+                "unknown_clues": [hash_a, hash_b, hash_ai],
+                "counterarguments": ["Unbestätigte Hinweise in der Matrix prüfen"],
+                "hypothesis_reasons": [f"confirmed:{hash_a}", "category:defense"],
+            },
+            {
+                "identity": {"name": "RTX", "ticker": "RTX"},
+                "evidence_score": 46,
+                "ranking_reason": (
+                    f"Rang 2: 0 bestätigte Kernhinweise, 0 harte Widersprüche, Score 46; "
+                    f"offen: {hash_a}."
+                ),
+                "cited_findings": [{"status": "supported", "usable_for_ranking": True}] * 2,
+            },
+            {
+                "identity": {"name": "General Dynamics", "ticker": "GD"},
+                "evidence_score": 24,
+                "ranking_reason": "Rang 3: Score 24; offen: " + hash_b,
+            },
+        ],
+        "limitations": [
+            "ai_interpretation_requires_manual_verification",
+            "fewer_than_five_countercandidates",
+            "insufficient_specific_primary_evidence",
+            "listed_underlying_identity_unverified",
+        ],
+        # Stale stored prose from the old Ranking / Working-hypothesis format.
+        "prose": (
+            "### Ranking\n1. Lockheed Martin — Confidence mittel–hoch, Evidenz 56.\n"
+            "### Working hypothesis\n`RTX`.\n### Offene Punkte\n"
+            "- ai_interpretation_requires_manual_verification\n"
+        ),
+    }
+    prose = prose_briefing(report)
+    assert "### Ranking" not in prose
+    assert "Working hypothesis" not in prose
+    assert "Offene Punkte" not in prose
+    assert "Confidence" not in prose
+    assert "Evidenz 56" not in prose
+    assert "Score 56" not in prose
+    assert "offen:" not in prose
+    assert hash_a not in prose
+    assert hash_b not in prose
+    assert hash_ai not in prose
+    assert "ai_interpretation_requires_manual_verification" not in prose
+    assert "fewer_than_five_countercandidates" not in prose
+    assert "Top-Auswahl" in prose
+    assert "Lockheed Martin" in prose
+    assert "Bitte noch prüfen" in prose
+    assert "manuell geprüft" in prose
+    assert "Primärbelege" in prose
+    assert "Gegenkandidaten" in prose
+    # Human counterargument may remain; machine confirmed:hash must not.
+    assert f"confirmed:{hash_a}" not in prose
+    assert "Unbestätigte Hinweise" in prose or "vorläufige Quellenhinweise" in prose
+
+
 def test_run_case_includes_prose_field(tmp_path):
     from pathlib import Path
 
