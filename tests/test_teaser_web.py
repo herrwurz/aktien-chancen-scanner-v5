@@ -389,6 +389,10 @@ def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
     assert 'class="resolution-callout"' in html
     assert "Originalauflösung eintragen" in html
     assert "openResolution" in html
+    assert "draftErrorAnalysis" in html
+    assert "fillErrorDraft" in html
+    assert "Automatisch aus Top-Auswahl" in html
+    assert 'textarea id="resolved-error" required' not in html
 
 
 def test_analysis_status_has_visible_states_and_safe_error_details():

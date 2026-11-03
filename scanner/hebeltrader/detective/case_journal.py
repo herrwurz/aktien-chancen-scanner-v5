@@ -480,9 +480,8 @@ class CaseJournal:
             not resolution.get("asset_id")
             or not resolution.get("name")
             or not resolution.get("source")
-            or not resolution.get("error_analysis")
         ):
-            raise ValueError("resolution needs asset_id, name, source and error_analysis")
+            raise ValueError("resolution needs asset_id, name and source")
         if resolution.get("basis") not in ("user", "primary_source"):
             raise ValueError("resolution basis must be user or primary_source")
         if resolution.get("call_wkn") and not re.fullmatch(r"[A-Z0-9]{6}", resolution["call_wkn"]):
@@ -494,13 +493,20 @@ class CaseJournal:
             first = state["first_prediction"]
             if first is None:
                 raise ValueError("freeze first prediction before resolution")
+            payload = dict(resolution)
+            if not str(payload.get("error_analysis") or "").strip():
+                from .resolution import draft_error_analysis
+
+                payload["error_analysis"] = draft_error_analysis(
+                    first,
+                    resolved_name=payload.get("name"),
+                    resolved_asset_id=payload.get("asset_id"),
+                )
             ranks = [c.get("asset_id") for c in first.get("candidates", [])[:3]]
-            rank = (
-                ranks.index(resolution["asset_id"]) + 1 if resolution["asset_id"] in ranks else None
-            )
+            rank = ranks.index(payload["asset_id"]) + 1 if payload["asset_id"] in ranks else None
             selected = first.get("identification", {}).get("status") == "identified"
             p = dict(
-                resolution,
+                payload,
                 correct_rank=rank,
                 prediction_outcome="confirmed"
                 if rank == 1
@@ -509,9 +515,9 @@ class CaseJournal:
                 else "not_identified",
                 product_verification="not_verified",
                 original_call_status="original_reported_by_user"
-                if resolution.get("basis") == "user" and resolution.get("call_wkn")
+                if payload.get("basis") == "user" and payload.get("call_wkn")
                 else "original_reported_by_source"
-                if resolution.get("call_wkn")
+                if payload.get("call_wkn")
                 else "unknown",
                 case_status="bestaetigt"
                 if rank == 1

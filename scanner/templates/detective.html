@@ -159,7 +159,8 @@
         <label for="resolved-source">Quelle<input id="resolved-source" required></label>
         <label for="resolved-change">Algorithmusänderung (optional)<input id="resolved-change"></label>
         <label class="field-span" for="resolved-error">Fehleranalyse / Bestätigungsgründe
-          <textarea id="resolved-error" required></textarea></label>
+          <textarea id="resolved-error" placeholder="Wird aus der Analyse vs. Auflösung vorausgefüllt …"></textarea>
+          <span class="muted">Automatisch aus Top-Auswahl und Report-Auflösung; bei Bedarf anpassbar.</span></label>
         <label class="field-span inline-check"><input id="resolved-reference" type="checkbox" checked> Als Referenzlösung speichern (Lösung war bei der Erstprognose unbekannt)</label>
         <button class="field-span">Auflösung als neuen Journaleintrag speichern</button>
       </div>
@@ -693,6 +694,42 @@ const fillResolutionCandidates=()=>{
     const option=new Option(`${i+1}. ${id.name||c.name||id.asset_id}`,id.asset_id||c.asset_id||'');
     option.dataset.name=id.name||c.name||'';select.append(option);});
 };
+const draftErrorAnalysis=(report,resolved)=>{
+  const candidates=(report?.candidates||[]).slice(0,3);
+  const resolvedName=(resolved?.name||'').trim()||'Unbekannt';
+  const asset=(resolved?.assetId||'').trim();
+  const rowName=row=>{const id=row?.identity||row||{};return id.name||row?.name||'Unbekannt';};
+  const match=()=>{
+    if(asset){const i=candidates.findIndex(c=>(c.asset_id||c.identity?.asset_id)===asset);if(i>=0)return [i+1,candidates[i]];}
+    const key=resolvedName.toLowerCase().replace(/\s+/g,' ').trim();
+    const i=candidates.findIndex(c=>rowName(c).toLowerCase().replace(/\s+/g,' ').trim()===key);
+    return i>=0?[i+1,candidates[i]]:[null,null];
+  };
+  if(!candidates.length){
+    return `Keine belastbare Top-Auswahl vorhanden. Auflösung laut Report/Eingabe: ${resolvedName}. Die Hinweise reichten für eine Unternehmenszuordnung nicht aus.`;
+  }
+  const top=candidates[0],topName=rowName(top),topWhy=whySentence(top);
+  const [rank,matched]=match();
+  if(rank===1)return `Bestätigung: Top-Auswahl ${topName} entspricht der Auflösung ${resolvedName}. Analysebegründung: ${topWhy}`;
+  if(rank!=null&&matched){
+    return `Abweichung: Top-Auswahl war ${topName}, Auflösung ist ${resolvedName} (stand auf Rang ${rank}). Analyse zur Top-Auswahl: ${topWhy} Hinweis zur richtigen Aktie: ${whySentence(matched)}`;
+  }
+  return `Abweichung: Top-Auswahl war ${topName}; die Auflösung ${resolvedName} war nicht unter den Top-3. Analyse zur Top-Auswahl: ${topWhy}`;
+};
+const errorField=()=>document.querySelector('#resolved-error');
+const markAutoErrorDraft=()=>{errorField().dataset.auto='1';};
+const clearAutoErrorDraft=()=>{delete errorField().dataset.auto;};
+const fillErrorDraft=(force=false)=>{
+  const field=errorField();
+  if(!force&&field.value.trim()&&field.dataset.auto!=='1')return;
+  const caseId=document.querySelector('#case-id').value;
+  const row=allLoadedCases().find(item=>item.case_id===caseId);
+  const report=row?.first_prediction||row?.latest_prediction||latestReport;
+  const name=document.querySelector('#resolved-name').value.trim();
+  if(!report||!name)return;
+  field.value=draftErrorAnalysis(report,{name,assetId:document.querySelector('#resolved-id').value});
+  markAutoErrorDraft();
+};
 const openResolution=(row,candidate=null)=>{
   const report=row?.latest_prediction||row?.first_prediction||row||{};
   const caseId=row?.case_id||report.journal_case_id||report.case_id||'';
@@ -708,7 +745,8 @@ const openResolution=(row,candidate=null)=>{
   document.querySelector('#resolved-name').value=identity.name||prior.name||'';
   if(prior.call_wkn&&!document.querySelector('#resolved-wkn').value)document.querySelector('#resolved-wkn').value=prior.call_wkn;
   if(prior.source&&!document.querySelector('#resolved-source').value)document.querySelector('#resolved-source').value=prior.source;
-  if(prior.error_analysis&&!document.querySelector('#resolved-error').value)document.querySelector('#resolved-error').value=prior.error_analysis;
+  if(prior.error_analysis){errorField().value=prior.error_analysis;clearAutoErrorDraft();}
+  else fillErrorDraft(true);
   if(prior.algorithm_change&&!document.querySelector('#resolved-change').value)document.querySelector('#resolved-change').value=prior.algorithm_change;
   resolutionOriginalSha=report.teaser_sha256||prior.original_sha256||null;
   document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
@@ -736,12 +774,16 @@ const attachSolutionPdf=(row,target)=>{
       const data=await response.json();
       if(!response.ok){pdfStatus.textContent=typeof data.detail==='string'?data.detail:JSON.stringify(data.detail||data);return;}
       const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v;};
+      document.querySelector('#case-id').value=row.case_id;
+      fillResolutionCandidates();
       set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
       set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
+      fillErrorDraft(true);
+      document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
       pdfStatus.textContent=data.persisted
         ?(data.listed_as_official
-          ?`Gespeichert${data.name?': '+data.name:''}. Fall ins Listing aufgenommen.`
-          :`Gespeichert${data.name?': '+data.name:''}. Bitte Auflösung prüfen und speichern.`)
+          ?`Gespeichert${data.name?': '+data.name:''}. Fall ins Listing aufgenommen. Fehleranalyse vorausgefüllt.`
+          :`Gespeichert${data.name?': '+data.name:''}. Fehleranalyse vorausgefüllt — bitte prüfen und speichern.`)
         :'PDF gelesen, aber nicht persistiert.';
       await loadCases(row.case_id);
     }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
@@ -940,15 +982,19 @@ document.querySelector('#solution-pdf').addEventListener('change',async event=>{
     const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v};
     set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
     set('resolved-source',`Hebeltrader-Ausgabe ${data.issue} (PDF sha256 ${data.pdf_sha256.slice(0,12)})`);
-    status.textContent=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – bitte prüfen und passende Aktie wählen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
+    fillErrorDraft(true);
+    status.textContent=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – Fehleranalyse vorausgefüllt, bitte prüfen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
   }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
 });
-document.querySelector('#case-id').addEventListener('change',fillResolutionCandidates);
+document.querySelector('#case-id').addEventListener('change',()=>{fillResolutionCandidates();fillErrorDraft(true);});
 document.querySelector('#resolved-candidate').addEventListener('change',event=>{
   const option=event.target.selectedOptions[0];
   document.querySelector('#resolved-id').value=option.value;
   if(option.value)document.querySelector('#resolved-name').value=option.dataset.name;
+  fillErrorDraft(true);
 });
+document.querySelector('#resolved-name').addEventListener('change',()=>fillErrorDraft());
+document.querySelector('#resolved-error').addEventListener('input',clearAutoErrorDraft);
 document.querySelector('#resolution-form').addEventListener('submit',async event=>{
   event.preventDefault();const status=document.querySelector('#resolution-result');
   const value=id=>document.querySelector('#'+id).value;
@@ -958,6 +1004,7 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
   const row=allLoadedCases().find(item=>item.case_id===value('case-id'));
   const ooc=row?.competition_mode==='out_of_competition';
   const asReference=!ooc&&document.querySelector('#resolved-reference').checked;
+  fillErrorDraft();
   const body={name:value('resolved-name'),basis:'user',
     source:value('resolved-source'),error_analysis:value('resolved-error'),
     algorithm_change:value('resolved-change'),call_wkn:value('resolved-wkn')||null,
