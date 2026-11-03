@@ -156,7 +156,12 @@ def test_out_of_competition_analyze_without_official_listing(tmp_path, monkeypat
     page = client.get("/", auth=auth)
     assert "Außer Konkurrenz" in page.text
     assert "out-of-competition" in page.text
-    assert "ins Listing" in page.text or "Meine Fälle aufgenommen" in page.text
+    assert (
+        "ins Listing" in page.text
+        or "Meine Fälle aufgenommen" in page.text
+        or "Nicht mehr außer Konkurrenz" in page.text
+        or "Fall im Listing" in page.text
+    )
 
 
 def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_path, monkeypatch):
@@ -393,6 +398,8 @@ def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
     assert "fillErrorDraft" in html
     assert "Automatisch aus Top-Auswahl" in html
     assert 'textarea id="resolved-error" required' not in html
+    assert "Nicht mehr außer Konkurrenz" in html
+    assert "persist:Boolean(caseId)" in html
 
 
 def test_analysis_status_has_visible_states_and_safe_error_details():
@@ -438,4 +445,5 @@ def test_case_actions_report_failures_and_preserve_archive_filter():
     assert "renderCaseHints" in html
     assert "case-hint" in html
     assert "Nächster Schritt" in html
-    assert "Fall ins Listing aufgenommen" in html
+    assert "Fall im Listing" in html or "Fall ins Listing aufgenommen" in html
+    assert "Nicht mehr außer Konkurrenz" in html

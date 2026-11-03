@@ -781,10 +781,11 @@ const attachSolutionPdf=(row,target)=>{
       fillErrorDraft(true);
       document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
       pdfStatus.textContent=data.persisted
-        ?(data.listed_as_official
-          ?`Gespeichert${data.name?': '+data.name:''}. Fall ins Listing aufgenommen. Fehleranalyse vorausgefüllt.`
+        ?(data.listed_as_official||data.competition_mode==='official'
+          ?`Gespeichert${data.name?': '+data.name:''}. Nicht mehr außer Konkurrenz — Fall im Listing. Fehleranalyse vorausgefüllt.`
           :`Gespeichert${data.name?': '+data.name:''}. Fehleranalyse vorausgefüllt — bitte prüfen und speichern.`)
         :'PDF gelesen, aber nicht persistiert.';
+      if(data.persisted&&(data.listed_as_official||data.competition_mode==='official'))setCaseFilters('active','all');
       await loadCases(row.case_id);
     }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
   });
@@ -974,16 +975,23 @@ document.querySelector('#solution-pdf').addEventListener('change',async event=>{
   const file=event.target.files[0],status=document.querySelector('#solution-pdf-status');
   if(!file)return;status.textContent='PDF wird gelesen …';
   try{
+    const caseId=document.querySelector('#case-id').value;
     const response=await fetch('/api/hebeltrader/cases/solution-pdf',{method:'POST',
       headers:{'content-type':'application/json','X-Research-Authorization':document.querySelector('#authorization').value},
-      body:JSON.stringify({pdf_base64:await asBase64(file)})});
+      body:JSON.stringify({pdf_base64:await asBase64(file),case_id:caseId||null,persist:Boolean(caseId)})});
     const data=await response.json();
     if(!response.ok){status.textContent=data.detail;return}
     const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v};
     set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
     set('resolved-source',`Hebeltrader-Ausgabe ${data.issue} (PDF sha256 ${data.pdf_sha256.slice(0,12)})`);
     fillErrorDraft(true);
-    status.textContent=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – Fehleranalyse vorausgefüllt, bitte prüfen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
+    let note=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – Fehleranalyse vorausgefüllt, bitte prüfen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
+    if(data.persisted&&(data.listed_as_official||data.competition_mode==='official')){
+      note+=' Fall ist nicht mehr außer Konkurrenz.';
+      setCaseFilters('active','all');
+      await loadCases(caseId);
+    }
+    status.textContent=note;
   }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
 });
 document.querySelector('#case-id').addEventListener('change',()=>{fillResolutionCandidates();fillErrorDraft(true);});

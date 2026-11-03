@@ -368,3 +368,36 @@ def test_out_of_competition_solution_pdf_and_dataset_promotion(tmp_path):
     j.export_register(register)
     text = register.read_text()
     assert "solution_pdf" in text and "listing_promotion" in text and "dataset_promotion" in text
+
+
+def test_solution_pdf_without_listing_promotion_heals_ooc(tmp_path):
+    """Rüstungsfall-style: PDF on file must leave außer Konkurrenz even without promo event."""
+    j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
+    case = j.intake(
+        {
+            "teaser_text": "US-Rüstungsriese ooc",
+            "competition_mode": "out_of_competition",
+            "headline": "Rüstung",
+        }
+    )
+    j.record_analysis(case, frozen(tmp_path, "defense", ["LMT", "RTX"]))
+    # Simulate an older journal that stored the PDF but missed listing_promotion.
+    j._append(
+        case,
+        "solution_pdf",
+        {
+            "pdf_sha256": "abc123",
+            "relative_path": "solution-pdfs/x.pdf",
+            "byte_length": 12,
+            "extracted": {"name": "RTX"},
+        },
+    )
+    assert j.case(case)["competition_mode"] == "official"
+    assert j.cases(listing="out_of_competition") == []
+    assert case in {row["case_id"] for row in j.cases(listing="official")}
+    assert j.case(case)["listing_promotion"]["reason"] == "solution_pdf_uploaded"
+    pdf = b"%PDF-1.4 defense-report"
+    stored = j.store_solution_pdf(case, pdf, extracted={"name": "RTX"})
+    assert stored["listed_as_official"] is True
+    assert j.case(case)["competition_mode"] == "official"
+    assert len([e for e in j.events() if e["kind"] == "listing_promotion"]) >= 1
