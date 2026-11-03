@@ -846,11 +846,13 @@ class CaseJournal:
         return False
 
     def reconcile_operator_listing(self):
-        """Restore listing buckets for purchased-report cases; drop ambiguous leftovers.
+        """Restore listing buckets for purchased-report cases; drop ambiguous PDF leftovers.
 
         - Persist listing_promotion when a solution PDF is on file (heal-on-write).
         - Auto-resolve when the PDF clearly names the stock and a freeze exists.
-        - Soft-delete active cases that are still not Erraten / Falsch / Außer Konkurrenz.
+        - Soft-delete only report-PDF cases that still cannot be assigned clearly.
+          Open official cases without a PDF stay (Offen) — they are unfinished work,
+          not ambiguous uploads.
         """
         summary = {
             "promoted": [],
@@ -858,6 +860,7 @@ class CaseJournal:
             "deleted": [],
             "kept_resolved": [],
             "kept_ooc": [],
+            "kept_open": [],
             "pdf_cases": [],
         }
         # Snapshot intake IDs first; materialize after each mutation.
@@ -895,10 +898,14 @@ class CaseJournal:
             ):
                 summary["kept_ooc"].append(case_id)
                 continue
-            # Not Erraten / Falsch / Außer Konkurrenz → operator asked to drop these.
+            if not state.get("solution_pdf"):
+                # Unfinished official case without a report — leave as Offen.
+                summary["kept_open"].append(case_id)
+                continue
+            # Report on file but still no clear Erraten/Falsch assignment.
             self.delete(
                 case_id,
-                "nicht eindeutig — kein klares Ergebnis (richtig/falsch/außer Konkurrenz)",
+                "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)",
             )
             summary["deleted"].append(case_id)
         summary["pdf_case_count"] = len(summary["pdf_cases"])

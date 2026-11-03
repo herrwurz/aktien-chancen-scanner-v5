@@ -446,8 +446,8 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
         }
     )
     j.record_analysis(ooc, frozen(tmp_path, "ooc", ["X"]))
-    # Ambiguous open official without PDF → delete.
-    open_case = j.intake({"teaser_text": "open ambiguous teaser"})
+    # Open official without PDF stays Offen (unfinished work).
+    open_case = j.intake({"teaser_text": "open unfinished teaser"})
     j.record_analysis(open_case, frozen(tmp_path, "open", ["Y"]))
     # Ambiguous PDF without extractable identity → delete.
     vague = j.intake({"teaser_text": "vague pdf teaser"})
@@ -467,17 +467,17 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
     assert hit in summary["resolved"]
     assert miss in summary["resolved"]
     assert miss in summary["promoted"]
-    assert open_case in summary["deleted"]
+    assert open_case in summary["kept_open"]
     assert vague in summary["deleted"]
     assert ooc in summary["kept_ooc"]
     assert j.case(hit)["resolution"]["prediction_outcome"] == "confirmed"
     assert j.case(miss)["resolution"]["prediction_outcome"] == "refuted"
     assert j.case(miss)["competition_mode"] == "official"
-    assert j.case(open_case)["deleted"] is True
+    assert j.case(open_case)["deleted"] is False
     assert j.case(vague)["deleted"] is True
     assert j.case(ooc)["deleted"] is False
     active = {row["case_id"] for row in j.cases(listing="all")}
-    assert active == {hit, miss, ooc}
+    assert active == {hit, miss, ooc, open_case}
     # Idempotent second pass.
     again = j.reconcile_operator_listing()
     assert again["deleted"] == []
