@@ -403,7 +403,7 @@ def test_solution_pdf_without_listing_promotion_heals_ooc(tmp_path):
     assert len([e for e in j.events() if e["kind"] == "listing_promotion"]) >= 1
 
 
-def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
+def test_reconcile_keeps_uploaded_reports_until_operator_deletes(tmp_path):
     j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
     # Clear hit: PDF extract matches top tip → Erraten after reconcile.
     hit = j.intake({"teaser_text": "hit teaser with pdf"})
@@ -449,7 +449,7 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
     # Open official without PDF stays Offen (unfinished work).
     open_case = j.intake({"teaser_text": "open unfinished teaser"})
     j.record_analysis(open_case, frozen(tmp_path, "open", ["Y"]))
-    # Ambiguous PDF without extractable identity → delete.
+    # Ambiguous PDF without extractable identity stays Offen.
     vague = j.intake({"teaser_text": "vague pdf teaser"})
     j.record_analysis(vague, frozen(tmp_path, "vague", ["Z"]))
     j._append(
@@ -468,18 +468,41 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
     assert miss in summary["resolved"]
     assert miss in summary["promoted"]
     assert open_case in summary["kept_open"]
-    assert vague in summary["deleted"]
+    assert vague in summary["kept_open"]
+    assert vague not in summary["deleted"]
     assert ooc in summary["kept_ooc"]
     assert j.case(hit)["resolution"]["prediction_outcome"] == "confirmed"
     assert j.case(miss)["resolution"]["prediction_outcome"] == "refuted"
     assert j.case(miss)["competition_mode"] == "official"
     assert j.case(open_case)["deleted"] is False
-    assert j.case(vague)["deleted"] is True
+    assert j.case(vague)["deleted"] is False
+    assert j.case(vague)["resolution"] is None
     assert j.case(ooc)["deleted"] is False
     active = {row["case_id"] for row in j.cases(listing="all")}
-    assert active == {hit, miss, ooc, open_case}
-    # Idempotent second pass.
+    assert active == {hit, miss, ooc, open_case, vague}
+    # A report removed by the old automatic pass comes back. An operator delete stays gone.
+    removed = j.intake({"teaser_text": "removed by old reconcile"})
+    j.record_analysis(removed, frozen(tmp_path, "removed", ["Q"]))
+    j._append(
+        removed,
+        "solution_pdf",
+        {
+            "pdf_sha256": "removedpdf",
+            "relative_path": "solution-pdfs/removed.pdf",
+            "byte_length": 8,
+            "extracted": {},
+        },
+    )
+    j.delete(removed, "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)")
+    operator = j.intake({"teaser_text": "operator deleted this"})
+    j.delete(operator, "Vom Betreiber gelöscht")
+    # Idempotent second pass also restores the automatic removal only.
     again = j.reconcile_operator_listing()
     assert again["deleted"] == []
     assert again["resolved"] == []
-    assert set(again["clear_active"]) == {hit, miss, ooc}
+    assert removed in again["undeleted"]
+    assert removed in again["kept_open"]
+    assert j.case(removed)["deleted"] is False
+    assert j.case(operator)["deleted"] is True
+    assert operator not in again["undeleted"]
+    assert set(again["clear_active"]) == {hit, miss, ooc, open_case, vague, removed}

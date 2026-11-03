@@ -327,7 +327,7 @@ def create_app(settings: Settings | None = None, engine=None):
 
     @app.post("/api/hebeltrader/cases/reconcile")
     def case_reconcile(request: Request):
-        """Persist PDF listing, auto-resolve clear reports, delete ambiguous cases."""
+        """Keep uploaded reports listed; auto-resolve clear ones; never auto-delete."""
         case_access(request)
         try:
             return CaseJournal(

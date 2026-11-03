@@ -48,7 +48,7 @@ def create_web_app():
     from scanner.hebeltrader.detective import provider_usage
     from scanner.hebeltrader.detective.case_journal import CaseJournal
 
-    # One-shot journal repair on boot: PDF → Listing, klare Auflösungen, Rest löschen.
+    # One-shot journal repair on boot: PDF → Listing, klare Auflösungen, nichts löschen.
     # Idempotent; failures must not block serving the UI.
     try:
         CaseJournal(settings.detective_public_root / "cases").reconcile_operator_listing()

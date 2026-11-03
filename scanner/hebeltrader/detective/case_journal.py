@@ -218,6 +218,9 @@ class CaseJournal:
             if kind == "delete":
                 state["deleted"] = True
                 state["delete"] = dict(p, recorded_at=row["recorded_at"])
+            if kind == "undelete":
+                state["deleted"] = False
+                state["delete"] = None
             if kind == "reference_promotion":
                 state["reference_status"] = "prospective_reference"
             if kind == "prospective_classification":
@@ -297,6 +300,17 @@ class CaseJournal:
             if state.get("deleted"):
                 return state.get("delete") or {"deleted": True}
             return self._append(case_id, "delete", {"reason": reason.strip()})["payload"]
+
+    def undelete(self, case_id, reason):
+        """Put a case back on the operator list. Only an explicit delete removes it."""
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("undelete reason required")
+        with self._lock():
+            state = self.case(case_id)
+            if not state.get("deleted"):
+                return {"deleted": False}
+            self._append(case_id, "undelete", {"reason": reason.strip()})
+            return {"deleted": False}
 
     def references(self):
         # Official listing only — out-of-competition cases never enter the blind register.
@@ -559,6 +573,7 @@ class CaseJournal:
                     "archive",
                     "restore",
                     "delete",
+                    "undelete",
                     "prospective_classification",
                     "reference_promotion",
                     "solution_pdf",
@@ -835,26 +850,22 @@ class CaseJournal:
         return payload
 
     def _is_clear_operator_case(self, state):
-        """Cases that belong in the pie: Erraten / Falsch / Außer Konkurrenz."""
-        if state.get("deleted") or state.get("archived"):
-            return False
-        if state.get("resolution"):
-            return True
-        # Pure außer-Konkurrenz teasers without a purchased report stay visible as OOC.
-        if state.get("competition_mode") == "out_of_competition" and not state.get("solution_pdf"):
-            return True
-        return False
+        """Visible pie cases: richtig, falsch, offen, or außer Konkurrenz."""
+        return not state.get("deleted") and not state.get("archived")
 
     def reconcile_operator_listing(self):
-        """Restore listing buckets for purchased-report cases; drop ambiguous PDF leftovers.
+        """Keep every uploaded report on the list until the operator deletes it.
 
-        - Persist listing_promotion when a solution PDF is on file (heal-on-write).
-        - Auto-resolve when the PDF clearly names the stock and a freeze exists.
-        - Soft-delete only report-PDF cases that still cannot be assigned clearly.
-          Open official cases without a PDF stay (Offen) — they are unfinished work,
-          not ambiguous uploads.
+        - Undo the earlier automatic removal of unclear report PDFs.
+        - Persist listing_promotion when a solution PDF is on file.
+        - Auto-resolve when the PDF clearly names the stock and a freeze exists
+          (richtig = Rang 1, falsch = andere Auflösung).
+        - Leave every other active case visible: offen, or außer Konkurrenz
+          when no report has been uploaded yet.
+        Operator deletes with any other reason stay deleted.
         """
         summary = {
+            "undeleted": [],
             "promoted": [],
             "resolved": [],
             "deleted": [],
@@ -868,7 +879,12 @@ class CaseJournal:
         for case_id in case_ids:
             state = self.case(case_id)
             if state.get("deleted"):
-                continue
+                reason = ((state.get("delete") or {}).get("reason") or "").casefold()
+                if "nicht eindeutig" not in reason:
+                    continue
+                self.undelete(case_id, "Report bleibt in der Liste, bis er manuell gelöscht wird")
+                summary["undeleted"].append(case_id)
+                state = self.case(case_id)
             if state.get("solution_pdf"):
                 summary["pdf_cases"].append(case_id)
                 if not self._has_listing_promotion_event(case_id):
@@ -898,16 +914,8 @@ class CaseJournal:
             ):
                 summary["kept_ooc"].append(case_id)
                 continue
-            if not state.get("solution_pdf"):
-                # Unfinished official case without a report — leave as Offen.
-                summary["kept_open"].append(case_id)
-                continue
-            # Report on file but still no clear Erraten/Falsch assignment.
-            self.delete(
-                case_id,
-                "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)",
-            )
-            summary["deleted"].append(case_id)
+            # No report yet, or a report that does not name the stock clearly: Offen.
+            summary["kept_open"].append(case_id)
         summary["pdf_case_count"] = len(summary["pdf_cases"])
         summary["clear_active"] = [
             row["case_id"]
