@@ -218,6 +218,9 @@ class CaseJournal:
             if kind == "delete":
                 state["deleted"] = True
                 state["delete"] = dict(p, recorded_at=row["recorded_at"])
+            if kind == "undelete":
+                state["deleted"] = False
+                state["delete"] = None
             if kind == "reference_promotion":
                 state["reference_status"] = "prospective_reference"
             if kind == "prospective_classification":
@@ -297,6 +300,16 @@ class CaseJournal:
             if state.get("deleted"):
                 return state.get("delete") or {"deleted": True}
             return self._append(case_id, "delete", {"reason": reason.strip()})["payload"]
+
+    def undelete(self, case_id, reason):
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("undelete reason required")
+        with self._lock():
+            state = self.case(case_id)
+            if not state.get("deleted"):
+                return {"deleted": False}
+            self._append(case_id, "undelete", {"reason": reason.strip()})
+            return {"deleted": False}
 
     def references(self):
         # Official listing only — out-of-competition cases never enter the blind register.
@@ -564,6 +577,7 @@ class CaseJournal:
                     "solution_pdf",
                     "listing_promotion",
                     "dataset_promotion",
+                    "undelete",
                 ):
                     continue
                 marker = f"<!-- TI-JOURNAL:{row['sha256']} -->"
@@ -803,10 +817,18 @@ class CaseJournal:
                 or row.get("wkn")
                 or row.get("stock_wkn")
             )
-            if want and row_name and canonical_company(row_name) == want:
+            row_canon = canonical_company(row_name) if row_name else ""
+            if (
+                want
+                and row_canon
+                and (row_canon == want or want in row_canon.split() or row_canon in want.split())
+            ):
                 matched = row
                 break
             if name and ticker and ticker.casefold() == name.casefold():
+                matched = row
+                break
+            if want and ticker and canonical_company(ticker) == want:
                 matched = row
                 break
             if stock_wkn and row_wkn and str(row_wkn).casefold() == stock_wkn.casefold():
@@ -846,15 +868,15 @@ class CaseJournal:
         return False
 
     def reconcile_operator_listing(self):
-        """Restore listing buckets for purchased-report cases; drop ambiguous PDF leftovers.
+        """Restore listing buckets for purchased-report cases; never auto-delete.
 
+        - Undo soft-deletes from the earlier aggressive reconcile pass.
         - Persist listing_promotion when a solution PDF is on file (heal-on-write).
         - Auto-resolve when the PDF clearly names the stock and a freeze exists.
-        - Soft-delete only report-PDF cases that still cannot be assigned clearly.
-          Open official cases without a PDF stay (Offen) — they are unfinished work,
-          not ambiguous uploads.
+        - Leave unresolved PDF / open / OOC cases visible (Offen / Außer Konkurrenz).
         """
         summary = {
+            "undeleted": [],
             "promoted": [],
             "resolved": [],
             "deleted": [],
@@ -867,6 +889,11 @@ class CaseJournal:
         case_ids = [row["case_id"] for row in self.events() if row["kind"] == "intake"]
         for case_id in case_ids:
             state = self.case(case_id)
+            delete_reason = ((state.get("delete") or {}).get("reason") or "").casefold()
+            if state.get("deleted") and "nicht eindeutig" in delete_reason:
+                self.undelete(case_id, "restore after over-aggressive PDF reconcile")
+                summary["undeleted"].append(case_id)
+                state = self.case(case_id)
             if state.get("deleted"):
                 continue
             if state.get("solution_pdf"):
@@ -898,16 +925,8 @@ class CaseJournal:
             ):
                 summary["kept_ooc"].append(case_id)
                 continue
-            if not state.get("solution_pdf"):
-                # Unfinished official case without a report — leave as Offen.
-                summary["kept_open"].append(case_id)
-                continue
-            # Report on file but still no clear Erraten/Falsch assignment.
-            self.delete(
-                case_id,
-                "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)",
-            )
-            summary["deleted"].append(case_id)
+            # Unresolved official / PDF-without-clear-extract stay visible as Offen.
+            summary["kept_open"].append(case_id)
         summary["pdf_case_count"] = len(summary["pdf_cases"])
         summary["clear_active"] = [
             row["case_id"]

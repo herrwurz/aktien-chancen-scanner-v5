@@ -403,7 +403,7 @@ def test_solution_pdf_without_listing_promotion_heals_ooc(tmp_path):
     assert len([e for e in j.events() if e["kind"] == "listing_promotion"]) >= 1
 
 
-def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
+def test_reconcile_promotes_resolves_and_undeletes_prior_purge(tmp_path):
     j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
     # Clear hit: PDF extract matches top tip → Erraten after reconcile.
     hit = j.intake({"teaser_text": "hit teaser with pdf"})
@@ -449,7 +449,7 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
     # Open official without PDF stays Offen (unfinished work).
     open_case = j.intake({"teaser_text": "open unfinished teaser"})
     j.record_analysis(open_case, frozen(tmp_path, "open", ["Y"]))
-    # Ambiguous PDF without extractable identity → delete.
+    # Vague PDF without extract stays visible as Offen (never auto-deleted).
     vague = j.intake({"teaser_text": "vague pdf teaser"})
     j.record_analysis(vague, frozen(tmp_path, "vague", ["Z"]))
     j._append(
@@ -462,24 +462,43 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
             "extracted": {},
         },
     )
+    # Simulate prior over-aggressive reconcile soft-delete.
+    purged = j.intake({"teaser_text": "purged pdf teaser"})
+    j.record_analysis(purged, frozen(tmp_path, "purged", ["P"]))
+    j._append(
+        purged,
+        "solution_pdf",
+        {
+            "pdf_sha256": "purgedpdf",
+            "relative_path": "solution-pdfs/purged.pdf",
+            "byte_length": 8,
+            "extracted": {"name": "P"},
+        },
+    )
+    j.delete(purged, "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)")
+    assert j.case(purged)["deleted"] is True
 
     summary = j.reconcile_operator_listing()
+    assert purged in summary["undeleted"]
     assert hit in summary["resolved"]
     assert miss in summary["resolved"]
+    assert purged in summary["resolved"]
     assert miss in summary["promoted"]
     assert open_case in summary["kept_open"]
-    assert vague in summary["deleted"]
+    assert vague in summary["kept_open"]
+    assert summary["deleted"] == []
     assert ooc in summary["kept_ooc"]
     assert j.case(hit)["resolution"]["prediction_outcome"] == "confirmed"
     assert j.case(miss)["resolution"]["prediction_outcome"] == "refuted"
     assert j.case(miss)["competition_mode"] == "official"
-    assert j.case(open_case)["deleted"] is False
-    assert j.case(vague)["deleted"] is True
+    assert j.case(purged)["deleted"] is False
+    assert j.case(vague)["deleted"] is False
     assert j.case(ooc)["deleted"] is False
     active = {row["case_id"] for row in j.cases(listing="all")}
-    assert active == {hit, miss, ooc, open_case}
+    assert active == {hit, miss, ooc, open_case, vague, purged}
     # Idempotent second pass.
     again = j.reconcile_operator_listing()
     assert again["deleted"] == []
+    assert again["undeleted"] == []
     assert again["resolved"] == []
-    assert set(again["clear_active"]) == {hit, miss, ooc}
+    assert set(again["clear_active"]) == {hit, miss, ooc, purged}
