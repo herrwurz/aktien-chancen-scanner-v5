@@ -427,4 +427,7 @@ def test_case_actions_report_failures_and_preserve_archive_filter():
     assert "Auflösung bearbeiten" in html
     assert "Fall endgültig löschen" in html
     assert "Weitere Aktionen" in html
+    assert "renderCaseHints" in html
+    assert "case-hint" in html
+    assert "Nächster Schritt" in html
     assert "Fall ins Listing aufgenommen" in html
