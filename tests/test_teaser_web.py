@@ -361,6 +361,7 @@ def test_cases_use_compact_single_case_selector():
     assert 'id="cases-legend"' in html
     assert 'id="case-select"' in html
     assert 'id="active-case"' in html
+    assert 'class="field-grid"' in html
     assert 'id="case-view"' not in html
     assert 'value="blind"' not in html
     assert 'value="reference"' not in html
