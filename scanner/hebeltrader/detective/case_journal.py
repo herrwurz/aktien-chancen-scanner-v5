@@ -861,11 +861,7 @@ class CaseJournal:
             "pdf_cases": [],
         }
         # Snapshot intake IDs first; materialize after each mutation.
-        case_ids = [
-            row["case_id"]
-            for row in self.events()
-            if row["kind"] == "intake"
-        ]
+        case_ids = [row["case_id"] for row in self.events() if row["kind"] == "intake"]
         for case_id in case_ids:
             state = self.case(case_id)
             if state.get("deleted"):
