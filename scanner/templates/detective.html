@@ -30,7 +30,16 @@
     .prose strong{font-weight:750}.result-actions{display:grid;gap:.5rem;margin:1rem 0}
     .result-actions button{background:#0f766e}.result-actions button.secondary{background:#164e63}
     #call-search-result{margin-top:1rem}
-    @media(max-width:600px){body{padding:.5rem}.case-controls{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr}}
+    .cases-summary{display:grid;grid-template-columns:180px 1fr;gap:1rem;align-items:center;margin:1rem 0}
+    .cases-summary svg{width:180px;height:180px;display:block}
+    .cases-legend{display:grid;gap:.35rem;font-size:.95rem}
+    .cases-legend button{background:transparent;color:#16202a;border:1px solid #d1d5db;text-align:left;font-weight:650;padding:.55rem .7rem}
+    .cases-legend button.active{border-color:#0f766e;background:#ecfdf5}
+    .badge{display:inline-block;padding:.15rem .5rem;border-radius:999px;font-size:.8rem;font-weight:700;background:#e5e7eb;color:#1f2937}
+    .badge.ooc{background:#fef3c7;color:#92400e}.badge.ok{background:#d1fae5;color:#065f46}
+    .badge.bad{background:#fee2e2;color:#991b1b}.badge.open{background:#e0e7ff;color:#3730a3}
+    .more-actions{margin-top:.5rem}
+    @media(max-width:600px){body{padding:.5rem}.case-controls{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr}.cases-summary{grid-template-columns:1fr}}
   </style>
 </head>
 <body><main>
@@ -87,19 +96,28 @@
     <p id="call-search-status" class="muted" aria-live="polite">Zuerst analysieren oder einen Fall mit Bericht auswählen.</p>
     <div id="call-search-panel-result"></div>
   </section>
-  <section><h2>Meine Fälle</h2>
+  <section id="cases-panel">
+    <h2>Fälle</h2>
+    <p class="muted">Eine Liste für alles: offizielle Fälle, außer Konkurrenz, Report nachgeliefert. PDF-Upload holt OOC-Fälle ins Listing.</p>
+    <label for="case-view">Ansicht
+      <select id="case-view">
+        <option value="active">Alle aktiv</option>
+        <option value="official">Offiziell</option>
+        <option value="ooc">Außer Konkurrenz</option>
+        <option value="correct">Erraten</option>
+        <option value="wrong">Falsch</option>
+        <option value="waiting">Warten auf Report</option>
+        <option value="archive">Archiv</option>
+      </select>
+    </label>
+    <div class="cases-summary">
+      <div id="cases-pie" aria-label="Fallbilanz"></div>
+      <div class="cases-legend" id="cases-legend"></div>
+    </div>
     <div class="case-controls"><label for="case-select">Fall auswählen
       <select id="case-select"><option value="">Fälle laden …</option></select></label>
       <button type="button" id="load-cases">Aktualisieren</button></div>
-    <label class="inline-check"><input type="checkbox" id="include-archived"> Archivierte Fälle einbeziehen</label>
     <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
-  </section>
-  <section><h2>Außer Konkurrenz</h2>
-    <p class="muted">Analysiert und gespeichert, aber zunächst nicht in Meine Fälle / Quality. Nach Reportkauf: PDF speichern → Fall wird ins Listing (Meine Fälle) aufgenommen; danach Auflösung und optional Datensatz-Export.</p>
-    <div class="case-controls"><label for="ooc-case-select">Fall auswählen
-      <select id="ooc-case-select"><option value="">Fälle laden …</option></select></label>
-      <button type="button" id="load-ooc-cases">Aktualisieren</button></div>
-    <p id="ooc-case-message" aria-live="polite"></p><div id="active-ooc-case"></div>
   </section>
   <section><h2>Prospektive Referenzfälle</h2><ul id="prospective-references"><li>Noch keine freigegebenen Fälle.</li></ul></section>
   {% if request.scope.get("teaser_web") %}
@@ -313,7 +331,7 @@ const runCallSearch=async data=>{
 const fallbackProse=data=>{
   const ooc=(data.competition_mode||'')==='out_of_competition';
   const lines=[ooc
-    ?'**Außer Konkurrenz** — Analyse zur Orientierung; nicht in Meine Fälle, Quality oder Blind-Listing.'
+    ?'**Außer Konkurrenz** — Analyse zur Orientierung; nicht im offiziellen Listing, Quality oder Blind-Listing.'
     :'**Arbeitsanalyse** — Identifikationshilfe, keine Kaufempfehlung.'];
   const label=(data.decision||{}).label||(data.identification||{}).label;
   if(label)lines.push(`Status: **${label}**.`);
@@ -437,8 +455,127 @@ if(referenceButton){
     finally{referenceButton.disabled=false;}
   });
 }
-let loadedCases=[],loadedOocCases=[];
-const allLoadedCases=()=>[...loadedCases,...loadedOocCases];
+let allCases=[];
+const allLoadedCases=()=>allCases;
+const authHeaders=()=>{const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;return headers;};
+const currentCaseView=()=>document.querySelector('#case-view')?.value||'active';
+const outcomeBucket=row=>{
+  if((row.competition_mode||'')==='out_of_competition')return 'ooc';
+  const outcome=row.resolution?.prediction_outcome||row.prediction_outcome;
+  if(outcome==='confirmed')return 'correct';
+  if(row.resolution)return 'wrong';
+  return 'open';
+};
+const isWaitingForReport=row=>!row.archived&&!row.resolution&&!row.solution_pdf;
+const filterCases=(view=currentCaseView())=>{
+  const rows=allCases;
+  if(view==='archive')return rows.filter(row=>row.archived);
+  const active=rows.filter(row=>!row.archived);
+  if(view==='official')return active.filter(row=>(row.competition_mode||'official')!=='out_of_competition');
+  if(view==='ooc')return active.filter(row=>row.competition_mode==='out_of_competition');
+  if(view==='correct')return active.filter(row=>outcomeBucket(row)==='correct');
+  if(view==='wrong')return active.filter(row=>outcomeBucket(row)==='wrong');
+  if(view==='waiting')return active.filter(isWaitingForReport);
+  return active;
+};
+const caseBadge=row=>{
+  const bucket=outcomeBucket(row);
+  if(row.archived){const b=el('span','Archiv');b.className='badge';return b;}
+  if(bucket==='ooc'){const b=el('span','Außer Konkurrenz');b.className='badge ooc';return b;}
+  if(bucket==='correct'){const b=el('span','Erraten');b.className='badge ok';return b;}
+  if(bucket==='wrong'){const b=el('span','Falsch');b.className='badge bad';return b;}
+  const b=el('span',row.listing_promotion?'Listing':'Offen');b.className='badge open';return b;
+};
+const svgEl=(tag,attrs={})=>{
+  const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([key,value])=>node.setAttribute(key,value));
+  return node;
+};
+const renderCasesPie=()=>{
+  const pie=document.querySelector('#cases-pie'),legend=document.querySelector('#cases-legend');
+  if(!pie||!legend)return;
+  pie.replaceChildren();legend.replaceChildren();
+  const active=allCases.filter(row=>!row.archived);
+  const counts={correct:0,wrong:0,ooc:0,open:0};
+  active.forEach(row=>{counts[outcomeBucket(row)]=(counts[outcomeBucket(row)]||0)+1;});
+  const segments=[
+    {key:'correct',view:'correct',label:'Erraten',color:'#059669',count:counts.correct},
+    {key:'wrong',view:'wrong',label:'Falsch',color:'#dc2626',count:counts.wrong},
+    {key:'ooc',view:'ooc',label:'Außer Konkurrenz',color:'#d97706',count:counts.ooc},
+    {key:'open',view:'waiting',label:'Offen',color:'#6366f1',count:counts.open},
+  ];
+  const total=segments.reduce((sum,item)=>sum+item.count,0)||1;
+  const size=180,radius=78,cx=90,cy=90;
+  const svg=svgEl('svg',{viewBox:`0 0 ${size} ${size}`,role:'img','aria-label':'Fallbilanz'});
+  let angle=-Math.PI/2;
+  const polar=(a,r)=>({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});
+  segments.forEach(segment=>{
+    if(!segment.count)return;
+    const sweep=(segment.count/total)*Math.PI*2;
+    const start=polar(angle,radius),end=polar(angle+sweep,radius);
+    const large=sweep>Math.PI?1:0;
+    const path=svgEl('path',{
+      d:`M ${cx} ${cy} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${large} 1 ${end.x} ${end.y} Z`,
+      fill:segment.color
+    });
+    path.style.cursor='pointer';
+    path.addEventListener('click',()=>{
+      document.querySelector('#case-view').value=segment.view;
+      refreshCaseSelect();
+    });
+    svg.append(path);angle+=sweep;
+  });
+  if(!active.length){
+    svg.append(svgEl('circle',{cx,cy,r:radius,fill:'#e5e7eb'}));
+  }
+  const hole=svgEl('circle',{cx,cy,r:42,fill:'#f7f4ef'});
+  svg.append(hole);
+  const center=svgEl('text',{x:cx,y:cy+5,'text-anchor':'middle','font-size':'22','font-weight':'700',fill:'#16202a'});
+  center.textContent=String(active.length);
+  svg.append(center);
+  pie.append(svg);
+  const view=currentCaseView();
+  segments.forEach(segment=>{
+    const button=el('button',`${segment.label}: ${segment.count}`);
+    button.type='button';
+    if(view===segment.view)button.classList.add('active');
+    button.addEventListener('click',()=>{
+      document.querySelector('#case-view').value=segment.view;
+      refreshCaseSelect();
+    });
+    legend.append(button);
+  });
+};
+const refreshCaseSelect=(preferredId='')=>{
+  const select=document.querySelector('#case-select');
+  const message=document.querySelector('#case-message');
+  const viewSelect=document.querySelector('#case-view');
+  const keep=preferredId||select.value;
+  if(keep&&!filterCases().some(row=>row.case_id===keep)&&allCases.some(row=>row.case_id===keep)){
+    const row=allCases.find(item=>item.case_id===keep);
+    if(row.archived)viewSelect.value='archive';
+    else if(row.competition_mode==='out_of_competition')viewSelect.value='ooc';
+    else viewSelect.value='active';
+  }
+  const filtered=filterCases();
+  select.replaceChildren();
+  select.append(new Option(filtered.length?'Fall auswählen …':'Keine Fälle in dieser Ansicht',''));
+  filtered.forEach(row=>{
+    const bucket=outcomeBucket(row);
+    const tag=bucket==='ooc'?' · OOC':bucket==='correct'?' · erraten':bucket==='wrong'?' · falsch':row.archived?' · archiviert':'';
+    select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
+  });
+  renderCasesPie();
+  message.textContent=allCases.length
+    ?`${filtered.length} von ${allCases.length} Fällen · Ansicht „${viewSelect.selectedOptions[0].textContent}“`
+    :'Noch keine gespeicherten Fälle.';
+  fillResolutionCases();
+  if(keep&&[...select.options].some(option=>option.value===keep)){
+    select.value=keep;selectCase(keep);
+  }else{
+    document.querySelector('#active-case').replaceChildren();
+  }
+};
 const fillResolutionCases=()=>{
   const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
   allLoadedCases().filter(row=>!row.resolution).forEach(row=>{
@@ -478,21 +615,51 @@ const showCaseActionError=async(response,fallback)=>{
   const detail=await readResponseError(response);
   document.querySelector('#case-message').textContent=`${fallback} (${detail})`;
 };
+const attachSolutionPdf=(row,target)=>{
+  const pdfLabel=el('label','Report-PDF speichern (gekaufter Report)');
+  const pdfInput=el('input');pdfInput.type='file';pdfInput.accept='application/pdf';
+  const pdfStatus=el('p');pdfStatus.id='case-pdf-status';pdfStatus.setAttribute('aria-live','polite');
+  pdfInput.addEventListener('change',async event=>{
+    const file=event.target.files[0];if(!file)return;pdfStatus.textContent='PDF wird gespeichert …';
+    try{
+      const response=await fetch('/api/hebeltrader/cases/solution-pdf',{method:'POST',
+        headers:{...authHeaders(),'content-type':'application/json'},
+        body:JSON.stringify({pdf_base64:await asBase64(file),case_id:row.case_id,persist:true})});
+      const data=await response.json();
+      if(!response.ok){pdfStatus.textContent=typeof data.detail==='string'?data.detail:JSON.stringify(data.detail||data);return;}
+      const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v;};
+      set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
+      set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
+      pdfStatus.textContent=data.persisted
+        ?(data.listed_as_official
+          ?`Gespeichert${data.name?': '+data.name:''}. Fall ins Listing aufgenommen.`
+          :`Gespeichert${data.name?': '+data.name:''}. Bitte Auflösung prüfen und speichern.`)
+        :'PDF gelesen, aber nicht persistiert.';
+      await loadCases(row.case_id);
+    }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
+  });
+  target.append(pdfLabel);target.append(pdfInput);target.append(pdfStatus);
+};
 const selectCase=caseId=>{
   const root=document.querySelector('#active-case');root.replaceChildren();
-  const row=loadedCases.find(item=>item.case_id===caseId);if(!row)return;
+  const row=allCases.find(item=>item.case_id===caseId);if(!row)return;
   const heading=(row.input||{}).headline||row.case_id;
-  root.append(el('h3',heading));root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`));
+  const title=el('h3');title.append(document.createTextNode(heading+' '));title.append(caseBadge(row));
+  root.append(title);
+  root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`));
+  if(row.solution_pdf)root.append(el('p',`Lösungs-PDF: ${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…`));
+  if(row.listing_promotion)root.append(el('p',`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
+  if(row.dataset_promotion)root.append(el('p',`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}`));
   const report=row.latest_prediction||row.first_prediction;
   activeResolutionRow=row;
-  const actions=el('div');actions.className='case-actions';actions.append(makeResolutionButton(row));
+  const actions=el('div');actions.className='case-actions';
   const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
     result.replaceChildren();
     if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
     resolutionOriginalSha=report.teaser_sha256||null;
     renderOverview({...report,journal_case_id:row.case_id,competition_mode:row.competition_mode||report.competition_mode||'official',prose:report.prose});
     result.scrollIntoView({behavior:'smooth',block:'start'});
-  });actions.prepend(show);
+  });actions.append(show);
   if(report){
     latestReport={...report,journal_case_id:row.case_id,competition_mode:row.competition_mode||report.competition_mode||'official',prose:report.prose};
     const calls=el('button','Calls suchen');calls.type='button';
@@ -500,33 +667,37 @@ const selectCase=caseId=>{
     actions.append(calls);
     setCallSearchStatus('Fall geladen — „Calls suchen“ starten.');
   }
-  const token=document.querySelector('#authorization').value;const headers={};if(token)headers['X-Research-Authorization']=token;
+  if(!row.resolution)actions.append(makeResolutionButton(row));
+  if(row.competition_mode==='out_of_competition'||(!row.solution_pdf&&!row.resolution))attachSolutionPdf(row,actions);
+  const more=el('details');more.className='more-actions';more.append(el('summary','Weitere Aktionen'));
+  const moreActions=el('div');moreActions.className='case-actions';
   if(!row.archived){
     const archive=el('button','Testfall archivieren');archive.type='button';archive.addEventListener('click',async()=>{
       if(!confirm(`Fall ${row.case_id} wirklich archivieren?`))return;
-      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
-      if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
+      if(response.ok)await loadCases();
       else await showCaseActionError(response,'Archivierung fehlgeschlagen');
-    });actions.append(archive);
+    });moreActions.append(archive);
   }else{
     const restore=el('button','Fall wiederherstellen');restore.type='button';restore.addEventListener('click',async()=>{
-      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/restore`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber wiederhergestellt'})});
-      if(response.ok)await loadCases(true);else await showCaseActionError(response,'Wiederherstellung fehlgeschlagen');
-    });actions.append(restore);
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/restore`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber wiederhergestellt'})});
+      if(response.ok){document.querySelector('#case-view').value='active';await loadCases(row.case_id);}
+      else await showCaseActionError(response,'Wiederherstellung fehlgeschlagen');
+    });moreActions.append(restore);
   }
   if(row.competition_mode!=='out_of_competition'&&!row.archived&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
     const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
-      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
-      if(response.ok)await loadCases(document.querySelector('#include-archived').checked);
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
+      if(response.ok)await loadCases(row.case_id);
       else await showCaseActionError(response,'Blindtest-Markierung nicht möglich');
-    });actions.append(blind);
+    });moreActions.append(blind);
   }
   if(row.competition_mode!=='out_of_competition'&&row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
     const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';promote.addEventListener('click',async()=>{
-      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
-      if(response.ok){await loadCases(document.querySelector('#include-archived').checked);await loadProspectiveReferences();}
+      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
+      if(response.ok){await loadCases(row.case_id);await loadProspectiveReferences();}
       else await showCaseActionError(response,'Referenzfreigabe nicht möglich');
-    });actions.append(promote);
+    });moreActions.append(promote);
   }
   if(row.solution_pdf&&row.resolution&&!row.dataset_promotion){
     const dataset=el('button','In Datensatz übernehmen');dataset.type='button';
@@ -541,120 +712,22 @@ const selectCase=caseId=>{
           stock_wkn:row.solution_pdf?.extracted?.stock_wkn||null})});
       if(response.ok){
         document.querySelector('#case-message').textContent='Datensatz-Export gespeichert (lokal, nicht auto-commit).';
-        await loadCases(document.querySelector('#include-archived').checked);
-        document.querySelector('#case-select').value=row.case_id;selectCase(row.case_id);
+        await loadCases(row.case_id);
       }else await showCaseActionError(response,'Datensatz-Übernahme fehlgeschlagen');
     });
-    actions.append(dataset);
+    moreActions.append(dataset);
   }
-  if(row.listing_promotion)root.append(el('p',`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
+  if(moreActions.childNodes.length){more.append(moreActions);actions.append(more);}
   root.append(actions);
 };
-const authHeaders=()=>{const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;return headers;};
-const loadCases=async(includeArchived=false)=>{
-  const message=document.querySelector('#case-message'),select=document.querySelector('#case-select');
+const loadCases=async(preferredId='')=>{
+  const message=document.querySelector('#case-message');
   message.textContent='Fälle werden geladen …';
-  const headers=authHeaders();
   try{
-    const response=await fetch(`/api/hebeltrader/cases?listing=official&include_archived=${includeArchived}`,{headers});
+    const response=await fetch('/api/hebeltrader/cases?listing=all&include_archived=true',{headers:authHeaders()});
     if(!response.ok)throw new Error('Fälle konnten nicht geladen werden. Anmeldung prüfen.');
-    loadedCases=(await response.json()).reverse();select.replaceChildren();
-    select.append(new Option(loadedCases.length?'Fall auswählen …':'Keine gespeicherten Fälle',''));
-    loadedCases.forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${row.archived?' · archiviert':''}`,row.case_id)));
-    message.textContent=loadedCases.length?`${loadedCases.length} gespeicherte Fälle`:'Noch keine gespeicherten Fälle.';
-    document.querySelector('#active-case').replaceChildren();fillResolutionCases();
-  }catch(error){message.textContent=error.message;}
-};
-const selectOocCase=caseId=>{
-  const root=document.querySelector('#active-ooc-case');root.replaceChildren();
-  const row=loadedOocCases.find(item=>item.case_id===caseId);if(!row)return;
-  const heading=(row.input||{}).headline||row.case_id;
-  root.append(el('h3',heading));
-  root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status} · außer Konkurrenz`));
-  if(row.solution_pdf)root.append(el('p',`Gespeichertes Lösungs-PDF: ${row.solution_pdf.pdf_sha256?.slice(0,12)}…`));
-  if(row.dataset_promotion)root.append(el('p',`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}`));
-  const report=row.latest_prediction||row.first_prediction;
-  activeResolutionRow=row;
-  const actions=el('div');actions.className='case-actions';
-  const show=el('button','Analysebericht anzeigen');show.type='button';show.addEventListener('click',()=>{
-    result.replaceChildren();
-    if(!report){result.append(el('p','Noch kein abgeschlossener Analysebericht.'));return;}
-    resolutionOriginalSha=report.teaser_sha256||null;
-    renderOverview({...report,journal_case_id:row.case_id,competition_mode:'out_of_competition',prose:report.prose});
-    result.scrollIntoView({behavior:'smooth',block:'start'});
-  });actions.append(show);
-  actions.append(makeResolutionButton(row));
-  if(report){
-    latestReport={...report,journal_case_id:row.case_id,competition_mode:'out_of_competition',prose:report.prose};
-    const calls=el('button','Calls suchen');calls.type='button';
-    calls.addEventListener('click',()=>runCallSearch(latestReport));
-    actions.append(calls);
-    setCallSearchStatus('Außer-Konkurrenz-Fall geladen — „Calls suchen“ starten.');
-  }
-  const pdfLabel=el('label','Report-PDF speichern (gekaufter Report)');
-  const pdfInput=el('input');pdfInput.type='file';pdfInput.accept='application/pdf';
-  const pdfStatus=el('p');pdfStatus.id='ooc-pdf-status';pdfStatus.setAttribute('aria-live','polite');
-  pdfInput.addEventListener('change',async event=>{
-    const file=event.target.files[0];if(!file)return;pdfStatus.textContent='PDF wird gespeichert …';
-    try{
-      const response=await fetch('/api/hebeltrader/cases/solution-pdf',{method:'POST',
-        headers:{...authHeaders(),'content-type':'application/json'},
-        body:JSON.stringify({pdf_base64:await asBase64(file),case_id:row.case_id,persist:true})});
-      const data=await response.json();
-      if(!response.ok){pdfStatus.textContent=typeof data.detail==='string'?data.detail:JSON.stringify(data.detail||data);return;}
-      const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v;};
-      set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
-      set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
-      pdfStatus.textContent=data.persisted
-        ?(data.listed_as_official
-          ?`Gespeichert${data.name?': '+data.name:''}. Fall in Meine Fälle aufgenommen.`
-          :`Gespeichert${data.name?': '+data.name:''}. Bitte Auflösung prüfen und speichern.`)
-        :'PDF gelesen, aber nicht persistiert.';
-      await loadCases(document.querySelector('#include-archived').checked);
-      await loadOocCases();
-      if(data.listed_as_official||data.competition_mode==='official'){
-        document.querySelector('#case-select').value=row.case_id;
-        selectCase(row.case_id);
-      }else{
-        document.querySelector('#ooc-case-select').value=row.case_id;
-        selectOocCase(row.case_id);
-      }
-    }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
-  });
-  actions.append(pdfLabel);actions.append(pdfInput);actions.append(pdfStatus);
-  if(row.solution_pdf&&row.resolution&&!row.dataset_promotion){
-    const promote=el('button','In Datensatz übernehmen');promote.type='button';
-    promote.addEventListener('click',async()=>{
-      const name=prompt('Firmenname für Datensatz:',row.resolution?.name||'');
-      if(!name)return;
-      const ticker=prompt('Ticker (optional):','')||null;
-      const source=row.resolution?.source||'Gekaufter HEBELTRADER-Report';
-      const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/dataset-promotion`,{
-        method:'POST',headers:{...authHeaders(),'content-type':'application/json'},
-        body:JSON.stringify({name,ticker,source,call_wkn:row.resolution?.call_wkn||null,
-          stock_wkn:row.solution_pdf?.extracted?.stock_wkn||null})});
-      if(response.ok){
-        document.querySelector('#ooc-case-message').textContent='Datensatz-Export gespeichert (lokal, nicht auto-commit).';
-        await loadOocCases();document.querySelector('#ooc-case-select').value=row.case_id;selectOocCase(row.case_id);
-      }else{
-        document.querySelector('#ooc-case-message').textContent=await readResponseError(response);
-      }
-    });
-    actions.append(promote);
-  }
-  root.append(actions);
-};
-const loadOocCases=async()=>{
-  const message=document.querySelector('#ooc-case-message'),select=document.querySelector('#ooc-case-select');
-  message.textContent='Außer-Konkurrenz-Fälle werden geladen …';
-  try{
-    const response=await fetch('/api/hebeltrader/cases?listing=out_of_competition',{headers:authHeaders()});
-    if(!response.ok)throw new Error('Außer-Konkurrenz-Fälle konnten nicht geladen werden.');
-    loadedOocCases=(await response.json()).reverse();select.replaceChildren();
-    select.append(new Option(loadedOocCases.length?'Fall auswählen …':'Keine außer Konkurrenz',''));
-    loadedOocCases.forEach(row=>select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}`,row.case_id)));
-    message.textContent=loadedOocCases.length?`${loadedOocCases.length} außer Konkurrenz`:'Noch keine außer Konkurrenz.';
-    document.querySelector('#active-ooc-case').replaceChildren();fillResolutionCases();
+    allCases=(await response.json()).reverse();
+    refreshCaseSelect(preferredId);
   }catch(error){message.textContent=error.message;}
 };
 const loadProspectiveReferences=async()=>{
@@ -666,13 +739,10 @@ const loadProspectiveReferences=async()=>{
   }catch(error){}
 };
 loadProspectiveReferences();
-document.querySelector('#load-cases').addEventListener('click',()=>loadCases(document.querySelector('#include-archived').checked));
-document.querySelector('#include-archived').addEventListener('change',event=>loadCases(event.target.checked));
+document.querySelector('#load-cases').addEventListener('click',()=>loadCases(document.querySelector('#case-select').value));
+document.querySelector('#case-view').addEventListener('change',()=>refreshCaseSelect(document.querySelector('#case-select').value));
 document.querySelector('#case-select').addEventListener('change',event=>selectCase(event.target.value));
-document.querySelector('#load-ooc-cases').addEventListener('click',()=>loadOocCases());
-document.querySelector('#ooc-case-select').addEventListener('change',event=>selectOocCase(event.target.value));
-loadCases(false);
-loadOocCases();
+loadCases();
 document.querySelector('#search-calls').addEventListener('click',()=>runCallSearch());
 const setAnalysisStatus=(state,message)=>{
   const status=document.querySelector('#analysis-status');
@@ -713,7 +783,8 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const data=await response.json();
   activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
   await loadApiCosts();
-  if(ooc)await loadOocCases(); else await loadCases(document.querySelector('#include-archived').checked);
+  if(ooc)document.querySelector('#case-view').value='ooc';
+  await loadCases(data.journal_case_id||data.case_id||'');
   result.replaceChildren();
   renderOverview(data);
   setAnalysisStatus('success',ooc
@@ -785,7 +856,7 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
       text+=r.ok?' · als Referenzlösung gespeichert':' · Referenz nicht gespeichert: '+(await r.json()).detail;
     }
     if(ooc)text+=' · außer Konkurrenz (kein Blind-/Referenz-Listing)';
-    status.textContent=text;loadCases();loadOocCases();
+    status.textContent=text;await loadCases(value('case-id'));
   }catch(error){status.textContent='Auflösung konnte nicht gespeichert werden.';}
 });
 </script></body></html>
