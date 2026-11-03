@@ -274,7 +274,7 @@ def test_analysis_status_and_result_are_directly_after_submit_form(tmp_path, mon
     button = html.index("Hinweise analysieren")
     status = html.index('id="analysis-status"')
     result = html.index('id="result"')
-    cases = html.index("Meine Fälle")
+    cases = html.index('id="cases-panel"')
     assert button < status < result < cases
     assert "result.scrollIntoView" in html
 
@@ -354,11 +354,18 @@ def test_web_page_explains_openai_balance_is_not_available(tmp_path, monkeypatch
 
 def test_cases_use_compact_single_case_selector():
     html = Path("scanner/templates/detective.html").read_text()
+    assert 'id="cases-panel"' in html
+    assert 'id="case-view"' in html
+    assert 'id="cases-pie"' in html
+    assert 'id="cases-legend"' in html
     assert 'id="case-select"' in html
-    assert 'id="include-archived"' in html
     assert 'id="active-case"' in html
-    assert 'id="cases"' not in html
+    assert 'id="include-archived"' not in html
+    assert 'id="ooc-case-select"' not in html
+    assert "listing=all" in html
+    assert "renderCasesPie" in html
     assert "selectCase" in html
+    assert "innerHTML" not in html
 
 
 def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
@@ -399,4 +406,6 @@ def test_case_actions_report_failures_and_preserve_archive_filter():
     assert "Wiederherstellung fehlgeschlagen" in html
     assert "Blindtest-Markierung nicht möglich" in html
     assert "Referenzfreigabe nicht möglich" in html
-    assert "loadCases(document.querySelector('#include-archived').checked)" in html
+    assert "refreshCaseSelect" in html
+    assert "Weitere Aktionen" in html
+    assert "Fall ins Listing aufgenommen" in html
