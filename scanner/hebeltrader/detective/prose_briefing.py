@@ -96,8 +96,13 @@ def _status_sentence(report):
     if status == "identified":
         return "Einschätzung: belastbarer Top-Kandidat, manuelle Bestätigung bleibt nötig."
     if status == "hypothesis_top3":
-        return "Einschätzung: Top-3-Hypothese zur manuellen Prüfung — keine bestätigte Identifikation."
-    return "Einschätzung: Arbeitsergebnis zur Orientierung, keine bestätigte Identifikation."
+        return (
+            "Einschätzung: Top-3-Hypothese zur manuellen Prüfung — "
+            "keine bestätigte Identifikation."
+        )
+    return (
+        "Einschätzung: Arbeitsergebnis zur Orientierung, keine bestätigte Identifikation."
+    )
 
 
 def _readable_limits(report):
@@ -138,7 +143,8 @@ def prose_briefing(report):
         lines.append("")
         lines.append("### Ergebnis")
         lines.append(
-            "Es konnten keine belastbaren Unternehmens-Kandidaten aus den Hinweisen abgeleitet werden."
+            "Es konnten keine belastbaren Unternehmens-Kandidaten "
+            "aus den Hinweisen abgeleitet werden."
         )
     else:
         top = candidates[0]
@@ -175,7 +181,10 @@ def prose_briefing(report):
             lines.append(f"- {item}")
 
     lines.append("")
-    lines.append("Keine Anlage- oder Kaufempfehlung. Bestätigung nur über Originalreport oder Primärquelle.")
+    lines.append(
+        "Keine Anlage- oder Kaufempfehlung. "
+        "Bestätigung nur über Originalreport oder Primärquelle."
+    )
     return "\n".join(lines).strip() + "\n"
 
 
