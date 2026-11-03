@@ -403,8 +403,8 @@ def test_candidate_resolution_shortcut_prefills_candidate_identity():
     assert "Calls suchen" in html
     assert 'id="search-calls"' in html
     assert 'id="call-search-panel"' in html
-    assert "identity.asset_id||candidate?.asset_id" in html
-    assert "if(identity.name)" in html
+    assert "identity.asset_id||candidate?.asset_id||prior.asset_id" in html
+    assert "identity.name||prior.name" in html
     assert "renderProse" in html
     assert "/api/hebeltrader/calls/search" in html
     assert "innerHTML" not in html
@@ -416,8 +416,12 @@ def test_case_actions_report_failures_and_preserve_archive_filter():
     assert "showCaseActionError" in html
     assert "Archivierung fehlgeschlagen" in html
     assert "Wiederherstellung fehlgeschlagen" in html
+    assert "Löschen fehlgeschlagen" in html
     assert "Blindtest-Markierung nicht möglich" in html
     assert "Referenzfreigabe nicht möglich" in html
-    assert "refreshCaseSelect" in html
+    assert "refreshCaseSelect({reset:true})" in html
+    assert "/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/delete" in html
+    assert "Auflösung bearbeiten" in html
+    assert "Fall endgültig löschen" in html
     assert "Weitere Aktionen" in html
     assert "Fall ins Listing aufgenommen" in html

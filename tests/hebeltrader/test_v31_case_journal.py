@@ -221,6 +221,21 @@ def test_archive_hides_case_without_rewriting_journal_and_is_idempotent(tmp_path
     assert j.cases()[0]["archived"] is False
 
 
+def test_delete_hides_archived_case_from_all_listings(tmp_path):
+    j = CaseJournal(tmp_path / "j")
+    case = j.intake({"teaser_text": "delete me"})
+    j.archive(case, "parked")
+    assert len(j.cases(include_archived=True)) == 1
+    j.delete(case, "operator removed permanently")
+    j.delete(case, "operator removed permanently")
+    assert j.cases() == []
+    assert j.cases(include_archived=True, listing="all") == []
+    assert j.case(case)["deleted"] is True
+    assert len([e for e in j.events() if e["kind"] == "delete"]) == 1
+    with pytest.raises(ValueError, match="deleted"):
+        j.restore(case, "should fail")
+
+
 def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
     j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
     case = j.intake(
