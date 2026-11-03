@@ -75,9 +75,7 @@ def _why(row):
             parts.append(text)
     cleaned = _clean_sentences(parts)
     if cleaned:
-        return cleaned[0] + (
-            (". " + ". ".join(cleaned[1:3]) + ".") if len(cleaned) > 1 else "."
-        )
+        return cleaned[0] + ((". " + ". ".join(cleaned[1:3]) + ".") if len(cleaned) > 1 else ".")
     contradictions = _clean_sentences(
         _clue_text(item) for item in (row.get("hard_contradictions") or [])[:2]
     )
@@ -97,12 +95,9 @@ def _status_sentence(report):
         return "Einschätzung: belastbarer Top-Kandidat, manuelle Bestätigung bleibt nötig."
     if status == "hypothesis_top3":
         return (
-            "Einschätzung: Top-3-Hypothese zur manuellen Prüfung — "
-            "keine bestätigte Identifikation."
+            "Einschätzung: Top-3-Hypothese zur manuellen Prüfung — keine bestätigte Identifikation."
         )
-    return (
-        "Einschätzung: Arbeitsergebnis zur Orientierung, keine bestätigte Identifikation."
-    )
+    return "Einschätzung: Arbeitsergebnis zur Orientierung, keine bestätigte Identifikation."
 
 
 def _readable_limits(report):
@@ -182,8 +177,7 @@ def prose_briefing(report):
 
     lines.append("")
     lines.append(
-        "Keine Anlage- oder Kaufempfehlung. "
-        "Bestätigung nur über Originalreport oder Primärquelle."
+        "Keine Anlage- oder Kaufempfehlung. Bestätigung nur über Originalreport oder Primärquelle."
     )
     return "\n".join(lines).strip() + "\n"
 
@@ -199,9 +193,7 @@ def call_search_prose(payload):
     status = payload.get("status")
     if status == "abstain":
         lines.append("")
-        lines.append(
-            f"Kein passender Call gefunden ({payload.get('reason') or 'keine Treffer'})."
-        )
+        lines.append(f"Kein passender Call gefunden ({payload.get('reason') or 'keine Treffer'}).")
     elif status:
         lines.append("")
         lines.append(f"Status: **{status}**.")
@@ -233,7 +225,5 @@ def call_search_prose(payload):
             lines.append(f"{index}. " + " · ".join(bit for bit in bits if bit))
 
     lines.append("")
-    lines.append(
-        "Nur manuelle Prüfung; Handelbarkeit und Emittentenbedingungen bleiben Pflicht."
-    )
+    lines.append("Nur manuelle Prüfung; Handelbarkeit und Emittentenbedingungen bleiben Pflicht.")
     return "\n".join(lines).strip() + "\n"
