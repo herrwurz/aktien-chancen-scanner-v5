@@ -41,6 +41,7 @@
     .badge{display:inline-block;padding:.2rem .65rem;border-radius:999px;font-size:.85rem;font-weight:750;background:#e5e7eb;color:#1f2937;vertical-align:middle}
     .badge.ooc{background:#fef3c7;color:#92400e}.badge.ok{background:#d1fae5;color:#065f46}
     .badge.bad{background:#fee2e2;color:#991b1b}.badge.open{background:#e0e7ff;color:#3730a3}
+<<<<<<< HEAD
     #active-case{margin-top:.85rem;padding:1rem 1.1rem;border:2px solid #cbd5e1;border-radius:12px;background:#f8fafc}
     #active-case h3{margin:.1rem 0 .55rem;font-size:1.25rem;line-height:1.35}
     #active-case .case-meta{margin:.35rem 0;font-size:1rem;color:#1f2937}
@@ -54,6 +55,12 @@
     .more-actions summary::-webkit-details-marker{display:none}
     .more-actions summary::before{content:'▸ ';color:#0f766e}
     .more-actions[open] summary::before{content:'▾ '}
+=======
+    .more-actions{margin-top:.5rem}
+    .tech-details{margin:1rem 0;border:1px solid #d1d5db;border-radius:10px;padding:.4rem .85rem .85rem;background:#f8fafc}
+    .tech-details summary{cursor:pointer;font-weight:750;padding:.45rem 0}
+    .tech-details .candidate{background:#fff;padding:.75rem;border-radius:8px}
+>>>>>>> e6a747b (Present analysis as reader prose with collapsed technical details.)
     @media(max-width:600px){body{padding:.5rem}.case-controls,.field-grid{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr}.cases-summary{grid-template-columns:1fr}}
   </style>
 </head>
@@ -261,30 +268,28 @@ const renderProse=(text,root)=>{
 const clueLabel=item=>{
   if(!item)return '';
   if(typeof item==='string')return item;
-  const type=item.type||item.category||'hinweis';
-  const value=item.value||item.normalized||item.clue_id||'';
-  return `${type}: ${value}`;
+  return item.value||item.normalized||item.quote||item.text||'';
 };
 const sourceLine=record=>{
-  const parts=[record.source_kind||'quelle', record.title||record.source_id||'ohne Titel'];
+  const parts=[record.title||record.source_id||'Quelle'];
+  if(record.source_kind)parts.unshift(record.source_kind);
   if(record.url)parts.push(record.url);
-  if(record.source_available_at)parts.push(`verfügbar ${record.source_available_at}`);
   return parts.join(' · ');
 };
 const renderTechnicalDetails=data=>{
-  const detail=el('details');detail.append(el('summary','Technische Details'));
-  const box=el('div');box.className='muted';
+  const detail=el('details');detail.className='tech-details';
+  detail.append(el('summary','Technische Details (Scores, Matrix, Quellen, Rohdaten)'));
+  const box=el('div');
   const id=data.identification||{};
-  box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'unbekannt'} · ${data.case_status||''}`));
-  box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count??'unbekannt'}`));
+  box.append(el('p',`Fall-ID: ${data.journal_case_id||data.case_id||'–'} · Status: ${data.case_status||id.status||'–'}`));
+  if(data.countercandidate_count!=null)box.append(el('p',`Geprüfte Gegenkandidaten: ${data.countercandidate_count}`));
   if(data.research_mode)box.append(el('p',`Recherchemodus: ${data.research_mode}`));
   if(id.failure_code)box.append(el('p',`Failure-Code: ${id.failure_code}`));
   else if(id.reason)box.append(el('p',`Grund: ${id.reason}`));
-  if(id.status==='hypothesis_top3')box.append(el('p',
-    'Hypothesen-Top-3: manuell prüfbare Kandidaten, keine bestätigte Identifikation.'));
   if((data.search_queries||[]).length){box.append(el('h4','Suchqueries'));box.append(list(data.search_queries));}
   const coverage=(data.candidate_source&&data.candidate_source.coverage)||{};
-  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[]),...(data.limitations||[])];
+  const warnings=[...(coverage.coverage_warnings||[]),...(data.review_hints||[]),...(data.limitations||[])]
+    .filter(item=>typeof item==='string'&&item.trim());
   const inputWarnings=[];
   (data.input_sources||[]).forEach(source=>{
     if(source.type==='screenshot_ocr')inputWarnings.push(`OCR (${source.engine||'lokal'}): visuelle Prüfung nötig`);
@@ -294,7 +299,20 @@ const renderTechnicalDetails=data=>{
     });
   });
   const allWarnings=[...warnings,...inputWarnings];
-  if(allWarnings.length){box.append(el('h4','Hinweise und Warnungen'));box.append(list(allWarnings));}
+  if(allWarnings.length){box.append(el('h4','Interne Hinweise / Warnungen'));box.append(list(allWarnings));}
+  if((data.candidates||[]).length){
+    box.append(el('h4',`Top-Kandidaten technisch (${Math.min(3,data.candidates.length)})`));
+    data.candidates.slice(0,3).forEach((candidate,index)=>box.append(renderCandidate(candidate,index)));
+  }
+  if((data.checked_candidates||[]).length){
+    box.append(el('h4',`Alle geprüften Unternehmen (${data.checked_candidates.length})`));
+    data.checked_candidates.forEach(candidate=>{
+      const name=candidate.identity?.name||candidate.asset_id||'Kandidat';
+      box.append(el('p',name));
+      const cells=(candidate.evidence_matrix||[]).map(cell=>`${cell.quote||cell.clue_id||'Zelle'}: ${cell.status}`);
+      if(cells.length)box.append(list(cells));
+    });
+  }
   detail.append(box);return detail;
 };
 const callSearchTargets=()=>{
@@ -346,21 +364,26 @@ const runCallSearch=async data=>{
 const fallbackProse=data=>{
   const ooc=(data.competition_mode||'')==='out_of_competition';
   const lines=[ooc
-    ?'**Außer Konkurrenz** — Analyse zur Orientierung; nicht im offiziellen Listing, Quality oder Blind-Listing.'
+    ?'**Außer Konkurrenz** — Analyse zur Orientierung; nicht im offiziellen Listing.'
     :'**Arbeitsanalyse** — Identifikationshilfe, keine Kaufempfehlung.'];
   const label=(data.decision||{}).label||(data.identification||{}).label;
-  if(label)lines.push(`Status: **${label}**.`);
+  if(label)lines.push(`Einschätzung: **${label}**.`);
   const candidates=(data.candidates||[]).slice(0,3);
   if(!candidates.length){
-    lines.push('','### Ergebnis','Keine belastbaren Kandidaten.');
+    lines.push('','### Ergebnis','Es konnten keine belastbaren Unternehmens-Kandidaten abgeleitet werden.');
   }else{
-    lines.push('','### Ranking');
-    candidates.forEach((c,i)=>{const id=c.identity||c;
-      lines.push(`**${i+1}. ${id.name||'Unbekannt'}**${id.ticker?` (\`${id.ticker}\`)`:''} — Evidenz ${c.evidence_score??'–'}.`);
-      if(c.ranking_reason)lines.push(c.ranking_reason);
-    });
+    const top=candidates[0],id=top.identity||top;
+    lines.push('','### Top-Auswahl',`**${id.name||'Unbekannt'}**${id.ticker?` (${id.ticker})`:''}`);
+    lines.push(top.ranking_reason||'Die Hinweise deuten auf dieses Unternehmen.');
+    if(candidates.length>1){
+      lines.push('','### Weitere geprüfte Kandidaten');
+      candidates.slice(1).forEach((c,i)=>{const cid=c.identity||c;
+        lines.push(`**${i+2}. ${cid.name||'Unbekannt'}**${cid.ticker?` (${cid.ticker})`:''}`);
+        if(c.ranking_reason)lines.push(c.ranking_reason);
+      });
+    }
   }
-  lines.push('','Evidenzscore ist keine Trefferwahrscheinlichkeit. Keine Anlage- oder Kaufempfehlung.');
+  lines.push('','Keine Anlage- oder Kaufempfehlung. Bestätigung nur über Originalreport oder Primärquelle.');
   return lines.join('\n\n');
 };
 const renderOverview=data=>{
@@ -382,39 +405,18 @@ const renderOverview=data=>{
   result.append(actions);
   const callMount=el('div');callMount.id='call-search-result';result.append(callMount);
   result.append(renderTechnicalDetails(data));
-  if((data.candidates||[]).length){
-    const candidatesDetail=el('details');
-    candidatesDetail.append(el('summary',`Kandidatendetails (${Math.min(3,(data.candidates||[]).length)})`));
-    (data.candidates||[]).slice(0,3).forEach((candidate,index)=>candidatesDetail.append(renderCandidate(candidate,index)));
-    result.append(candidatesDetail);
-  }
 };
 const renderCandidate=(c,index)=>{
   const article=el('article');article.className='candidate';
   const identity=c.identity||c;
-  article.append(el('h3',`${c.rank_label||`${index+1}.`} ${identity.name||'Unbekannt'} (${identity.ticker||'ohne Ticker'})`));
-  const wknNote=identity.wkn
-    ? `WKN ${identity.wkn} (nur Anzeige; Derivate-WKN nur nach unabhängiger Produktprüfung)`
-    : 'WKN unbekannt';
-  article.append(el('p',`${wknNote} · Evidenzwert ${c.evidence_score??c.relevance_score_not_probability}`));
-  if(c.hard_contradictions&&c.hard_contradictions.length){
-    article.append(el('h4','Harte Widersprüche'));
-    article.append(list(c.hard_contradictions.map(clueLabel)));
-  }
-  const contradictions=c.contradictions||[];
-  if(contradictions.length){
-    article.append(el('h4','Widersprüche'));
-    article.append(list(contradictions.map(clueLabel)));
-  }
-  const supporting=c.supporting_clues||c.hard_facts||[];
-  if(supporting.length){
-    article.append(el('h4','Bestätigte Hinweise'));
-    article.append(list(supporting.map(clueLabel)));
-  }
-  if(c.hypothesis_reasons&&c.hypothesis_reasons.length){
-    article.append(el('h4','Hypothesengründe'));
-    article.append(list(c.hypothesis_reasons));
-  }
+  article.append(el('h3',`${index+1}. ${identity.name||'Unbekannt'}${identity.ticker?` (${identity.ticker})`:''}`));
+  if(c.evidence_score!=null||c.relevance_score_not_probability!=null)
+    article.append(el('p',`Evidenzwert ${c.evidence_score??c.relevance_score_not_probability}`));
+  if(c.ranking_reason)article.append(el('p',c.ranking_reason));
+  const supporting=(c.supporting_clues||c.hard_facts||[]).map(clueLabel).filter(Boolean);
+  if(supporting.length){article.append(el('h4','Stützende Hinweise'));article.append(list(supporting));}
+  const contradictions=[...(c.hard_contradictions||[]),...(c.contradictions||[])].map(clueLabel).filter(Boolean);
+  if(contradictions.length){article.append(el('h4','Widersprüche'));article.append(list(contradictions));}
   if(c.evidence_matrix&&c.evidence_matrix.length){
     article.append(el('h4','Evidenzmatrix'));
     article.append(list(c.evidence_matrix.map(cell=>{
@@ -428,7 +430,6 @@ const renderCandidate=(c,index)=>{
   if(primary.length){article.append(el('h4','Primärbelege'));article.append(list(primary.map(sourceLine)));}
   if(other.length){article.append(el('h4','Weitere Quellen'));article.append(list(other.map(sourceLine)));}
   if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
-  article.append(el('p','Bestätigung: manuell erforderlich'));
   return article;
 };
 let allCases=[];
@@ -821,17 +822,6 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
     ?'Außer-Konkurrenz-Analyse abgeschlossen. Ergebnis in Prosa unter dem Formular.'
     :'Analyse abgeschlossen. Ergebnis in Prosa unter dem Formular.');
   result.scrollIntoView({behavior:'smooth',block:'start'});
-  if((data.checked_candidates||[]).length){
-    const comparison=el('details');
-    comparison.append(el('summary',`Alle geprüften Unternehmen (${data.checked_candidates.length})`));
-    data.checked_candidates.forEach(candidate=>{
-      comparison.append(el('h3',candidate.identity?.name||candidate.asset_id||'Kandidat'));
-      comparison.append(el('p',`Aktien-ID: ${candidate.asset_id||'unbekannt'}`));
-      comparison.append(list((candidate.evidence_matrix||[]).map(cell=>
-        `${cell.quote||cell.clue_id}: ${cell.status}`)));
-    });
-    result.append(comparison);
-  }
   }catch(error){const message=error?.message||'Unbekannter Verbindungsfehler';result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);}
   finally{submit.disabled=false;submit.textContent=originalLabel;}
 });

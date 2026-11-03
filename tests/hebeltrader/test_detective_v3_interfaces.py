@@ -147,9 +147,11 @@ def test_template_uses_dom_text_content_instead_of_html_injection():
     assert "textContent" in template
     assert "c.identity||c" in template
     assert "failure_code" in template
-    assert "hypothesis_top3" in template
+    assert "Technische Details" in template
+    assert "tech-details" in template
+    assert "Top-Auswahl" in template
     assert "search_queries" in template
-    assert "Harte Widersprüche" in template
     assert "Primärbelege" in template
     assert "coverage_warnings" in template
     assert "requires_manual_review" in template
+    assert "Kandidatendetails" not in template

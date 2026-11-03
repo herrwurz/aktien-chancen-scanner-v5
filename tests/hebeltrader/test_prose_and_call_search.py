@@ -15,6 +15,7 @@ def test_prose_briefing_reads_like_chat_ranking():
                 "evidence_score": 22,
                 "ranking_reason": "Silberförderer mit Portfolio-Kern-Story",
                 "supporting_clues": ["silber"],
+                "unknown_clues": [{"type": "unknown", "value": "unknown"}],
             },
             {
                 "identity": {"name": "Energy Fuels", "ticker": "UUUU"},
@@ -27,15 +28,26 @@ def test_prose_briefing_reads_like_chat_ranking():
                 "ranking_reason": "Titanbefestigungselemente",
             },
         ],
-        "limitations": ["Keine Primärquelle aus dem Report"],
+        "checked_candidates": [{"identity": {"name": "X"}}, {"identity": {"name": "Y"}}] * 3,
+        "limitations": ["Keine Primärquelle aus dem Report", "UNKNOWN_INTERNAL_CODE"],
     }
     prose = prose_briefing(report)
     assert "Außer Konkurrenz" in prose
+    assert "Top-Auswahl" in prose
     assert "Santacruz Silver" in prose
-    assert "`SCZ`" in prose
-    assert "Working hypothesis" in prose
+    assert "SCZ" in prose
+    assert "Silberförderer" in prose
+    assert "Weitere geprüfte Kandidaten" in prose
+    assert "Energy Fuels" in prose
     assert "Kaufempfehlung" in prose
     assert "Failure-Code" not in prose
+    assert "Working hypothesis" not in prose
+    assert "Evidenz 22" not in prose
+    assert "offen:" not in prose
+    assert "unknown" not in prose.casefold()
+    assert "Bitte noch prüfen" in prose
+    assert "Keine Primärquelle" in prose
+    assert "UNKNOWN_INTERNAL_CODE" not in prose
 
 
 def test_run_case_includes_prose_field(tmp_path):
@@ -52,9 +64,7 @@ def test_run_case_includes_prose_field(tmp_path):
     )
     assert "prose" in report
     assert "Außer Konkurrenz" in report["prose"]
-    assert (
-        "Working hypothesis" in report["prose"] or "Keine belastbaren Kandidaten" in report["prose"]
-    )
+    assert "Top-Auswahl" in report["prose"] or "keine belastbaren" in report["prose"].casefold()
     assert "Außer Konkurrenz" in Path(report["artifact_directory"], "report.md").read_text()
     assert "Außer" in compact_report(report)
 
@@ -72,7 +82,7 @@ def test_call_search_offline_abstains_with_prose():
     assert out["actual_hebeltrader_call_identified"] is False
     assert out["status"] == "abstain"
     assert len(out["underlyings"]) == 2
-    assert "Dry-Run" in out["prose"]
+    assert "Call-Suche" in out["prose"]
     assert "Energy Fuels" in out["prose"]
     assert "Kaufempfehlung" in out["prose"]
 
@@ -107,4 +117,4 @@ def test_call_search_prose_helper_mentions_ht_band():
         {"status": "abstain", "reason": "no_classic_calls_found", "underlyings": []}
     )
     assert "4–6 Monate" in text
-    assert "Omega ~8–13" in text
+    assert "Call-Suche" in text
