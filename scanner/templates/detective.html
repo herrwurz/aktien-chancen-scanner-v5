@@ -142,7 +142,7 @@
     </div>
     <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
   </section>
-  <section id="resolution-panel" class="resolution-callout"><h2>Originalauflösung eintragen</h2>
+  <section id="resolution-panel" class="resolution-callout" hidden><h2>Originalauflösung eintragen</h2>
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
       Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
     <form id="resolution-form">
@@ -492,13 +492,16 @@ const readerProse=data=>{
 };
 const renderOverview=data=>{
   latestReport=data;
-  if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
+  const shownId=data.journal_case_id||data.case_id;
+  if(shownId&&document.querySelector('#case-id').value!==shownId){
+    resetResolutionToCase(shownId,{report:data,label:data.headline||shownId});
+  }
   renderProse(readerProse(data),result);
   setCallSearchStatus('Analyse geladen — im Abschnitt „Calls suchen“ starten oder Button unten nutzen.');
   const actions=el('div');actions.className='result-actions';
   const callBtn=el('button','Calls suchen');callBtn.type='button';
   callBtn.addEventListener('click',()=>runCallSearch(data));
-  const resolveBtn=activeResolutionRow?makeResolutionButton(activeResolutionRow):null;
+  const resolveBtn=activeResolutionRow&&!activeResolutionRow.solution_pdf?makeResolutionButton(activeResolutionRow):null;
   const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';exportButton.className='secondary';
   exportButton.addEventListener('click',()=>{
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
@@ -533,7 +536,7 @@ const renderCandidate=(c,index)=>{
   const other=sources.filter(source=>!primary.includes(source));
   if(primary.length){article.append(el('h4','Primärbelege'));article.append(list(primary.map(sourceLine)));}
   if(other.length){article.append(el('h4','Weitere Quellen'));article.append(list(other.map(sourceLine)));}
-  if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
+  if(activeResolutionRow&&!activeResolutionRow.solution_pdf)article.append(makeResolutionButton(activeResolutionRow,c));
   return article;
 };
 let allCases=[];
@@ -557,6 +560,69 @@ const resultBucket=row=>{
 };
 const isBlindCase=row=>row.evaluation_class==='prospective_blind';
 const isReferenceCase=row=>Boolean(row.reference_status);
+const caseOptionLabel=(row,fallback='')=>{
+  const headline=(row?.input||{}).headline||fallback||row?.case_id||'Fall';
+  const issue=(row?.input||{}).issue||'';
+  const bucket=row?resultBucket(row):'open';
+  const tag=!row?'neu'
+    :row.archived?'archiviert'
+    :row.competition_mode==='out_of_competition'?'außer Konkurrenz'
+    :bucket==='correct'?'erraten'
+    :bucket==='wrong'?'falsch'
+    :'offen';
+  return [headline,issue,row?.status,tag].filter(Boolean).join(' · ');
+};
+const clearResolutionFields=()=>{
+  ['resolved-id','resolved-name','resolved-wkn','resolved-source','resolved-change'].forEach(id=>{
+    const node=document.querySelector('#'+id);if(node)node.value='';
+  });
+  const error=errorField();
+  if(error){error.value='';delete error.dataset.auto;}
+  const pdf=document.querySelector('#solution-pdf');
+  if(pdf)pdf.value='';
+  const pdfStatus=document.querySelector('#solution-pdf-status');
+  if(pdfStatus)pdfStatus.textContent='';
+  resolutionOriginalSha=null;
+};
+const syncResolutionPanel=(row)=>{
+  const panel=document.querySelector('#resolution-panel');
+  if(!panel)return;
+  panel.hidden=!row||Boolean(row.solution_pdf);
+};
+const resetResolutionToCase=(caseId,extra={})=>{
+  const select=document.querySelector('#case-id');
+  const row=caseId?allLoadedCases().find(item=>item.case_id===caseId)||null:null;
+  if(select){
+    if(row&&caseId&&![...select.options].some(option=>option.value===caseId)){
+      select.append(new Option(extra.label||caseOptionLabel(row,caseId),caseId));
+    }
+    select.value=row?caseId:'';
+  }
+  activeResolutionRow=row;
+  clearResolutionFields();
+  const report=row?.first_prediction||extra.report||{};
+  fillResolutionCandidates(report);
+  const referenceBox=document.querySelector('#resolved-reference');
+  if(!row){
+    if(referenceBox)referenceBox.checked=true;
+    syncResolutionPanel(null);
+    return;
+  }
+  const prior=row.resolution||{};
+  document.querySelector('#resolved-id').value=prior.asset_id||'';
+  document.querySelector('#resolved-name').value=prior.name||'';
+  document.querySelector('#resolved-wkn').value=prior.call_wkn||'';
+  document.querySelector('#resolved-source').value=prior.source||'';
+  document.querySelector('#resolved-change').value=prior.algorithm_change||'';
+  if(prior.error_analysis){errorField().value=prior.error_analysis;clearAutoErrorDraft();}
+  else if(prior.name)fillErrorDraft(true);
+  resolutionOriginalSha=(row.latest_prediction||row.first_prediction||extra.report||{}).teaser_sha256||prior.original_sha256||null;
+  if(referenceBox){
+    const ooc=row.competition_mode==='out_of_competition';
+    referenceBox.checked=!ooc&&!row.reference_status&&(!prior.name||row.evaluation_class==='prospective_blind');
+  }
+  syncResolutionPanel(row);
+};
 const filterCases=()=>{
   const scope=currentScope(),result=currentResult();
   let rows=allCases;
@@ -643,53 +709,41 @@ const refreshCaseSelect=(options={})=>{
   const reset=Boolean(opts.reset);
   const followCase=Boolean(opts.followCase);
   let keep=reset?'':(opts.preferredId||'');
-  if(followCase&&keep&&!filterCases().some(row=>row.case_id===keep)&&allCases.some(row=>row.case_id===keep)){
+  if(followCase&&keep&&allCases.some(row=>row.case_id===keep)){
     const row=allCases.find(item=>item.case_id===keep);
     if(row.archived)setCaseFilters('archive','all');
     else if(row.competition_mode==='out_of_competition')setCaseFilters('ooc','all');
-    else setCaseFilters('active',resultBucket(row)==='open'?'all':resultBucket(row));
+    else setCaseFilters('active','all');
   }
   const filtered=filterCases();
   select.replaceChildren();
   select.append(new Option(filtered.length?'Fall wählen …':'Keine Fälle in diesem Filter',''));
-  filtered.forEach(row=>{
-    const bucket=resultBucket(row);
-    const tag=row.archived?' · archiviert'
-      :row.competition_mode==='out_of_competition'?' · OOC'
-      :bucket==='correct'?' · erraten'
-      :bucket==='wrong'?' · falsch'
-      :' · offen';
-    select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
-  });
+  filtered.forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
   renderCasesPie();
   message.textContent=allCases.length
     ?`${filtered.length} von ${allCases.length} geladen · ${scopeSelect.selectedOptions[0].textContent} / ${resultSelect.selectedOptions[0].textContent}`
     :'Noch keine gespeicherten Fälle.';
   fillResolutionCases();
   if(keep&&[...select.options].some(option=>option.value===keep)){
-    select.value=keep;selectCase(keep);
-  }else if(!reset&&filtered.length===1){
+    select.value=keep;selectCase(keep,{syncResolution:followCase||Boolean(opts.syncResolution)});
+  }else if(!reset&&!opts.preferredId&&filtered.length===1){
     select.value=filtered[0].case_id;selectCase(filtered[0].case_id);
   }else{
     select.value='';
     document.querySelector('#active-case').replaceChildren();
+    syncResolutionPanel(null);
   }
 };
 const fillResolutionCases=()=>{
   const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
-  allLoadedCases().forEach(row=>{
-    const tag=row.archived?' · archiviert'
-      :row.competition_mode==='out_of_competition'?' · außer Konkurrenz'
-      :row.resolution?' · Auflösung vorhanden':'';
-    select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
-  });
-  select.value=current;
+  allLoadedCases().forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
+  select.value=[...select.options].some(option=>option.value===current)?current:'';
 };
-const fillResolutionCandidates=()=>{
+const fillResolutionCandidates=(reportOverride=null)=>{
   const row=allLoadedCases().find(item=>item.case_id===document.querySelector('#case-id').value);
   const select=document.querySelector('#resolved-candidate');
   select.replaceChildren(new Option('Anderes Unternehmen (Namen eintragen)',''));
-  const report=row?.first_prediction||{};
+  const report=reportOverride||row?.first_prediction||{};
   (report.candidates||[]).slice(0,10).forEach((c,i)=>{const id=c.identity||c;
     const option=new Option(`${i+1}. ${id.name||c.name||id.asset_id}`,id.asset_id||c.asset_id||'');
     option.dataset.name=id.name||c.name||'';select.append(option);});
@@ -733,23 +787,16 @@ const fillErrorDraft=(force=false)=>{
 const openResolution=(row,candidate=null)=>{
   const report=row?.latest_prediction||row?.first_prediction||row||{};
   const caseId=row?.case_id||report.journal_case_id||report.case_id||'';
-  const caseSelect=document.querySelector('#case-id');
-  if(caseId&&![...caseSelect.options].some(o=>o.value===caseId)){
-    const tag=row?.archived?' · archiviert':row?.competition_mode==='out_of_competition'?' · außer Konkurrenz':'';
-    caseSelect.append(new Option(`${(row?.input||{}).headline||caseId} · ${row?.status||'Fall'}${tag}`,caseId));
-  }
-  caseSelect.value=caseId;fillResolutionCandidates();
+  resetResolutionToCase(caseId,{report:row?.first_prediction||report,label:caseOptionLabel(row,caseId)});
   const identity=candidate?.identity||candidate||{};
-  const prior=row?.resolution||{};
-  document.querySelector('#resolved-id').value=identity.asset_id||candidate?.asset_id||prior.asset_id||'';
-  document.querySelector('#resolved-name').value=identity.name||prior.name||'';
-  if(prior.call_wkn&&!document.querySelector('#resolved-wkn').value)document.querySelector('#resolved-wkn').value=prior.call_wkn;
-  if(prior.source&&!document.querySelector('#resolved-source').value)document.querySelector('#resolved-source').value=prior.source;
-  if(prior.error_analysis){errorField().value=prior.error_analysis;clearAutoErrorDraft();}
-  else fillErrorDraft(true);
-  if(prior.algorithm_change&&!document.querySelector('#resolved-change').value)document.querySelector('#resolved-change').value=prior.algorithm_change;
-  resolutionOriginalSha=report.teaser_sha256||prior.original_sha256||null;
-  document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
+  if(identity.asset_id||candidate?.asset_id||identity.name){
+    document.querySelector('#resolved-id').value=identity.asset_id||candidate?.asset_id||'';
+    if(identity.name)document.querySelector('#resolved-name').value=identity.name;
+    fillErrorDraft(true);
+  }
+  const panel=document.querySelector('#resolution-panel');
+  if(panel.hidden)return;
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
   document.querySelector('#resolved-name').focus();
 };
 const makeResolutionButton=(row,candidate=null)=>{
@@ -773,20 +820,21 @@ const attachSolutionPdf=(row,target)=>{
         body:JSON.stringify({pdf_base64:await asBase64(file),case_id:row.case_id,persist:true})});
       const data=await response.json();
       if(!response.ok){pdfStatus.textContent=typeof data.detail==='string'?data.detail:JSON.stringify(data.detail||data);return;}
+      if(data.persisted){
+        pdfStatus.textContent=data.listed_as_official||data.competition_mode==='official'
+          ?`Gespeichert${data.name?': '+data.name:''}. Nicht mehr außer Konkurrenz — Fall im Listing.`
+          :`Gespeichert${data.name?': '+data.name:''}.`;
+        if(data.listed_as_official||data.competition_mode==='official')setCaseFilters('active','all');
+        await loadCases(row.case_id);
+        return;
+      }
       const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v;};
       document.querySelector('#case-id').value=row.case_id;
       fillResolutionCandidates();
       set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
       set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
       fillErrorDraft(true);
-      document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
-      pdfStatus.textContent=data.persisted
-        ?(data.listed_as_official||data.competition_mode==='official'
-          ?`Gespeichert${data.name?': '+data.name:''}. Nicht mehr außer Konkurrenz — Fall im Listing. Fehleranalyse vorausgefüllt.`
-          :`Gespeichert${data.name?': '+data.name:''}. Fehleranalyse vorausgefüllt — bitte prüfen und speichern.`)
-        :'PDF gelesen, aber nicht persistiert.';
-      if(data.persisted&&(data.listed_as_official||data.competition_mode==='official'))setCaseFilters('active','all');
-      await loadCases(row.case_id);
+      pdfStatus.textContent='PDF gelesen, aber nicht persistiert.';
     }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
   });
   target.append(pdfLabel);target.append(pdfInput);target.append(pdfStatus);
@@ -800,7 +848,7 @@ const renderCaseHints=row=>{
   if(row.archived)box.append(caseHint('Archiviert — wiederherstellen oder unter Weitere Aktionen endgültig löschen.','warn'));
   if(row.competition_mode==='out_of_competition'&&!row.solution_pdf)
     box.append(caseHint('Nächster Schritt: Report-PDF speichern. Danach landet der Fall im Listing.','alert'));
-  else if(!row.resolution)
+  else if(!row.resolution&&!row.solution_pdf)
     box.append(caseHint('Nächster Schritt: Originalauflösung eintragen (Aktie / Call bestätigen).','alert'));
   else if(bucket==='correct')box.append(caseHint('Ergebnis: Erraten (Rang 1 bestätigt).'));
   else if(bucket==='wrong')box.append(caseHint('Ergebnis: Falsch — Auflösung weicht vom Top-Tipp ab.','warn'));
@@ -811,7 +859,7 @@ const renderCaseHints=row=>{
   if(row.solution_pdf)box.append(caseHint(`Lösungs-PDF gespeichert (${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…).`,'info'));
   return box.childNodes.length?box:null;
 };
-const selectCase=caseId=>{
+const selectCase=(caseId,options={})=>{
   const root=document.querySelector('#active-case');root.replaceChildren();
   const row=allCases.find(item=>item.case_id===caseId);if(!row)return;
   const heading=(row.input||{}).headline||row.case_id;
@@ -837,8 +885,8 @@ const selectCase=caseId=>{
     actions.append(calls);
     setCallSearchStatus('Fall geladen — „Calls suchen“ starten.');
   }
-  if(!row.resolution)actions.append(makeResolutionButton(row));
-  else{
+  if(!row.solution_pdf&&!row.resolution)actions.append(makeResolutionButton(row));
+  else if(!row.solution_pdf){
     const edit=el('button','Auflösung bearbeiten');edit.type='button';edit.className='open-resolution';
     edit.addEventListener('click',()=>openResolution(row));actions.append(edit);
   }
@@ -901,12 +949,14 @@ const selectCase=caseId=>{
   }
   if(moreActions.childNodes.length){more.append(moreActions);actions.append(more);}
   root.append(actions);
+  if(document.querySelector('#case-id').value!==caseId)resetResolutionToCase(caseId);
+  syncResolutionPanel(row);
 };
 const loadCases=async(preferredId='')=>{
   const message=document.querySelector('#case-message');
   message.textContent='Fälle werden geladen …';
   try{
-    // PDF-Fälle ins Listing heilen, klare Auflösungen setzen, Rest ohne Bucket löschen.
+    // PDF-Fälle ins Listing heben und klare Auflösungen setzen. Nie löschen.
     let repairNote='';
     try{
       const repair=await fetch('/api/hebeltrader/cases/reconcile',{method:'POST',headers:authHeaders()});
@@ -915,7 +965,6 @@ const loadCases=async(preferredId='')=>{
         const parts=[];
         if(summary.pdf_case_count)parts.push(`${summary.pdf_case_count} mit Report-PDF`);
         if((summary.resolved||[]).length)parts.push(`${summary.resolved.length} aufgelöst`);
-        if((summary.deleted||[]).length)parts.push(`${summary.deleted.length} nicht eindeutig entfernt`);
         if(parts.length)repairNote='Bereinigt: '+parts.join(', ')+'. ';
       }
     }catch(ignored){}
@@ -930,8 +979,8 @@ const loadCases=async(preferredId='')=>{
 document.querySelector('#case-scope').addEventListener('change',()=>refreshCaseSelect({reset:true}));
 document.querySelector('#case-result').addEventListener('change',()=>refreshCaseSelect({reset:true}));
 document.querySelector('#case-select').addEventListener('change',event=>{
-  if(event.target.value)selectCase(event.target.value);
-  else document.querySelector('#active-case').replaceChildren();
+  if(event.target.value)selectCase(event.target.value,{syncResolution:true});
+  else{document.querySelector('#active-case').replaceChildren();resetResolutionToCase('');}
 });
 loadCases();
 document.querySelector('#search-calls').addEventListener('click',()=>runCallSearch());
@@ -972,10 +1021,12 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const response=await fetch('/api/hebeltrader/investigate',{method:'POST',headers,body:JSON.stringify(body)});
   if(!response.ok){const message=await readResponseError(response);result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);return}
   const data=await response.json();
-  activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
+  const enteredId=data.journal_case_id||data.case_id||'';
+  activeResolutionRow={case_id:enteredId,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
   await loadApiCosts();
   setCaseFilters(ooc?'ooc':'active','all');
-  await loadCases(data.journal_case_id||data.case_id||'');
+  await loadCases(enteredId);
+  resetResolutionToCase(enteredId,{report:data,label:[data.headline,data.issue].filter(Boolean).join(' · ')||enteredId});
   result.replaceChildren();
   renderOverview(data);
   setAnalysisStatus('success',ooc
@@ -1000,15 +1051,35 @@ document.querySelector('#solution-pdf').addEventListener('change',async event=>{
     set('resolved-source',`Hebeltrader-Ausgabe ${data.issue} (PDF sha256 ${data.pdf_sha256.slice(0,12)})`);
     fillErrorDraft(true);
     let note=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – Fehleranalyse vorausgefüllt, bitte prüfen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
-    if(data.persisted&&(data.listed_as_official||data.competition_mode==='official')){
-      note+=' Fall ist nicht mehr außer Konkurrenz.';
-      setCaseFilters('active','all');
+    if(data.persisted){
+      if(data.listed_as_official||data.competition_mode==='official'){
+        note+=' Fall ist nicht mehr außer Konkurrenz.';
+        setCaseFilters('active','all');
+      }
+      status.textContent=note;
       await loadCases(caseId);
+      return;
     }
     status.textContent=note;
   }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
 });
-document.querySelector('#case-id').addEventListener('change',()=>{fillResolutionCandidates();fillErrorDraft(true);});
+document.querySelector('#case-id').addEventListener('change',()=>{
+  const caseId=document.querySelector('#case-id').value;
+  resetResolutionToCase(caseId);
+  if(!caseId)return;
+  const row=allCases.find(item=>item.case_id===caseId);
+  if(row&&!filterCases().some(item=>item.case_id===caseId)){
+    if(row.archived)setCaseFilters('archive','all');
+    else if(row.competition_mode==='out_of_competition')setCaseFilters('ooc','all');
+    else setCaseFilters('active','all');
+    refreshCaseSelect({preferredId:caseId});
+  }else{
+    const picker=document.querySelector('#case-select');
+    if([...picker.options].some(option=>option.value===caseId)){
+      picker.value=caseId;selectCase(caseId);
+    }
+  }
+});
 document.querySelector('#resolved-candidate').addEventListener('change',event=>{
   const option=event.target.selectedOptions[0];
   document.querySelector('#resolved-id').value=option.value;
@@ -1033,7 +1104,7 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
     confirmed_at:new Date().toISOString(),original_sha256:resolutionOriginalSha};
   if(value('resolved-id'))body.asset_id=value('resolved-id');
   try{
-    if(asReference&&row&&row.evaluation_class!=='prospective_blind'){
+    if(asReference&&row&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
       const r=await post('prospective',{basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'});
       if(!r.ok){status.textContent=(await r.json()).detail;return}
     }

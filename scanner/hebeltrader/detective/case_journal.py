@@ -134,6 +134,9 @@ class CaseJournal:
                 p = row["payload"]
                 known_content, known_source = input_keys(p["input"])
                 if (content and content == known_content) or (source and source == known_source):
+                    # A deleted case stays deleted. The same teaser starts a new case below.
+                    if self.case(row["case_id"]).get("deleted"):
+                        continue
                     # Keep changed original as a new event, never overwrite the first.
                     if not any(
                         event["case_id"] == row["case_id"]
@@ -147,7 +150,7 @@ class CaseJournal:
                             {"input": payload, "input_sha256": digest(payload)},
                         )
                     return row["case_id"]
-            case_id = "TI-" + (source or content)[:20]
+            case_id = self._fresh_case_id(source, content, rows)
             self._append(
                 case_id,
                 "intake",
@@ -159,6 +162,19 @@ class CaseJournal:
                 },
             )
             return case_id
+
+    @staticmethod
+    def _fresh_case_id(source, content, rows):
+        taken = {event["case_id"] for event in rows if event["kind"] == "intake"}
+        natural = "TI-" + (source or content)[:20]
+        if natural not in taken:
+            return natural
+        salt = 1
+        while True:
+            candidate = "TI-" + digest({"content": content, "source": source, "reentry": salt})[:20]
+            if candidate not in taken:
+                return candidate
+            salt += 1
 
     def case(self, case_id):
         rows = [r for r in self.events() if r["case_id"] == case_id]
@@ -846,13 +862,12 @@ class CaseJournal:
         return False
 
     def reconcile_operator_listing(self):
-        """Restore listing buckets for purchased-report cases; drop ambiguous PDF leftovers.
+        """Restore listing buckets for purchased-report cases.
 
         - Persist listing_promotion when a solution PDF is on file (heal-on-write).
         - Auto-resolve when the PDF clearly names the stock and a freeze exists.
-        - Soft-delete only report-PDF cases that still cannot be assigned clearly.
-          Open official cases without a PDF stay (Offen) — they are unfinished work,
-          not ambiguous uploads.
+        - Never delete. An uploaded report stays listed until the operator deletes it.
+          Unclear PDFs and unfinished cases stay Offen.
         """
         summary = {
             "promoted": [],
@@ -898,16 +913,8 @@ class CaseJournal:
             ):
                 summary["kept_ooc"].append(case_id)
                 continue
-            if not state.get("solution_pdf"):
-                # Unfinished official case without a report — leave as Offen.
-                summary["kept_open"].append(case_id)
-                continue
-            # Report on file but still no clear Erraten/Falsch assignment.
-            self.delete(
-                case_id,
-                "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)",
-            )
-            summary["deleted"].append(case_id)
+            # Unfinished case, with or without a report PDF, stays Offen.
+            summary["kept_open"].append(case_id)
         summary["pdf_case_count"] = len(summary["pdf_cases"])
         summary["clear_active"] = [
             row["case_id"]

@@ -385,6 +385,8 @@ def test_cases_use_compact_single_case_selector():
     assert "listing=all" in html
     assert "renderCasesPie" in html
     assert "selectCase" in html
+    assert "resetResolutionToCase" in html
+    assert "resultBucket(row)==='open'?'all':resultBucket(row)" not in html
     assert "innerHTML" not in html
 
 
@@ -400,6 +402,12 @@ def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
     assert 'textarea id="resolved-error" required' not in html
     assert "Nicht mehr außer Konkurrenz" in html
     assert "persist:Boolean(caseId)" in html
+    assert "syncResolution:true" in html
+    assert "syncResolutionPanel" in html
+    assert "panel.hidden=!row||Boolean(row.solution_pdf)" in html
+    assert 'id="resolution-panel" class="resolution-callout" hidden' in html
+    assert "!row.resolution" in html
+    assert "Fall erneut eingegeben" not in html
 
 
 def test_analysis_status_has_visible_states_and_safe_error_details():
@@ -417,8 +425,8 @@ def test_candidate_resolution_shortcut_prefills_candidate_identity():
     assert "Calls suchen" in html
     assert 'id="search-calls"' in html
     assert 'id="call-search-panel"' in html
-    assert "identity.asset_id||candidate?.asset_id||prior.asset_id" in html
-    assert "identity.name||prior.name" in html
+    assert "identity.asset_id||candidate?.asset_id||''" in html
+    assert "if(identity.name)document.querySelector('#resolved-name').value=identity.name;" in html
     assert "renderProse" in html
     assert "readerProse" in html
     assert "renderProse(readerProse(data),result)" in html
