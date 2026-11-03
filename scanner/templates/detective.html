@@ -492,7 +492,10 @@ const readerProse=data=>{
 };
 const renderOverview=data=>{
   latestReport=data;
-  if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
+  const shownId=data.journal_case_id||data.case_id;
+  if(shownId&&document.querySelector('#case-id').value!==shownId){
+    resetResolutionToCase(shownId,{report:data,label:data.headline||shownId});
+  }
   renderProse(readerProse(data),result);
   setCallSearchStatus('Analyse geladen — im Abschnitt „Calls suchen“ starten oder Button unten nutzen.');
   const actions=el('div');actions.className='result-actions';
@@ -557,6 +560,59 @@ const resultBucket=row=>{
 };
 const isBlindCase=row=>row.evaluation_class==='prospective_blind';
 const isReferenceCase=row=>Boolean(row.reference_status);
+const caseOptionLabel=(row,fallback='')=>{
+  const headline=(row?.input||{}).headline||fallback||row?.case_id||'Fall';
+  const issue=(row?.input||{}).issue||'';
+  const bucket=row?resultBucket(row):'open';
+  const tag=!row?'neu'
+    :row.archived?'archiviert'
+    :row.competition_mode==='out_of_competition'?'außer Konkurrenz'
+    :bucket==='correct'?'erraten'
+    :bucket==='wrong'?'falsch'
+    :'offen';
+  return [headline,issue,row?.status,tag].filter(Boolean).join(' · ');
+};
+const clearResolutionFields=()=>{
+  ['resolved-id','resolved-name','resolved-wkn','resolved-source','resolved-change'].forEach(id=>{
+    const node=document.querySelector('#'+id);if(node)node.value='';
+  });
+  const error=errorField();
+  if(error){error.value='';delete error.dataset.auto;}
+  const pdf=document.querySelector('#solution-pdf');
+  if(pdf)pdf.value='';
+  const pdfStatus=document.querySelector('#solution-pdf-status');
+  if(pdfStatus)pdfStatus.textContent='';
+  resolutionOriginalSha=null;
+};
+const resetResolutionToCase=(caseId,extra={})=>{
+  const select=document.querySelector('#case-id');
+  const row=caseId?allLoadedCases().find(item=>item.case_id===caseId)||null:null;
+  if(select){
+    if(caseId&&![...select.options].some(option=>option.value===caseId)){
+      select.append(new Option(extra.label||caseOptionLabel(row,caseId),caseId));
+    }
+    select.value=caseId||'';
+  }
+  activeResolutionRow=row;
+  clearResolutionFields();
+  const report=row?.first_prediction||extra.report||{};
+  fillResolutionCandidates(report);
+  const referenceBox=document.querySelector('#resolved-reference');
+  if(!row){if(referenceBox)referenceBox.checked=true;return;}
+  const prior=row.resolution||{};
+  document.querySelector('#resolved-id').value=prior.asset_id||'';
+  document.querySelector('#resolved-name').value=prior.name||'';
+  document.querySelector('#resolved-wkn').value=prior.call_wkn||'';
+  document.querySelector('#resolved-source').value=prior.source||'';
+  document.querySelector('#resolved-change').value=prior.algorithm_change||'';
+  if(prior.error_analysis){errorField().value=prior.error_analysis;clearAutoErrorDraft();}
+  else if(prior.name)fillErrorDraft(true);
+  resolutionOriginalSha=(row.latest_prediction||row.first_prediction||extra.report||{}).teaser_sha256||prior.original_sha256||null;
+  if(referenceBox){
+    const ooc=row.competition_mode==='out_of_competition';
+    referenceBox.checked=!ooc&&!row.reference_status&&(!prior.name||row.evaluation_class==='prospective_blind');
+  }
+};
 const filterCases=()=>{
   const scope=currentScope(),result=currentResult();
   let rows=allCases;
@@ -643,32 +699,24 @@ const refreshCaseSelect=(options={})=>{
   const reset=Boolean(opts.reset);
   const followCase=Boolean(opts.followCase);
   let keep=reset?'':(opts.preferredId||'');
-  if(followCase&&keep&&!filterCases().some(row=>row.case_id===keep)&&allCases.some(row=>row.case_id===keep)){
+  if(followCase&&keep&&allCases.some(row=>row.case_id===keep)){
     const row=allCases.find(item=>item.case_id===keep);
     if(row.archived)setCaseFilters('archive','all');
     else if(row.competition_mode==='out_of_competition')setCaseFilters('ooc','all');
-    else setCaseFilters('active',resultBucket(row)==='open'?'all':resultBucket(row));
+    else setCaseFilters('active','all');
   }
   const filtered=filterCases();
   select.replaceChildren();
   select.append(new Option(filtered.length?'Fall wählen …':'Keine Fälle in diesem Filter',''));
-  filtered.forEach(row=>{
-    const bucket=resultBucket(row);
-    const tag=row.archived?' · archiviert'
-      :row.competition_mode==='out_of_competition'?' · OOC'
-      :bucket==='correct'?' · erraten'
-      :bucket==='wrong'?' · falsch'
-      :' · offen';
-    select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
-  });
+  filtered.forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
   renderCasesPie();
   message.textContent=allCases.length
     ?`${filtered.length} von ${allCases.length} geladen · ${scopeSelect.selectedOptions[0].textContent} / ${resultSelect.selectedOptions[0].textContent}`
     :'Noch keine gespeicherten Fälle.';
   fillResolutionCases();
   if(keep&&[...select.options].some(option=>option.value===keep)){
-    select.value=keep;selectCase(keep);
-  }else if(!reset&&filtered.length===1){
+    select.value=keep;selectCase(keep,{syncResolution:followCase||Boolean(opts.syncResolution)});
+  }else if(!reset&&!opts.preferredId&&filtered.length===1){
     select.value=filtered[0].case_id;selectCase(filtered[0].case_id);
   }else{
     select.value='';
@@ -677,19 +725,17 @@ const refreshCaseSelect=(options={})=>{
 };
 const fillResolutionCases=()=>{
   const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
-  allLoadedCases().forEach(row=>{
-    const tag=row.archived?' · archiviert'
-      :row.competition_mode==='out_of_competition'?' · außer Konkurrenz'
-      :row.resolution?' · Auflösung vorhanden':'';
-    select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
-  });
+  allLoadedCases().forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
+  if(current&&![...select.options].some(option=>option.value===current)){
+    select.append(new Option(current,current));
+  }
   select.value=current;
 };
-const fillResolutionCandidates=()=>{
+const fillResolutionCandidates=(reportOverride=null)=>{
   const row=allLoadedCases().find(item=>item.case_id===document.querySelector('#case-id').value);
   const select=document.querySelector('#resolved-candidate');
   select.replaceChildren(new Option('Anderes Unternehmen (Namen eintragen)',''));
-  const report=row?.first_prediction||{};
+  const report=reportOverride||row?.first_prediction||{};
   (report.candidates||[]).slice(0,10).forEach((c,i)=>{const id=c.identity||c;
     const option=new Option(`${i+1}. ${id.name||c.name||id.asset_id}`,id.asset_id||c.asset_id||'');
     option.dataset.name=id.name||c.name||'';select.append(option);});
@@ -733,22 +779,13 @@ const fillErrorDraft=(force=false)=>{
 const openResolution=(row,candidate=null)=>{
   const report=row?.latest_prediction||row?.first_prediction||row||{};
   const caseId=row?.case_id||report.journal_case_id||report.case_id||'';
-  const caseSelect=document.querySelector('#case-id');
-  if(caseId&&![...caseSelect.options].some(o=>o.value===caseId)){
-    const tag=row?.archived?' · archiviert':row?.competition_mode==='out_of_competition'?' · außer Konkurrenz':'';
-    caseSelect.append(new Option(`${(row?.input||{}).headline||caseId} · ${row?.status||'Fall'}${tag}`,caseId));
-  }
-  caseSelect.value=caseId;fillResolutionCandidates();
+  resetResolutionToCase(caseId,{report:row?.first_prediction||report,label:caseOptionLabel(row,caseId)});
   const identity=candidate?.identity||candidate||{};
-  const prior=row?.resolution||{};
-  document.querySelector('#resolved-id').value=identity.asset_id||candidate?.asset_id||prior.asset_id||'';
-  document.querySelector('#resolved-name').value=identity.name||prior.name||'';
-  if(prior.call_wkn&&!document.querySelector('#resolved-wkn').value)document.querySelector('#resolved-wkn').value=prior.call_wkn;
-  if(prior.source&&!document.querySelector('#resolved-source').value)document.querySelector('#resolved-source').value=prior.source;
-  if(prior.error_analysis){errorField().value=prior.error_analysis;clearAutoErrorDraft();}
-  else fillErrorDraft(true);
-  if(prior.algorithm_change&&!document.querySelector('#resolved-change').value)document.querySelector('#resolved-change').value=prior.algorithm_change;
-  resolutionOriginalSha=report.teaser_sha256||prior.original_sha256||null;
+  if(identity.asset_id||candidate?.asset_id||identity.name){
+    document.querySelector('#resolved-id').value=identity.asset_id||candidate?.asset_id||'';
+    if(identity.name)document.querySelector('#resolved-name').value=identity.name;
+    fillErrorDraft(true);
+  }
   document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
   document.querySelector('#resolved-name').focus();
 };
@@ -811,7 +848,7 @@ const renderCaseHints=row=>{
   if(row.solution_pdf)box.append(caseHint(`Lösungs-PDF gespeichert (${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…).`,'info'));
   return box.childNodes.length?box:null;
 };
-const selectCase=caseId=>{
+const selectCase=(caseId,options={})=>{
   const root=document.querySelector('#active-case');root.replaceChildren();
   const row=allCases.find(item=>item.case_id===caseId);if(!row)return;
   const heading=(row.input||{}).headline||row.case_id;
@@ -901,6 +938,7 @@ const selectCase=caseId=>{
   }
   if(moreActions.childNodes.length){more.append(moreActions);actions.append(more);}
   root.append(actions);
+  if(options.syncResolution&&document.querySelector('#case-id').value!==caseId)resetResolutionToCase(caseId);
 };
 const loadCases=async(preferredId='')=>{
   const message=document.querySelector('#case-message');
@@ -930,8 +968,8 @@ const loadCases=async(preferredId='')=>{
 document.querySelector('#case-scope').addEventListener('change',()=>refreshCaseSelect({reset:true}));
 document.querySelector('#case-result').addEventListener('change',()=>refreshCaseSelect({reset:true}));
 document.querySelector('#case-select').addEventListener('change',event=>{
-  if(event.target.value)selectCase(event.target.value);
-  else document.querySelector('#active-case').replaceChildren();
+  if(event.target.value)selectCase(event.target.value,{syncResolution:true});
+  else{document.querySelector('#active-case').replaceChildren();resetResolutionToCase('');}
 });
 loadCases();
 document.querySelector('#search-calls').addEventListener('click',()=>runCallSearch());
@@ -972,10 +1010,12 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const response=await fetch('/api/hebeltrader/investigate',{method:'POST',headers,body:JSON.stringify(body)});
   if(!response.ok){const message=await readResponseError(response);result.textContent=message;setAnalysisStatus('error',`Analyse fehlgeschlagen – ${message}`);return}
   const data=await response.json();
-  activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
+  const enteredId=data.journal_case_id||data.case_id||'';
+  activeResolutionRow={case_id:enteredId,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
   await loadApiCosts();
   setCaseFilters(ooc?'ooc':'active','all');
-  await loadCases(data.journal_case_id||data.case_id||'');
+  await loadCases(enteredId);
+  resetResolutionToCase(enteredId,{report:data,label:[data.headline,data.issue].filter(Boolean).join(' · ')||enteredId});
   result.replaceChildren();
   renderOverview(data);
   setAnalysisStatus('success',ooc
@@ -1008,7 +1048,23 @@ document.querySelector('#solution-pdf').addEventListener('change',async event=>{
     status.textContent=note;
   }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
 });
-document.querySelector('#case-id').addEventListener('change',()=>{fillResolutionCandidates();fillErrorDraft(true);});
+document.querySelector('#case-id').addEventListener('change',()=>{
+  const caseId=document.querySelector('#case-id').value;
+  resetResolutionToCase(caseId);
+  if(!caseId)return;
+  const row=allCases.find(item=>item.case_id===caseId);
+  if(row&&!filterCases().some(item=>item.case_id===caseId)){
+    if(row.archived)setCaseFilters('archive','all');
+    else if(row.competition_mode==='out_of_competition')setCaseFilters('ooc','all');
+    else setCaseFilters('active','all');
+    refreshCaseSelect({preferredId:caseId});
+  }else{
+    const picker=document.querySelector('#case-select');
+    if([...picker.options].some(option=>option.value===caseId)){
+      picker.value=caseId;selectCase(caseId);
+    }
+  }
+});
 document.querySelector('#resolved-candidate').addEventListener('change',event=>{
   const option=event.target.selectedOptions[0];
   document.querySelector('#resolved-id').value=option.value;
@@ -1033,7 +1089,7 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
     confirmed_at:new Date().toISOString(),original_sha256:resolutionOriginalSha};
   if(value('resolved-id'))body.asset_id=value('resolved-id');
   try{
-    if(asReference&&row&&row.evaluation_class!=='prospective_blind'){
+    if(asReference&&row&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
       const r=await post('prospective',{basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'});
       if(!r.ok){status.textContent=(await r.json()).detail;return}
     }

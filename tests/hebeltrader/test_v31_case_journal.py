@@ -236,6 +236,25 @@ def test_delete_hides_archived_case_from_all_listings(tmp_path):
         j.restore(case, "should fail")
 
 
+def test_reintake_lists_deleted_case_again(tmp_path):
+    j = CaseJournal(tmp_path / "j")
+    payload = {
+        "teaser_text": "Strom-Gigant teaser",
+        "headline": "Der Strom-Gigant",
+        "issue": "203/26",
+    }
+    case = j.intake(payload)
+    j.delete(case, "Vom Betreiber endgültig entfernt")
+    assert j.cases(include_archived=True, listing="all") == []
+    assert j.intake(payload) == case
+    listed = j.cases(include_archived=True, listing="all")
+    assert [row["case_id"] for row in listed] == [case]
+    assert listed[0]["deleted"] is False
+    assert listed[0]["input"]["issue"] == "203/26"
+    assert j.intake(dict(payload, headline="Der Strom-Gigant korrigiert")) == case
+    assert len([event for event in j.events() if event["kind"] == "undelete"]) == 1
+
+
 def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
     j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
     case = j.intake(
