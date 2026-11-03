@@ -232,6 +232,18 @@ class CaseJournal:
                 state["listing_promotion"] = dict(p, recorded_at=row["recorded_at"])
             if kind == "dataset_promotion":
                 state["dataset_promotion"] = dict(p, recorded_at=row["recorded_at"])
+        # Invariant: a purchased report ends außer-Konkurrenz, even if an older
+        # journal is missing the listing_promotion event (heal on read).
+        if state.get("solution_pdf") and state.get("competition_mode") == "out_of_competition":
+            state["competition_mode"] = "official"
+            if not state.get("listing_promotion"):
+                state["listing_promotion"] = {
+                    "competition_mode": "official",
+                    "reason": "solution_pdf_uploaded",
+                    "pdf_sha256": state["solution_pdf"].get("pdf_sha256"),
+                    "recorded_at": state["solution_pdf"].get("recorded_at"),
+                    "inferred": True,
+                }
         return state
 
     def cases(self, include_archived=False, *, listing="official"):
@@ -327,6 +339,23 @@ class CaseJournal:
             self._append(case_id, "prospective_classification", {"basis": basis.strip()})
             return {"evaluation_class": "prospective_blind"}
 
+    def _has_listing_promotion_event(self, case_id):
+        return any(
+            row["case_id"] == case_id and row["kind"] == "listing_promotion"
+            for row in self.events()
+        )
+
+    def _append_listing_promotion(self, case_id, pdf_sha256):
+        return self._append(
+            case_id,
+            "listing_promotion",
+            {
+                "competition_mode": "official",
+                "reason": "solution_pdf_uploaded",
+                "pdf_sha256": pdf_sha256,
+            },
+        )
+
     def store_solution_pdf(self, case_id, pdf_bytes, *, extracted=None):
         """Persist a purchased-report PDF under the journal root (not git).
 
@@ -339,21 +368,13 @@ class CaseJournal:
         with self._lock():
             state = self.case(case_id)
             existing = state.get("solution_pdf") or {}
-            listed = False
             if existing.get("pdf_sha256") == sha:
-                if state.get("competition_mode") == "out_of_competition":
-                    self._append(
-                        case_id,
-                        "listing_promotion",
-                        {
-                            "competition_mode": "official",
-                            "reason": "solution_pdf_uploaded",
-                            "pdf_sha256": sha,
-                        },
-                    )
-                    listed = True
+                # Durable audit event if an older journal only had the PDF.
+                if not self._has_listing_promotion_event(case_id):
+                    self._append_listing_promotion(case_id, sha)
                 result = {k: v for k, v in existing.items() if k != "recorded_at"}
-                result["listed_as_official"] = listed or state.get("competition_mode") == "official"
+                # Invariant: stored report ⇒ official listing.
+                result["listed_as_official"] = True
                 return result
             pdf_dir = self.root / "solution-pdfs" / case_id
             pdf_dir.mkdir(parents=True, exist_ok=True)
@@ -369,18 +390,10 @@ class CaseJournal:
                 "extracted": extracted or {},
             }
             self._append(case_id, "solution_pdf", payload)
-            if state.get("competition_mode") == "out_of_competition":
-                self._append(
-                    case_id,
-                    "listing_promotion",
-                    {
-                        "competition_mode": "official",
-                        "reason": "solution_pdf_uploaded",
-                        "pdf_sha256": sha,
-                    },
-                )
-                listed = True
-            payload["listed_as_official"] = listed or state.get("competition_mode") == "official"
+            if not self._has_listing_promotion_event(case_id):
+                self._append_listing_promotion(case_id, sha)
+            # Official whenever a report is on file (new upload always lists).
+            payload["listed_as_official"] = True
             return payload
 
     def promote_to_dataset(self, case_id, promotion):
