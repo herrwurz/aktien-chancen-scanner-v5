@@ -735,3 +735,183 @@ class CaseJournal:
                 "operator provenance; hashes are not external signatures."
             ),
         }
+
+    def _solution_pdf_bytes(self, state):
+        pdf = state.get("solution_pdf") or {}
+        rel = pdf.get("relative_path")
+        if not rel:
+            return None
+        path = self.root / rel
+        if not path.is_file():
+            return None
+        try:
+            return path.read_bytes()
+        except OSError:
+            return None
+
+    def _extracted_from_solution_pdf(self, state):
+        """Prefer stored extract; re-parse the on-disk PDF when the extract is empty."""
+        pdf = state.get("solution_pdf") or {}
+        extracted = dict(pdf.get("extracted") or {})
+        if (extracted.get("name") or "").strip() or (extracted.get("stock_wkn") or "").strip():
+            return extracted
+        raw = self._solution_pdf_bytes(state)
+        if not raw:
+            return extracted
+        try:
+            from scanner.hebeltrader.parser import extract_pdf
+
+            parsing = extract_pdf(raw)
+        except (ValueError, OSError, TypeError):
+            return extracted
+        recommendation = parsing.recommendations[0].values if parsing.recommendations else {}
+        issue = f"{parsing.issue_number}/{parsing.issue_year}" if parsing.issue_number else ""
+        refreshed = {
+            "name": recommendation.get("stock_name"),
+            "stock_wkn": recommendation.get("stock_wkn"),
+            "call_wkn": recommendation.get("derivative_wkn"),
+            "issue": issue,
+            "flags": [flag.get("code") for flag in parsing.flags],
+        }
+        return {k: v for k, v in refreshed.items() if v not in (None, "", [])} or extracted
+
+    def _resolution_from_solution_pdf(self, state):
+        """Build a resolution payload when the purchased report clearly names the stock."""
+        extracted = self._extracted_from_solution_pdf(state)
+        name = (extracted.get("name") or "").strip()
+        stock_wkn = (extracted.get("stock_wkn") or "").strip() or None
+        call_wkn = (extracted.get("call_wkn") or "").strip() or None
+        if call_wkn and not re.fullmatch(r"[A-Z0-9]{6}", call_wkn):
+            call_wkn = None
+        if not name and not stock_wkn:
+            return None
+        first = state.get("first_prediction")
+        if first is None:
+            return None
+        from .investigation import canonical_company
+
+        candidates = list(first.get("candidates") or [])
+        matched = None
+        want = canonical_company(name) if name else ""
+        for row in candidates:
+            identity = row.get("identity") or {}
+            row_name = identity.get("name") or row.get("name") or ""
+            ticker = (identity.get("ticker") or row.get("ticker") or "").strip()
+            row_wkn = (
+                identity.get("wkn")
+                or identity.get("stock_wkn")
+                or row.get("wkn")
+                or row.get("stock_wkn")
+            )
+            if want and row_name and canonical_company(row_name) == want:
+                matched = row
+                break
+            if name and ticker and ticker.casefold() == name.casefold():
+                matched = row
+                break
+            if stock_wkn and row_wkn and str(row_wkn).casefold() == stock_wkn.casefold():
+                matched = row
+                break
+        if matched is not None:
+            asset_id = matched.get("asset_id") or (matched.get("identity") or {}).get("asset_id")
+            display = (matched.get("identity") or {}).get("name") or matched.get("name") or name
+        elif name:
+            asset_id = "company:" + hashlib.sha256(canonical_company(name).encode()).hexdigest()
+            display = name
+        else:
+            # WKN alone without a ranking match is not a clear assignment.
+            return None
+        if not asset_id or not display:
+            return None
+        payload = {
+            "asset_id": asset_id,
+            "name": display,
+            "source": "purchased report PDF",
+            "basis": "user",
+            "confirmed_at": self.clock().isoformat(),
+        }
+        if call_wkn:
+            payload["call_wkn"] = call_wkn
+        return payload
+
+    def _is_clear_operator_case(self, state):
+        """Cases that belong in the pie: Erraten / Falsch / Außer Konkurrenz."""
+        if state.get("deleted") or state.get("archived"):
+            return False
+        if state.get("resolution"):
+            return True
+        # Pure außer-Konkurrenz teasers without a purchased report stay visible as OOC.
+        if state.get("competition_mode") == "out_of_competition" and not state.get("solution_pdf"):
+            return True
+        return False
+
+    def reconcile_operator_listing(self):
+        """Restore listing buckets for purchased-report cases; drop ambiguous PDF leftovers.
+
+        - Persist listing_promotion when a solution PDF is on file (heal-on-write).
+        - Auto-resolve when the PDF clearly names the stock and a freeze exists.
+        - Soft-delete only report-PDF cases that still cannot be assigned clearly.
+          Open official cases without a PDF stay (Offen) — they are unfinished work,
+          not ambiguous uploads.
+        """
+        summary = {
+            "promoted": [],
+            "resolved": [],
+            "deleted": [],
+            "kept_resolved": [],
+            "kept_ooc": [],
+            "kept_open": [],
+            "pdf_cases": [],
+        }
+        # Snapshot intake IDs first; materialize after each mutation.
+        case_ids = [row["case_id"] for row in self.events() if row["kind"] == "intake"]
+        for case_id in case_ids:
+            state = self.case(case_id)
+            if state.get("deleted"):
+                continue
+            if state.get("solution_pdf"):
+                summary["pdf_cases"].append(case_id)
+                if not self._has_listing_promotion_event(case_id):
+                    sha = state["solution_pdf"].get("pdf_sha256")
+                    with self._lock():
+                        # Re-check under lock — another writer may have promoted.
+                        if not self._has_listing_promotion_event(case_id):
+                            self._append_listing_promotion(case_id, sha)
+                    summary["promoted"].append(case_id)
+                    state = self.case(case_id)
+                if state.get("resolution") is None and state.get("first_prediction") is not None:
+                    payload = self._resolution_from_solution_pdf(state)
+                    if payload is not None:
+                        try:
+                            self.resolve(case_id, payload)
+                            summary["resolved"].append(case_id)
+                        except ValueError:
+                            pass
+                        state = self.case(case_id)
+            if state.get("archived") or state.get("deleted"):
+                continue
+            if state.get("resolution"):
+                summary["kept_resolved"].append(case_id)
+                continue
+            if state.get("competition_mode") == "out_of_competition" and not state.get(
+                "solution_pdf"
+            ):
+                summary["kept_ooc"].append(case_id)
+                continue
+            if not state.get("solution_pdf"):
+                # Unfinished official case without a report — leave as Offen.
+                summary["kept_open"].append(case_id)
+                continue
+            # Report on file but still no clear Erraten/Falsch assignment.
+            self.delete(
+                case_id,
+                "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)",
+            )
+            summary["deleted"].append(case_id)
+        summary["pdf_case_count"] = len(summary["pdf_cases"])
+        summary["clear_active"] = [
+            row["case_id"]
+            for row in self.cases(include_archived=False, listing="all")
+            if self._is_clear_operator_case(row)
+        ]
+        return summary

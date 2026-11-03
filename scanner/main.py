@@ -325,6 +325,17 @@ def create_app(settings: Settings | None = None, engine=None):
         except ValueError as exc:
             raise HTTPException(422, str(exc)) from None
 
+    @app.post("/api/hebeltrader/cases/reconcile")
+    def case_reconcile(request: Request):
+        """Persist PDF listing, auto-resolve clear reports, delete ambiguous cases."""
+        case_access(request)
+        try:
+            return CaseJournal(
+                settings.detective_public_root / "cases"
+            ).reconcile_operator_listing()
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
+
     @app.get("/api/hebeltrader/quality")
     def case_quality(request: Request):
         case_access(request)

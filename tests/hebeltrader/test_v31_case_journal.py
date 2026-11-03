@@ -401,3 +401,85 @@ def test_solution_pdf_without_listing_promotion_heals_ooc(tmp_path):
     assert stored["listed_as_official"] is True
     assert j.case(case)["competition_mode"] == "official"
     assert len([e for e in j.events() if e["kind"] == "listing_promotion"]) >= 1
+
+
+def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
+    j = CaseJournal(tmp_path / "j", clock=lambda: NOW)
+    # Clear hit: PDF extract matches top tip → Erraten after reconcile.
+    hit = j.intake({"teaser_text": "hit teaser with pdf"})
+    j.record_analysis(hit, frozen(tmp_path, "hit", ["RTX", "LMT"]))
+    j._append(
+        hit,
+        "solution_pdf",
+        {
+            "pdf_sha256": "hitpdf",
+            "relative_path": "solution-pdfs/hit.pdf",
+            "byte_length": 8,
+            "extracted": {"name": "RTX"},
+        },
+    )
+    # Clear miss: PDF names rank-2 → Falsch after reconcile; also stuck in OOC.
+    miss = j.intake(
+        {
+            "teaser_text": "miss teaser ooc",
+            "competition_mode": "out_of_competition",
+            "headline": "Miss",
+        }
+    )
+    j.record_analysis(miss, frozen(tmp_path, "miss", ["LMT", "RTX"]))
+    j._append(
+        miss,
+        "solution_pdf",
+        {
+            "pdf_sha256": "misspdf",
+            "relative_path": "solution-pdfs/miss.pdf",
+            "byte_length": 8,
+            "extracted": {"name": "RTX"},
+        },
+    )
+    # Pure OOC without PDF stays außer Konkurrenz.
+    ooc = j.intake(
+        {
+            "teaser_text": "pure ooc teaser",
+            "competition_mode": "out_of_competition",
+            "headline": "OOC",
+        }
+    )
+    j.record_analysis(ooc, frozen(tmp_path, "ooc", ["X"]))
+    # Open official without PDF stays Offen (unfinished work).
+    open_case = j.intake({"teaser_text": "open unfinished teaser"})
+    j.record_analysis(open_case, frozen(tmp_path, "open", ["Y"]))
+    # Ambiguous PDF without extractable identity → delete.
+    vague = j.intake({"teaser_text": "vague pdf teaser"})
+    j.record_analysis(vague, frozen(tmp_path, "vague", ["Z"]))
+    j._append(
+        vague,
+        "solution_pdf",
+        {
+            "pdf_sha256": "vaguepdf",
+            "relative_path": "solution-pdfs/vague.pdf",
+            "byte_length": 8,
+            "extracted": {},
+        },
+    )
+
+    summary = j.reconcile_operator_listing()
+    assert hit in summary["resolved"]
+    assert miss in summary["resolved"]
+    assert miss in summary["promoted"]
+    assert open_case in summary["kept_open"]
+    assert vague in summary["deleted"]
+    assert ooc in summary["kept_ooc"]
+    assert j.case(hit)["resolution"]["prediction_outcome"] == "confirmed"
+    assert j.case(miss)["resolution"]["prediction_outcome"] == "refuted"
+    assert j.case(miss)["competition_mode"] == "official"
+    assert j.case(open_case)["deleted"] is False
+    assert j.case(vague)["deleted"] is True
+    assert j.case(ooc)["deleted"] is False
+    active = {row["case_id"] for row in j.cases(listing="all")}
+    assert active == {hit, miss, ooc, open_case}
+    # Idempotent second pass.
+    again = j.reconcile_operator_listing()
+    assert again["deleted"] == []
+    assert again["resolved"] == []
+    assert set(again["clear_active"]) == {hit, miss, ooc}
