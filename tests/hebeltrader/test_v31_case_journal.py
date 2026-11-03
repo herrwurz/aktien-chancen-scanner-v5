@@ -245,11 +245,13 @@ def test_reintake_does_not_restore_deleted_case(tmp_path):
     }
     case = j.intake(payload)
     j.delete(case, "Vom Betreiber endgültig entfernt")
-    assert j.intake(payload) == case
-    assert j.intake(dict(payload, headline="Der Strom-Gigant korrigiert")) == case
+    with pytest.raises(ValueError, match="deleted case cannot be reopened"):
+        j.intake(payload)
+    with pytest.raises(ValueError, match="deleted case cannot be reopened"):
+        j.intake(dict(payload, headline="Der Strom-Gigant korrigiert"))
     assert j.cases(include_archived=True, listing="all") == []
     assert j.case(case)["deleted"] is True
-    assert [event for event in j.events() if event["kind"] == "undelete"] == []
+    assert [event for event in j.events() if event["kind"] == "input_revision"] == []
 
 
 def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
@@ -484,16 +486,18 @@ def test_reconcile_promotes_resolves_and_deletes_ambiguous(tmp_path):
     assert miss in summary["resolved"]
     assert miss in summary["promoted"]
     assert open_case in summary["kept_open"]
-    assert vague in summary["deleted"]
+    assert vague in summary["kept_open"]
+    assert vague not in summary["deleted"]
     assert ooc in summary["kept_ooc"]
     assert j.case(hit)["resolution"]["prediction_outcome"] == "confirmed"
     assert j.case(miss)["resolution"]["prediction_outcome"] == "refuted"
     assert j.case(miss)["competition_mode"] == "official"
     assert j.case(open_case)["deleted"] is False
-    assert j.case(vague)["deleted"] is True
+    assert j.case(vague)["deleted"] is False
+    assert j.case(vague)["solution_pdf"]["pdf_sha256"] == "vaguepdf"
     assert j.case(ooc)["deleted"] is False
     active = {row["case_id"] for row in j.cases(listing="all")}
-    assert active == {hit, miss, ooc, open_case}
+    assert active == {hit, miss, ooc, open_case, vague}
     # Idempotent second pass.
     again = j.reconcile_operator_listing()
     assert again["deleted"] == []

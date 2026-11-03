@@ -57,6 +57,10 @@ def input_keys(payload):
     return content, source
 
 
+class DeletedCaseError(ValueError):
+    """Operator delete is final. The same teaser must not reopen that case."""
+
+
 class CaseJournal:
     def __init__(self, root, *, clock=None):
         self.root = Path(root)
@@ -134,7 +138,9 @@ class CaseJournal:
                 p = row["payload"]
                 known_content, known_source = input_keys(p["input"])
                 if (content and content == known_content) or (source and source == known_source):
-                    # A deleted case stays deleted. Re-entry must not put it back on the list.
+                    # Operator delete is final: do not append and do not return the hidden case.
+                    if self.case(row["case_id"]).get("deleted"):
+                        raise DeletedCaseError("deleted case cannot be reopened")
                     # Keep changed original as a new event, never overwrite the first.
                     if not any(
                         event["case_id"] == row["case_id"]
@@ -847,13 +853,12 @@ class CaseJournal:
         return False
 
     def reconcile_operator_listing(self):
-        """Restore listing buckets for purchased-report cases; drop ambiguous PDF leftovers.
+        """Restore listing buckets for purchased-report cases.
 
         - Persist listing_promotion when a solution PDF is on file (heal-on-write).
         - Auto-resolve when the PDF clearly names the stock and a freeze exists.
-        - Soft-delete only report-PDF cases that still cannot be assigned clearly.
-          Open official cases without a PDF stay (Offen) — they are unfinished work,
-          not ambiguous uploads.
+        - Never delete. An uploaded report stays listed until the operator deletes it.
+          Unclear PDFs and unfinished cases stay Offen.
         """
         summary = {
             "promoted": [],
@@ -899,16 +904,8 @@ class CaseJournal:
             ):
                 summary["kept_ooc"].append(case_id)
                 continue
-            if not state.get("solution_pdf"):
-                # Unfinished official case without a report — leave as Offen.
-                summary["kept_open"].append(case_id)
-                continue
-            # Report on file but still no clear Erraten/Falsch assignment.
-            self.delete(
-                case_id,
-                "nicht eindeutig — Report-PDF ohne klare Zuordnung (richtig/falsch)",
-            )
-            summary["deleted"].append(case_id)
+            # Unfinished case, with or without a report PDF, stays Offen.
+            summary["kept_open"].append(case_id)
         summary["pdf_case_count"] = len(summary["pdf_cases"])
         summary["clear_active"] = [
             row["case_id"]

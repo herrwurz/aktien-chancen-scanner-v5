@@ -949,14 +949,14 @@ const selectCase=(caseId,options={})=>{
   }
   if(moreActions.childNodes.length){more.append(moreActions);actions.append(more);}
   root.append(actions);
-  if(options.syncResolution&&document.querySelector('#case-id').value!==caseId)resetResolutionToCase(caseId);
+  if(document.querySelector('#case-id').value!==caseId)resetResolutionToCase(caseId);
   syncResolutionPanel(row);
 };
 const loadCases=async(preferredId='')=>{
   const message=document.querySelector('#case-message');
   message.textContent='Fälle werden geladen …';
   try{
-    // PDF-Fälle ins Listing heilen, klare Auflösungen setzen, Rest ohne Bucket löschen.
+    // PDF-Fälle ins Listing heben und klare Auflösungen setzen. Nie löschen.
     let repairNote='';
     try{
       const repair=await fetch('/api/hebeltrader/cases/reconcile',{method:'POST',headers:authHeaders()});
@@ -965,7 +965,6 @@ const loadCases=async(preferredId='')=>{
         const parts=[];
         if(summary.pdf_case_count)parts.push(`${summary.pdf_case_count} mit Report-PDF`);
         if((summary.resolved||[]).length)parts.push(`${summary.resolved.length} aufgelöst`);
-        if((summary.deleted||[]).length)parts.push(`${summary.deleted.length} nicht eindeutig entfernt`);
         if(parts.length)repairNote='Bereinigt: '+parts.join(', ')+'. ';
       }
     }catch(ignored){}
