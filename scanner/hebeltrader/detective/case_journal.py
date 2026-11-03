@@ -134,13 +134,7 @@ class CaseJournal:
                 p = row["payload"]
                 known_content, known_source = input_keys(p["input"])
                 if (content and content == known_content) or (source and source == known_source):
-                    # Re-entering a deleted teaser puts that case back in the operator list.
-                    if self.case(row["case_id"]).get("deleted"):
-                        self._append(
-                            row["case_id"],
-                            "undelete",
-                            {"reason": "Fall erneut eingegeben"},
-                        )
+                    # A deleted case stays deleted. Re-entry must not put it back on the list.
                     # Keep changed original as a new event, never overwrite the first.
                     if not any(
                         event["case_id"] == row["case_id"]
@@ -225,9 +219,6 @@ class CaseJournal:
             if kind == "delete":
                 state["deleted"] = True
                 state["delete"] = dict(p, recorded_at=row["recorded_at"])
-            if kind == "undelete":
-                state["deleted"] = False
-                state["delete"] = None
             if kind == "reference_promotion":
                 state["reference_status"] = "prospective_reference"
             if kind == "prospective_classification":
@@ -569,7 +560,6 @@ class CaseJournal:
                     "archive",
                     "restore",
                     "delete",
-                    "undelete",
                     "prospective_classification",
                     "reference_promotion",
                     "solution_pdf",

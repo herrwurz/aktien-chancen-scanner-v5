@@ -593,10 +593,10 @@ const resetResolutionToCase=(caseId,extra={})=>{
   const select=document.querySelector('#case-id');
   const row=caseId?allLoadedCases().find(item=>item.case_id===caseId)||null:null;
   if(select){
-    if(caseId&&![...select.options].some(option=>option.value===caseId)){
+    if(row&&caseId&&![...select.options].some(option=>option.value===caseId)){
       select.append(new Option(extra.label||caseOptionLabel(row,caseId),caseId));
     }
-    select.value=caseId||'';
+    select.value=row?caseId:'';
   }
   activeResolutionRow=row;
   clearResolutionFields();
@@ -605,7 +605,7 @@ const resetResolutionToCase=(caseId,extra={})=>{
   const referenceBox=document.querySelector('#resolved-reference');
   if(!row){
     if(referenceBox)referenceBox.checked=true;
-    syncResolutionPanel(caseId?{case_id:caseId}:null);
+    syncResolutionPanel(null);
     return;
   }
   const prior=row.resolution||{};
@@ -737,10 +737,7 @@ const refreshCaseSelect=(options={})=>{
 const fillResolutionCases=()=>{
   const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
   allLoadedCases().forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
-  if(current&&![...select.options].some(option=>option.value===current)){
-    select.append(new Option(current,current));
-  }
-  select.value=current;
+  select.value=[...select.options].some(option=>option.value===current)?current:'';
 };
 const fillResolutionCandidates=(reportOverride=null)=>{
   const row=allLoadedCases().find(item=>item.case_id===document.querySelector('#case-id').value);
