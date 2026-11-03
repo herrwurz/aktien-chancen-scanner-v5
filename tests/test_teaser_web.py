@@ -92,7 +92,6 @@ def test_browser_submission_persists_and_reopens_case(tmp_path, monkeypatch):
 
 def test_out_of_competition_analyze_without_official_listing(tmp_path, monkeypatch):
     import base64
-    import glob
 
     client = web(tmp_path, monkeypatch)
     auth = ("admin", "private-password")
@@ -116,9 +115,10 @@ def test_out_of_competition_analyze_without_official_listing(tmp_path, monkeypat
     assert len(ooc) == 1 and ooc[0]["case_id"] == case_id
     quality = client.get("/api/hebeltrader/quality", auth=auth).json()
     assert quality["cases"] == []
-    pdfs = glob.glob("tests/fixtures/**/*.pdf", recursive=True)
-    assert pdfs
-    pdf_b64 = base64.b64encode(Path(pdfs[0]).read_bytes()).decode()
+    # Prefer a readable fixture — glob order can put broken.pdf first on CI.
+    pdf_path = Path("tests/fixtures/hebeltrader/complete.pdf")
+    assert pdf_path.is_file()
+    pdf_b64 = base64.b64encode(pdf_path.read_bytes()).decode()
     stored = client.post(
         "/api/hebeltrader/cases/solution-pdf",
         auth=auth,
