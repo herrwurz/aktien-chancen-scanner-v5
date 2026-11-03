@@ -57,10 +57,6 @@ def input_keys(payload):
     return content, source
 
 
-class DeletedCaseError(ValueError):
-    """Operator delete is final. The same teaser must not reopen that case."""
-
-
 class CaseJournal:
     def __init__(self, root, *, clock=None):
         self.root = Path(root)
@@ -138,9 +134,9 @@ class CaseJournal:
                 p = row["payload"]
                 known_content, known_source = input_keys(p["input"])
                 if (content and content == known_content) or (source and source == known_source):
-                    # Operator delete is final: do not append and do not return the hidden case.
+                    # A deleted case stays deleted. The same teaser starts a new case below.
                     if self.case(row["case_id"]).get("deleted"):
-                        raise DeletedCaseError("deleted case cannot be reopened")
+                        continue
                     # Keep changed original as a new event, never overwrite the first.
                     if not any(
                         event["case_id"] == row["case_id"]
@@ -154,7 +150,7 @@ class CaseJournal:
                             {"input": payload, "input_sha256": digest(payload)},
                         )
                     return row["case_id"]
-            case_id = "TI-" + (source or content)[:20]
+            case_id = self._fresh_case_id(source, content, rows)
             self._append(
                 case_id,
                 "intake",
@@ -166,6 +162,19 @@ class CaseJournal:
                 },
             )
             return case_id
+
+    @staticmethod
+    def _fresh_case_id(source, content, rows):
+        taken = {event["case_id"] for event in rows if event["kind"] == "intake"}
+        natural = "TI-" + (source or content)[:20]
+        if natural not in taken:
+            return natural
+        salt = 1
+        while True:
+            candidate = "TI-" + digest({"content": content, "source": source, "reentry": salt})[:20]
+            if candidate not in taken:
+                return candidate
+            salt += 1
 
     def case(self, case_id):
         rows = [r for r in self.events() if r["case_id"] == case_id]

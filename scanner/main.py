@@ -20,7 +20,7 @@ from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
 from scanner.hebeltrader.detective.call_search import search_calls_for_report
-from scanner.hebeltrader.detective.case_journal import CaseJournal, DeletedCaseError
+from scanner.hebeltrader.detective.case_journal import CaseJournal
 from scanner.hebeltrader.detective.external_research import (
     ApiConfigurationError,
     build_public_research,
@@ -260,8 +260,6 @@ def create_app(settings: Settings | None = None, engine=None):
             )
         except ApiConfigurationError as exc:
             raise HTTPException(503, str(exc)) from None
-        except DeletedCaseError as exc:
-            raise HTTPException(422, str(exc)) from None
         except (ValueError, httpx.HTTPError) as exc:
             raise HTTPException(422, "Public research unavailable: " + type(exc).__name__) from None
 

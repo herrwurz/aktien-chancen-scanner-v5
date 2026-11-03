@@ -236,7 +236,7 @@ def test_delete_hides_archived_case_from_all_listings(tmp_path):
         j.restore(case, "should fail")
 
 
-def test_reintake_does_not_restore_deleted_case(tmp_path):
+def test_reintake_of_deleted_case_starts_a_new_case(tmp_path):
     j = CaseJournal(tmp_path / "j")
     payload = {
         "teaser_text": "Strom-Gigant teaser",
@@ -245,13 +245,14 @@ def test_reintake_does_not_restore_deleted_case(tmp_path):
     }
     case = j.intake(payload)
     j.delete(case, "Vom Betreiber endgültig entfernt")
-    with pytest.raises(ValueError, match="deleted case cannot be reopened"):
-        j.intake(payload)
-    with pytest.raises(ValueError, match="deleted case cannot be reopened"):
-        j.intake(dict(payload, headline="Der Strom-Gigant korrigiert"))
-    assert j.cases(include_archived=True, listing="all") == []
+    fresh = j.intake(payload)
+    assert fresh != case
+    assert fresh.startswith("TI-")
     assert j.case(case)["deleted"] is True
-    assert [event for event in j.events() if event["kind"] == "input_revision"] == []
+    assert j.case(fresh)["deleted"] is False
+    assert [row["case_id"] for row in j.cases(include_archived=True, listing="all")] == [fresh]
+    assert j.intake(payload) == fresh
+    assert j.intake(dict(payload, headline="Der Strom-Gigant korrigiert")) == fresh
 
 
 def test_only_resolved_case_can_be_promoted_as_prospective_reference(tmp_path):
