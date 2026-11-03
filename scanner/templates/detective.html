@@ -22,7 +22,7 @@
     .analysis-status.success{display:block;border-color:#15803d;background:#f0fdf4;color:#166534}
     .resolution-callout{border:3px solid #c2410c;background:#fff7ed;padding:1rem;border-radius:12px;margin:1rem 0}
     .resolution-callout h2{margin-top:0}.resolution-callout button,.open-resolution{background:#c2410c}
-    .case-controls{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;align-items:end}
+    .case-controls{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:.75rem;align-items:end}
     .case-controls label{margin:0}.inline-check{display:flex;align-items:center;gap:.5rem;margin:.75rem 0;font-weight:650}
     .inline-check input{width:auto;margin:0}.case-actions{display:grid;gap:.5rem;margin-top:.75rem}
     .prose{line-height:1.55;font-size:1.05rem}.prose h3{margin:1.1rem 0 .4rem;font-size:1.15rem}
@@ -98,22 +98,24 @@
   </section>
   <section id="cases-panel">
     <h2>Fälle</h2>
-    <p class="muted">Alle eingegebenen Fälle sind sofort hier. Filter wählt die Kategorie, darunter den konkreten Fall — ohne separates Laden historischer oder prospektiver Listen.</p>
+    <p class="muted">Alle eingegebenen Fälle sind sofort hier. <strong>Bereich</strong> trennt Aktiv / Außer Konkurrenz / Archiv. <strong>Ergebnis</strong> filtert darin Erraten, Falsch oder Offen. Blindtest und Referenz sind nur Markierungen am Fall, keine eigenen Listen.</p>
     <div class="case-controls">
-      <label for="case-view">Filter
-        <select id="case-view">
-          <option value="active">Alle aktiv</option>
-          <option value="official">Offiziell</option>
+      <label for="case-scope">Bereich
+        <select id="case-scope">
+          <option value="active">Aktiv</option>
           <option value="ooc">Außer Konkurrenz</option>
-          <option value="correct">Erraten</option>
-          <option value="wrong">Falsch</option>
-          <option value="waiting">Warten auf Report</option>
-          <option value="blind">Blindtest</option>
-          <option value="reference">Referenz</option>
           <option value="archive">Archiv</option>
         </select>
       </label>
-      <label for="case-select">Fall in diesem Filter
+      <label for="case-result">Ergebnis
+        <select id="case-result">
+          <option value="all">Alle</option>
+          <option value="correct">Erraten</option>
+          <option value="wrong">Falsch</option>
+          <option value="open">Offen</option>
+        </select>
+      </label>
+      <label for="case-select">Fall
         <select id="case-select"><option value="">Noch keine Fälle</option></select>
       </label>
     </div>
@@ -415,39 +417,45 @@ const renderCandidate=(c,index)=>{
 let allCases=[];
 const allLoadedCases=()=>allCases;
 const authHeaders=()=>{const headers={};const token=document.querySelector('#authorization').value;if(token)headers['X-Research-Authorization']=token;return headers;};
-const currentCaseView=()=>document.querySelector('#case-view')?.value||'active';
-const outcomeBucket=row=>{
+const currentScope=()=>document.querySelector('#case-scope')?.value||'active';
+const currentResult=()=>document.querySelector('#case-result')?.value||'all';
+const setCaseFilters=(scope,result)=>{
+  if(scope)document.querySelector('#case-scope').value=scope;
+  if(result)document.querySelector('#case-result').value=result;
+};
+const pieBucket=row=>{
   if((row.competition_mode||'')==='out_of_competition')return 'ooc';
+  return resultBucket(row);
+};
+const resultBucket=row=>{
   const outcome=row.resolution?.prediction_outcome||row.prediction_outcome;
   if(outcome==='confirmed')return 'correct';
   if(row.resolution)return 'wrong';
   return 'open';
 };
-const isWaitingForReport=row=>!row.archived&&!row.resolution&&!row.solution_pdf;
 const isBlindCase=row=>row.evaluation_class==='prospective_blind';
 const isReferenceCase=row=>Boolean(row.reference_status);
-const filterCases=(view=currentCaseView())=>{
-  const rows=allCases;
-  if(view==='archive')return rows.filter(row=>row.archived);
-  const active=rows.filter(row=>!row.archived);
-  if(view==='official')return active.filter(row=>(row.competition_mode||'official')!=='out_of_competition');
-  if(view==='ooc')return active.filter(row=>row.competition_mode==='out_of_competition');
-  if(view==='correct')return active.filter(row=>outcomeBucket(row)==='correct');
-  if(view==='wrong')return active.filter(row=>outcomeBucket(row)==='wrong');
-  if(view==='waiting')return active.filter(isWaitingForReport);
-  if(view==='blind')return active.filter(isBlindCase);
-  if(view==='reference')return active.filter(isReferenceCase);
-  return active;
+const filterCases=()=>{
+  const scope=currentScope(),result=currentResult();
+  let rows=allCases;
+  if(scope==='archive')rows=rows.filter(row=>row.archived);
+  else if(scope==='ooc')rows=rows.filter(row=>!row.archived&&row.competition_mode==='out_of_competition');
+  else rows=rows.filter(row=>!row.archived&&row.competition_mode!=='out_of_competition');
+  if(result!=='all')rows=rows.filter(row=>resultBucket(row)===result);
+  return rows;
 };
 const caseBadge=row=>{
-  const bucket=outcomeBucket(row);
   if(row.archived){const b=el('span','Archiv');b.className='badge';return b;}
-  if(bucket==='ooc'){const b=el('span','Außer Konkurrenz');b.className='badge ooc';return b;}
-  if(isReferenceCase(row)){const b=el('span','Referenz');b.className='badge open';return b;}
-  if(isBlindCase(row)&&!row.resolution){const b=el('span','Blindtest');b.className='badge open';return b;}
+  if(row.competition_mode==='out_of_competition'){const b=el('span','Außer Konkurrenz');b.className='badge ooc';return b;}
+  const bucket=resultBucket(row);
   if(bucket==='correct'){const b=el('span','Erraten');b.className='badge ok';return b;}
   if(bucket==='wrong'){const b=el('span','Falsch');b.className='badge bad';return b;}
-  const b=el('span',row.listing_promotion?'Listing':'Offen');b.className='badge open';return b;
+  const b=el('span','Offen');b.className='badge open';return b;
+};
+const applyPieFilter=segment=>{
+  if(segment.key==='ooc')setCaseFilters('ooc','all');
+  else setCaseFilters('active',segment.result||segment.key);
+  refreshCaseSelect({reset:true});
 };
 const svgEl=(tag,attrs={})=>{
   const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
@@ -460,12 +468,12 @@ const renderCasesPie=()=>{
   pie.replaceChildren();legend.replaceChildren();
   const active=allCases.filter(row=>!row.archived);
   const counts={correct:0,wrong:0,ooc:0,open:0};
-  active.forEach(row=>{counts[outcomeBucket(row)]=(counts[outcomeBucket(row)]||0)+1;});
+  active.forEach(row=>{counts[pieBucket(row)]=(counts[pieBucket(row)]||0)+1;});
   const segments=[
-    {key:'correct',view:'correct',label:'Erraten',color:'#059669',count:counts.correct},
-    {key:'wrong',view:'wrong',label:'Falsch',color:'#dc2626',count:counts.wrong},
-    {key:'ooc',view:'ooc',label:'Außer Konkurrenz',color:'#d97706',count:counts.ooc},
-    {key:'open',view:'waiting',label:'Offen',color:'#6366f1',count:counts.open},
+    {key:'correct',result:'correct',label:'Erraten',color:'#059669',count:counts.correct},
+    {key:'wrong',result:'wrong',label:'Falsch',color:'#dc2626',count:counts.wrong},
+    {key:'ooc',result:'all',label:'Außer Konkurrenz',color:'#d97706',count:counts.ooc},
+    {key:'open',result:'open',label:'Offen',color:'#6366f1',count:counts.open},
   ];
   const total=segments.reduce((sum,item)=>sum+item.count,0)||1;
   const size=180,radius=78,cx=90,cy=90;
@@ -482,10 +490,7 @@ const renderCasesPie=()=>{
       fill:segment.color
     });
     path.style.cursor='pointer';
-    path.addEventListener('click',()=>{
-      document.querySelector('#case-view').value=segment.view;
-      refreshCaseSelect({reset:true});
-    });
+    path.addEventListener('click',()=>applyPieFilter(segment));
     svg.append(path);angle+=sweep;
   });
   if(!active.length){
@@ -497,50 +502,46 @@ const renderCasesPie=()=>{
   center.textContent=String(active.length);
   svg.append(center);
   pie.append(svg);
-  const view=currentCaseView();
+  const scope=currentScope(),result=currentResult();
   segments.forEach(segment=>{
     const button=el('button',`${segment.label}: ${segment.count}`);
     button.type='button';
-    if(view===segment.view)button.classList.add('active');
-    button.addEventListener('click',()=>{
-      document.querySelector('#case-view').value=segment.view;
-      refreshCaseSelect({reset:true});
-    });
+    const activeSeg=segment.key==='ooc'?scope==='ooc':scope==='active'&&result===segment.result;
+    if(activeSeg)button.classList.add('active');
+    button.addEventListener('click',()=>applyPieFilter(segment));
     legend.append(button);
   });
 };
 const refreshCaseSelect=(options={})=>{
   const select=document.querySelector('#case-select');
   const message=document.querySelector('#case-message');
-  const viewSelect=document.querySelector('#case-view');
+  const scopeSelect=document.querySelector('#case-scope');
+  const resultSelect=document.querySelector('#case-result');
   const opts=typeof options==='string'?{preferredId:options,followCase:true}:options||{};
   const reset=Boolean(opts.reset);
   const followCase=Boolean(opts.followCase);
   let keep=reset?'':(opts.preferredId||'');
   if(followCase&&keep&&!filterCases().some(row=>row.case_id===keep)&&allCases.some(row=>row.case_id===keep)){
     const row=allCases.find(item=>item.case_id===keep);
-    if(row.archived)viewSelect.value='archive';
-    else if(row.competition_mode==='out_of_competition')viewSelect.value='ooc';
-    else if(isReferenceCase(row))viewSelect.value='reference';
-    else if(isBlindCase(row)&&!row.resolution)viewSelect.value='blind';
-    else viewSelect.value='active';
+    if(row.archived)setCaseFilters('archive','all');
+    else if(row.competition_mode==='out_of_competition')setCaseFilters('ooc','all');
+    else setCaseFilters('active',resultBucket(row)==='open'?'all':resultBucket(row));
   }
   const filtered=filterCases();
   select.replaceChildren();
   select.append(new Option(filtered.length?'Fall wählen …':'Keine Fälle in diesem Filter',''));
   filtered.forEach(row=>{
-    const bucket=outcomeBucket(row);
+    const bucket=resultBucket(row);
     const tag=row.archived?' · archiviert'
-      :bucket==='ooc'?' · OOC'
-      :isReferenceCase(row)?' · Referenz'
-      :isBlindCase(row)&&!row.resolution?' · Blind'
+      :row.competition_mode==='out_of_competition'?' · OOC'
       :bucket==='correct'?' · erraten'
-      :bucket==='wrong'?' · falsch':'';
+      :bucket==='wrong'?' · falsch'
+      :' · offen';
     select.append(new Option(`${(row.input||{}).headline||row.case_id} · ${row.status}${tag}`,row.case_id));
   });
   renderCasesPie();
   message.textContent=allCases.length
-    ?`${filtered.length} von ${allCases.length} geladen · Filter „${viewSelect.selectedOptions[0].textContent}“`
+    ?`${filtered.length} von ${allCases.length} geladen · ${scopeSelect.selectedOptions[0].textContent} / ${resultSelect.selectedOptions[0].textContent}`
     :'Noch keine gespeicherten Fälle.';
   fillResolutionCases();
   if(keep&&[...select.options].some(option=>option.value===keep)){
@@ -633,6 +634,13 @@ const selectCase=caseId=>{
   const title=el('h3');title.append(document.createTextNode(heading+' '));title.append(caseBadge(row));
   root.append(title);
   root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`));
+  if(isBlindCase(row)||isReferenceCase(row)){
+    const note=el('p');note.className='muted';
+    note.textContent=isReferenceCase(row)
+      ?'Markierung: Referenz (später aufgelöster Blindfall).'
+      :'Markierung: Blindtest (Lösung war bei Analyse unbekannt).';
+    root.append(note);
+  }
   if(row.solution_pdf)root.append(el('p',`Lösungs-PDF: ${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…`));
   if(row.listing_promotion)root.append(el('p',`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
   if(row.dataset_promotion)root.append(el('p',`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}`));
@@ -665,13 +673,13 @@ const selectCase=caseId=>{
     const archive=el('button','Testfall archivieren');archive.type='button';archive.addEventListener('click',async()=>{
       if(!confirm(`Fall ${row.case_id} wirklich archivieren?`))return;
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/archive`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber als veralteter Testfall archiviert'})});
-      if(response.ok){document.querySelector('#case-view').value='archive';await loadCases(row.case_id);}
+      if(response.ok){setCaseFilters('archive','all');await loadCases(row.case_id);}
       else await showCaseActionError(response,'Archivierung fehlgeschlagen');
     });moreActions.append(archive);
   }else{
     const restore=el('button','Fall wiederherstellen');restore.type='button';restore.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/restore`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({reason:'Vom Betreiber wiederhergestellt'})});
-      if(response.ok){document.querySelector('#case-view').value='active';await loadCases(row.case_id);}
+      if(response.ok){setCaseFilters('active','all');await loadCases(row.case_id);}
       else await showCaseActionError(response,'Wiederherstellung fehlgeschlagen');
     });moreActions.append(restore);
   }
@@ -682,16 +690,16 @@ const selectCase=caseId=>{
     else await showCaseActionError(response,'Löschen fehlgeschlagen');
   });moreActions.append(remove);
   if(row.competition_mode!=='out_of_competition'&&row.evaluation_class!=='prospective_blind'&&!row.resolution){
-    const blind=el('button','Als prospektiven Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
+    const blind=el('button','Als Blindtest markieren');blind.type='button';blind.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/prospective`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({basis:'Betreiber bestätigt: Auflösung war bei Erstprognose unbekannt'})});
-      if(response.ok){document.querySelector('#case-view').value=row.archived?'archive':'blind';await loadCases(row.case_id);}
+      if(response.ok){setCaseFilters(row.archived?'archive':'active','all');await loadCases(row.case_id);}
       else await showCaseActionError(response,'Blindtest-Markierung nicht möglich');
     });moreActions.append(blind);
   }
   if(row.competition_mode!=='out_of_competition'&&row.resolution&&!row.reference_status&&row.evaluation_class==='prospective_blind'){
-    const promote=el('button','Als prospektiven Referenzfall freigeben');promote.type='button';promote.addEventListener('click',async()=>{
+    const promote=el('button','Als Referenz freigeben');promote.type='button';promote.addEventListener('click',async()=>{
       const response=await fetch(`/api/hebeltrader/cases/${encodeURIComponent(row.case_id)}/reference-promotion`,{method:'POST',headers:{...authHeaders(),'content-type':'application/json'},body:JSON.stringify({source:'Vom Betreiber geprüfte spätere Auflösung'})});
-      if(response.ok){document.querySelector('#case-view').value=row.archived?'archive':'reference';await loadCases(row.case_id);}
+      if(response.ok){setCaseFilters(row.archived?'archive':'active','all');await loadCases(row.case_id);}
       else await showCaseActionError(response,'Referenzfreigabe nicht möglich');
     });moreActions.append(promote);
   }
@@ -727,7 +735,8 @@ const loadCases=async(preferredId='')=>{
     else refreshCaseSelect();
   }catch(error){message.textContent=error.message;}
 };
-document.querySelector('#case-view').addEventListener('change',()=>refreshCaseSelect({reset:true}));
+document.querySelector('#case-scope').addEventListener('change',()=>refreshCaseSelect({reset:true}));
+document.querySelector('#case-result').addEventListener('change',()=>refreshCaseSelect({reset:true}));
 document.querySelector('#case-select').addEventListener('change',event=>{
   if(event.target.value)selectCase(event.target.value);
   else document.querySelector('#active-case').replaceChildren();
@@ -773,7 +782,7 @@ form.addEventListener('submit',async event=>{event.preventDefault();result.textC
   const data=await response.json();
   activeResolutionRow={case_id:data.journal_case_id||data.case_id,latest_prediction:data,competition_mode:data.competition_mode||body.competition_mode};
   await loadApiCosts();
-  if(ooc)document.querySelector('#case-view').value='ooc';
+  setCaseFilters(ooc?'ooc':'active','all');
   await loadCases(data.journal_case_id||data.case_id||'');
   result.replaceChildren();
   renderOverview(data);
