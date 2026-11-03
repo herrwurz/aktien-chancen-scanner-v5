@@ -403,6 +403,9 @@ def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
     assert "Nicht mehr außer Konkurrenz" in html
     assert "persist:Boolean(caseId)" in html
     assert "syncResolution:true" in html
+    assert "syncResolutionPanel" in html
+    assert "panel.hidden=!row||Boolean(row.solution_pdf)" in html
+    assert 'id="resolution-panel" class="resolution-callout" hidden' in html
     assert "!row.resolution" in html
     assert "Fall erneut eingegeben" not in html
 

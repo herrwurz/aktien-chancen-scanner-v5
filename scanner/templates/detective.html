@@ -142,7 +142,7 @@
     </div>
     <p id="case-message" aria-live="polite"></p><div id="active-case"></div>
   </section>
-  <section id="resolution-panel" class="resolution-callout"><h2>Originalauflösung eintragen</h2>
+  <section id="resolution-panel" class="resolution-callout" hidden><h2>Originalauflösung eintragen</h2>
     <p>Wird getrennt von der Teasereingabe gespeichert. Erstprognose bleibt unverändert.
       Eine Nutzer-WKN ist keine unabhängige Produktprüfung. Zugriff benötigt das Recherchetoken.</p>
     <form id="resolution-form">
@@ -501,7 +501,7 @@ const renderOverview=data=>{
   const actions=el('div');actions.className='result-actions';
   const callBtn=el('button','Calls suchen');callBtn.type='button';
   callBtn.addEventListener('click',()=>runCallSearch(data));
-  const resolveBtn=activeResolutionRow?makeResolutionButton(activeResolutionRow):null;
+  const resolveBtn=activeResolutionRow&&!activeResolutionRow.solution_pdf?makeResolutionButton(activeResolutionRow):null;
   const exportButton=el('button','Analysebericht als JSON herunterladen');exportButton.type='button';exportButton.className='secondary';
   exportButton.addEventListener('click',()=>{
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
@@ -536,7 +536,7 @@ const renderCandidate=(c,index)=>{
   const other=sources.filter(source=>!primary.includes(source));
   if(primary.length){article.append(el('h4','Primärbelege'));article.append(list(primary.map(sourceLine)));}
   if(other.length){article.append(el('h4','Weitere Quellen'));article.append(list(other.map(sourceLine)));}
-  if(activeResolutionRow)article.append(makeResolutionButton(activeResolutionRow,c));
+  if(activeResolutionRow&&!activeResolutionRow.solution_pdf)article.append(makeResolutionButton(activeResolutionRow,c));
   return article;
 };
 let allCases=[];
@@ -584,6 +584,11 @@ const clearResolutionFields=()=>{
   if(pdfStatus)pdfStatus.textContent='';
   resolutionOriginalSha=null;
 };
+const syncResolutionPanel=(row)=>{
+  const panel=document.querySelector('#resolution-panel');
+  if(!panel)return;
+  panel.hidden=!row||Boolean(row.solution_pdf);
+};
 const resetResolutionToCase=(caseId,extra={})=>{
   const select=document.querySelector('#case-id');
   const row=caseId?allLoadedCases().find(item=>item.case_id===caseId)||null:null;
@@ -598,7 +603,11 @@ const resetResolutionToCase=(caseId,extra={})=>{
   const report=row?.first_prediction||extra.report||{};
   fillResolutionCandidates(report);
   const referenceBox=document.querySelector('#resolved-reference');
-  if(!row){if(referenceBox)referenceBox.checked=true;return;}
+  if(!row){
+    if(referenceBox)referenceBox.checked=true;
+    syncResolutionPanel(caseId?{case_id:caseId}:null);
+    return;
+  }
   const prior=row.resolution||{};
   document.querySelector('#resolved-id').value=prior.asset_id||'';
   document.querySelector('#resolved-name').value=prior.name||'';
@@ -612,6 +621,7 @@ const resetResolutionToCase=(caseId,extra={})=>{
     const ooc=row.competition_mode==='out_of_competition';
     referenceBox.checked=!ooc&&!row.reference_status&&(!prior.name||row.evaluation_class==='prospective_blind');
   }
+  syncResolutionPanel(row);
 };
 const filterCases=()=>{
   const scope=currentScope(),result=currentResult();
@@ -721,6 +731,7 @@ const refreshCaseSelect=(options={})=>{
   }else{
     select.value='';
     document.querySelector('#active-case').replaceChildren();
+    syncResolutionPanel(null);
   }
 };
 const fillResolutionCases=()=>{
@@ -786,7 +797,9 @@ const openResolution=(row,candidate=null)=>{
     if(identity.name)document.querySelector('#resolved-name').value=identity.name;
     fillErrorDraft(true);
   }
-  document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
+  const panel=document.querySelector('#resolution-panel');
+  if(panel.hidden)return;
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
   document.querySelector('#resolved-name').focus();
 };
 const makeResolutionButton=(row,candidate=null)=>{
@@ -810,20 +823,21 @@ const attachSolutionPdf=(row,target)=>{
         body:JSON.stringify({pdf_base64:await asBase64(file),case_id:row.case_id,persist:true})});
       const data=await response.json();
       if(!response.ok){pdfStatus.textContent=typeof data.detail==='string'?data.detail:JSON.stringify(data.detail||data);return;}
+      if(data.persisted){
+        pdfStatus.textContent=data.listed_as_official||data.competition_mode==='official'
+          ?`Gespeichert${data.name?': '+data.name:''}. Nicht mehr außer Konkurrenz — Fall im Listing.`
+          :`Gespeichert${data.name?': '+data.name:''}.`;
+        if(data.listed_as_official||data.competition_mode==='official')setCaseFilters('active','all');
+        await loadCases(row.case_id);
+        return;
+      }
       const set=(id,v)=>{if(v)document.querySelector('#'+id).value=v;};
       document.querySelector('#case-id').value=row.case_id;
       fillResolutionCandidates();
       set('resolved-name',data.name);set('resolved-wkn',data.call_wkn);
       set('resolved-source',`Hebeltrader-Ausgabe ${data.issue||''} (PDF sha256 ${(data.pdf_sha256||'').slice(0,12)})`.trim());
       fillErrorDraft(true);
-      document.querySelector('#resolution-panel').scrollIntoView({behavior:'smooth',block:'start'});
-      pdfStatus.textContent=data.persisted
-        ?(data.listed_as_official||data.competition_mode==='official'
-          ?`Gespeichert${data.name?': '+data.name:''}. Nicht mehr außer Konkurrenz — Fall im Listing. Fehleranalyse vorausgefüllt.`
-          :`Gespeichert${data.name?': '+data.name:''}. Fehleranalyse vorausgefüllt — bitte prüfen und speichern.`)
-        :'PDF gelesen, aber nicht persistiert.';
-      if(data.persisted&&(data.listed_as_official||data.competition_mode==='official'))setCaseFilters('active','all');
-      await loadCases(row.case_id);
+      pdfStatus.textContent='PDF gelesen, aber nicht persistiert.';
     }catch(error){pdfStatus.textContent='PDF konnte nicht gespeichert werden.';}
   });
   target.append(pdfLabel);target.append(pdfInput);target.append(pdfStatus);
@@ -837,7 +851,7 @@ const renderCaseHints=row=>{
   if(row.archived)box.append(caseHint('Archiviert — wiederherstellen oder unter Weitere Aktionen endgültig löschen.','warn'));
   if(row.competition_mode==='out_of_competition'&&!row.solution_pdf)
     box.append(caseHint('Nächster Schritt: Report-PDF speichern. Danach landet der Fall im Listing.','alert'));
-  else if(!row.resolution)
+  else if(!row.resolution&&!row.solution_pdf)
     box.append(caseHint('Nächster Schritt: Originalauflösung eintragen (Aktie / Call bestätigen).','alert'));
   else if(bucket==='correct')box.append(caseHint('Ergebnis: Erraten (Rang 1 bestätigt).'));
   else if(bucket==='wrong')box.append(caseHint('Ergebnis: Falsch — Auflösung weicht vom Top-Tipp ab.','warn'));
@@ -874,8 +888,8 @@ const selectCase=(caseId,options={})=>{
     actions.append(calls);
     setCallSearchStatus('Fall geladen — „Calls suchen“ starten.');
   }
-  if(!row.resolution)actions.append(makeResolutionButton(row));
-  else{
+  if(!row.solution_pdf&&!row.resolution)actions.append(makeResolutionButton(row));
+  else if(!row.solution_pdf){
     const edit=el('button','Auflösung bearbeiten');edit.type='button';edit.className='open-resolution';
     edit.addEventListener('click',()=>openResolution(row));actions.append(edit);
   }
@@ -939,6 +953,7 @@ const selectCase=(caseId,options={})=>{
   if(moreActions.childNodes.length){more.append(moreActions);actions.append(more);}
   root.append(actions);
   if(options.syncResolution&&document.querySelector('#case-id').value!==caseId)resetResolutionToCase(caseId);
+  syncResolutionPanel(row);
 };
 const loadCases=async(preferredId='')=>{
   const message=document.querySelector('#case-message');
@@ -1040,10 +1055,14 @@ document.querySelector('#solution-pdf').addEventListener('change',async event=>{
     set('resolved-source',`Hebeltrader-Ausgabe ${data.issue} (PDF sha256 ${data.pdf_sha256.slice(0,12)})`);
     fillErrorDraft(true);
     let note=data.name?`Erkannt: ${data.name}${data.stock_wkn?' (WKN '+data.stock_wkn+')':''} – Fehleranalyse vorausgefüllt, bitte prüfen.`:'Kein Aktienname erkannt – bitte manuell eintragen.';
-    if(data.persisted&&(data.listed_as_official||data.competition_mode==='official')){
-      note+=' Fall ist nicht mehr außer Konkurrenz.';
-      setCaseFilters('active','all');
+    if(data.persisted){
+      if(data.listed_as_official||data.competition_mode==='official'){
+        note+=' Fall ist nicht mehr außer Konkurrenz.';
+        setCaseFilters('active','all');
+      }
+      status.textContent=note;
       await loadCases(caseId);
+      return;
     }
     status.textContent=note;
   }catch(error){status.textContent='PDF konnte nicht gelesen werden.'}
