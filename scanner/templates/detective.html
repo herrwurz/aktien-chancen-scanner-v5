@@ -38,10 +38,22 @@
     .cases-legend{display:grid;gap:.35rem;font-size:.95rem}
     .cases-legend button{background:transparent;color:#16202a;border:1px solid #d1d5db;text-align:left;font-weight:650;padding:.55rem .7rem}
     .cases-legend button.active{border-color:#0f766e;background:#ecfdf5}
-    .badge{display:inline-block;padding:.15rem .5rem;border-radius:999px;font-size:.8rem;font-weight:700;background:#e5e7eb;color:#1f2937}
+    .badge{display:inline-block;padding:.2rem .65rem;border-radius:999px;font-size:.85rem;font-weight:750;background:#e5e7eb;color:#1f2937;vertical-align:middle}
     .badge.ooc{background:#fef3c7;color:#92400e}.badge.ok{background:#d1fae5;color:#065f46}
     .badge.bad{background:#fee2e2;color:#991b1b}.badge.open{background:#e0e7ff;color:#3730a3}
-    .more-actions{margin-top:.5rem}
+    #active-case{margin-top:.85rem;padding:1rem 1.1rem;border:2px solid #cbd5e1;border-radius:12px;background:#f8fafc}
+    #active-case h3{margin:.1rem 0 .55rem;font-size:1.25rem;line-height:1.35}
+    #active-case .case-meta{margin:.35rem 0;font-size:1rem;color:#1f2937}
+    .case-hints{display:grid;gap:.55rem;margin:.75rem 0}
+    .case-hint{margin:0;padding:.75rem .9rem;border-radius:10px;border-left:5px solid #0f766e;background:#ecfdf5;color:#064e3b;font-weight:700;font-size:1.02rem;line-height:1.4}
+    .case-hint.warn{border-left-color:#d97706;background:#fffbeb;color:#92400e}
+    .case-hint.alert{border-left-color:#c2410c;background:#fff7ed;color:#9a3412}
+    .case-hint.info{border-left-color:#1d4ed8;background:#eff6ff;color:#1e3a8a}
+    .more-actions{margin-top:.75rem;border:1px solid #cbd5e1;border-radius:10px;padding:.35rem .7rem .7rem;background:#fff}
+    .more-actions summary{cursor:pointer;font-weight:750;padding:.45rem 0;color:#0f172a;list-style:none}
+    .more-actions summary::-webkit-details-marker{display:none}
+    .more-actions summary::before{content:'▸ ';color:#0f766e}
+    .more-actions[open] summary::before{content:'▾ '}
     @media(max-width:600px){body{padding:.5rem}.case-controls,.field-grid{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr}.cases-summary{grid-template-columns:1fr}}
   </style>
 </head>
@@ -632,23 +644,35 @@ const attachSolutionPdf=(row,target)=>{
   });
   target.append(pdfLabel);target.append(pdfInput);target.append(pdfStatus);
 };
+const caseHint=(text,kind='')=>{
+  const note=el('p',text);note.className=`case-hint${kind?' '+kind:''}`;return note;
+};
+const renderCaseHints=row=>{
+  const box=el('div');box.className='case-hints';
+  const bucket=resultBucket(row);
+  if(row.archived)box.append(caseHint('Archiviert — wiederherstellen oder unter Weitere Aktionen endgültig löschen.','warn'));
+  if(row.competition_mode==='out_of_competition'&&!row.solution_pdf)
+    box.append(caseHint('Nächster Schritt: Report-PDF speichern. Danach landet der Fall im Listing.','alert'));
+  else if(!row.resolution)
+    box.append(caseHint('Nächster Schritt: Originalauflösung eintragen (Aktie / Call bestätigen).','alert'));
+  else if(bucket==='correct')box.append(caseHint('Ergebnis: Erraten (Rang 1 bestätigt).'));
+  else if(bucket==='wrong')box.append(caseHint('Ergebnis: Falsch — Auflösung weicht vom Top-Tipp ab.','warn'));
+  if(isReferenceCase(row))box.append(caseHint('Markierung: Referenz (später aufgelöster Blindfall).','info'));
+  else if(isBlindCase(row))box.append(caseHint('Markierung: Blindtest (Lösung war bei der Analyse unbekannt).','info'));
+  if(row.listing_promotion)box.append(caseHint(`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
+  if(row.dataset_promotion)box.append(caseHint(`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}.`,'info'));
+  if(row.solution_pdf)box.append(caseHint(`Lösungs-PDF gespeichert (${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…).`,'info'));
+  return box.childNodes.length?box:null;
+};
 const selectCase=caseId=>{
   const root=document.querySelector('#active-case');root.replaceChildren();
   const row=allCases.find(item=>item.case_id===caseId);if(!row)return;
   const heading=(row.input||{}).headline||row.case_id;
   const title=el('h3');title.append(document.createTextNode(heading+' '));title.append(caseBadge(row));
   root.append(title);
-  root.append(el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`));
-  if(isBlindCase(row)||isReferenceCase(row)){
-    const note=el('p');note.className='muted';
-    note.textContent=isReferenceCase(row)
-      ?'Markierung: Referenz (später aufgelöster Blindfall).'
-      :'Markierung: Blindtest (Lösung war bei Analyse unbekannt).';
-    root.append(note);
-  }
-  if(row.solution_pdf)root.append(el('p',`Lösungs-PDF: ${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…`));
-  if(row.listing_promotion)root.append(el('p',`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
-  if(row.dataset_promotion)root.append(el('p',`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}`));
+  const meta=el('p',`Fall-ID: ${row.case_id} · Status: ${row.status}`);meta.className='case-meta';
+  root.append(meta);
+  const hints=renderCaseHints(row);if(hints)root.append(hints);
   const report=row.latest_prediction||row.first_prediction;
   activeResolutionRow=row;
   const actions=el('div');actions.className='case-actions';
@@ -672,7 +696,9 @@ const selectCase=caseId=>{
     edit.addEventListener('click',()=>openResolution(row));actions.append(edit);
   }
   if(row.competition_mode==='out_of_competition'||!row.solution_pdf)attachSolutionPdf(row,actions);
-  const more=el('details');more.className='more-actions';more.append(el('summary','Weitere Aktionen'));
+  const more=el('details');more.className='more-actions';
+  if(row.archived)more.open=true;
+  more.append(el('summary','Weitere Aktionen (Archiv · Löschen · Markierungen)'));
   const moreActions=el('div');moreActions.className='case-actions';
   if(!row.archived){
     const archive=el('button','Testfall archivieren');archive.type='button';archive.addEventListener('click',async()=>{
