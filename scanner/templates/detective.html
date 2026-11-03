@@ -357,27 +357,134 @@ const runCallSearch=async data=>{
     callSearchTargets().forEach(root=>root.replaceChildren(el('p',error.message||'Call-Suche fehlgeschlagen.')));
   }
 };
-const fallbackProse=data=>{
+const HASH_RE=/\b(?:ai:)?[a-f0-9]{16,}\b/i;
+const TECH_MARKERS=['offen:','score ','evidenz','confidence','rang 1:','rang 2:','rang 3:','kernhinweise','ki-beleg','working hypothesis','usable_for_ranking','failure_code','clue_id','asset_id'];
+const LIMIT_LABELS={
+  ai_interpretation_requires_manual_verification:'KI-Interpretation der Quellen muss manuell geprüft werden.',
+  fewer_than_five_countercandidates:'Es wurden nur wenige Gegenkandidaten geprüft.',
+  insufficient_specific_primary_evidence:'Es fehlen noch spezifische Primärbelege für eine sichere Zuordnung.',
+  listed_underlying_identity_unverified:'Börsennotierung bzw. Unternehmensidentität ist noch nicht unabhängig verifiziert.',
+  insufficient_evidence:'Die vorliegenden Hinweise reichen für eine sichere Identifikation nicht aus.'
+};
+const MACHINE_REASON_RE=/^(confirmed|category|retrieval_score|uncertainty|clue_id|asset_id):/i;
+const isNoiseText=text=>{
+  if(!text)return true;
+  const cleaned=String(text).replace(/\s+/g,' ').trim();
+  if(cleaned.length<4)return true;
+  if(HASH_RE.test(cleaned))return true;
+  const lowered=cleaned.toLowerCase();
+  if(TECH_MARKERS.some(marker=>lowered.includes(marker)))return true;
+  if(cleaned===cleaned.toUpperCase()&&cleaned.includes('_'))return true;
+  if(/^[a-z0-9_]+$/.test(lowered)&&lowered.includes('_'))return true;
+  return ['unknown','unbekannt','n/a','none','null','status='].some(token=>lowered.includes(token));
+};
+const normalizePiece=piece=>{
+  let text=String(piece||'').replace(/\s+/g,' ').trim().replace(/^[ .;]+|[ .;]+$/g,'');
+  text=text.replace(/^(gegenargument|widerspruch|stützt|offen)\s*:\s*/i,'').trim().replace(/^[ .;]+|[ .;]+$/g,'');
+  if(text)text=text.charAt(0).toUpperCase()+text.slice(1);
+  return text;
+};
+const humanSegments=text=>{
+  if(!text)return [];
+  return String(text).split(/[;|]\s*|\.\s+/).map(normalizePiece)
+    .filter(piece=>{
+      if(isNoiseText(piece))return false;
+      if(/^\d+\s+\w+/.test(piece)&&['hinweis','widerspruch','beleg','score'].some(t=>piece.toLowerCase().includes(t)))return false;
+      return true;
+    });
+};
+const cleanWhyParts=parts=>{
+  const seen=new Set();const out=[];
+  (parts||[]).forEach(part=>{
+    humanSegments(part).forEach(piece=>{
+      const key=piece.toLowerCase();
+      if(seen.has(key))return;
+      seen.add(key);out.push(piece);
+    });
+  });
+  return out;
+};
+const whySentence=row=>{
+  const parts=[];
+  (row.confirmed_specific_clues||[]).forEach(item=>parts.push(clueLabel(item)));
+  (row.supporting_clues||row.hard_facts||[]).forEach(item=>parts.push(clueLabel(item)));
+  (row.hypothesis_reasons||[]).forEach(item=>{
+    const text=typeof item==='string'?item:clueLabel(item);
+    if(text&&!MACHINE_REASON_RE.test(text.trim()))parts.push(text);
+  });
+  (row.counterarguments||[]).forEach(item=>{
+    const text=typeof item==='string'?item:clueLabel(item);
+    if(text&&!isNoiseText(text))parts.push(text);
+  });
+  (row.cited_findings||[]).forEach(finding=>{
+    if(!finding||typeof finding!=='object')return;
+    if(finding.status==='supported'||finding.usable_for_ranking){
+      parts.push(clueLabel(finding));
+      if(finding.quote||finding.snippet)parts.push(finding.quote||finding.snippet);
+    }
+  });
+  parts.push(...humanSegments(row.ranking_reason||''));
+  const cleaned=cleanWhyParts(parts);
+  if(cleaned.length){
+    const lead=cleaned[0].replace(/\.+$/,'');
+    const extra=cleaned.slice(1,3);
+    return extra.length?`${lead}. ${extra.join('. ')}.`:`${lead}.`;
+  }
+  const confirmed=(row.confirmed_specific_clues||[]).length;
+  const contradictions=(row.hard_contradictions||[]).length;
+  const cited=(row.cited_findings||[]).length;
+  if(confirmed)return `Es liegen ${confirmed} bestätigte Kernhinweise vor${contradictions?`; ${contradictions} harte Widersprüche sind vermerkt.`:'.'}`;
+  if(cited&&!contradictions)return 'Die Rangfolge stützt sich vor allem auf vorläufige Quellenhinweise — ohne unabhängige Primärbestätigung.';
+  if(contradictions)return 'Es gibt vermerkte Widersprüche; die Zuordnung bleibt unsicher.';
+  return 'Die Hinweise deuten vergleichsweise auf dieses Unternehmen, ohne eine einzelne klare Primärbegründung.';
+};
+const readableLimits=data=>{
+  const seen=new Set();const out=[];
+  (data.limitations||[]).forEach(item=>{
+    if(typeof item!=='string')return;
+    const raw=item.replace(/\s+/g,' ').trim();
+    const label=LIMIT_LABELS[raw]||raw;
+    if(isNoiseText(label)&&!LIMIT_LABELS[raw])return;
+    if(!LIMIT_LABELS[raw]&&((raw===raw.toUpperCase())||(raw.includes('_')&&!raw.includes(' '))))return;
+    const key=label.toLowerCase();
+    if(seen.has(key))return;
+    seen.add(key);out.push(label);
+  });
+  return out.slice(0,4);
+};
+const readerProse=data=>{
+  // Always rebuild from structured fields — never trust stored legacy prose.
   const ooc=(data.competition_mode||'')==='out_of_competition';
   const lines=[ooc
     ?'**Außer Konkurrenz** — Analyse zur Orientierung; nicht im offiziellen Listing.'
     :'**Arbeitsanalyse** — Identifikationshilfe, keine Kaufempfehlung.'];
   const label=(data.decision||{}).label||(data.identification||{}).label;
-  if(label)lines.push(`Einschätzung: **${label}**.`);
+  const status=((data.identification||{}).status)||'';
+  if(label&&!isNoiseText(String(label)))lines.push(`Einschätzung: **${label}**.`);
+  else if(status==='identified')lines.push('Einschätzung: belastbarer Top-Kandidat, manuelle Bestätigung bleibt nötig.');
+  else if(status==='hypothesis_top3')lines.push('Einschätzung: Top-3-Hypothese zur manuellen Prüfung — keine bestätigte Identifikation.');
+  else lines.push('Einschätzung: Arbeitsergebnis zur Orientierung, keine bestätigte Identifikation.');
+  if(data.ranking_tie)lines.push('Die führenden Kandidaten liegen eng beieinander — derzeit kein eindeutiger Favorit.');
   const candidates=(data.candidates||[]).slice(0,3);
   if(!candidates.length){
-    lines.push('','### Ergebnis','Es konnten keine belastbaren Unternehmens-Kandidaten abgeleitet werden.');
+    lines.push('','### Ergebnis','Es konnten keine belastbaren Unternehmens-Kandidaten aus den Hinweisen abgeleitet werden.');
   }else{
     const top=candidates[0],id=top.identity||top;
-    lines.push('','### Top-Auswahl',`**${id.name||'Unbekannt'}**${id.ticker?` (${id.ticker})`:''}`);
-    lines.push(top.ranking_reason||'Die Hinweise deuten auf dieses Unternehmen.');
+    lines.push('','### Top-Auswahl',`**${id.name||'Unbekannt'}**${id.ticker?` (${id.ticker})`:''}`,whySentence(top));
     if(candidates.length>1){
       lines.push('','### Weitere geprüfte Kandidaten');
       candidates.slice(1).forEach((c,i)=>{const cid=c.identity||c;
-        lines.push(`**${i+2}. ${cid.name||'Unbekannt'}**${cid.ticker?` (${cid.ticker})`:''}`);
-        if(c.ranking_reason)lines.push(c.ranking_reason);
+        lines.push(`**${i+2}. ${cid.name||'Unbekannt'}**${cid.ticker?` (${cid.ticker})`:''}`,whySentence(c));
       });
     }
+    const checked=data.checked_candidates||[];
+    const extra=checked.length?Math.max(0,checked.length-candidates.length):0;
+    if(extra)lines.push('',`Zusätzlich wurden **${extra}** weitere Unternehmen geprüft und verworfen (Details im technischen Anhang).`);
+  }
+  const limits=readableLimits(data);
+  if(limits.length){
+    lines.push('','### Bitte noch prüfen');
+    limits.forEach(item=>lines.push(`- ${item}`));
   }
   lines.push('','Keine Anlage- oder Kaufempfehlung. Bestätigung nur über Originalreport oder Primärquelle.');
   return lines.join('\n\n');
@@ -385,7 +492,7 @@ const fallbackProse=data=>{
 const renderOverview=data=>{
   latestReport=data;
   if(data.case_id)document.querySelector('#case-id').value=data.journal_case_id||data.case_id;
-  renderProse(data.prose||fallbackProse(data),result);
+  renderProse(readerProse(data),result);
   setCallSearchStatus('Analyse geladen — im Abschnitt „Calls suchen“ starten oder Button unten nutzen.');
   const actions=el('div');actions.className='result-actions';
   const callBtn=el('button','Calls suchen');callBtn.type='button';

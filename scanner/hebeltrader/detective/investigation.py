@@ -2182,20 +2182,12 @@ class Investigator:
             )
             else "Nicht ausreichend identifizierbar",
         }
-        for rank, row in enumerate(report["candidates"], 1):
-            row["ranking_reason"] = (
-                f"Rang {rank}: {len(row['confirmed_specific_clues'])} bestätigte Kernhinweise, "
-                f"{len(row['hard_contradictions'])} harte Widersprüche, "
-                f"Score {row['evidence_score']}; "
-                "Widersprüche zuerst, danach spezifische Primärevidenz."
-            )
-            if row["cited_findings"]:
-                row["ranking_reason"] += (
-                    f" {len(row['cited_findings'])} vorläufige KI-Belegstellen; "
-                    "keine unabhängige Primärbestätigung."
-                )
         from .product_research import research_calls
-        from .prose_briefing import prose_briefing
+        from .prose_briefing import prose_briefing, why_sentence
+
+        for row in report["candidates"]:
+            # Human ranking text only — scores/counts stay in structured fields.
+            row["ranking_reason"] = why_sentence(row)
 
         report["derivative_candidate"] = research_calls(
             report, self.web, self.product_issuers, text
