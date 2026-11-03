@@ -68,11 +68,12 @@ def test_empty_case_journal_token_does_not_authorize_missing_header(tmp_path):
 
 def test_solution_pdf_prefills_resolution_and_requires_token(tmp_path):
     import base64
-    import glob
+    from pathlib import Path
 
-    pdfs = glob.glob("tests/fixtures/**/*.pdf", recursive=True)
-    assert pdfs
-    body = {"pdf_base64": base64.b64encode(open(pdfs[0], "rb").read()).decode()}
+    # Prefer a readable fixture — glob order can put broken.pdf first on CI.
+    pdf_path = Path("tests/fixtures/hebeltrader/complete.pdf")
+    assert pdf_path.is_file()
+    body = {"pdf_base64": base64.b64encode(pdf_path.read_bytes()).decode()}
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
