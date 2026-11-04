@@ -49,6 +49,11 @@ from .structure_screen import (
     ticker_for,
 )
 from .temporal import assess_document, timestamp
+from .us_session_quote import (
+    apply_us_session_quote,
+    listed_outside_us_session,
+    teaser_quotes_from_us_session,
+)
 from .utility_fingerprint import apply_utility_fingerprints
 from .verification import verify_candidates
 
@@ -97,7 +102,15 @@ def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
     defense = apply_defense_fingerprints(ranked, docs, teaser_text=teaser_text)
     bank = apply_bank_capital_fingerprints(ranked, teaser_text=teaser_text)
     chip = apply_hidden_chip_bottleneck(ranked, teaser_text=teaser_text)
-    return {"metric": metric, "utility": utility, "defense": defense, "bank": bank, "chip": chip}
+    us_session = apply_us_session_quote(ranked, teaser_text=teaser_text)
+    return {
+        "metric": metric,
+        "utility": utility,
+        "defense": defense,
+        "bank": bank,
+        "chip": chip,
+        "us_session": us_session,
+    }
 
 
 def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_recall=False):
@@ -801,6 +814,7 @@ def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
     if not sectors:
         return []
     us_only = _teaser_requires_us_issuer(text)
+    us_session_only = teaser_quotes_from_us_session(text)
     utility_claim = bool(_UTILITY_WORDING.search(text or ""))
     power_claim = bool(_POWER_WORDING.search(text or ""))
     # Strom-/Versorger-Teaser: do not dilute with co-detected retail/finance sectors.
@@ -818,6 +832,8 @@ def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
             continue
         asset = dict(raw)
         asset["ticker"] = ticker
+        if us_session_only and listed_outside_us_session(raw.get("ticker") or ticker):
+            continue
         if us_only:
             if "." in ticker:
                 continue
