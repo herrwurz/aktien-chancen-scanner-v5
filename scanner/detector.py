@@ -12,6 +12,11 @@ class Decision:
     ratio: Decimal | None = None
 
 
+def _decimal_key(value: Decimal) -> str:
+    """Stable key text. Decimal('3') and Decimal('3.0') must name one detector."""
+    return format(value.normalize(), "f")
+
+
 class VolumeDetector:
     version = "volume-v1"
 
@@ -26,7 +31,10 @@ class VolumeDetector:
 
     @property
     def config_key(self):
-        return f"{self.version}:{self.lookback}:{self.threshold}:{self.min_quote_volume}"
+        return (
+            f"{self.version}:{self.lookback}:"
+            f"{_decimal_key(self.threshold)}:{_decimal_key(self.min_quote_volume)}"
+        )
 
     def evaluate(self, history: list[Candle], target: Candle) -> Decision:
         previous = sorted(

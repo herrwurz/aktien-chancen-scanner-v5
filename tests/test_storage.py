@@ -77,6 +77,67 @@ def test_reimport_does_not_rewrite_original_data_or_decision(sessions):
         assert session.scalar(select(Evaluation)).evaluated_at == now
 
 
+def test_orphaned_running_run_is_closed_on_the_next_scan(sessions):
+    with sessions.begin() as session:
+        session.add(
+            ScanRun(
+                started_at=START, provider="fixture", status="running", error_count=0, errors=[]
+            )
+        )
+
+    class Provider:
+        name = "fixture"
+        asset_class = "crypto"
+
+        async def fetch_candles(self, symbol, interval, **kwargs):
+            return [candle(0), candle(1, "40")]
+
+    result = asyncio.run(
+        scan_once(
+            sessions,
+            Provider(),
+            ["BTCUSDT"],
+            ["5m"],
+            VolumeDetector(lookback=1),
+            START + timedelta(hours=1),
+        )
+    )
+    assert result == "ok"
+    with sessions() as session:
+        rows = session.scalars(select(ScanRun).order_by(ScanRun.id)).all()
+    assert [row.status for row in rows] == ["failed", "ok"]
+    assert rows[0].finished_at == rows[1].started_at
+
+
+def test_prefetched_candles_are_not_fetched_again(sessions):
+    class Provider:
+        name = "fixture"
+        asset_class = "crypto"
+        calls = 0
+
+        async def fetch_candles(self, symbol, interval, **kwargs):
+            self.calls += 1
+            return [candle(0), candle(1, "40")]
+
+    provider = Provider()
+    result = asyncio.run(
+        scan_once(
+            sessions,
+            provider,
+            ["BTCUSDT"],
+            ["5m"],
+            VolumeDetector(lookback=1),
+            START + timedelta(hours=1),
+            fetched={"BTCUSDT": {"5m": [candle(0), candle(1, "40")]}},
+            prefetch_errors=[],
+        )
+    )
+    assert result == "ok"
+    assert provider.calls == 0
+    with sessions() as session:
+        assert session.scalar(select(func.count()).select_from(Signal)) == 1
+
+
 def test_failed_symbol_does_not_block_other_symbols(sessions):
     class Provider:
         name = "fixture"

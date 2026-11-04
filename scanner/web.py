@@ -3,6 +3,7 @@
 import base64
 import binascii
 import hmac
+import logging
 import os
 import re
 from decimal import Decimal
@@ -18,6 +19,8 @@ from scanner.config import Settings
 from scanner.db import create_db
 from scanner.main import create_app
 from scanner.models import Base
+
+logger = logging.getLogger(__name__)
 
 
 def _secret(name):
@@ -96,7 +99,7 @@ def create_web_app():
     try:
         CaseJournal(settings.detective_public_root / "cases").reconcile_operator_listing()
     except (ValueError, OSError):
-        pass
+        logger.exception("Case journal reconcile failed")
 
     tavily_usage = provider_usage.TavilyUsageMonitor()
     eodhd_usage = provider_usage.EodhdUsageMonitor()

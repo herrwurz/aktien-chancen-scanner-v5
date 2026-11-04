@@ -3,6 +3,7 @@
 import fcntl
 import hashlib
 import json
+import logging
 import os
 import re
 import unicodedata
@@ -19,6 +20,17 @@ def canonical(value):
 
 def digest(value):
     return hashlib.sha256(canonical(value)).hexdigest()
+
+
+def aware_timestamp(value: str) -> datetime:
+    """Parse an ISO timestamp and require a timezone. Z and +00:00 compare as one instant."""
+    parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        raise ValueError("timezone required")
+    return parsed.astimezone(UTC)
+
+
+logger = logging.getLogger(__name__)
 
 
 def read_frozen(path):
@@ -231,6 +243,19 @@ class CaseJournal:
         rows = [r for r in self.events() if r["case_id"] == case_id]
         if not rows or rows[0]["kind"] != "intake":
             raise ValueError("unknown case")
+        return self._project(case_id, rows)
+
+    def _states(self, events):
+        grouped: dict[str, list] = {}
+        for row in events:
+            grouped.setdefault(row["case_id"], []).append(row)
+        return [
+            self._project(case_id, rows)
+            for case_id, rows in grouped.items()
+            if rows and rows[0]["kind"] == "intake"
+        ]
+
+    def _project(self, case_id, rows):
         intake_input = rows[0]["payload"]["input"]
         state = {
             "case_id": case_id,
@@ -325,7 +350,7 @@ class CaseJournal:
         """
         if listing not in ("official", "out_of_competition", "all"):
             raise ValueError("listing must be official, out_of_competition, or all")
-        rows = [self.case(r["case_id"]) for r in self.events() if r["kind"] == "intake"]
+        rows = self._states(self.events())
         rows = [row for row in rows if not row.get("deleted")]
         if not include_archived:
             rows = [row for row in rows if not row["archived"]]
@@ -709,22 +734,24 @@ class CaseJournal:
             )
             if classification == "prospective_blind" and resolution:
                 try:
-                    confirmed = datetime.fromisoformat(
-                        resolution["confirmed_at"].replace("Z", "+00:00")
-                    )
-                    frozen = datetime.fromisoformat(case["first_frozen_at"])
+                    confirmed = aware_timestamp(resolution["confirmed_at"])
+                    frozen = aware_timestamp(case["first_frozen_at"])
+                    recorded = aware_timestamp(resolution["recorded_at"])
                     independent = (
                         preregistered
-                        and confirmed.utcoffset() is not None
                         and confirmed > frozen
-                        and confirmed <= datetime.fromisoformat(resolution["recorded_at"])
+                        and confirmed <= recorded
                         and case["previously_used_for_development"] is False
                         and resolution.get("original_sha256") == first.get("teaser_sha256")
                         and bool(first.get("teaser_sha256"))
                         and bool(resolution.get("source"))
                     )
-                except (ValueError, KeyError, TypeError):
-                    pass
+                except (ValueError, KeyError, TypeError) as exc:
+                    logger.warning(
+                        "Independent classification skipped for %s: %s",
+                        case["case_id"],
+                        type(exc).__name__,
+                    )
             if independent:
                 classification = "independent"
             elif pending:
@@ -962,8 +989,12 @@ class CaseJournal:
                         try:
                             self.resolve(case_id, payload)
                             summary["resolved"].append(case_id)
-                        except ValueError:
-                            pass
+                        except ValueError as exc:
+                            logger.warning(
+                                "Solution PDF resolution skipped for %s: %s",
+                                case_id,
+                                type(exc).__name__,
+                            )
                         state = self.case(case_id)
             if state.get("archived") or state.get("deleted"):
                 continue

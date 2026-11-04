@@ -8,9 +8,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
 from datetime import UTC, datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def inventory_history(path) -> dict:
@@ -157,17 +160,26 @@ def evaluate_frozen(path, labels_path) -> dict:
         )
         if classification == "independent":
             try:
-                confirmed = datetime.fromisoformat(label["confirmed_at"].replace("Z", "+00:00"))
-                frozen = datetime.fromisoformat(envelope["frozen_at"])
+                confirmed = datetime.fromisoformat(
+                    str(label["confirmed_at"]).replace("Z", "+00:00")
+                )
+                frozen = datetime.fromisoformat(str(envelope["frozen_at"]).replace("Z", "+00:00"))
+                if confirmed.tzinfo is None or frozen.tzinfo is None:
+                    raise ValueError("timezone required")
+                confirmed, frozen = confirmed.astimezone(UTC), frozen.astimezone(UTC)
                 eligible = (
-                    confirmed.utcoffset() is not None
-                    and confirmed > frozen
+                    confirmed > frozen
                     and label.get("original_sha256") == case.get("teaser_sha256")
                     and bool(case.get("teaser_sha256"))
                     and label.get("solution_source")
                     and label.get("previously_used_for_development") is False
                 )
-            except (KeyError, TypeError, ValueError):
+            except (KeyError, TypeError, ValueError) as exc:
+                logger.warning(
+                    "Independent history check skipped for %s: %s",
+                    case_id,
+                    type(exc).__name__,
+                )
                 eligible = False
             if not eligible:
                 classification = "independent_unverified"

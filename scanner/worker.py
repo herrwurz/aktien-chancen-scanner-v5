@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import logging
 import signal
+from datetime import UTC, datetime
 
 import httpx
 
@@ -10,7 +11,7 @@ from scanner.db import create_db, create_sessions, worker_lock
 from scanner.detector import VolumeDetector
 from scanner.providers.binance import BinanceSpotProvider
 from scanner.providers.fixture import FixtureProvider
-from scanner.service import scan_once
+from scanner.service import collect_markets, scan_once
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +32,27 @@ async def run_worker(settings: Settings, once=False):
             )
             while not stop.is_set():
                 try:
+                    fetched, prefetch_errors = await collect_markets(
+                        provider,
+                        settings.symbols,
+                        settings.intervals,
+                        detector,
+                        datetime.now(UTC),
+                    )
+                    if stop.is_set():
+                        break
                     with worker_lock(engine) as acquired:
                         if acquired:
+                            # New checkout each cycle: the advisory lock lives on this connection.
                             sessions = create_sessions(acquired, require_lock=True)
                             status = await scan_once(
-                                sessions, provider, settings.symbols, settings.intervals, detector
+                                sessions,
+                                provider,
+                                settings.symbols,
+                                settings.intervals,
+                                detector,
+                                fetched=fetched,
+                                prefetch_errors=prefetch_errors,
                             )
                             logger.info("Scan finished: %s", status)
                             if once:
