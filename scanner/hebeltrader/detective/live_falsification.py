@@ -71,6 +71,7 @@ def build_live_web(root: Path, *, approved: bool, max_requests: int = 40):
         ai_key=ai_key if source_ai else None,
         extraction_model=settings.detective_extraction_model,
         reasoning_model=settings.detective_reasoning_model,
+        max_duration_seconds=settings.detective_external_max_duration_seconds,
     )
     return ApiPublicResearch(
         root / "sources",

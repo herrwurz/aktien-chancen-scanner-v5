@@ -194,6 +194,7 @@ _PROFIT_DOWN = re.compile(
 _WINDOW_DAYS = 21
 _NEWS_FETCH_CAP = 6
 _PRIMARY_CAP = 4
+_FILING_CAP = 6
 
 
 def teaser_market_terms(text: str) -> tuple[str, ...]:
@@ -495,7 +496,86 @@ def collect_market_pages(
         "primary_checks_capped": len(clustered) > _PRIMARY_CAP,
         "errors": errors,
     }
-    documents = _stamp(news_docs, names, index) + _stamp(primary_docs, names, index)
+    # A name that only co-occurs on a roundup, with none of the teaser terms on
+    # its filing, does not become a ranking document.
+    anchored = [row for row in names if row.get("terms_on_page")]
+    documents = _stamp(news_docs, anchored, index) + _stamp(primary_docs, anchored, index)
+    return report, documents
+
+
+def collect_issuer_filings(web, names: list[dict], *, publication_at: datetime):
+    """Read one SEC filing, or else one IR page, for each shortlist name.
+
+    At most six names. News hosts are not accepted as a filing.
+    """
+    start, end = publication_window(publication_at)
+    documents = []
+    errors: list[dict] = []
+    checked = []
+    seen: set[str] = set()
+    for asset in names or []:
+        name = str((asset or {}).get("name") or "").strip()
+        key = name.casefold()
+        if not name or key in seen:
+            continue
+        seen.add(key)
+        if len(checked) >= _FILING_CAP:
+            break
+        ticker = str((asset or {}).get("ticker") or "").split(".")[0]
+        label = f'"{name}"' + (f" {ticker}" if ticker else "")
+        doc = None
+        surface = "none"
+        for surface_name, query, domains in (
+            ("sec", f"{label} 8-K OR 10-Q OR 6-K earnings", ("sec.gov",)),
+            ("ir", f"{label} investor relations quarterly results", None),
+        ):
+            try:
+                hits = _call_search(
+                    web,
+                    query,
+                    limit=4,
+                    include_domains=domains,
+                    start_date=start,
+                    end_date=end,
+                )
+            except (ValueError, httpx.HTTPError) as exc:
+                errors.append({"query": query, "error": str(exc)[:120]})
+                continue
+            kept = []
+            for hit in hits or []:
+                if not isinstance(hit, dict) or not hit.get("url"):
+                    continue
+                if not _in_window(hit.get("published_at"), start, end):
+                    continue
+                if domains:
+                    host = _host(hit["url"])
+                    if host == "sec.gov" or host.endswith(".sec.gov"):
+                        kept.append(hit)
+                    continue
+                if classify_live_source_kind(hit["url"]) in {"issuer", "regulatory"}:
+                    kept.append(hit)
+            if not kept:
+                continue
+            loaded, load_errors = _load(web, kept, limit=1)
+            errors.extend(load_errors)
+            if loaded:
+                doc = loaded[0]
+                surface = surface_name
+                break
+        checked.append({"name": name, "ticker": ticker or None, "surface": surface})
+        if doc is None:
+            continue
+        stamped = dict(doc)
+        stamped["company_name"] = name
+        stamped["ticker"] = ticker or stamped.get("ticker")
+        stamped["identity_basis"] = "issuer_filing"
+        documents.append(stamped)
+    report = {
+        "status": "read" if documents else "empty",
+        "cap": _FILING_CAP,
+        "names": checked,
+        "errors": errors,
+    }
     return report, documents
 
 
