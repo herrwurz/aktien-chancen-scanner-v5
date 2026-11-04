@@ -401,7 +401,14 @@ def test_resolution_entry_is_prominent_and_can_be_opened_from_case():
     assert "Automatisch aus Top-Auswahl" in html
     assert 'textarea id="resolved-error" required' not in html
     assert "Nicht mehr außer Konkurrenz" in html
-    assert "persist:Boolean(caseId)" in html
+    assert "persist:false" in html
+    assert "persist:Boolean(caseId)" not in html
+    assert 'id="new-case"' in html
+    assert "Neuen Fall eingeben" in html
+    assert "startNewCase" in html
+    assert "case-error" in html
+    assert "error_briefing" in html
+    assert "pendingSolutionFile" in html
     assert "syncResolution:true" in html
     assert "syncResolutionPanel" in html
     assert "panel.hidden=!row||Boolean(row.solution_pdf)" in html
