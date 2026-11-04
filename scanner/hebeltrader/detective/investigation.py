@@ -30,6 +30,7 @@ from .chip_bottleneck import (
 )
 from .clue_aliases import term_pattern
 from .clue_enrichment import HeuristicClueEnricher
+from .clue_matrix import apply_clue_matrix, eligible_shortlist, shortlist_queries
 from .clues import extract_atomic_clues
 from .defense_fingerprint import (
     apply_defense_fingerprints,
@@ -125,6 +126,7 @@ def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_r
     summary = _apply_metric_fingerprints(ranked, fetched, teaser_text=text)
     _apply_utility_clue_matrix(ranked, text)
     _refresh_confirmed_specific_clues(ranked, clues, live_publisher_recall=live_publisher_recall)
+    summary["clue_matrix"] = apply_clue_matrix(ranked, teaser_text=text)
     return summary
 
 
@@ -1498,6 +1500,8 @@ class Investigator:
         offline = documents is not None or self.web is None
         semantic_clues = []
         hypotheses = []
+        discovery_shortlist: list[dict] = []
+        discovery_queries: list[str] = []
         # Exclude underlyings from still-open HEBELTRADER calls (market/structure already do this).
         as_of = request.publication_at or retrieved
         blocked = blocked_features(as_of)
@@ -1579,9 +1583,20 @@ class Investigator:
             # equipment and foundry seeds otherwise fill every slot.
             queries = _interleave(list(HIDDEN_CHIP_QUERIES), queries, queries, cap=14)
         if teaser_wants_background_chip_profit(text):
-            # Keep the analog layer in the budget. Named GPU and foundry seeds
-            # otherwise fill every slot.
+            # Kept so older query plans still run. The shortlist below owns the
+            # paid slots; layer bonuses are removed again by the clue matrix.
             queries = _interleave(list(BACKGROUND_CHIP_QUERIES), queries, queries, cap=14)
+
+        discovery_shortlist = eligible_shortlist(text, blocked=blocked)
+        if discovery_shortlist:
+            # Append, so an existing hypothesis still wins document attribution.
+            # Prepend the paid queries, so each eligible layer is searched.
+            hypotheses = list(
+                dict.fromkeys(list(hypotheses) + [asset["name"] for asset in discovery_shortlist])
+            )
+            if not offline:
+                discovery_queries = shortlist_queries(text, discovery_shortlist, limit=8)
+                queries = list(dict.fromkeys(discovery_queries + queries))[:12]
 
         set_phase = getattr(self.web, "set_phase", lambda phase: None)
         set_phase("discovery")
@@ -2125,6 +2140,12 @@ class Investigator:
             "ranking_tie": top_tie,
             "ranking_status": "ambiguous_tie" if top_tie else "ranked",
             "criteria": [clue.model_dump(mode="json") for clue in clues],
+            "discovery": {
+                "method": "sector_shortlist_then_clue_matrix",
+                "layer_points": 0,
+                "shortlist": [asset["name"] for asset in discovery_shortlist],
+                "shortlist_queries": discovery_queries,
+            },
             "semantic_research": {
                 "enabled": bool(apis and apis.ai_key and not offline),
                 "validated_teaser_clues": len(semantic_clues),

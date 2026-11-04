@@ -575,11 +575,11 @@ def test_factory_refuses_missing_approval_and_then_missing_credentials(tmp_path)
         build_public_research(settings, {})
 
 
-def test_budget_rejects_monthly_limit_above_twenty_euro(tmp_path):
+def test_budget_rejects_monthly_limit_above_safety_ceiling(tmp_path):
     from scanner.hebeltrader.detective.api_budget import ApiBudget
 
     with pytest.raises(ValueError):
-        ApiBudget(tmp_path / "budget.db", cap_cents=2001)
+        ApiBudget(tmp_path / "budget.db", cap_cents=200_001)
 
 
 def test_provider_error_never_archives_api_credential_or_error_body(tmp_path):

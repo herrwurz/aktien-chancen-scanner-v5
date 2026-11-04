@@ -4,13 +4,15 @@ import base64
 import binascii
 import hmac
 import os
+import re
+from decimal import Decimal
 from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
 from fastapi import HTTPException
 from fastapi.responses import Response
-from pydantic import SecretStr
+from pydantic import BaseModel, ConfigDict, Field, SecretStr
 
 from scanner.config import Settings
 from scanner.db import create_db
@@ -26,6 +28,47 @@ def _secret(name):
     if len(value) < 12:
         raise ValueError(f"{name} must contain at least 12 characters")
     return value
+
+
+_EUR_AMOUNT = re.compile(r"^\d{1,4}(\.\d{1,2})?$")
+
+
+class BudgetUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    budget_eur: str = Field(min_length=1, max_length=12)
+
+
+def _budget_cents(value: str) -> int:
+    from scanner.hebeltrader.detective.api_budget import HARD_MAX_CENTS
+
+    text = value.strip().replace(" ", "").replace(",", ".")
+    if not _EUR_AMOUNT.fullmatch(text):
+        raise ValueError(
+            "Monatsbudget als Euro-Betrag mit höchstens zwei Nachkommastellen eingeben"
+        )
+    cents = int((Decimal(text) * 100).to_integral_value())
+    if not 1 <= cents <= HARD_MAX_CENTS:
+        raise ValueError("Monatsbudget muss zwischen 0,01 € und 2000,00 € liegen")
+    return cents
+
+
+def _api_costs(budget: dict) -> dict:
+    cap = budget["cap_cents"] or 1
+    return {
+        "month": budget["month"],
+        "currency": "EUR",
+        "budget_cents": budget["cap_cents"],
+        "reserved_cents": budget["reserved_cents"],
+        "remaining_cents": budget["remaining_cents"],
+        "exhausted": budget["exhausted"],
+        "max_cap_cents": budget["max_cap_cents"],
+        "usage_percent": round(budget["reserved_cents"] / cap * 100, 1),
+        "providers": {
+            "tavily": budget["providers"]["search"],
+            "openai": budget["providers"]["ai"],
+        },
+        "accounting": budget["accounting"],
+    }
 
 
 def create_web_app():
@@ -94,20 +137,8 @@ def create_web_app():
                 and settings.detective_source_ai_api_key.get_secret_value().strip()
             ),
             "eodhd_key_configured": bool(eodhd_token),
-            "monthly_reservation_limit_eur": settings.detective_api_monthly_budget_eur,
-            "api_costs": {
-                "month": budget["month"],
-                "currency": "EUR",
-                "budget_cents": budget["cap_cents"],
-                "reserved_cents": budget["reserved_cents"],
-                "remaining_cents": budget["remaining_cents"],
-                "usage_percent": round(budget["reserved_cents"] / budget["cap_cents"] * 100, 1),
-                "providers": {
-                    "tavily": budget["providers"]["search"],
-                    "openai": budget["providers"]["ai"],
-                },
-                "accounting": budget["accounting"],
-            },
+            "monthly_reservation_limit_eur": budget["cap_cents"] / 100,
+            "api_costs": _api_costs(budget),
             "provider_credits": {
                 "tavily": tavily_usage.snapshot(search_key),
                 "openai": provider_usage.summarize_openai_usage(
@@ -116,6 +147,20 @@ def create_web_app():
                 "eodhd": eodhd_usage.snapshot(eodhd_token),
             },
         }
+
+    @app.post("/api/hebeltrader/runtime/budget")
+    def set_runtime_budget(payload: BudgetUpdate):
+        from scanner.hebeltrader.detective.api_budget import ApiBudget
+
+        try:
+            cents = _budget_cents(payload.budget_eur)
+            summary = ApiBudget(
+                settings.detective_public_root / "api-budget.db",
+                cap_cents=settings.detective_api_monthly_budget_eur * 100,
+            ).set_cap(cents)
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from None
+        return _api_costs(summary)
 
     @app.get("/api/hebeltrader/references")
     def historical_library():
