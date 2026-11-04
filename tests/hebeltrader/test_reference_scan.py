@@ -44,10 +44,11 @@ def test_scan_all_references_without_reading_solutions_then_evaluate(tmp_path, m
     assert result["historical_conversation"]["unresolved"] == 0
     assert result["offline_hypothesis_coverage"]["graded_cases"] == 25
     assert result["offline_hypothesis_coverage"]["solution_in_first_suggestion"] == 2
-    # Retail cue tightened (Handels-Gigant yes, Handelsstrategie no) keeps Costco first
-    # and lifts an extra graded case into the top-3 offline shortlist.
-    assert result["offline_hypothesis_coverage"]["solution_in_top3_suggestions"] == 5
-    assert result["offline_hypothesis_coverage"]["solution_in_top8_suggestions"] == 6
+    # Retail cue tightened (Handels-Gigant yes, Handelsstrategie no) keeps Costco first.
+    # Background-chip teasers list the analog layer first, so one more graded
+    # solution sits in the top 3 and in the eight-name shortlist.
+    assert result["offline_hypothesis_coverage"]["solution_in_top3_suggestions"] == 6
+    assert result["offline_hypothesis_coverage"]["solution_in_top8_suggestions"] == 7
     assert result["cases"][0]["offline_hypothesis_rank"] == 1
     assert result["market_hypothesis_coverage"]["snapshots_not_provided"] == 26
     assert result["market_hypothesis_coverage"]["suggestion_cases"] == 0
