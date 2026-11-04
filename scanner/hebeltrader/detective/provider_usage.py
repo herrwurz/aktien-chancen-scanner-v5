@@ -46,6 +46,10 @@ class TavilyUsageMonitor:
         return None if value is None else cls._count(value)
 
     def snapshot(self, api_key):
+        from scanner.archive import paid_network_closed
+
+        if paid_network_closed():
+            return {"status": "archived"}
         if not api_key:
             return {"status": "not_configured"}
         fingerprint = hashlib.sha256(api_key.encode()).hexdigest()
@@ -120,6 +124,10 @@ class EodhdUsageMonitor:
         return value
 
     def snapshot(self, api_token):
+        from scanner.archive import paid_network_closed
+
+        if paid_network_closed():
+            return {"status": "archived"}
         if not api_token:
             return {"status": "not_configured"}
         fingerprint = hashlib.sha256(api_token.encode()).hexdigest()

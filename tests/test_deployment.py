@@ -19,6 +19,8 @@ def test_compose_is_isolated_and_database_private():
     assert "container_name" not in str(cfg)
     assert "external" not in str(cfg)
     assert "immich" not in str(cfg).lower()
+    assert cfg["services"]["worker"]["profiles"] == ["disabled"]
+    assert cfg["services"]["worker"]["restart"] == "no"
     assert (
         cfg["services"]["worker"]["depends_on"]["migrate"]["condition"]
         == "service_completed_successfully"

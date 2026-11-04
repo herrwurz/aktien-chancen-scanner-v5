@@ -15,5 +15,7 @@ def test_import_service_is_optional_private_and_uses_readonly_source():
     assert mounts["/input"]["bind"]["create_host_path"] is False
     assert mounts["/reports"].get("read_only", False) is False
     assert not any("HEBELTRADER" in k for k in cfg["services"]["worker"]["environment"])
+    assert cfg["services"]["worker"]["profiles"] == ["disabled"]
+    assert cfg["services"]["worker"]["restart"] == "no"
     assert cfg["services"]["worker"]["command"] == ["python", "-m", "scanner.worker"]
     assert cfg["services"]["api"]["ports"] == ["127.0.0.1:${DASHBOARD_PORT:-8066}:8000"]

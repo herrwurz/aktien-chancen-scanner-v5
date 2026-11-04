@@ -80,11 +80,19 @@ def create_web_app():
     username = os.environ.get("TEASER_USERNAME", "admin")
     state = Path(os.environ.get("TEASER_STATE_DIR", "/data"))
     state.mkdir(parents=True, exist_ok=True)
+    # Container contract: ignore paid keys and public research even if the host env still has them.
+    os.environ["SCANNER_ARCHIVED"] = "1"
     settings = Settings(
         _env_file=None,
         database_url=SecretStr("sqlite:///" + str(state.resolve() / "web.db")),
         detective_public_root=state / "detective",
         detective_live_api_token=SecretStr(token),
+        detective_public_allow_network=False,
+        detective_live_allow_network=False,
+        detective_external_api_approved=False,
+        detective_source_ai_enabled=False,
+        detective_search_api_key=None,
+        detective_source_ai_api_key=None,
     )
     # Only this deployment's dedicated database; never migrate an external database.
     engine = create_db(settings)
