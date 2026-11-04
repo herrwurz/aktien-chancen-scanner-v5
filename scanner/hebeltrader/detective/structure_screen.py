@@ -59,6 +59,12 @@ def screen(text, *, limit=8, per_layer=2, universe=None, blocked=None):
         if len(picked) < limit and asset not in picked:
             picked.append(asset)
 
+    # HT-200: the profit machine behind the famous AI names is the analog layer.
+    from .background_chip import teaser_wants_background_chip_profit
+
+    if teaser_wants_background_chip_profit(text) and "analog-mcu" in layers:
+        for asset in layers["analog-mcu"]:
+            take(asset)
     # Concentrated layers (duopoly/monopoly cues) are listed completely so that every
     # player of the layer is a candidate; the remaining layers are sampled round-robin.
     for layer in order:

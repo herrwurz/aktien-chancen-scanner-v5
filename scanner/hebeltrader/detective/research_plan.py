@@ -2,6 +2,7 @@
 
 import re
 
+from .background_chip import BACKGROUND_CHIP_QUERIES, teaser_wants_background_chip_profit
 from .chip_bottleneck import HIDDEN_CHIP_QUERIES, teaser_wants_hidden_chip_bottleneck
 
 
@@ -161,6 +162,8 @@ def build_queries(text, named, fallback):
         queries.append(" ".join('"' + n + '"' for n in safe_named[:3]) + " acquisition investment")
     queries += fallback
     queries = list(dict.fromkeys(q.strip() for q in queries if q.strip()))
+    if teaser_wants_background_chip_profit(clean):
+        queries = [q for q in BACKGROUND_CHIP_QUERIES if q not in queries] + queries
     # A raw German headline is a poor web query; keep it only when nothing better exists.
     if clean and len(queries) < 2:
         queries.append(clean[:250] + " company investor relations")

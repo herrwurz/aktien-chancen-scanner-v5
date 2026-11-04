@@ -15,6 +15,11 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 from scanner.research import AssetIdentity, EvidenceRecord
 
+from .background_chip import (
+    BACKGROUND_CHIP_QUERIES,
+    apply_background_chip_profit,
+    teaser_wants_background_chip_profit,
+)
 from .bank_fingerprint import apply_bank_capital_fingerprints
 from .chart_check import check as chart_check
 from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clues
@@ -102,6 +107,7 @@ def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
     defense = apply_defense_fingerprints(ranked, docs, teaser_text=teaser_text)
     bank = apply_bank_capital_fingerprints(ranked, teaser_text=teaser_text)
     chip = apply_hidden_chip_bottleneck(ranked, teaser_text=teaser_text)
+    background = apply_background_chip_profit(ranked, teaser_text=teaser_text)
     us_session = apply_us_session_quote(ranked, teaser_text=teaser_text)
     return {
         "metric": metric,
@@ -109,6 +115,7 @@ def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
         "defense": defense,
         "bank": bank,
         "chip": chip,
+        "background_chip": background,
         "us_session": us_session,
     }
 
@@ -1571,6 +1578,10 @@ class Investigator:
             # Keep the non-obvious EDA/IP layer in the request budget. Named
             # equipment and foundry seeds otherwise fill every slot.
             queries = _interleave(list(HIDDEN_CHIP_QUERIES), queries, queries, cap=14)
+        if teaser_wants_background_chip_profit(text):
+            # Keep the analog layer in the budget. Named GPU and foundry seeds
+            # otherwise fill every slot.
+            queries = _interleave(list(BACKGROUND_CHIP_QUERIES), queries, queries, cap=14)
 
         set_phase = getattr(self.web, "set_phase", lambda phase: None)
         set_phase("discovery")

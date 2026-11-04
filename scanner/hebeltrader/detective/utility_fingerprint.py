@@ -64,8 +64,19 @@ _TEASER_UTILITY_CUES = re.compile(
 )
 
 
+_CHIP_STORY = re.compile(r"halbleiter|\bchip\w*|semiconductor", re.I)
+_UTILITY_ISSUER = re.compile(
+    r"versorger|utilit|strom\w*|abnahmevertr|power\s+purchase|\bPPA\b|offtake",
+    re.I,
+)
+
+
 def teaser_wants_utility_fingerprint(text: str) -> bool:
-    return bool(_TEASER_UTILITY_CUES.search(text or ""))
+    blob = text or ""
+    # „KI-Rechenzentren“ in a chip teaser is the customer's market, not a utility issuer.
+    if _CHIP_STORY.search(blob) and not _UTILITY_ISSUER.search(blob):
+        return False
+    return bool(_TEASER_UTILITY_CUES.search(blob))
 
 
 @dataclass(frozen=True)
