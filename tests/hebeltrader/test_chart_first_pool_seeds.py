@@ -50,6 +50,53 @@ def test_pool_assets_inactive_without_sector_cue():
     assert _pool_assets_for_teaser("Allgemeiner Tech-Titel ohne Branchenhinweis") == []
 
 
+def test_vague_finance_word_does_not_chart_rank_the_financials_pool():
+    from scanner.hebeltrader.detective.structure_screen import sectors_in
+
+    text = "Der heimliche Gewinner der nächsten Finanzrevolution!"
+    assert sectors_in(text) == []
+    assert _pool_assets_for_teaser(text) == []
+    assert _pool_assets_for_teaser("Die Datenbank des Gewinners wächst.") == []
+    assert _pool_assets_for_teaser("Der Gewinner notiert an der Börse.") == []
+    heavy = "Ein Finanzschwergewicht zieht still davon."
+    assert "financial services" in sectors_in(heavy)
+    assert _pool_assets_for_teaser(heavy) == []
+    assert _pool_assets_for_teaser("Ein finanzstarker Konzern gibt Milliarden zurück.") == []
+
+
+def test_named_finance_business_excludes_unrelated_financials():
+    insurers = _pool_assets_for_teaser(
+        "Ein Versicherer mit starker Schadenquote und neuem Allzeithoch."
+    )
+    insurer_tickers = {asset["ticker"] for asset in insurers}
+    assert "TRV" in insurer_tickers
+    assert "ZURN.SW" in insurer_tickers
+    assert "V" not in insurer_tickers
+
+    banks = _pool_assets_for_teaser("Eine Großbank meldet Rekordgewinn und hebt die Dividende an.")
+    bank_tickers = {asset["ticker"] for asset in banks}
+    assert "JPM" in bank_tickers
+    assert "DBK.XETRA" in bank_tickers
+    assert "TRV" not in bank_tickers
+    assert "NDAQ" not in bank_tickers
+
+    payments = _pool_assets_for_teaser(
+        "Der Finanztechnologie-Riese sitzt im Zahlungsverkehr und markiert ein Allzeithoch."
+    )
+    payment_tickers = {asset["ticker"] for asset in payments}
+    assert "V" in payment_tickers
+    assert "MA" in payment_tickers
+    assert "TRV" not in payment_tickers
+
+    exchanges = _pool_assets_for_teaser(
+        "Das Indexgeschäft der Börse wächst, und der Chart markiert ein Allzeithoch."
+    )
+    exchange_tickers = {asset["ticker"] for asset in exchanges}
+    assert "NDAQ" in exchange_tickers
+    assert "TRV" not in exchange_tickers
+    assert "V" not in exchange_tickers
+
+
 def test_chart_rank_prefers_golden_cross_match(monkeypatch):
     assets = [
         {"name": "Alpha Utility", "ticker": "AAA", "sector": "power infrastructure"},

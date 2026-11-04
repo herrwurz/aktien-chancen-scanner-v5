@@ -306,6 +306,11 @@ def _dedupe_by_ticker(assets: list[dict]) -> list[dict]:
             if merged.get(field) in (None, "", "information technology") and loser.get(field):
                 if field != "sector" or loser.get(field) != "information technology":
                     merged[field] = loser[field]
+        # Curated rows often use a shorter name ("Visa" vs "Visa Inc.") and carry
+        # structure tags but no GICS. Keep the pool classification on the winner.
+        for field in ("gics_sub", "sector_raw", "countries"):
+            if not merged.get(field) and loser.get(field):
+                merged[field] = loser[field]
         aliases = list(
             dict.fromkeys([*(existing.get("aliases") or []), *(asset.get("aliases") or [])])
         )
