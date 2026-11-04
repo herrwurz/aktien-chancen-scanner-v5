@@ -103,6 +103,10 @@ def test_market_universe_dedupes_same_ticker_across_indexes():
     db1 = next(a for a in market if a.get("ticker") == "DB1.XETRA")
     assert db1.get("structure") == "oligopoly"
     assert "dax" in db1["sources"]
+    # Curated "Visa" wins the ticker collapse; the pool row "Visa Inc." still supplies GICS.
+    visa = next(a for a in market if a.get("ticker") == "V")
+    assert visa.get("structure") == "duopoly"
+    assert visa.get("gics_sub") == "Transaction & Payment Processing Services"
 
 
 def test_market_rank_can_surface_deutsche_bank_without_sector_clue():

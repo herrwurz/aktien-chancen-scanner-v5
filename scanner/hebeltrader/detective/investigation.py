@@ -42,7 +42,7 @@ from .featured_calls import blocked_features, is_blocked
 from .index_pool import market_universe_list
 from .market_screen import match_score
 from .metric_fingerprint import apply_metric_fingerprints
-from .research_plan import build_queries
+from .research_plan import build_queries, finance_business_lines
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
@@ -810,6 +810,34 @@ _NON_ELECTRIC_UTILITY_GICS = re.compile(
 )
 _UTILITY_WORDING = re.compile(r"versorger|utilit|stromversorger", re.I)
 _POWER_WORDING = re.compile(r"strom\w*|energie\w*|power\s+grid|electric", re.I)
+# "financial services" is the whole pool. Chart ranking needs a named business line.
+_BROAD_FINANCE_SECTORS = frozenset({"financial services"})
+_INSURANCE_GICS = re.compile(r"insurance|reinsurance", re.I)
+_EXCHANGE_GICS = re.compile(r"exchange", re.I)
+_PAYMENT_GICS = re.compile(r"payment|consumer finance", re.I)
+_BANK_GICS = re.compile(r"bank|brokerage", re.I)
+
+
+def _asset_matches_finance_lines(asset: dict, lines: tuple[str, ...]) -> bool:
+    """Keep a financial name only for the business the teaser actually names."""
+    gics = asset.get("gics_sub") or ""
+    sector = asset.get("sector") or ""
+    if "insurance" in lines and (sector == "insurance" or _INSURANCE_GICS.search(gics)):
+        return True
+    if "exchanges" in lines and _EXCHANGE_GICS.search(gics):
+        return True
+    if "payments" in lines and _PAYMENT_GICS.search(gics):
+        return True
+    if "banks" in lines:
+        if sector == "insurance" or _INSURANCE_GICS.search(gics):
+            return False
+        if _EXCHANGE_GICS.search(gics) or _PAYMENT_GICS.search(gics):
+            return False
+        if _BANK_GICS.search(gics):
+            return True
+        # European banks often have no GICS row. Insurers in that set use sector insurance.
+        return sector == "financial services" and not gics
+    return False
 
 
 def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
@@ -817,10 +845,13 @@ def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
 
     When the teaser requires a US utility / Stromversorger, keep US-listed electric
     power-infra names and drop retail false-positives, water utilities, and
-    grid-equipment rows. Names only — chart ranking happens next.
+    grid-equipment rows. A vague finance word does not open the financials pool.
+    Names only — chart ranking happens next.
     """
     sectors = sectors_in(text)
-    if not sectors:
+    lines = finance_business_lines(text)
+    chart_sectors = [sector for sector in sectors if sector not in _BROAD_FINANCE_SECTORS]
+    if not chart_sectors and not lines:
         return []
     us_only = _teaser_requires_us_issuer(text)
     us_session_only = teaser_quotes_from_us_session(text)
@@ -830,11 +861,16 @@ def _pool_assets_for_teaser(text, *, blocked=None) -> list[dict]:
     if utility_claim or power_claim:
         if "power infrastructure" in sectors:
             sectors = ["power infrastructure"]
+            chart_sectors = ["power infrastructure"]
+            lines = ()
         else:
             return []
     assets = []
     for raw in market_universe_list():
-        if raw.get("sector") not in sectors:
+        if lines:
+            if not _asset_matches_finance_lines(raw, lines):
+                continue
+        elif raw.get("sector") not in chart_sectors:
             continue
         ticker = normalize_ticker(raw.get("ticker"))
         if not ticker:

@@ -34,8 +34,43 @@ SECTORS = (
         "retail",
     ),
     (r"kapitalbasis|kernkapital|\bcet\s*1\b|harte[rn]?\s+kernkapital", "banks"),
-    (r"bank\w*|finanz\w*", "financial services"),
+    # Issuer cues only. "Finanzrevolution" and "finanzstark" are not a sector,
+    # and "Datenbank" must not count as a bank.
+    (
+        r"finanz(?:schwergewicht|konzern|riese|haus|institut|dienstleister|branche|sektor|wert)\w*",
+        "financial services",
+    ),
+    (r"(?<!n)bank\w*", "financial services"),
 )
+
+# Business lines inside the broad financials pool. A vague "Finanz…" word is absent
+# on purpose: it must not chart-rank insurers, exchanges and payment networks together.
+_FINANCE_LINES = (
+    ("insurance", re.compile(r"versicherung\w*|versicherer|\binsurance\b", re.I)),
+    (
+        "exchanges",
+        re.compile(
+            r"indexgesch[äa]ft|handelsplatz|b[öo]rsenbetreiber|b[öo]rsenplatz|b[öo]rsenkonzern",
+            re.I,
+        ),
+    ),
+    (
+        "payments",
+        re.compile(r"finanztechnologie|fintech|zahlungs\w*|\bpayments?\b", re.I),
+    ),
+    (
+        "banks",
+        re.compile(r"(?<!n)bank\w*|kapitalbasis|kernkapital|\bcet\s*1\b", re.I),
+    ),
+)
+
+
+def finance_business_lines(text: str) -> tuple[str, ...]:
+    """Concrete finance businesses named by the teaser, in pattern order."""
+    clean = stock_text(text)
+    return tuple(label for label, pattern in _FINANCE_LINES if pattern.search(clean))
+
+
 DOMINANCE = (
     r"unverzichtbar|kaum\s+(?:noch\s+)?eine\s+wahl|keine\s+alternative|alternativlos|monopol\w*|"
     r"herrscher|marktbeherrsch\w*|dominier\w*|branchenführer|marktführer|schlüsselrolle|"
