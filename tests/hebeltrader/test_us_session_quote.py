@@ -68,10 +68,7 @@ def test_home_listing_falls_behind_us_line_without_naming_a_winner():
 def test_pool_drops_home_market_tickers_when_the_warrant_waits_for_the_us_open():
     from scanner.hebeltrader.detective.investigation import _pool_assets_for_teaser
 
-    text = (
-        "Der heimliche Herrscher über die globale Chipindustrie. "
-        + NOTICE
-    )
+    text = "Der heimliche Herrscher über die globale Chipindustrie. " + NOTICE
     tickers = {asset["ticker"] for asset in _pool_assets_for_teaser(text)}
     assert tickers
     assert "IFX.XETRA" not in tickers
