@@ -365,6 +365,12 @@ def test_cases_use_compact_single_case_selector():
     assert 'id="cases-pie"' in html
     assert 'id="cases-legend"' in html
     assert 'id="case-select"' in html
+    assert 'id="case-list"' in html
+    assert "renderCaseList" in html
+    assert "Fälle werden geladen …" in html
+    assert "Noch keine Fälle" not in html
+    assert "Alle aktiven Fälle anzeigen" in html
+    assert "const repairTask=fetch('/api/hebeltrader/cases/reconcile'" in html
     assert 'id="active-case"' in html
     assert 'class="field-grid"' in html
     assert 'id="case-view"' not in html
