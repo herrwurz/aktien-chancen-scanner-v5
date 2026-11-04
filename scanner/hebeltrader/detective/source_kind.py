@@ -9,6 +9,14 @@ from __future__ import annotations
 import re
 from urllib.parse import urlsplit
 
+# Pages that carry the current tape in the same language as a teaser.
+# They are news, never issuer primary.
+MARKET_NEWS_HOSTS = (
+    "finanznachrichten.de",
+    "wallstreet-online.de",
+    "marketwatch.com",
+)
+
 _AGGREGATOR_HOST = re.compile(
     r"(?:^|\.)(?:"
     r"seekingalpha|yahoo|finance\.yahoo|fool|reuters|bloomberg|marketwatch|"
@@ -42,6 +50,8 @@ def classify_live_source_kind(url: str) -> str | None:
     path = parts.path or ""
     if not host:
         return None
+    if any(host == domain or host.endswith("." + domain) for domain in MARKET_NEWS_HOSTS):
+        return "news"
     if host == "sec.gov" or host.endswith(".sec.gov"):
         return "regulatory"
     if _SEC_FILING_PATH.search(path) and ("sec" in host or "edgar" in host or "stocktitan" in host):

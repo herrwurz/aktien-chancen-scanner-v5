@@ -225,19 +225,23 @@ class ResearchApis:
             }
         return {"models": models}
 
-    def search(self, query, limit=6):
-        body = self._call(
-            "search",
-            {
-                "query": query[:399],
-                "search_depth": "basic",
-                "max_results": min(8, max(1, limit)),
-                "include_answer": False,
-                "include_raw_content": False,
-                "include_published_date": True,
-                "auto_parameters": False,
-            },
-        )
+    def search(self, query, limit=6, include_domains=None, start_date=None, end_date=None):
+        payload = {
+            "query": query[:399],
+            "search_depth": "basic",
+            "max_results": min(8, max(1, limit)),
+            "include_answer": False,
+            "include_raw_content": False,
+            "include_published_date": True,
+            "auto_parameters": False,
+        }
+        if include_domains:
+            payload["include_domains"] = [str(domain)[:200] for domain in include_domains][:8]
+        if start_date:
+            payload["start_date"] = str(start_date)[:10]
+        if end_date:
+            payload["end_date"] = str(end_date)[:10]
+        body = self._call("search", payload)
         rows = body.get("results")
         if not isinstance(rows, list):
             raise ValueError("Invalid search response results")
@@ -508,11 +512,17 @@ class ApiPublicResearch(PublicWebResearch):
         limits = {"discovery": 12, "peers": 6, "falsification": 3}
         return self.phase == "input" or self.phase_fetches[self.phase] < limits[self.phase]
 
-    def search(self, query, limit=10):
+    def search(self, query, limit=10, include_domains=None, start_date=None, end_date=None):
         if not self.allow_network or self.remaining <= 0:
             raise ValueError("network disabled or request budget exhausted")
         self.remaining -= 1
-        hits = self.apis.search(query, limit)
+        hits = self.apis.search(
+            query,
+            limit,
+            include_domains=include_domains,
+            start_date=start_date,
+            end_date=end_date,
+        )
         valid = []
         for hit in hits:
             try:

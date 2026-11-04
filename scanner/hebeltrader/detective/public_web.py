@@ -160,6 +160,24 @@ def parse_page(raw, url, *, retrieved_at=None, raw_file="", primary_domains=None
     return doc
 
 
+def _host_is(url: str, allowed: set[str]) -> bool:
+    host = (urlsplit(url).hostname or "").lower()
+    return any(host == domain or host.endswith("." + domain) for domain in allowed)
+
+
+def _hit_in_window(hit: dict, start_date, end_date) -> bool:
+    """Keep undated hits. Drop a hit only when its published date falls outside."""
+    raw = str(hit.get("published_at") or "")
+    if len(raw) < 10 or raw[4] != "-" or raw[7] != "-":
+        return True
+    day = raw[:10]
+    if start_date and day < str(start_date)[:10]:
+        return False
+    if end_date and day > str(end_date)[:10]:
+        return False
+    return True
+
+
 class PublicWebResearch:
     max_bytes = 2 * 1024 * 1024
     user_agent = "PublicResearchBot/1.0"
@@ -410,7 +428,7 @@ class PublicWebResearch:
         self._feed_cache[url] = hits
         return hits
 
-    def search(self, query, limit=10):
+    def search(self, query, limit=10, include_domains=None, start_date=None, end_date=None):
         if not isinstance(query, str) or not query.strip():
             return []
         hits = []
@@ -445,4 +463,10 @@ class PublicWebResearch:
         if error and not usable and not hits:
             raise error
         unique = {hit["url"]: hit for hit in hits}
-        return list(unique.values())[: max(0, min(int(limit), 50))]
+        rows = list(unique.values())
+        if include_domains:
+            allowed = {str(domain).lower() for domain in include_domains}
+            rows = [hit for hit in rows if _host_is(hit.get("url") or "", allowed)]
+        if start_date or end_date:
+            rows = [hit for hit in rows if _hit_in_window(hit, start_date, end_date)]
+        return rows[: max(0, min(int(limit), 50))]
