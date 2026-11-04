@@ -27,6 +27,12 @@ def candle(index=0, volume="10", quote_volume="100000", **overrides):
     return Candle(**(values | overrides))
 
 
+def test_detector_key_ignores_decimal_spelling():
+    plain = VolumeDetector(threshold=Decimal("3"), min_quote_volume=Decimal("100000"))
+    spelled = VolumeDetector(threshold=Decimal("3.0"), min_quote_volume=Decimal("100000.0"))
+    assert plain.config_key == spelled.config_key == "volume-v1:20:3:100000"
+
+
 def test_spike_uses_previous_volumes_only():
     result = VolumeDetector(lookback=3).evaluate([candle(i) for i in range(3)], candle(3, "30"))
     assert result.is_signal
