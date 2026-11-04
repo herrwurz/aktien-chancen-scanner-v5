@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     detective_live_max_candidates: int = Field(default=10, ge=1, le=50)
     detective_live_request_timeout_seconds: float = Field(default=10, ge=1, le=30)
     detective_live_max_duration_seconds: float = Field(default=120, ge=1, le=300)
+    # Teaser web research. Independent of the SEC live-source cap above.
+    detective_external_max_duration_seconds: float = Field(default=600, ge=60, le=900)
     detective_live_api_token: SecretStr | None = None
     detective_analysis_mode: Literal["hypothesis", "strict"] = "hypothesis"
     detective_llm_endpoint: str | None = None

@@ -86,7 +86,11 @@ class ResearchApis:
         extraction_model="gpt-4.1-mini-2025-04-14",
         reasoning_model="gpt-4.1-2025-04-14",
         client=None,
+        max_duration_seconds: float = 600,
     ):
+        if not 60 <= float(max_duration_seconds) <= 900:
+            raise ValueError("external research duration must be between 60 and 900 seconds")
+        self.max_duration_seconds = float(max_duration_seconds)
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.budget, self.approved = budget, approved
@@ -105,7 +109,7 @@ class ResearchApis:
         self.started = monotonic()
 
     def check_deadline(self):
-        if monotonic() - self.started >= 180:
+        if monotonic() - self.started >= self.max_duration_seconds:
             raise ValueError("External research duration limit reached")
 
     def _call(self, provider, payload, *, endpoint=None):
@@ -149,7 +153,7 @@ class ResearchApis:
                 url,
                 headers={"Authorization": "Bearer " + key},
                 json=payload,
-                timeout=max(1, min(30, 180 - (monotonic() - self.started))),
+                timeout=max(1, min(30, self.max_duration_seconds - (monotonic() - self.started))),
             )
             audit["http_status"] = response.status_code
             if response.status_code != 200:
@@ -502,14 +506,14 @@ class ApiPublicResearch(PublicWebResearch):
         super().__init__(*args, **kwargs)
         self.apis = apis
         self.phase = "input"
-        self.phase_fetches = {"discovery": 0, "peers": 0, "falsification": 0}
+        self.phase_fetches = {"discovery": 0, "peers": 0, "falsification": 0, "filings": 0}
         self.search_hits = {}
 
     def set_phase(self, phase):
         self.phase = phase
 
     def can_fetch_new_document(self):
-        limits = {"discovery": 12, "peers": 6, "falsification": 3}
+        limits = {"discovery": 12, "peers": 6, "falsification": 3, "filings": 6}
         return self.phase == "input" or self.phase_fetches[self.phase] < limits[self.phase]
 
     def search(self, query, limit=10, include_domains=None, start_date=None, end_date=None):
@@ -647,5 +651,6 @@ def build_public_research(settings, domains):
         ),
         extraction_model=settings.detective_extraction_model,
         reasoning_model=settings.detective_reasoning_model,
+        max_duration_seconds=settings.detective_external_max_duration_seconds,
     )
     return ApiPublicResearch(root / "sources", apis=api, **kwargs)

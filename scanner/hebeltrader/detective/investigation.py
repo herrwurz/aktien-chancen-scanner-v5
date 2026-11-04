@@ -40,10 +40,10 @@ from .defense_fingerprint import (
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
 from .featured_calls import blocked_features, is_blocked
 from .index_pool import market_universe_list
-from .market_pages import collect_market_pages, teaser_asks_market_pages
+from .market_pages import collect_issuer_filings, collect_market_pages, teaser_asks_market_pages
 from .market_screen import match_score
 from .metric_fingerprint import apply_metric_fingerprints
-from .research_plan import build_queries, finance_business_lines
+from .research_plan import _LATE_QUERY, build_queries, finance_business_lines, prioritize_queries
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
@@ -1020,6 +1020,32 @@ def _merge_pool_seed_rows(ranked, seeds, *, retrieved, text):
     return merged
 
 
+def _filing_targets(pool_seeds, shortlist, hypotheses, blocked):
+    """Chart-pool and sector shortlist first. AI name guesses fill only leftover slots."""
+    rows = []
+    seen = set()
+
+    def add(name, ticker=None):
+        label = str(name or "").strip()
+        if not label or label.casefold() in seen:
+            return
+        if is_blocked({"name": label, "ticker": ticker}, blocked):
+            return
+        seen.add(label.casefold())
+        rows.append({"name": label, "ticker": ticker})
+
+    for seed in pool_seeds or []:
+        asset = seed.get("asset") or {}
+        add(asset.get("name"), asset.get("ticker"))
+    for asset in shortlist or []:
+        add(asset.get("name"), asset.get("ticker"))
+    for name in hypotheses or []:
+        if len(rows) >= 6:
+            break
+        add(name, ticker_for(name) or _pool_ticker(name))
+    return rows[:6]
+
+
 def _pool_seed_queries(seeds, text, *, limit=8):
     """IR/SEC-first discovery queries for chart-ranked pool names (no issuer whitelist)."""
     entities = _entities(text)[:2]
@@ -1543,6 +1569,7 @@ class Investigator:
             "hosts": list(MARKET_NEWS_HOSTS),
             "names": [],
         }
+        issuer_filings = {"status": "not_requested", "names": [], "cap": 6}
         discovery_shortlist: list[dict] = []
         discovery_queries: list[str] = []
         # Exclude underlyings from still-open HEBELTRADER calls (market/structure already do this).
@@ -1640,9 +1667,11 @@ class Investigator:
             if not offline:
                 discovery_queries = shortlist_queries(text, discovery_shortlist, limit=8)
                 queries = list(dict.fromkeys(discovery_queries + queries))[:12]
+        queries = prioritize_queries(queries)
+        early_queries = [query for query in queries if not _LATE_QUERY.search(query)]
+        late_queries = [query for query in queries if _LATE_QUERY.search(query)]
 
         set_phase = getattr(self.web, "set_phase", lambda phase: None)
-        set_phase("discovery")
 
         def research(query):
             loaded = 0
@@ -1683,6 +1712,35 @@ class Investigator:
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"query": query, "error": str(exc)[:120]})
 
+        if not offline:
+            set_phase("filings")
+            try:
+                issuer_filings, filing_docs = collect_issuer_filings(
+                    self.web,
+                    _filing_targets(pool_seeds, discovery_shortlist, hypotheses, blocked),
+                    publication_at=request.publication_at or retrieved,
+                )
+            except (ValueError, httpx.HTTPError) as exc:
+                issuer_filings = {
+                    "status": "failed",
+                    "names": [],
+                    "cap": 6,
+                    "errors": [{"error": str(exc)[:120]}],
+                }
+                filing_docs = []
+                errors.append({"source": "issuer_filings", "error": str(exc)[:120]})
+            seen_docs = {(doc.get("url"), doc.get("company_name")) for doc in fetched}
+            for doc in filing_docs:
+                key = (doc.get("url"), doc.get("company_name"))
+                if key in seen_docs:
+                    continue
+                seen_docs.add(key)
+                fetched.append(doc)
+            errors.extend(issuer_filings.get("errors") or [])
+            set_phase("discovery")
+            for query in early_queries:
+                research(query)
+
         if not offline and teaser_asks_market_pages(text):
             try:
                 market_pages, market_docs = collect_market_pages(
@@ -1708,6 +1766,8 @@ class Investigator:
                 seen.add(key)
                 fetched.append(doc)
             for item in market_pages.get("names") or []:
+                if not item.get("terms_on_page"):
+                    continue
                 if is_blocked({"name": item.get("name"), "ticker": item.get("ticker")}, blocked):
                     continue
                 if item.get("name") and item["name"] not in hypotheses:
@@ -1715,7 +1775,7 @@ class Investigator:
             errors.extend(market_pages.get("errors") or [])
 
         if not offline:
-            for query in queries:
+            for query in late_queries:
                 research(query)
 
         cutoff = request.publication_at or retrieved
@@ -2061,7 +2121,13 @@ class Investigator:
             "status": "not_available_offline" if offline else "not_performed_no_candidates",
             "changes_deterministic_ranking": False,
         }
-        if not offline and apis is not None and apis.ai_key and ranked:
+        leader_specific = len(ranked[0].get("confirmed_specific_clues") or []) if ranked else 0
+        if not offline and apis is not None and apis.ai_key and ranked and not leader_specific:
+            reasoning_review = {
+                "status": "skipped_no_specific_clues",
+                "changes_deterministic_ranking": False,
+            }
+        elif not offline and apis is not None and apis.ai_key and ranked:
             try:
                 reasoning_review = apis.review_candidates(ranked[:3])
             except (ValueError, httpx.HTTPError) as exc:
@@ -2217,6 +2283,7 @@ class Investigator:
             "ranking_status": "ambiguous_tie" if top_tie else "ranked",
             "criteria": [clue.model_dump(mode="json") for clue in clues],
             "market_pages": market_pages,
+            "issuer_filings": issuer_filings,
             "discovery": {
                 "method": "sector_shortlist_then_clue_matrix",
                 "layer_points": 0,

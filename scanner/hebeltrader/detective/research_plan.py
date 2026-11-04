@@ -203,3 +203,34 @@ def build_queries(text, named, fallback):
     if clean and len(queries) < 2:
         queries.append(clean[:250] + " company investor relations")
     return queries[:10]
+
+
+_LATE_QUERY = re.compile(
+    r"200[- ]?day|moving average|competitors peer|denied cancelled|peer group",
+    re.I,
+)
+_PRIMARY_QUERY = re.compile(
+    r"investor relations|8-K|10-Q|6-K|annual report|earnings|oilfield|"
+    r"data center|recurring revenue|backlog|guidance|aftermarket",
+    re.I,
+)
+
+
+def prioritize_queries(queries):
+    """Sector and filing queries before chart and peer queries.
+
+    Relative order inside each bucket stays as built. A 200-day line or a
+    peer-group search no longer consumes the clock ahead of the teaser's sector.
+    """
+    primary, middle, late = [], [], []
+    for query in queries or []:
+        text = str(query or "").strip()
+        if not text:
+            continue
+        if _LATE_QUERY.search(text):
+            late.append(text)
+        elif _PRIMARY_QUERY.search(text):
+            primary.append(text)
+        else:
+            middle.append(text)
+    return list(dict.fromkeys([*primary, *middle, *late]))
