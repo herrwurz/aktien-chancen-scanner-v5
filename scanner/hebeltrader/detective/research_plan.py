@@ -30,6 +30,7 @@ SECTORS = (
         r"supermärkte?\b|warenhaus\w*|großhandel\w*|discounter\w*",
         "retail",
     ),
+    (r"kapitalbasis|kernkapital|\bcet\s*1\b|harte[rn]?\s+kernkapital", "banks"),
     (r"bank\w*|finanz\w*", "financial services"),
 )
 DOMINANCE = (
@@ -46,6 +47,14 @@ def build_queries(text, named, fallback):
         if re.search(pattern, clean, re.I):
             sector = label
             break
+    queries = []
+    # HT-202: capital-base language is a bank story even when the word „Bank“ is absent.
+    if sector == "banks":
+        queries += [
+            "bank CET1 ratio record profit dividend buyback resumption investor relations",
+            "bank common equity tier 1 strengthened consecutive record earnings",
+            "bank capital base distributions resumed earnings release",
+        ]
     contexts = []
     for pattern, english in (
         (r"rechenzentr\w*|data\s*cent(?:er|re)", "AI data centers"),
@@ -56,7 +65,6 @@ def build_queries(text, named, fallback):
     ):
         if re.search(pattern, clean, re.I):
             contexts.append(english)
-    queries = []
     if re.search(r"zukäuf\w*|übernah\w*|acqui\w*|merger", clean, re.I):
         event = (
             "acquisition rumor"

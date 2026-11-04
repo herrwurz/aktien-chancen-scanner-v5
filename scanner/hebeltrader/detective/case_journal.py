@@ -57,6 +57,25 @@ def input_keys(payload):
     return content, source
 
 
+def _error_briefing(state):
+    """Detailed German error text for the case card. Does not rewrite the journal."""
+    report = state.get("first_prediction") or state.get("latest_prediction")
+    if not report:
+        return ""
+    from .resolution import draft_error_analysis
+
+    resolution = state.get("resolution") or {}
+    briefing = draft_error_analysis(
+        report,
+        resolved_name=resolution.get("name"),
+        resolved_asset_id=resolution.get("asset_id"),
+    )
+    stored = str(resolution.get("error_analysis") or "").strip()
+    if stored and len(stored) > len(briefing):
+        return stored
+    return briefing
+
+
 class CaseJournal:
     def __init__(self, root, *, clock=None):
         self.root = Path(root)
@@ -260,6 +279,7 @@ class CaseJournal:
                     "recorded_at": state["solution_pdf"].get("recorded_at"),
                     "inferred": True,
                 }
+        state["error_briefing"] = _error_briefing(state)
         return state
 
     def cases(self, include_archived=False, *, listing="official"):

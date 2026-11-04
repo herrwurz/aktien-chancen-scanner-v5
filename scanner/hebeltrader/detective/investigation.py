@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 from scanner.hebeltrader.eodhd import canonical, exclusive, sha
 from scanner.research import AssetIdentity, EvidenceRecord
 
+from .bank_fingerprint import apply_bank_capital_fingerprints
 from .chart_check import check as chart_check
 from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clues
 from .clue_aliases import term_pattern
@@ -86,10 +87,11 @@ def _documents_by_asset(fetched):
 
 def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
     docs = _documents_by_asset(fetched)
-    metric = apply_metric_fingerprints(ranked, docs)
+    metric = apply_metric_fingerprints(ranked, docs, teaser_text=teaser_text)
     utility = apply_utility_fingerprints(ranked, docs, teaser_text=teaser_text)
     defense = apply_defense_fingerprints(ranked, docs, teaser_text=teaser_text)
-    return {"metric": metric, "utility": utility, "defense": defense}
+    bank = apply_bank_capital_fingerprints(ranked, teaser_text=teaser_text)
+    return {"metric": metric, "utility": utility, "defense": defense, "bank": bank}
 
 
 def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_recall=False):

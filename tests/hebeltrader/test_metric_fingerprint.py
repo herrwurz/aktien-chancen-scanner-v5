@@ -60,11 +60,39 @@ def test_fingerprint_ranks_nasdaq_above_exchange_peers():
         "lseg": [{"text": LSEG_TEXT, "title": "LSEG update"}],
         "db1": [{"text": DB1_TEXT, "title": "DB1 results"}],
     }
-    summary = apply_metric_fingerprints(ranked, docs)
+    summary = apply_metric_fingerprints(
+        ranked,
+        docs,
+        teaser_text=(
+            "Index business exploded. Annualized recurring revenue reached a record "
+            "and the adjusted operating margin stayed high."
+        ),
+    )
     assert summary["status"] == "applied"
     assert ranked[0]["asset_id"] == "ndaq"
     assert ranked[0]["metric_fingerprint"]["components"] == 3
     assert ranked[0]["evidence_score"] > ranked[1]["evidence_score"]
+
+
+def test_arr_bonus_is_not_applied_when_teaser_does_not_claim_it():
+    ranked = [{"asset_id": "sie", "evidence_score": 10, "hard_contradictions": []}]
+    docs = {
+        "sie": [
+            {
+                "text": (
+                    "Annualized recurring revenue reached $11 billion. Markets grew 50 percent."
+                ),
+                "title": "Siemens filing excerpt",
+            }
+        ]
+    }
+    summary = apply_metric_fingerprints(
+        ranked, docs, teaser_text="Die Kapitalbasis ist so stark wie lange nicht."
+    )
+    assert summary["status"] == "recorded_not_applied"
+    assert ranked[0]["evidence_score"] == 10
+    assert ranked[0]["metric_fingerprint"]["bonus"] > 0
+    assert ranked[0]["metric_fingerprint"]["bonus_applied"] == 0
 
 
 def test_clue_specificity_boosts_arr_and_margin_language():

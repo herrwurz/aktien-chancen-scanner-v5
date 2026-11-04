@@ -56,6 +56,16 @@ _SEGMENT_GROWTH_FLIP = re.compile(
     r"financial technology|fintech)",
     re.I,
 )
+# HT-202: ARR / margin / index-growth bonuses only count when the teaser asks for them.
+# A stray "ARR $11bn" or "markets 50%" in an industrial filing must not crown that issuer
+# over a capital-base story.
+_TEASER_CLAIMS_METRICS = re.compile(
+    r"\bARR\b|annualized recurring revenue|"
+    r"j[äa]hrlich(?:e|en)? wiederkehrend|"
+    r"operative[rn]?\s+marge|operating\s+margin|"
+    r"indexgeschäft|index\s+business",
+    re.I,
+)
 
 
 def _num(value: str) -> float:
@@ -165,19 +175,35 @@ def fingerprint_from_documents(documents: list[dict]) -> MetricFingerprint:
     return MetricFingerprint(arr_billions=arr, operating_margin_pct=margin, segment_growth=segment)
 
 
+def teaser_claims_metric_fingerprint(text: str) -> bool:
+    """True when the teaser itself asks for ARR, operating margin, or index-business growth."""
+    return bool(_TEASER_CLAIMS_METRICS.search(text or ""))
+
+
 def apply_metric_fingerprints(
-    ranked: list[dict], documents_by_asset: dict[str, list[dict]]
+    ranked: list[dict],
+    documents_by_asset: dict[str, list[dict]],
+    *,
+    teaser_text: str = "",
 ) -> dict:
-    """Add fingerprint bonuses; full three-metric combos outrank generic peers."""
+    """Add fingerprint bonuses only when the teaser claims those metrics.
+
+    Full three-metric combos still outrank generic peers (HT-199). A filing that
+    merely mentions ARR must not move the ranking when the teaser never asked for it.
+    """
     summary = {"status": "applied", "scored": []}
     if not ranked:
         summary["status"] = "skipped_empty"
         return summary
+    claimed = teaser_claims_metric_fingerprint(teaser_text)
+    if not claimed:
+        summary["status"] = "recorded_not_applied"
     for row in ranked:
         docs = documents_by_asset.get(row.get("asset_id")) or row.get("sources") or []
         # sources may be evidence records; prefer explicit docs map.
         fingerprint = fingerprint_from_documents(docs if isinstance(docs, list) else [])
         bonus = fingerprint_rarity_score(fingerprint)
+        applied = bonus if claimed and not row.get("hard_contradictions") else 0
         row["metric_fingerprint"] = {
             "arr_billions": fingerprint.arr_billions,
             "operating_margin_pct": fingerprint.operating_margin_pct,
@@ -188,13 +214,15 @@ def apply_metric_fingerprints(
             ),
             "components": fingerprint.components,
             "bonus": bonus,
+            "bonus_applied": applied,
         }
-        if bonus and not row.get("hard_contradictions"):
-            row["evidence_score"] = int(row.get("evidence_score") or 0) + bonus
+        if applied:
+            row["evidence_score"] = int(row.get("evidence_score") or 0) + applied
         summary["scored"].append(
             {
                 "asset_id": row.get("asset_id"),
                 "bonus": bonus,
+                "bonus_applied": applied,
                 "components": fingerprint.components,
             }
         )
