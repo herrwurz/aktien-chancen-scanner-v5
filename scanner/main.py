@@ -10,7 +10,7 @@ from typing import Annotated, Literal
 
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -202,6 +202,39 @@ def create_app(settings: Settings | None = None, engine=None):
                 )
                 for r in records
             ]
+
+    def free_scan_path() -> Path:
+        return settings.detective_public_root / "free-scan.json"
+
+    def read_free_scan() -> dict | None:
+        path = free_scan_path()
+        if not path.is_file():
+            return None
+        try:
+            report = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return None
+        return report if isinstance(report, dict) else None
+
+    @app.get("/free-scan")
+    def free_scan_page(request: Request):
+        return templates.TemplateResponse(
+            request=request,
+            name="free_scan.html",
+            context={"report": read_free_scan()},
+        )
+
+    @app.post("/free-scan")
+    def free_scan_refresh():
+        from scanner.free_scan.scan import USER_AGENT, run_free_scan
+
+        headers = {"User-Agent": USER_AGENT}
+        with httpx.Client(timeout=20, follow_redirects=True, headers=headers) as client:
+            report = run_free_scan(client)
+        path = free_scan_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return RedirectResponse("/free-scan", status_code=303)
 
     @app.get("/market-scanner")
     def dashboard(request: Request):
