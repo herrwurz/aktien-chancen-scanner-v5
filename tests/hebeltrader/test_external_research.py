@@ -54,6 +54,8 @@ def test_search_archives_bounded_source_snippet_and_never_uses_generated_answer(
         assert payload["search_depth"] == "basic"
         assert payload["include_answer"] is False
         assert payload["include_raw_content"] is False
+        assert "include_domains" not in payload
+        assert "start_date" not in payload
         return httpx.Response(
             200,
             json={
@@ -86,6 +88,35 @@ def test_search_archives_bounded_source_snippet_and_never_uses_generated_answer(
         }
     ]
     assert "private-search" not in "".join(p.read_text() for p in tmp_path.glob("api-*.json"))
+
+
+def test_search_can_restrict_domains_and_publication_window(tmp_path):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+    from scanner.hebeltrader.detective.external_research import ResearchApis
+
+    def handler(request):
+        payload = json.loads(request.content)
+        assert payload["include_domains"] == ["finanznachrichten.de", "wallstreet-online.de"]
+        assert payload["start_date"] == "2026-10-06"
+        assert payload["end_date"] == "2026-10-27"
+        return httpx.Response(200, json={"results": []})
+
+    api = ResearchApis(
+        root=tmp_path,
+        budget=ApiBudget(tmp_path / "budget.db"),
+        approved=True,
+        search_key="private-search",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+    assert (
+        api.search(
+            "Auftragsbestand Gewinn",
+            include_domains=("finanznachrichten.de", "wallstreet-online.de"),
+            start_date="2026-10-06",
+            end_date="2026-10-27",
+        )
+        == []
+    )
 
 
 def test_tavily_extract_returns_bounded_content(tmp_path):

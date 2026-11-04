@@ -37,6 +37,10 @@ def test_aggregators_are_not_upgraded_to_issuer():
         is None
     )
     assert classify_live_source_kind("https://finance.yahoo.com/quote/AEP") is None
+    assert classify_live_source_kind("https://www.marketwatch.com/story/rtx") == "news"
+    assert classify_live_source_kind("https://www.finanznachrichten.de/nachricht") == "news"
+    assert classify_live_source_kind("https://www.wallstreet-online.de/nachricht/1") == "news"
+    assert document_is_primary({"url": "https://www.marketwatch.com/story/rtx"}) is False
 
 
 def test_effective_kind_upgrades_tavily_tags_from_url():

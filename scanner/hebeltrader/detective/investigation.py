@@ -40,12 +40,14 @@ from .defense_fingerprint import (
 from .earnings_pit import apply_earnings_pit, teaser_claims_reported_results
 from .featured_calls import blocked_features, is_blocked
 from .index_pool import market_universe_list
+from .market_pages import collect_market_pages, teaser_asks_market_pages
 from .market_screen import match_score
 from .metric_fingerprint import apply_metric_fingerprints
 from .research_plan import build_queries, finance_business_lines
 from .retrieval import RetrievalCandidate, RetrievalReport
 from .schemas import AtomicClue, DetectiveRequest
 from .service import DetectiveService
+from .source_kind import MARKET_NEWS_HOSTS
 from .sources import UnavailableResearchSource
 from .structure_screen import (
     screen_queries,
@@ -1536,6 +1538,11 @@ class Investigator:
         offline = documents is not None or self.web is None
         semantic_clues = []
         hypotheses = []
+        market_pages = {
+            "status": "not_requested",
+            "hosts": list(MARKET_NEWS_HOSTS),
+            "names": [],
+        }
         discovery_shortlist: list[dict] = []
         discovery_queries: list[str] = []
         # Exclude underlyings from still-open HEBELTRADER calls (market/structure already do this).
@@ -1675,6 +1682,37 @@ class Investigator:
                         errors.append({"url": hit["url"], "error": str(exc)[:120]})
             except (ValueError, httpx.HTTPError) as exc:
                 errors.append({"query": query, "error": str(exc)[:120]})
+
+        if not offline and teaser_asks_market_pages(text):
+            try:
+                market_pages, market_docs = collect_market_pages(
+                    self.web,
+                    text=text,
+                    publication_at=request.publication_at or retrieved,
+                    universe=market_universe_list(),
+                )
+            except (ValueError, httpx.HTTPError) as exc:
+                market_pages = {
+                    "status": "failed",
+                    "hosts": list(MARKET_NEWS_HOSTS),
+                    "names": [],
+                    "errors": [{"error": str(exc)[:120]}],
+                }
+                market_docs = []
+                errors.append({"source": "market_pages", "error": str(exc)[:120]})
+            seen = {(doc.get("url"), doc.get("company_name")) for doc in fetched}
+            for doc in market_docs:
+                key = (doc.get("url"), doc.get("company_name"))
+                if key in seen:
+                    continue
+                seen.add(key)
+                fetched.append(doc)
+            for item in market_pages.get("names") or []:
+                if is_blocked({"name": item.get("name"), "ticker": item.get("ticker")}, blocked):
+                    continue
+                if item.get("name") and item["name"] not in hypotheses:
+                    hypotheses.append(item["name"])
+            errors.extend(market_pages.get("errors") or [])
 
         if not offline:
             for query in queries:
@@ -2078,6 +2116,8 @@ class Investigator:
             limits.append("new_top3_candidate_needs_falsification")
         if request.publication_at and request.publication_at > retrieved:
             limits.append("future_teaser_publication")
+        if market_pages.get("status") == "cluster":
+            limits.append("market_page_name_cluster")
         margin_ok = bool(
             ranked
             and (len(ranked) < 2 or ranked[0]["evidence_score"] - ranked[1]["evidence_score"] >= 35)
@@ -2176,6 +2216,7 @@ class Investigator:
             "ranking_tie": top_tie,
             "ranking_status": "ambiguous_tie" if top_tie else "ranked",
             "criteria": [clue.model_dump(mode="json") for clue in clues],
+            "market_pages": market_pages,
             "discovery": {
                 "method": "sector_shortlist_then_clue_matrix",
                 "layer_points": 0,
