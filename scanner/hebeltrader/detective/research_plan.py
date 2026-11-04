@@ -2,6 +2,8 @@
 
 import re
 
+from .chip_bottleneck import HIDDEN_CHIP_QUERIES, teaser_wants_hidden_chip_bottleneck
+
 
 def stock_text(text):
     # Product identifiers/advertised returns cannot seed an underlying-stock lookup.
@@ -48,6 +50,8 @@ def build_queries(text, named, fallback):
             sector = label
             break
     queries = []
+    if teaser_wants_hidden_chip_bottleneck(clean):
+        queries.extend(HIDDEN_CHIP_QUERIES[:2])
     # HT-202: capital-base language is a bank story even when the word „Bank“ is absent.
     if sector == "banks":
         queries += [

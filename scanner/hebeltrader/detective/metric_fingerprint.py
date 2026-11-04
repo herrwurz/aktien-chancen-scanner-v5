@@ -113,7 +113,11 @@ def extract_metric_fingerprint(text: str) -> MetricFingerprint:
 
     margin = None
     for match in list(_OP_MARGIN.finditer(text or "")) + list(_OP_MARGIN_FLIP.finditer(text or "")):
-        margin = _num(match.group("value"))
+        parsed = _num(match.group("value"))
+        # A figure above 100% is not an operating margin; it is usually a misread growth cell.
+        if parsed > 100:
+            continue
+        margin = parsed
         break
 
     segment = None

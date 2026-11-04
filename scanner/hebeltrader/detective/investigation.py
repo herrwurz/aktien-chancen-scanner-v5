@@ -18,6 +18,11 @@ from scanner.research import AssetIdentity, EvidenceRecord
 from .bank_fingerprint import apply_bank_capital_fingerprints
 from .chart_check import check as chart_check
 from .chart_signals import normalize_ticker, signals_in_quote, teaser_chart_clues
+from .chip_bottleneck import (
+    HIDDEN_CHIP_QUERIES,
+    apply_hidden_chip_bottleneck,
+    teaser_wants_hidden_chip_bottleneck,
+)
 from .clue_aliases import term_pattern
 from .clue_enrichment import HeuristicClueEnricher
 from .clues import extract_atomic_clues
@@ -91,7 +96,8 @@ def _apply_metric_fingerprints(ranked, fetched, *, teaser_text: str = ""):
     utility = apply_utility_fingerprints(ranked, docs, teaser_text=teaser_text)
     defense = apply_defense_fingerprints(ranked, docs, teaser_text=teaser_text)
     bank = apply_bank_capital_fingerprints(ranked, teaser_text=teaser_text)
-    return {"metric": metric, "utility": utility, "defense": defense, "bank": bank}
+    chip = apply_hidden_chip_bottleneck(ranked, teaser_text=teaser_text)
+    return {"metric": metric, "utility": utility, "defense": defense, "bank": bank, "chip": chip}
 
 
 def _apply_post_chart_evidence(ranked, fetched, clues, text, *, live_publisher_recall=False):
@@ -1545,6 +1551,10 @@ class Investigator:
             ]
             if seed_queries:
                 queries = _interleave(seed_queries, queries, queries, cap=14)
+        if teaser_wants_hidden_chip_bottleneck(text):
+            # Keep the non-obvious EDA/IP layer in the request budget. Named
+            # equipment and foundry seeds otherwise fill every slot.
+            queries = _interleave(list(HIDDEN_CHIP_QUERIES), queries, queries, cap=14)
 
         set_phase = getattr(self.web, "set_phase", lambda phase: None)
         set_phase("discovery")
