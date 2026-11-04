@@ -1651,6 +1651,7 @@ class Investigator:
             try:
                 market_pages, market_docs = collect_market_pages(
                     self.web,
+                    text=text,
                     publication_at=request.publication_at or retrieved,
                     universe=market_universe_list(),
                 )

@@ -1,8 +1,9 @@
 """Search a fixed set of market pages and keep names that co-occur.
 
-The teaser only decides whether those pages are opened. Company names come from
-the pages, and only when the same name is on at least two of the news hosts
-inside the publication window. SEC or IR text then checks backlog and profit.
+Any two market terms in the teaser open the same hosts. The search text is the
+terms that were found, not one fixed pair. Company names come from the pages,
+and only when the same name is on at least two hosts inside the publication
+window. SEC or IR text is then read against those same terms.
 """
 
 from __future__ import annotations
@@ -10,21 +11,170 @@ from __future__ import annotations
 import inspect
 import re
 from datetime import datetime, timedelta
+from typing import NamedTuple
 from urllib.parse import urlsplit
 
 import httpx
 
+from .research_plan import stock_text
 from .source_kind import MARKET_NEWS_HOSTS, classify_live_source_kind
 
-_ORDER_BOOK = re.compile(r"auftragsb[uü]ch\w*|auftragsbestand|order\s+backlog|\bbacklog\b", re.I)
-_PROFIT_GROWTH = re.compile(
-    r"gewinne?\s+wach\w*|gewinn(?:e)?\s+steig\w*|gewinnsteiger\w*|earnings\s+growth",
-    re.I,
+
+class _Term(NamedTuple):
+    term_id: str
+    teaser: re.Pattern
+    search_de: str
+    search_en: str
+    page: re.Pattern
+
+
+def _term(term_id: str, teaser: str, search_de: str, search_en: str, page: str) -> _Term:
+    return _Term(term_id, re.compile(teaser, re.I), search_de, search_en, re.compile(page, re.I))
+
+
+# Global catalog. Two different hits are enough; the pair is not fixed.
+_TERMS = (
+    _term(
+        "order_book",
+        r"auftragsb[uü]ch\w*|auftragsbestand|order\s+backlog|\bbacklog\b",
+        "Auftragsbestand",
+        "order backlog",
+        r"backlog|auftragsbestand|order\s+book",
+    ),
+    _term(
+        "order_intake",
+        r"auftragseingang|großauftrag|bookings",
+        "Auftragseingang",
+        "orders bookings",
+        r"orders?\s+received|bookings|auftragseingang",
+    ),
+    _term(
+        "profit_growth",
+        r"gewinne?\s+wach\w*|gewinn(?:e)?\s+steig\w*|gewinnsteiger\w*|gewinnsprung|"
+        r"earnings\s+growth",
+        "Gewinnwachstum",
+        "earnings growth",
+        r"(?:profit|net income|earnings per share|\beps\b).{0,48}"
+        r"(?:increased|increase|up\b|grew|growth|higher|rose)|"
+        r"(?:increased|higher|growth).{0,32}(?:profit|earnings|net income)",
+    ),
+    _term(
+        "revenue_growth",
+        r"umsatz\w*\s+(?:wach\w*|steig\w*|plus)|erlöse\s+steig\w*|revenue\s+growth",
+        "Umsatzwachstum",
+        "revenue growth",
+        r"revenue.{0,40}(?:increased|growth|up\b|grew|higher)",
+    ),
+    _term(
+        "guidance_raise",
+        r"prognose\w*\s+angehoben|prognoseanhebung|jahresziel\w*\s+angehoben|"
+        r"guidance\s+raise",
+        "Prognose angehoben",
+        "raised guidance",
+        r"raised\s+(?:guidance|outlook)|prognose\s+angehoben",
+    ),
+    _term(
+        "correction",
+        r"korrektur|rücksetzer|konsolidierung",
+        "Korrektur",
+        "share pullback",
+        r"pullback|correction|sell-?off|korrektur",
+    ),
+    _term(
+        "trend_reversal",
+        r"trendwende|trendwechsel",
+        "Trendwende",
+        "trend reversal",
+        r"trend\s+reversal|turnaround|trendwende",
+    ),
+    _term(
+        "uptrend",
+        r"aufwärtstrend|aufwärtswelle",
+        "Aufwärtstrend",
+        "uptrend",
+        r"uptrend|rally|aufwärtstrend",
+    ),
+    _term("wall_street", r"wall\s*street", "Wall Street", "Wall Street", r"wall\s*street"),
+    _term(
+        "sleeping_giant",
+        r"schlafend\w*\s+riese\w*",
+        "schlafender Riese",
+        "sleeping giant",
+        r"sleeping\s+giant|schlafend\w*\s+riese",
+    ),
+    _term(
+        "billion_scale",
+        r"milliardenschwer\w*",
+        "Milliardenkonzern",
+        "billion revenue",
+        r"billion|milliarden",
+    ),
+    _term("dividend", r"dividende\w*", "Dividende", "dividend", r"dividend|dividende"),
+    _term(
+        "buyback",
+        r"aktienrückkauf\w*|share\s+buyback",
+        "Aktienrückkauf",
+        "share buyback",
+        r"buyback|repurchase|aktienrückkauf",
+    ),
+    _term(
+        "acquisition",
+        r"übernahme\w*|akquisition\w*|\bacquisition\b",
+        "Übernahme",
+        "acquisition",
+        r"acquisition|acquire|übernahme",
+    ),
+    _term(
+        "record_result",
+        r"rekordgewinn|rekordumsatz|rekordauftrag\w*|rekordergebnis",
+        "Rekordergebnis",
+        "record results",
+        r"record\s+(?:revenue|profit|earnings|backlog|orders)|rekord",
+    ),
+    _term(
+        "margin",
+        r"gewinnmarge|umsatzmarge|marge\b|profit\s+margin",
+        "Marge",
+        "profit margin",
+        r"margin|marge",
+    ),
+    _term(
+        "data_center",
+        r"rechenzentr\w*|data\s*cent(?:er|re)",
+        "Rechenzentrum",
+        "data center",
+        r"data\s*cent(?:er|re)|rechenzentr",
+    ),
+    _term(
+        "defense",
+        r"rüstung\w*|verteidigung\w*|defen[sc]e",
+        "Rüstung",
+        "defense",
+        r"defense|missile|rüstung",
+    ),
+    _term(
+        "partnership",
+        r"partnerschaft\w*|kooperation\w*|partnership",
+        "Partnerschaft",
+        "partnership",
+        r"partnership|partnerschaft",
+    ),
+    _term(
+        "approval",
+        r"zulassung\w*|regulatory\s+approval",
+        "Zulassung",
+        "regulatory approval",
+        r"approval|cleared|zulassung",
+    ),
+    _term(
+        "new_high",
+        r"allzeithoch|rekordhoch|jahreshoch",
+        "Allzeithoch",
+        "record high",
+        r"all[- ]time\s+high|record\s+high|allzeithoch",
+    ),
 )
-_NEWS_QUERIES = (
-    "Auftragsbestand Gewinn Quartal",
-    "order backlog earnings",
-)
+_MIN_TERMS = 2
 _LEGAL_SUFFIX = re.compile(
     r"\b(?:corporation|incorporated|corp|inc|plc|ag|se|sa|nv|ltd|company|holdings?)\b\.?",
     re.I,
@@ -46,10 +196,33 @@ _NEWS_FETCH_CAP = 6
 _PRIMARY_CAP = 4
 
 
+def teaser_market_terms(text: str) -> tuple[str, ...]:
+    """Every catalog term the teaser states, in catalog order."""
+    clean = stock_text(text or "")
+    return tuple(term.term_id for term in _TERMS if term.teaser.search(clean))
+
+
 def teaser_asks_market_pages(text: str) -> bool:
-    """True when the teaser states an order book and growing profits together."""
-    blob = text or ""
-    return bool(_ORDER_BOOK.search(blob) and _PROFIT_GROWTH.search(blob))
+    """True when at least two different market terms are present."""
+    return len(teaser_market_terms(text)) >= _MIN_TERMS
+
+
+def news_queries(term_ids: tuple[str, ...]) -> tuple[str, str]:
+    """One German and one English query built from the terms that were found."""
+    by_id = {term.term_id: term for term in _TERMS}
+    chosen = [by_id[term_id] for term_id in term_ids if term_id in by_id]
+    german = " ".join(dict.fromkeys(term.search_de for term in chosen))
+    english = " ".join(dict.fromkeys(term.search_en for term in chosen))
+    return german[:350], english[:350]
+
+
+def terms_on_page(text: str, term_ids: tuple[str, ...]) -> tuple[str, ...]:
+    """Catalog terms whose page pattern appears in the lead of a primary document."""
+    lead = (text or "")[:2500]
+    by_id = {term.term_id: term for term in _TERMS}
+    return tuple(
+        term_id for term_id in term_ids if term_id in by_id and by_id[term_id].page.search(lead)
+    )
 
 
 def publication_window(end: datetime) -> tuple[str, str]:
@@ -211,14 +384,15 @@ def _stamp(documents: list[dict], names: list[dict], index: dict) -> list[dict]:
 
 
 def collect_market_pages(
-    web, *, publication_at: datetime, universe: list[dict]
+    web, *, text: str, publication_at: datetime, universe: list[dict]
 ) -> tuple[dict, list]:
     """Open the fixed news hosts, then one SEC or IR page per co-occurring name."""
+    terms = teaser_market_terms(text)
     start, end = publication_window(publication_at)
     index = _label_index(universe)
     errors: list[dict] = []
     news_hits: list[dict] = []
-    for query in _NEWS_QUERIES:
+    for query in news_queries(terms):
         try:
             found = _call_search(
                 web,
@@ -277,14 +451,22 @@ def collect_market_pages(
             row["sec_url"] = primary.get("url")
             row["backlog"] = backlog
             row["profit"] = profit
+            row["terms_on_page"] = list(
+                terms_on_page(
+                    "\n".join(str(primary.get(field) or "") for field in ("title", "text")),
+                    terms,
+                )
+            )
         else:
             row["sec_url"] = None
             row["backlog"] = None
             row["profit"] = None
+            row["terms_on_page"] = []
     for row in clustered[_PRIMARY_CAP:]:
         row["sec_url"] = None
         row["backlog"] = None
         row["profit"] = None
+        row["terms_on_page"] = []
     names = [
         {
             "name": row["name"],
@@ -294,6 +476,7 @@ def collect_market_pages(
             "sec_url": row.get("sec_url"),
             "backlog": row.get("backlog"),
             "profit": row.get("profit"),
+            "terms_on_page": row.get("terms_on_page") or [],
         }
         for row in clustered
     ]
@@ -306,6 +489,7 @@ def collect_market_pages(
     report = {
         "status": status,
         "hosts": list(MARKET_NEWS_HOSTS),
+        "terms": list(terms),
         "window": {"start": start, "end": end},
         "names": names,
         "primary_checks_capped": len(clustered) > _PRIMARY_CAP,

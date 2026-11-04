@@ -4,8 +4,10 @@ from datetime import UTC, datetime
 
 from scanner.hebeltrader.detective.investigation import InvestigationRequest, Investigator
 from scanner.hebeltrader.detective.market_pages import (
+    news_queries,
     read_backlog_and_profit,
     teaser_asks_market_pages,
+    teaser_market_terms,
 )
 from scanner.hebeltrader.detective.source_kind import MARKET_NEWS_HOSTS
 
@@ -24,8 +26,16 @@ SEC_RTX = "https://www.sec.gov/Archives/edgar/data/1/rtx.htm"
 SEC_NOC = "https://www.sec.gov/Archives/edgar/data/2/noc.htm"
 
 
-def test_order_book_and_profit_growth_open_market_pages():
+def test_any_two_market_terms_open_the_same_pages():
+    found = set(teaser_market_terms(TEASER))
+    assert {"order_book", "profit_growth", "correction", "wall_street", "uptrend"} <= found
     assert teaser_asks_market_pages(TEASER) is True
+    other = teaser_market_terms("Nach der Korrektur steigt die Dividende.")
+    assert set(other) == {"correction", "dividend"}
+    assert teaser_asks_market_pages("Nach der Korrektur steigt die Dividende.") is True
+    german, english = news_queries(other)
+    assert "Korrektur" in german and "Dividende" in german
+    assert "pullback" in english and "dividend" in english
     assert (
         teaser_asks_market_pages("Der heimliche Gewinner der nächsten Finanzrevolution!") is False
     )
@@ -98,6 +108,7 @@ def test_two_hosts_keep_a_cluster_and_block_identification(tmp_path):
     )
     pages = report["market_pages"]
     assert pages["status"] == "cluster"
+    assert {"order_book", "profit_growth", "correction"} <= set(pages["terms"])
     assert pages["hosts"] == list(MARKET_NEWS_HOSTS)
     assert pages["window"] == {"start": "2026-10-06", "end": "2026-10-27"}
     by_name = {item["name"]: item for item in pages["names"]}
