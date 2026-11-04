@@ -12,6 +12,11 @@
     textarea{min-height:8rem}button{background:#164e63;color:white;border:0;border-radius:8px;font-weight:700;padding:.7rem}
     button.secondary{background:#334155}
     #case-error{min-height:14rem;background:#fff;font-weight:500;line-height:1.45}
+    .case-list{display:grid;gap:.45rem;margin:.85rem 0}
+    .case-list button{display:flex;flex-direction:column;align-items:flex-start;gap:.15rem;background:#fff;color:#16202a;border:1px solid #cbd5e1;border-radius:10px;text-align:left;font-weight:650;padding:.7rem .85rem}
+    .case-list button.active{border-color:#0f766e;background:#ecfdf5}
+    .case-list button span{font-weight:550;color:#4b5563;font-size:.92rem}
+    .case-list p{margin:0}
     .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem .85rem;margin-top:.35rem}
     .field-grid label{margin-top:0}.field-span{grid-column:1/-1}
     .warning{border-left:4px solid #d97706;padding:.75rem;background:#fffbeb}
@@ -121,14 +126,14 @@
     <p class="muted">Alle eingegebenen Fälle sind sofort hier. <strong>Bereich</strong> trennt Aktiv / Außer Konkurrenz / Archiv. <strong>Ergebnis</strong> filtert darin Erraten, Falsch oder Offen. Blindtest und Referenz sind nur Markierungen am Fall, keine eigenen Listen.</p>
     <div class="case-controls">
       <label for="case-scope">Bereich
-        <select id="case-scope">
+        <select id="case-scope" autocomplete="off">
           <option value="active">Aktiv</option>
           <option value="ooc">Außer Konkurrenz</option>
           <option value="archive">Archiv</option>
         </select>
       </label>
       <label for="case-result">Ergebnis
-        <select id="case-result">
+        <select id="case-result" autocomplete="off">
           <option value="all">Alle</option>
           <option value="correct">Erraten</option>
           <option value="wrong">Falsch</option>
@@ -136,9 +141,10 @@
         </select>
       </label>
       <label for="case-select">Fall
-        <select id="case-select"><option value="">Noch keine Fälle</option></select>
+        <select id="case-select" autocomplete="off"><option value="">Fälle werden geladen …</option></select>
       </label>
     </div>
+    <div id="case-list" class="case-list" aria-label="Fälle in diesem Filter"></div>
     <div class="cases-summary">
       <div id="cases-pie" aria-label="Fallbilanz"></div>
       <div class="cases-legend" id="cases-legend"></div>
@@ -627,15 +633,17 @@ const resetResolutionToCase=(caseId,extra={})=>{
   }
   syncResolutionPanel(row);
 };
-const filterCases=()=>{
-  const scope=currentScope(),result=currentResult();
+const casesFor=(scope,result)=>{
   let rows=allCases;
   if(scope==='archive')rows=rows.filter(row=>row.archived);
   else if(scope==='ooc')rows=rows.filter(row=>!row.archived&&row.competition_mode==='out_of_competition');
   else rows=rows.filter(row=>!row.archived&&row.competition_mode!=='out_of_competition');
-  if(result!=='all')rows=rows.filter(row=>resultBucket(row)===result);
+  if(result&&result!=='all')rows=rows.filter(row=>resultBucket(row)===result);
   return rows;
 };
+const filterCases=()=>casesFor(currentScope(), currentResult());
+let userTouchedCaseFilter=false;
+let casesShownOnce=false;
 const caseBadge=row=>{
   if(row.archived){const b=el('span','Archiv');b.className='badge';return b;}
   if(row.competition_mode==='out_of_competition'){const b=el('span','Außer Konkurrenz');b.className='badge ooc';return b;}
@@ -645,6 +653,7 @@ const caseBadge=row=>{
   const b=el('span','Offen');b.className='badge open';return b;
 };
 const applyPieFilter=segment=>{
+  userTouchedCaseFilter=true;
   if(segment.key==='ooc')setCaseFilters('ooc','all');
   else setCaseFilters('active',segment.result||segment.key);
   refreshCaseSelect({reset:true});
@@ -704,6 +713,49 @@ const renderCasesPie=()=>{
     legend.append(button);
   });
 };
+const makeOption=(text,value)=>{
+  const option=document.createElement('option');
+  option.value=value||'';
+  option.text=text;
+  option.textContent=text;
+  return option;
+};
+const renderCaseList=()=>{
+  const list=document.querySelector('#case-list');
+  if(!list)return;
+  const rows=filterCases();
+  const selected=document.querySelector('#case-select')?.value||'';
+  list.replaceChildren();
+  if(!allCases.length){
+    list.append(el('p','Noch keine gespeicherten Fälle.'));
+    return;
+  }
+  if(!rows.length){
+    const note=el('p','Keine Fälle in diesem Filter.');
+    const reset=el('button','Alle aktiven Fälle anzeigen');
+    reset.type='button';
+    reset.addEventListener('click',()=>{setCaseFilters('active','all');refreshCaseSelect({reset:true});});
+    list.append(note,reset);
+    return;
+  }
+  rows.forEach(row=>{
+    const button=el('button');
+    button.type='button';
+    if(row.case_id===selected)button.className='active';
+    button.append(document.createTextNode((row.input||{}).headline||row.case_id));
+    const bucket=resultBucket(row);
+    const tag=row.archived?'archiviert'
+      :row.competition_mode==='out_of_competition'?'außer Konkurrenz'
+      :bucket==='correct'?'erraten':bucket==='wrong'?'falsch':'offen';
+    button.append(el('span',[(row.input||{}).issue,row.status,tag].filter(Boolean).join(' · ')));
+    button.addEventListener('click',()=>{
+      const select=document.querySelector('#case-select');
+      select.value=row.case_id;
+      selectCase(row.case_id,{syncResolution:true});
+    });
+    list.append(button);
+  });
+};
 const refreshCaseSelect=(options={})=>{
   const select=document.querySelector('#case-select');
   const message=document.querySelector('#case-message');
@@ -720,9 +772,10 @@ const refreshCaseSelect=(options={})=>{
     else setCaseFilters('active','all');
   }
   const filtered=filterCases();
-  select.replaceChildren();
-  select.append(new Option(filtered.length?'Fall wählen …':'Keine Fälle in diesem Filter',''));
-  filtered.forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
+  const placeholder=!allCases.length
+    ?'Noch keine gespeicherten Fälle.'
+    :filtered.length?`Fall wählen … (${filtered.length})`:'Keine Fälle in diesem Filter';
+  select.replaceChildren(makeOption(placeholder,''),...filtered.map(row=>makeOption(caseOptionLabel(row),row.case_id)));
   renderCasesPie();
   message.textContent=allCases.length
     ?`${filtered.length} von ${allCases.length} geladen · ${scopeSelect.selectedOptions[0].textContent} / ${resultSelect.selectedOptions[0].textContent}`
@@ -737,10 +790,11 @@ const refreshCaseSelect=(options={})=>{
     document.querySelector('#active-case').replaceChildren();
     syncResolutionPanel(null);
   }
+  renderCaseList();
 };
 const fillResolutionCases=()=>{
-  const select=document.querySelector('#case-id'),current=select.value;select.replaceChildren(new Option('Fall auswählen …',''));
-  allLoadedCases().forEach(row=>select.append(new Option(caseOptionLabel(row),row.case_id)));
+  const select=document.querySelector('#case-id'),current=select.value;
+  select.replaceChildren(makeOption('Fall auswählen …',''),...allLoadedCases().map(row=>makeOption(caseOptionLabel(row),row.case_id)));
   select.value=[...select.options].some(option=>option.value===current)?current:'';
 };
 const fillResolutionCandidates=(reportOverride=null)=>{
@@ -986,33 +1040,55 @@ const selectCase=(caseId,options={})=>{
   root.append(actions);
   if(document.querySelector('#case-id').value!==caseId)resetResolutionToCase(caseId);
   syncResolutionPanel(row);
+  renderCaseList();
+};
+const showLoadedCases=(preferredId='')=>{
+  // Ein wiederhergestellter Filter (Offen, Außer Konkurrenz, Archiv) kann jede Auswahl leeren.
+  if(!casesShownOnce&&!preferredId&&!userTouchedCaseFilter&&!filterCases().length&&allCases.length){
+    if(casesFor('active','all').length)setCaseFilters('active','all');
+    else if(casesFor('ooc','all').length)setCaseFilters('ooc','all');
+    else if(casesFor('archive','all').length)setCaseFilters('archive','all');
+  }
+  casesShownOnce=true;
+  if(preferredId)refreshCaseSelect({preferredId,followCase:true});
+  else refreshCaseSelect();
 };
 const loadCases=async(preferredId='')=>{
   const message=document.querySelector('#case-message');
   message.textContent='Fälle werden geladen …';
+  // PDF-Fälle ins Listing heben und klare Auflösungen setzen. Nie löschen.
+  // Die Liste darf nicht auf reconcile warten, sonst bleibt die Auswahl auf
+  // „Fälle werden geladen …“, obwohl die Fälle schon da sind.
+  const repairTask=fetch('/api/hebeltrader/cases/reconcile',{method:'POST',headers:authHeaders()})
+    .then(async repair=>repair.ok?repair.json():null).catch(()=>null);
   try{
-    // PDF-Fälle ins Listing heben und klare Auflösungen setzen. Nie löschen.
-    let repairNote='';
-    try{
-      const repair=await fetch('/api/hebeltrader/cases/reconcile',{method:'POST',headers:authHeaders()});
-      if(repair.ok){
-        const summary=await repair.json();
-        const parts=[];
-        if(summary.pdf_case_count)parts.push(`${summary.pdf_case_count} mit Report-PDF`);
-        if((summary.resolved||[]).length)parts.push(`${summary.resolved.length} aufgelöst`);
-        if(parts.length)repairNote='Bereinigt: '+parts.join(', ')+'. ';
-      }
-    }catch(ignored){}
     const response=await fetch('/api/hebeltrader/cases?listing=all&include_archived=true',{headers:authHeaders()});
     if(!response.ok)throw new Error('Fälle konnten nicht geladen werden. Anmeldung prüfen.');
     allCases=(await response.json()).reverse();
-    if(preferredId)refreshCaseSelect({preferredId,followCase:true});
-    else refreshCaseSelect();
+    showLoadedCases(preferredId);
+    const summary=await repairTask;
+    const changed=Boolean(summary&&((summary.promoted||[]).length||(summary.resolved||[]).length));
+    let repairNote='';
+    if(summary){
+      const parts=[];
+      if(summary.pdf_case_count)parts.push(`${summary.pdf_case_count} mit Report-PDF`);
+      if((summary.resolved||[]).length)parts.push(`${summary.resolved.length} aufgelöst`);
+      if(parts.length)repairNote='Bereinigt: '+parts.join(', ')+'. ';
+    }
+    if(changed){
+      const again=await fetch('/api/hebeltrader/cases?listing=all&include_archived=true',{headers:authHeaders()});
+      if(again.ok){
+        allCases=(await again.json()).reverse();
+        const keep=document.querySelector('#case-select').value;
+        if(keep&&filterCases().some(row=>row.case_id===keep))refreshCaseSelect({preferredId:keep});
+        else refreshCaseSelect();
+      }
+    }
     if(repairNote)message.textContent=repairNote+message.textContent;
   }catch(error){message.textContent=error.message;}
 };
-document.querySelector('#case-scope').addEventListener('change',()=>refreshCaseSelect({reset:true}));
-document.querySelector('#case-result').addEventListener('change',()=>refreshCaseSelect({reset:true}));
+document.querySelector('#case-scope').addEventListener('change',()=>{userTouchedCaseFilter=true;refreshCaseSelect({reset:true});});
+document.querySelector('#case-result').addEventListener('change',()=>{userTouchedCaseFilter=true;refreshCaseSelect({reset:true});});
 document.querySelector('#case-select').addEventListener('change',event=>{
   if(event.target.value)selectCase(event.target.value,{syncResolution:true});
   else{document.querySelector('#active-case').replaceChildren();resetResolutionToCase('');}
