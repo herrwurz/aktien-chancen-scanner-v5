@@ -253,6 +253,8 @@ def test_runtime_reports_persistent_api_cost_reservations_by_provider(tmp_path, 
         "budget_cents": 500,
         "reserved_cents": 20,
         "remaining_cents": 480,
+        "exhausted": False,
+        "max_cap_cents": 200_000,
         "usage_percent": 4.0,
         "providers": {
             "tavily": {"calls": 2, "reserved_cents": 10},
@@ -269,6 +271,8 @@ def test_web_page_contains_api_cost_monitor(tmp_path, monkeypatch):
     assert 'id="api-cost-monitor"' in response.text
     assert "API-Kostenüberwachung" in response.text
     assert "/api/hebeltrader/runtime" in response.text
+    assert 'id="budget-form"' in response.text
+    assert "Neues Monatsbudget speichern" in response.text
 
 
 def test_analysis_status_and_result_are_directly_after_submit_form(tmp_path, monkeypatch):
@@ -468,3 +472,38 @@ def test_case_actions_report_failures_and_preserve_archive_filter():
     assert "Nächster Schritt" in html
     assert "Fall im Listing" in html or "Fall ins Listing aufgenommen" in html
     assert "Nicht mehr außer Konkurrenz" in html
+    assert "Prüfklasse" in html
+
+
+def test_exhausted_budget_accepts_a_higher_monthly_ceiling(tmp_path, monkeypatch):
+    from scanner.hebeltrader.detective.api_budget import ApiBudget
+
+    client = web(tmp_path, monkeypatch)
+    auth = ("admin", "private-password")
+    assert (
+        client.post("/api/hebeltrader/runtime/budget", json={"budget_eur": "30"}).status_code == 401
+    )
+    opened = client.get("/api/hebeltrader/runtime", auth=auth)
+    assert opened.status_code == 200
+    ledger = tmp_path / "state" / "detective" / "api-budget.db"
+    budget = ApiBudget(ledger, cap_cents=opened.json()["api_costs"]["budget_cents"])
+    cap = budget.summary()["cap_cents"]
+    budget.reserve("search", cap)
+    blocked = client.post(
+        "/api/hebeltrader/runtime/budget",
+        auth=auth,
+        json={"budget_eur": f"{cap / 100:.2f}"},
+    )
+    assert blocked.status_code == 422
+    assert "vorgemerkten" in blocked.json()["detail"]
+    raised = client.post(
+        "/api/hebeltrader/runtime/budget",
+        auth=auth,
+        json={"budget_eur": "30,50"},
+    )
+    assert raised.status_code == 200
+    body = raised.json()
+    assert body["budget_cents"] == 3050
+    assert body["exhausted"] is False
+    assert body["remaining_cents"] == 3050 - cap
+    budget.reserve("search", 1)

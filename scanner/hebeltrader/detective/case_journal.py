@@ -57,6 +57,38 @@ def input_keys(payload):
     return content, source
 
 
+def _attach_miss_class(state):
+    """Expose one diagnostic class. Older journal rows are classified on read."""
+    resolution = state.get("resolution")
+    first = state.get("first_prediction")
+    if not resolution or not first:
+        state["miss_class"] = None
+        state["miss_label"] = None
+        return
+    if resolution.get("miss_class") in {
+        "confirmed",
+        "not_in_universe",
+        "in_universe_not_retrieved",
+        "retrieved_misranked",
+        "contradicted",
+    }:
+        state["miss_class"] = resolution["miss_class"]
+        state["miss_label"] = resolution.get("miss_label") or resolution["miss_class"]
+        return
+    from .miss_class import classify_miss
+
+    derived = classify_miss(
+        first,
+        resolved_name=resolution.get("name"),
+        resolved_asset_id=resolution.get("asset_id"),
+    )
+    resolution["miss_class"] = derived["miss_class"]
+    resolution["miss_label"] = derived["label"]
+    resolution["miss_class_source"] = "derived"
+    state["miss_class"] = derived["miss_class"]
+    state["miss_label"] = derived["label"]
+
+
 def _error_briefing(state):
     """Detailed German error text for the case card. Does not rewrite the journal."""
     report = state.get("first_prediction") or state.get("latest_prediction")
@@ -280,6 +312,7 @@ class CaseJournal:
                     "inferred": True,
                 }
         state["error_briefing"] = _error_briefing(state)
+        _attach_miss_class(state)
         return state
 
     def cases(self, include_archived=False, *, listing="official"):
@@ -551,11 +584,20 @@ class CaseJournal:
                     resolved_name=payload.get("name"),
                     resolved_asset_id=payload.get("asset_id"),
                 )
+            from .miss_class import classify_miss
+
+            miss = classify_miss(
+                first,
+                resolved_name=payload.get("name"),
+                resolved_asset_id=payload.get("asset_id"),
+            )
             ranks = [c.get("asset_id") for c in first.get("candidates", [])[:3]]
             rank = ranks.index(payload["asset_id"]) + 1 if payload["asset_id"] in ranks else None
             selected = first.get("identification", {}).get("status") == "identified"
             p = dict(
                 payload,
+                miss_class=miss["miss_class"],
+                miss_label=miss["label"],
                 correct_rank=rank,
                 prediction_outcome="confirmed"
                 if rank == 1

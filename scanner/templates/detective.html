@@ -77,6 +77,13 @@
     <h2>API-Kostenüberwachung</h2>
     <p id="api-cost-status">Kostenstand wird geladen …</p>
     <div class="meter" aria-label="Monatsbudget"><span id="api-cost-meter" style="width:0%"></span></div>
+    <form id="budget-form">
+      <label for="budget-eur">Monatsbudget (EUR)
+        <input id="budget-eur" name="budget_eur" type="number" min="0.01" max="2000" step="0.01" inputmode="decimal" required>
+      </label>
+      <button type="submit" id="set-budget">Neues Monatsbudget speichern</button>
+      <p id="budget-form-status" class="muted" aria-live="polite">Ist das Budget erschöpft, hier einen höheren Betrag eintragen. Bereits vorgemerkte Aufrufe bleiben gezählt.</p>
+    </form>
     <div class="cost-grid">
       <p><strong>Tavily</strong><br><span id="tavily-cost">–</span></p>
       <p><strong>OpenAI</strong><br><span id="openai-cost">–</span></p>
@@ -189,7 +196,20 @@ const loadApiCosts=async()=>{
     const response=await fetch('/api/hebeltrader/runtime');
     if(!response.ok)throw new Error();
     const data=await response.json(), costs=data.api_costs;
-    status.textContent=`Interne Sicherheitsgrenze ${costs.month}: ${euro(costs.reserved_cents)} von ${euro(costs.budget_cents)} vorgemerkt (${costs.usage_percent} %). Keine Anbieterrechnung.`;
+    const budgetInput=document.querySelector('#budget-eur');
+    if(budgetInput&&document.activeElement!==budgetInput){
+      budgetInput.value=(Number(costs.budget_cents||0)/100).toFixed(2);
+      budgetInput.max=(Number(costs.max_cap_cents||200000)/100).toFixed(2);
+    }
+    status.textContent=costs.exhausted
+      ?`Monatsbudget ${costs.month} ist erschöpft: ${euro(costs.reserved_cents)} von ${euro(costs.budget_cents)} vorgemerkt. Unten ein neues, höheres Budget eingeben.`
+      :`Interne Sicherheitsgrenze ${costs.month}: ${euro(costs.reserved_cents)} von ${euro(costs.budget_cents)} vorgemerkt (${costs.usage_percent} %). Keine Anbieterrechnung.`;
+    const budgetNote=document.querySelector('#budget-form-status');
+    if(budgetNote&&!budgetNote.textContent.startsWith('Neues Monatsbudget')){
+      budgetNote.textContent=costs.exhausted
+        ?'Budget erschöpft. Ein höherer Betrag gibt neue Abrufe frei. Bereits vorgemerkte Aufrufe bleiben gezählt.'
+        :'Ein neues Budget muss über dem bereits vorgemerkten Betrag liegen.';
+    }
     document.querySelector('#tavily-cost').textContent=`${costs.providers.tavily.calls} Aufrufe · ${euro(costs.providers.tavily.reserved_cents)}`;
     document.querySelector('#openai-cost').textContent=`${costs.providers.openai.calls} Aufrufe · ${euro(costs.providers.openai.reserved_cents)}`;
     document.querySelector('#remaining-cost').textContent=euro(costs.remaining_cents);
@@ -225,6 +245,28 @@ const loadApiCosts=async()=>{
   }catch(error){status.textContent='Kostenstand derzeit nicht verfügbar.';}
 };
 if(costButton){costButton.addEventListener('click',loadApiCosts);loadApiCosts();}
+const budgetForm=document.querySelector('#budget-form');
+if(budgetForm){
+  budgetForm.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const note=document.querySelector('#budget-form-status');
+    const raw=String(document.querySelector('#budget-eur').value||'').trim().replace(',','.');
+    note.textContent='Budget wird gespeichert …';
+    try{
+      const response=await fetch('/api/hebeltrader/runtime/budget',{
+        method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},
+        body:JSON.stringify({budget_eur:raw})});
+      let data={};
+      try{data=await response.json();}catch(parseError){data={};}
+      if(!response.ok){
+        note.textContent=typeof data.detail==='string'?data.detail:`Budget konnte nicht gespeichert werden (HTTP ${response.status}).`;
+        return;
+      }
+      note.textContent=`Neues Monatsbudget ${euro(data.budget_cents)} ist gespeichert. Frei: ${euro(data.remaining_cents)}.`;
+      await loadApiCosts();
+    }catch(error){note.textContent='Budget konnte nicht gespeichert werden.';}
+  });
+}
 fetch('/api/hebeltrader/updates').then(response=>response.ok?response.json():[]).then(rows=>{
   if(!rows.length)return;
   const list=document.querySelector('#updates');list.replaceChildren();
@@ -935,6 +977,7 @@ const renderCaseHints=row=>{
   if(row.listing_promotion)box.append(caseHint(`Listing: aufgenommen nach Report-PDF (${row.listing_promotion.reason||'solution_pdf_uploaded'}).`));
   if(row.dataset_promotion)box.append(caseHint(`Datensatz-Export: ${row.dataset_promotion.export_relative_path||'vorhanden'}.`,'info'));
   if(row.solution_pdf)box.append(caseHint(`Lösungs-PDF gespeichert (${(row.solution_pdf.pdf_sha256||'').slice(0,12)}…).`,'info'));
+  if(row.miss_label)box.append(caseHint(`Prüfklasse: ${row.miss_label}.`,row.miss_class==='confirmed'?'':'warn'));
   return box.childNodes.length?box:null;
 };
 const selectCase=(caseId,options={})=>{
@@ -1247,7 +1290,7 @@ document.querySelector('#resolution-form').addEventListener('submit',async event
     if(!response.ok){status.textContent=data.detail;return}
     const verdict=data.prediction_outcome==='confirmed'?'RICHTIG (Rang 1)':
       data.prediction_outcome==='refuted'?`FALSCH (richtige Aktie: ${data.correct_rank?'Rang '+data.correct_rank:'nicht unter den Top 3'})`:'NICHT IDENTIFIZIERT';
-    let text=`${verdict} · Status: ${data.case_status} · Original-Call: ${data.original_call_status}`;
+    let text=`${verdict} · Status: ${data.case_status} · Prüfklasse: ${data.miss_label||'–'} · Original-Call: ${data.original_call_status}`;
     if(asReference){
       const r=await post('reference-promotion',{source:value('resolved-source')});
       text+=r.ok?' · als Referenzlösung gespeichert':' · Referenz nicht gespeichert: '+(await r.json()).detail;
