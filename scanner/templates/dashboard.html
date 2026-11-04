@@ -38,7 +38,7 @@
   <ul>{% for r in runs %}<li>{{ r.started_at.strftime('%Y-%m-%d %H:%M:%S') }} UTC · {{ r.provider }} · {{ r.status }} · {{ r.error_count }} Fehler
     {% for e in r.errors %}<small>{{ e.symbol }} {{ e.interval }}: {{ e.error }}</small>{% endfor %}</li>
     {% else %}<li>Noch kein Durchlauf. Worker starten.</li>{% endfor %}</ul>
-  <p><a href="/docs">API-Dokumentation</a> · <a href="/api/evaluations">Entscheidungen mit Ablehnungsgründen</a> · <a href="/api/ready">Datenbankstatus</a></p>
+  <p><a href="/docs">API-Dokumentation</a> · <a href="/api/evaluations">Entscheidungen mit Ablehnungsgründen</a> · <a href="/api/ready">Datenbankstatus</a> · <a href="/free-scan">Freie Quellen</a></p>
   <p class="muted">Historische DOOD-/ZEREBRO-Fälle sind in Phase 1 nicht validiert. Vergangene Daten werden beim Import ausgewertet; der Erkennungszeitpunkt bleibt separat sichtbar.</p>
 </body>
 </html>

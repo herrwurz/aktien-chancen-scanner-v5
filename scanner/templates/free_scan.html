@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freie Quellen</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #101923; color: #e6edf3; }
+    body { max-width: 1100px; margin: 2rem auto; padding: 0 1.2rem; }
+    a { color: #81d8cd; } h1 { font-size: 1.8rem; } h2 { font-size: 1.15rem; margin-top: 2rem; }
+    .note { border-left: 3px solid #eac46a; padding: 1rem; background: #202b36; }
+    form { margin: 1rem 0; }
+    button { background: #81d8cd; color: #102028; border: 0; padding: .7rem 1rem; font: inherit; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: .6rem .7rem; text-align: left; border-bottom: 1px solid #34404e; vertical-align: top; }
+    th { color: #91a5b8; } .muted, small { color: #a4b4c4; }
+    .status { display: inline-block; padding: .1rem .4rem; background: #2a3846; }
+  </style>
+</head>
+<body>
+  <p><a href="/hebeltrader">Detektiv</a> · <a href="/market-scanner">Markt-Scanner</a></p>
+  <h1>Freie Quellen, unverbindlich</h1>
+  {% if report %}
+  <p class="note">{{ report.disclaimer }}</p>
+  <p class="muted">Stand {{ report.generated_at }} (Europe/Berlin). Bezahlte Abos in diesem Lauf: keine.</p>
+  <h2>Dieselben Kürzel in mehr als einer Quelle</h2>
+  {% if report.overlap %}
+  <table>
+    <thead><tr><th>Kürzel</th><th>Quellen</th></tr></thead>
+    <tbody>
+    {% for item in report.overlap %}
+      <tr><td>{{ item.label }}</td><td>{{ item.sources | join(', ') }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Keine Übereinstimmung. Jede Quelle filtert anders, deshalb ist eine leere Schnittmenge ein normales Ergebnis.</p>
+  {% endif %}
+  {% for source in report.sources %}
+  <h2>{{ source.title }} <span class="status">{{ source.status }}</span></h2>
+  <p class="muted">{{ source.reason }} <a href="{{ source.page_url }}">Quelle</a></p>
+  {% if source.hits %}
+  <table>
+    <thead><tr><th>Name</th><th>Einordnung</th><th>Kurs</th><th>Bewegung</th><th>Hinweis</th></tr></thead>
+    <tbody>
+    {% for hit in source.hits %}
+      <tr>
+        <td>{{ hit.label }}{% if hit.name and hit.name != hit.label %}<br><small>{{ hit.name }}</small>{% endif %}</td>
+        <td>{{ hit.side }}</td>
+        <td>{{ hit.price }}</td>
+        <td>{{ hit.move }}</td>
+        <td>{{ hit.detail }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% endfor %}
+  {% else %}
+  <p class="note">Noch kein Abruf gespeichert. Der Lauf fragt nur öffentliche Seiten ab und speichert die Antwort lokal.</p>
+  {% endif %}
+  <form method="post" action="/free-scan">
+    <button type="submit">Quellen jetzt abfragen</button>
+  </form>
+  <p class="muted">Finviz, onvista, Investing.com, finanzen.net und stock3 bleiben als Browser-Links stehen, weil Abrufregeln oder eine Anmeldung den automatischen Zugriff sperren. Tavily, OpenAI, EODHD und Tiingo werden nicht aufgerufen.</p>
+</body>
+</html>
