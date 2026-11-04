@@ -1,5 +1,10 @@
 # Teaser-Detektiv im Browser auf Hetzner
 
+**Archiviert.** `SCANNER_ARCHIVED=1` und `DETECTIVE_PUBLIC_ALLOW_NETWORK=false`.
+EODHD, Tavily und OpenAI werden von diesem Compose-Projekt nicht mehr übergeben.
+Nach dem Update `docker compose up -d --build` im Verzeichnis `deploy/teaser` ausführen,
+damit der laufende Container die alten Schlüssel verliert.
+
 Die vorhandene Oberfläche unterstützt Text, öffentliche URL, Screenshot und PDF.
 Neu: Schutz der gesamten Anwendung mit Browser-Passwort, gespeicherte Fälle öffnen,
 serverseitiges Recherchetoken und ein separater HTTPS-Docker-Betrieb.
@@ -120,8 +125,9 @@ TEASER_USERNAME=admin
 TEASER_STATE_DIR=/data
 TEASER_PASSWORD_FILE=/data/private/password
 TEASER_TOKEN_FILE=/data/private/token
-DETECTIVE_PUBLIC_ALLOW_NETWORK=true
-DETECTIVE_PUBLIC_MAX_REQUESTS=40
+SCANNER_ARCHIVED=1
+DETECTIVE_PUBLIC_ALLOW_NETWORK=false
+DETECTIVE_PUBLIC_MAX_REQUESTS=0
 ```
 
 Vor dem Start müssen die privaten Dateien `password` und `token` im Unterverzeichnis

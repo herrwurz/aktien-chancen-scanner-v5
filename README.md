@@ -1,5 +1,17 @@
 # HEBELTRADER-Teaser-Detektiv und separater Marktscanner
 
+**Archiviert.** Der Worker startet nicht mehr, und die Web-Anwendung ruft keine bezahlten
+Schnittstellen auf. Nach dem Einspielen auf dem Server die laufenden Container stoppen,
+sonst arbeitet das alte Image weiter:
+
+```bash
+cd /opt/aktien-chancen-scanner-v5
+docker compose stop worker
+docker compose up -d --remove-orphans
+cd deploy/teaser
+docker compose up -d --build
+```
+
 Neue [eingefrorene Erstprognose zu HEBELTRADER 198/26](docs/hebeltrader-19826-initial.md):
 assistentengestützte Quellenrecherche; die spätere PDF-Auflösung bestätigt SLB auf Rang 1.
 

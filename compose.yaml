@@ -13,6 +13,8 @@ x-environment: &environment
   VOLUME_LOOKBACK: ${VOLUME_LOOKBACK:-20}
   VOLUME_THRESHOLD: ${VOLUME_THRESHOLD:-3}
   MIN_QUOTE_VOLUME: ${MIN_QUOTE_VOLUME:-100000}
+  SCANNER_ARCHIVED: "1"
+  DETECTIVE_PUBLIC_ALLOW_NETWORK: "false"
 
 x-app: &app
   image: chancen-scanner-v6:local
@@ -103,6 +105,8 @@ services:
 
   worker:
     <<: *app
+    profiles: ["disabled"]
+    restart: "no"
     command: [python, -m, scanner.worker]
     networks: [backend, egress]
     depends_on:

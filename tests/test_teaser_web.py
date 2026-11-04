@@ -11,6 +11,7 @@ def web(tmp_path, monkeypatch):
         file.write_text(value)
         monkeypatch.setenv("TEASER_" + name.upper() + "_FILE", str(file))
     monkeypatch.setenv("TEASER_STATE_DIR", str(tmp_path / "state"))
+    monkeypatch.setenv("SCANNER_ARCHIVED", "1")
     return TestClient(create_web_app())
 
 
@@ -226,7 +227,9 @@ def test_runtime_diagnostics_are_private_and_report_effective_network_settings(
     response = client.get("/api/hebeltrader/runtime", auth=("admin", "private-password"))
     assert response.status_code == 200
     data = response.json()
-    assert data["public_research_enabled"] is True
+    assert data["public_research_enabled"] is False
+    assert data["external_api_approved"] is False
+    assert data["source_ai_enabled"] is False
     assert data["peer_research_supported"] is True
     assert "private-token" not in response.text
     assert "private-password" not in response.text

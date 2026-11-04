@@ -610,7 +610,9 @@ class ApiConfigurationError(ValueError):
 
 
 def build_public_research(settings, domains):
-    if not settings.detective_public_allow_network:
+    from scanner.archive import paid_network_closed
+
+    if paid_network_closed() or not settings.detective_public_allow_network:
         return None
     kwargs = dict(
         allow_network=True,

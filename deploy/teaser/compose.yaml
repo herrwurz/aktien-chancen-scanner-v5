@@ -16,9 +16,9 @@ services:
       TEASER_TOKEN_FILE: /run/secrets/token
       TEASER_USERNAME: ${TEASER_USERNAME:-admin}
       TEASER_STATE_DIR: /data
-      DETECTIVE_PUBLIC_ALLOW_NETWORK: 'true'
-      DETECTIVE_PUBLIC_MAX_REQUESTS: '70'
-      EODHD_API_TOKEN: ${EODHD_API_TOKEN:-}
+      SCANNER_ARCHIVED: "1"
+      DETECTIVE_PUBLIC_ALLOW_NETWORK: "false"
+      DETECTIVE_PUBLIC_MAX_REQUESTS: "0"
     secrets: [password, token]
     volumes: [./state:/data]
     logging:

@@ -293,6 +293,10 @@ def fetch_eod_bars(
     exchange="US",
 ):
     """Return oldest-to-newest ``{date, close}`` bars, or None on auth/network failure."""
+    from scanner.archive import paid_network_closed
+
+    if paid_network_closed():
+        return None
     token = token or os.environ.get("EODHD_API_TOKEN")
     if not token or not ticker:
         return None

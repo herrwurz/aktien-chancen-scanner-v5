@@ -79,10 +79,12 @@ async def run_worker(settings: Settings, once=False):
 def main():
     parser = argparse.ArgumentParser(description="Read-only market scanner worker")
     parser.add_argument("--once", action="store_true", help="One scan, nonzero exit on failure")
-    args = parser.parse_args()
+    parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    logging.getLogger("httpx").setLevel(logging.WARNING)
-    raise SystemExit(asyncio.run(run_worker(Settings(), once=args.once)))
+    logger.warning(
+        "Projekt archiviert. Der Worker startet keinen Scan und beendet sich ohne Netzabruf."
+    )
+    raise SystemExit(0)
 
 
 if __name__ == "__main__":
