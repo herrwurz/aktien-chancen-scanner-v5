@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import re
 
+from .us_session_quote import teaser_quotes_from_us_session
+
 _CHIP = re.compile(r"\bchip\w*|halbleiter|semiconductor", re.I)
 _HIDDEN = re.compile(r"heimlich\w*|geheimnis|im verborgenen", re.I)
 _NO_CHOICE = re.compile(
@@ -22,7 +24,6 @@ _NAMED_OBVIOUS_LAYER = re.compile(
     r"\beuv\b|lithograph\w*|foundry|gießerei|grafikprozessor|\bgpu\b",
     re.I,
 )
-_US_SESSION = re.compile(r"handelsbeginn in den usa|us-handelsbeginn|14[:.]\s*30", re.I)
 _EDA_IP = re.compile(
     r"\b(synopsys|cadence(?:\s+design)?|arm holdings|ansys|mentor graphics)\b",
     re.I,
@@ -77,7 +78,7 @@ def apply_hidden_chip_bottleneck(ranked: list[dict], *, teaser_text: str = "") -
     if not ranked:
         summary["status"] = "skipped_empty"
         return summary
-    us_session = bool(_US_SESSION.search(teaser_text or ""))
+    us_session = teaser_quotes_from_us_session(teaser_text)
     for row in ranked:
         name = _name(row)
         if _EDA_IP.search(name):
