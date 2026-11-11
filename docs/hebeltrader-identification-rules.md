@@ -113,6 +113,12 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 - **Produktdaten:** ISIN **DE000WB14HL0**, UBS, klassischer Call, Basispreis **38 EUR**, Bezugsverhältnis **1,0**, Bewertungstag **19.03.2027**. Original-Limit 1 und Stop 1 offen. [Stammdaten der Börse Stuttgart](https://www.boerse-stuttgart.de/de-de/produkte/hebelprodukte/optionsscheine/stuttgart/wb14hl/).
 - **Vergleich:** WB14HL, RTX-Call FE1C78 und Amazon-Call HM55NU teilen den Bewertungstag 19.03.2027. Das ist ein belegtes gemeinsames Merkmal dieser Fälle. Für einen historischen Vergleich des Strike-Abstands ist der Basiswertkurs zum Zeitpunkt des jeweiligen Reports erforderlich.
 
+## American Electric Power (AEP) – Originalcall laut Nutzer
+
+- **Nutzerangabe vom 11.11.2026:** **MN6D8E**, ISIN **DE000MN6D8E8**, Morgan Stanley, klassischer Call, Basispreis **150 USD**, Bezugsverhältnis **0,1**, Bewertungstag **19.03.2027**. [Endgültige Bedingungen des Emittenten](https://zertifikate.morganstanley.com/download/final-terms/de000mn6d8x8).
+- **Offene Felder:** Die WKN wurde ohne Ausgabenummer genannt. Zuordnung zu einem bestimmten Stromhunger-Teaser, Original-Limit 1 und Stop 1 bleiben offen.
+- **Vergleich:** Derselbe Bewertungstag wie bei den dokumentierten Originalcalls auf Amazon, RTX und Deutsche Bank.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.
