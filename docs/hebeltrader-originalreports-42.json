@@ -1,0 +1,2025 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-11",
+  "authority": "docs/hebeltrader-identification-rules.md, original PDF prevails if conflicting",
+  "status": "register_transcription_not_pdf_reverified",
+  "entry_count": 42,
+  "records": [
+    {
+      "issue": "22/25",
+      "basiswert": "KION",
+      "source": {
+        "document_name": "Hebeltrader_2025-22.pdf",
+        "publication_date": "26.02.2025",
+        "pdf_sha256": "1213a98de4b76c271025f9c17c615a4739be0e2f64f4604631b0fc8d368a6ed2",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MJ2DR6",
+        "indication": "0,31 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,65 €",
+        "target2": "1,31 €",
+        "stop1": "0,19 €",
+        "stop2": "0,31 €",
+        "reported_stop_distance": "38,7 %",
+        "strike": "45,00 €",
+        "omega": "5,0",
+        "maturity": "19.09.25",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "KGX888",
+        "indication": "39,16 €",
+        "target1": "47,00 €",
+        "target2": "57,50 €",
+        "stop1": "36,20 €",
+        "stop2": "39,16 €",
+        "gd50": "35,06 €",
+        "gd200": "36,43 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "31/25",
+      "basiswert": "Henkel Vz.",
+      "source": {
+        "document_name": "Hebeltrader_2025-31.pdf",
+        "publication_date": "11.03.2025",
+        "pdf_sha256": "60b3d08802a8e8f769c9c06d31448257b7b6f0896696d31234f073284b5d648f",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "SU6X8P",
+        "indication": "0,11 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,35 €",
+        "target2": "1,05 €",
+        "stop1": "0,05 €",
+        "stop2": "0,11 €",
+        "reported_stop_distance": "54,5 %",
+        "strike": "105,00 €",
+        "omega": "12,1",
+        "maturity": "19.12.25",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "604843",
+        "indication": "86,72 €",
+        "target1": "97,80 €",
+        "target2": "113,50 €",
+        "stop1": "81,70 €",
+        "stop2": "86,72 €",
+        "gd50": "84,11 €",
+        "gd200": "82,15 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "34/25",
+      "basiswert": "DHL Group",
+      "source": {
+        "document_name": "Hebeltrader_2025-34.pdf",
+        "publication_date": "14.03.2025",
+        "pdf_sha256": "d49984a691d72695d9f120b1cc161e2a03654dbbde822262508d9811006a6785",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "HD94XR",
+        "indication": "0,092 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,206 €",
+        "target2": "0,753 €",
+        "stop1": "0,027 €",
+        "stop2": "0,092 €",
+        "reported_stop_distance": "70,7 %",
+        "strike": "48,00 €",
+        "omega": "9,8",
+        "maturity": "17.09.25",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "555200",
+        "indication": "41,72 €",
+        "target1": "46,30 €",
+        "target2": "55,50 €",
+        "stop1": "37,80 €",
+        "stop2": "41,72 €",
+        "gd50": "36,76 €",
+        "gd200": "37,39 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "73/25",
+      "basiswert": "Uber",
+      "source": {
+        "document_name": "Hebeltrader_2025-73.pdf",
+        "publication_date": "13.05.2025",
+        "pdf_sha256": "95883836c57c41ee0027eafe71d1518163fd9874b9246bfe2305ba2f7d346906",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MJ3CHB",
+        "indication": "0,16 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,36 €",
+        "target2": "1,30 €",
+        "stop1": "0,05 €",
+        "stop2": "0,16 €",
+        "reported_stop_distance": "68,8 %",
+        "strike": "130,00 $",
+        "omega": "7,1",
+        "maturity": "19.12.25",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "A2PHHG",
+        "indication": "88,10 $",
+        "target1": "102,00 $",
+        "target2": "134,00 $",
+        "stop1": "77,00 $",
+        "stop2": "88,10 $",
+        "gd50": "75,21 $",
+        "gd200": "72,10 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "74/25",
+      "basiswert": "Amazon",
+      "source": {
+        "document_name": "Hebeltrader_2025-74.pdf",
+        "publication_date": "14.05.2025",
+        "pdf_sha256": "1fc27b594e261db8046ecbcae145f8b7a1017c9a3bc57918c6247e33eb21e4c5",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "SW979R",
+        "indication": "0,32 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,07 €",
+        "target2": "2,58 €",
+        "stop1": "0,13 €",
+        "stop2": "0,32 €",
+        "reported_stop_distance": "59,4 %",
+        "strike": "280,00 $",
+        "omega": "9,2",
+        "maturity": "19.12.25",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "906866",
+        "indication": "211,37 $",
+        "target1": "250,00 $",
+        "target2": "299,00 $",
+        "stop1": "197,00 $",
+        "stop2": "211,37 $",
+        "gd50": "190,29 $",
+        "gd200": "199,44 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "92/25",
+      "basiswert": "Alphabet",
+      "source": {
+        "document_name": "Hebeltrader_2025-92_ALPHABET.pdf",
+        "publication_date": "11.06.2025",
+        "pdf_sha256": "53065950b456f8016c78c1459408e2a71ec0ae870b35d980f12b246fb49afa9d",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "SY0LMB",
+        "indication": "0,12 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,50 €",
+        "target2": "1,47 €",
+        "stop1": "0,05 €",
+        "stop2": "0,12 €",
+        "reported_stop_distance": "58,3 %",
+        "strike": "260,00 $",
+        "omega": "10,2",
+        "maturity": "19.12.25",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "A14Y6H",
+        "indication": "180,01 $",
+        "target1": "214,00 $",
+        "target2": "254,00 $",
+        "stop1": "166,00 $",
+        "stop2": "180,01 $",
+        "gd50": "162,76 $",
+        "gd200": "173,06 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "110/25",
+      "basiswert": "Qualcomm",
+      "source": {
+        "document_name": "Hebeltrader_2025-110_Qualcomm.pdf",
+        "publication_date": "08.07.2025",
+        "pdf_sha256": "5ee0c561e846bda613bd3c763bf1284a6e76fe64fcabc7cf5eb7616b6639f642",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "VG1YQN",
+        "indication": "0,225 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,250 €",
+        "target2": "3,510 €",
+        "stop1": "0,130 €",
+        "stop2": "0,225 €",
+        "reported_stop_distance": "42,2 %",
+        "strike": "210,00 $",
+        "omega": "8,9",
+        "maturity": "16.01.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "883121",
+        "indication": "158,09 $",
+        "target1": "202,00 $",
+        "target2": "247,00 $",
+        "stop1": "150,00 $",
+        "stop2": "158,09 $",
+        "gd50": "151,17 $",
+        "gd200": "158,61 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "158/25",
+      "basiswert": "Thales",
+      "source": {
+        "document_name": "Hebeltrader_2025-158.pdf",
+        "publication_date": "12.09.2025",
+        "pdf_sha256": "bd2632dd5bb92d9d4df7fa2e8e624ce86e37fe77912bba070d117fc8b7610e8a",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "SX6DHJ",
+        "indication": "0,50 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,53 €",
+        "target2": "5,91 €",
+        "stop1": "0,20 €",
+        "stop2": "0,50 €",
+        "reported_stop_distance": "60,0 %",
+        "strike": "300,00 €",
+        "omega": "8,9",
+        "maturity": "20.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "850842",
+        "indication": "243,70 €",
+        "target1": "286,00 €",
+        "target2": "355,00 €",
+        "stop1": "217,00 €",
+        "stop2": "243,70 €",
+        "gd50": "234,19 €",
+        "gd200": "218,61 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "169/25",
+      "basiswert": "Halliburton",
+      "source": {
+        "document_name": "Hebeltrader_2025-169.pdf",
+        "publication_date": "29.09.2025",
+        "pdf_sha256": "946cb83224e183227109126d07374ed0af405ec0aa5b31d5bda00836756d1c64",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "UG4H12",
+        "indication": "0,065 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,250 €",
+        "target2": "0,680 €",
+        "stop1": "0,020 €",
+        "stop2": "0,065 €",
+        "reported_stop_distance": "69,2 %",
+        "strike": "32,00 $",
+        "omega": "7,1",
+        "maturity": "18.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "853986",
+        "indication": "25,11 $",
+        "target1": "31,50 $",
+        "target2": "39,50 $",
+        "stop1": "23,00 $",
+        "stop2": "25,11 $",
+        "gd50": "22,34 $",
+        "gd200": "23,87 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "171/25",
+      "basiswert": "Salzgitter",
+      "source": {
+        "document_name": "Hebeltrader_2025-171.pdf",
+        "publication_date": "01.10.2025",
+        "pdf_sha256": "abcf2973a37e6754cafae4ca066f0e85962974cdcd640bceebee886c56f83605",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "UG6WU7",
+        "indication": "0,43 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "2,55 €",
+        "target2": "11,14 €",
+        "stop1": "0,12 €",
+        "stop2": "0,43 €",
+        "reported_stop_distance": "72,1 %",
+        "strike": "35,00 €",
+        "omega": "8,5",
+        "maturity": "18.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "620200",
+        "indication": "25,74 €",
+        "target1": "34,00 €",
+        "target2": "46,00 €",
+        "stop1": "22,50 €",
+        "stop2": "25,74 €",
+        "gd50": "23,04 €",
+        "gd200": "21,66 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "175/25",
+      "basiswert": "Hannover Rück",
+      "source": {
+        "document_name": "Hebeltrader_2025-175.pdf",
+        "publication_date": "08.10.2025",
+        "pdf_sha256": "ef86597e85e8e3c5788acf871c7a5df7f126bf69e10aaebb864bb18ae7a9a215",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MM3GW6",
+        "indication": "0,27 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,09 €",
+        "target2": "3,62 €",
+        "stop1": "0,12 €",
+        "stop2": "0,27 €",
+        "reported_stop_distance": "55,6 %",
+        "strike": "315,00 €",
+        "omega": "14,1",
+        "maturity": "20.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "840221",
+        "indication": "266,20 €",
+        "target1": "304,00 €",
+        "target2": "350,00 €",
+        "stop1": "253,00 €",
+        "stop2": "266,20 €",
+        "gd50": "254,64 €",
+        "gd200": "258,61 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "176/25",
+      "basiswert": "Schneider Electric",
+      "source": {
+        "document_name": "Hebeltrader_2025-176.pdf",
+        "publication_date": "09.10.2025",
+        "pdf_sha256": "d56a0be569b2cc199a7a8ff0c68f17c1590a5f17e08ca24cd0b69a7ef76f0f4a",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MK3C4P",
+        "indication": "0,39 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,46 €",
+        "target2": "4,80 €",
+        "stop1": "0,15 €",
+        "stop2": "0,39 €",
+        "reported_stop_distance": "61,5 %",
+        "strike": "320,00 €",
+        "omega": "9,5",
+        "maturity": "20.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "860180",
+        "indication": "248,80 €",
+        "target1": "295,00 €",
+        "target2": "362,00 €",
+        "stop1": "225,00 €",
+        "stop2": "248,80 €",
+        "gd50": "230,35 €",
+        "gd200": "226,07 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "179/25",
+      "basiswert": "Gilead Sciences",
+      "source": {
+        "document_name": "Hebeltrader_2025-179.pdf",
+        "publication_date": "14.10.2025",
+        "pdf_sha256": "988a4db3994490bea234fd1a830bf9762fef7f6a062c690640e01967faf660b0",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "FA8G3Q",
+        "indication": "0,050 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,230 €",
+        "target2": "1,150 €",
+        "stop1": "0,013 €",
+        "stop2": "0,050 €",
+        "reported_stop_distance": "74,0 %",
+        "strike": "160,00 $",
+        "omega": "13,0",
+        "maturity": "20.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "885823",
+        "indication": "118,21 $",
+        "target1": "138,50 $",
+        "target2": "170,00 $",
+        "stop1": "106,00 $",
+        "stop2": "118,21 $",
+        "gd50": "113,90 $",
+        "gd200": "106,72 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "198/25",
+      "basiswert": "Mercedes-Benz",
+      "source": {
+        "document_name": "Hebeltrader_2025-198.pdf",
+        "publication_date": "10.11.2025",
+        "pdf_sha256": "4cced80339085a3aeb42d2039c56a3f849444d2e6d4eda3ddbcb97eeb15b47c6",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MM6ZLH",
+        "indication": "0,42 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,86 €",
+        "target2": "11,00 €",
+        "stop1": "0,12 €",
+        "stop2": "0,42 €",
+        "reported_stop_distance": "71,4 %",
+        "strike": "75,00 €",
+        "omega": "13,0",
+        "maturity": "20.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "710000",
+        "indication": "58,36 €",
+        "target1": "70,00 €",
+        "target2": "86,00 €",
+        "stop1": "53,00 €",
+        "stop2": "58,36 €",
+        "gd50": "54,26 €",
+        "gd200": "54,16 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "203/25",
+      "basiswert": "TotalEnergies",
+      "source": {
+        "document_name": "Hebeltrader_2025-203.pdf",
+        "publication_date": "17.11.2025",
+        "pdf_sha256": "cab4761292c0b6d5b778253c88eafcec9e57433942e6207c659739e71a5e74c9",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MM7KAA",
+        "indication": "0,33 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "2,70 €",
+        "target2": "12,26 €",
+        "stop1": "0,12 €",
+        "stop2": "0,33 €",
+        "reported_stop_distance": "63,6 %",
+        "strike": "65,00 €",
+        "omega": "17,5",
+        "maturity": "20.03.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "850727",
+        "indication": "56,23 €",
+        "target1": "65,00 €",
+        "target2": "76,50 €",
+        "stop1": "52,50 €",
+        "stop2": "56,23 €",
+        "gd50": "53,27 €",
+        "gd200": "53,97 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "10/26",
+      "basiswert": "Fraport",
+      "source": {
+        "document_name": "Hebeltrader_2026-10.pdf",
+        "publication_date": "20.01.2026",
+        "pdf_sha256": "9d5293c6d84f0cab6776bbc866892ec68be4a74057d7b2ce89b4ffa00ee29f34",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "HT7GRA",
+        "indication": "0,105 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,490 €",
+        "target2": "1,940 €",
+        "stop1": "0,030 €",
+        "stop2": "0,105 €",
+        "reported_stop_distance": "71,4 %",
+        "strike": "90,00 €",
+        "omega": "10,80",
+        "maturity": "17.06.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "577330",
+        "indication": "74,65 €",
+        "target1": "88,00 €",
+        "target2": "109,00 €",
+        "stop1": "67,00 €",
+        "stop2": "74,65 €",
+        "gd50": "72,07 €",
+        "gd200": "68,29 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "46/26",
+      "basiswert": "Air Liquide",
+      "source": {
+        "document_name": "Hebeltrader_2026-46.pdf",
+        "publication_date": "18.03.2026",
+        "pdf_sha256": "cf72f13b15712cd10024315b33bb6fa6291be3684fa1b546084c26ef742e640d",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MM51LF",
+        "indication": "0,135 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,570 €",
+        "target2": "2,030 €",
+        "stop1": "0,055 €",
+        "stop2": "0,135 €",
+        "reported_stop_distance": "59,3 %",
+        "strike": "210,00 €",
+        "omega": "13,8",
+        "maturity": "18.09.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "850133",
+        "indication": "172,22 €",
+        "target1": "198,00 €",
+        "target2": "228,00 €",
+        "stop1": "166,00 €",
+        "stop2": "172,22 €",
+        "gd50": "168,68 €",
+        "gd200": "168,00 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "81/26",
+      "basiswert": "UnitedHealth",
+      "source": {
+        "document_name": "Hebeltrader_2026-81_UnitedHealth.pdf",
+        "publication_date": "11.05.2026",
+        "pdf_sha256": "857ac9dbb347c5fa8137a83aa065e91b92e885ce26dfff3a7ab014997be462aa",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "FD09J0",
+        "indication": "0,68 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "2,35 €",
+        "target2": "9,12 €",
+        "stop1": "0,23 €",
+        "stop2": "0,68 €",
+        "reported_stop_distance": "66,2 %",
+        "strike": "450,00 $",
+        "omega": "10,2",
+        "maturity": "18.09.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "869561",
+        "indication": "379,98 $",
+        "target1": "445,00 $",
+        "target2": "554,00 $",
+        "stop1": "346,00$",
+        "stop2": "379,98 $",
+        "gd50": "325,72 $",
+        "gd200": "332,61 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "93/26",
+      "basiswert": "Adidas",
+      "source": {
+        "document_name": "Hebeltrader_2026-93_adidas.pdf",
+        "publication_date": "29.05.2026",
+        "pdf_sha256": "a6621fe098c49c1d398e3c926748b954e70ee62fd08db61cc387c1eaf46cb0f7",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "DU0UHF",
+        "indication": "0,19 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,39 €",
+        "target2": "5,61 €",
+        "stop1": "0,07 €",
+        "stop2": "0,19 €",
+        "reported_stop_distance": "63,2 %",
+        "strike": "220,00 €",
+        "omega": "10,2",
+        "maturity": "18.09.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "A1EWWW",
+        "indication": "167,15 €",
+        "target1": "218,00 €",
+        "target2": "276,00 €",
+        "stop1": "154,00 €",
+        "stop2": "167,15 €",
+        "gd50": "147,28 €",
+        "gd200": "161,04 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "137/26",
+      "basiswert": "BASF",
+      "source": {
+        "document_name": "Hebeltrader_2026-137.pdf",
+        "publication_date": "31.07.2026",
+        "pdf_sha256": "849540e787f76871d10dc45670225b9cf9646471b49913a7e430ef8601c9aab8",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MJ7DUX",
+        "indication": "0,07 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "0,33 €",
+        "target2": "1,40 €",
+        "stop1": "0,035 €",
+        "stop2": "0,07 €",
+        "reported_stop_distance": "50,0 %",
+        "strike": "62,00 €",
+        "omega": "11,8",
+        "maturity": "18.12.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "BASF11",
+        "indication": "51,24 €",
+        "target1": "62,00 €",
+        "target2": "76,00 €",
+        "stop1": "47,50 €",
+        "stop2": "51,24 €",
+        "gd50": "49,18 €",
+        "gd200": "48,30 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "140/26",
+      "basiswert": "Thales",
+      "source": {
+        "document_name": "Hebeltrader_2026-140.pdf",
+        "publication_date": "05.08.2026",
+        "pdf_sha256": "ddf194d00945242ca9003b3289f3df20295c8a3befe821a763bc2f3c703a43be",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "DN3NVH",
+        "indication": "0,30 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "1,96 €",
+        "target2": "8,15 €",
+        "stop1": "0,11 €",
+        "stop2": "0,30 €",
+        "reported_stop_distance": "63,3 %",
+        "strike": "330,00 €",
+        "omega": "10,8",
+        "maturity": "18.12.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "850842",
+        "indication": "262,40 €",
+        "target1": "324,00 €",
+        "target2": "410,00 €",
+        "stop1": "238,00 €",
+        "stop2": "262,40 €",
+        "gd50": "235,18 €",
+        "gd200": "237,51 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "141/26",
+      "basiswert": "Leonardo",
+      "source": {
+        "document_name": "Hebeltrader_2026-141.pdf",
+        "publication_date": "06.08.2026",
+        "pdf_sha256": "fc16a36c9f4f324f4ac2f7fb9bd564ed5c47e5ed2a5485a526cc7112b2594acf",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "VJ2RFH",
+        "indication": "0,70 €",
+        "recommended_entry": null,
+        "explicit_buy_limit": null,
+        "target1": "4,62 €",
+        "target2": "20,08 €",
+        "stop1": "0,26 €",
+        "stop2": "0,70 €",
+        "reported_stop_distance": "62,9 %",
+        "strike": "80,00 €",
+        "omega": "9,3",
+        "maturity": "17.12.26",
+        "reported_scenario": null,
+        "reported_crv": null
+      },
+      "stock": {
+        "wkn": "A0ETQX",
+        "indication": "57,40 €",
+        "target1": "75,00 €",
+        "target2": "99,00 €",
+        "stop1": "53,00 €",
+        "stop2": "57,40 €",
+        "gd50": "52,57 €",
+        "gd200": "52,20 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "143/26",
+      "basiswert": "Broadcom",
+      "source": {
+        "document_name": "Hebeltrader_2026-143.pdf",
+        "publication_date": "10.08.2026",
+        "pdf_sha256": "77ec7d8adf28abf5f885d3d86c5111b76c3db67f7b12ec430ff887f002834d5c",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MN8GZP",
+        "indication": "0,59 €",
+        "recommended_entry": "0,590 €",
+        "explicit_buy_limit": null,
+        "target1": "2,49 €",
+        "target2": "9,46 €",
+        "stop1": "0,34 €",
+        "stop2": "0,59 €",
+        "reported_stop_distance": "42,4 %",
+        "strike": "680,00 $",
+        "omega": "7,1",
+        "maturity": "18.12.26",
+        "reported_scenario": "322 % / 1.503 %",
+        "reported_crv": "21,54"
+      },
+      "stock": {
+        "wkn": "A2JG9Z",
+        "indication": "427,76 $",
+        "target1": "562,00 $",
+        "target2": "758,00 $",
+        "stop1": "378,00 $",
+        "stop2": "427,76 $",
+        "gd50": "393,14 $",
+        "gd200": "363,08 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "144/26",
+      "basiswert": "Pfizer",
+      "source": {
+        "document_name": "Hebeltrader_2026-144.pdf",
+        "publication_date": "11.08.2026",
+        "pdf_sha256": "3ff4cec182b7ef53af18b7b288b4140e7a54eda5273dca7cfa607e366f0816ec",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "WA4R5Q",
+        "indication": "0,175 €",
+        "recommended_entry": "0,175 €",
+        "explicit_buy_limit": null,
+        "target1": "1,04 €",
+        "target2": "4,78 €",
+        "stop1": "0,06 €",
+        "stop2": "0,175 €",
+        "reported_stop_distance": "65,7 %",
+        "strike": "33,00 $",
+        "omega": "14,1",
+        "maturity": "18.12.26",
+        "reported_scenario": "494 % / 2.631 %",
+        "reported_crv": "23,78"
+      },
+      "stock": {
+        "wkn": "852009",
+        "indication": "27,05 $",
+        "target1": "32,00 $",
+        "target2": "38,50 $",
+        "stop1": "25,00 $",
+        "stop2": "27,05 $",
+        "gd50": "25,32 $",
+        "gd200": "25,70 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "147/26",
+      "basiswert": "KKR",
+      "source": {
+        "document_name": "Hebeltrader_2026-147.pdf",
+        "publication_date": "14.08.2026",
+        "pdf_sha256": "11fee499737838c9f2f4140745ed3726394395b5fc0b9d3981c1fc61e2850586",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "VH62T5",
+        "indication": "0,19 €",
+        "recommended_entry": "0,190 €",
+        "explicit_buy_limit": null,
+        "target1": "0,77 €",
+        "target2": "3,49 €",
+        "stop1": "0,06 €",
+        "stop2": "0,19 €",
+        "reported_stop_distance": "68,4 %",
+        "strike": "160,00 $",
+        "omega": "7,9",
+        "maturity": "15.01.27",
+        "reported_scenario": "305 % / 1.737 %",
+        "reported_crv": "14,92"
+      },
+      "stock": {
+        "wkn": "A2LQV6",
+        "indication": "115,30 $",
+        "target1": "152,00 $",
+        "target2": "198,00 $",
+        "stop1": "103,00 $",
+        "stop2": "115,30 $",
+        "gd50": "100,51 $",
+        "gd200": "105,88 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "151/26",
+      "basiswert": "SAP",
+      "source": {
+        "document_name": "Hebeltrader_2026-151.pdf",
+        "publication_date": "20.08.2026",
+        "pdf_sha256": "c330ca57db50bbcb82fd4e4ff38ff7b88d12bf64549c76e993eff59f32009419",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "UP9A9X",
+        "indication": "0,14 €",
+        "recommended_entry": "0,140 €",
+        "explicit_buy_limit": null,
+        "target1": "1,16 €",
+        "target2": "5,34 €",
+        "stop1": "0,05 €",
+        "stop2": "0,14 €",
+        "reported_stop_distance": "64,3 %",
+        "strike": "260,00 €",
+        "omega": "10,6",
+        "maturity": "18.12.26",
+        "reported_scenario": "729 % / 3.714 %",
+        "reported_crv": "34,56"
+      },
+      "stock": {
+        "wkn": "716460",
+        "indication": "185,90 €",
+        "target1": "240,00 €",
+        "target2": "310,00 €",
+        "stop1": "168,00 €",
+        "stop2": "185,90 €",
+        "gd50": "157,84 €",
+        "gd200": "170,60 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "154/26",
+      "basiswert": "Danaher",
+      "source": {
+        "document_name": "Hebeltrader_2026-154.pdf",
+        "publication_date": "25.08.2026",
+        "pdf_sha256": "273406c7f4dba976a6f4ac227f42177f6e1a57d8f96fdc63a941c9dec7ff43c9",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "JY3SF7",
+        "indication": "0,22 €",
+        "recommended_entry": "0,220 €",
+        "explicit_buy_limit": null,
+        "target1": "1,50 €",
+        "target2": "5,07 €",
+        "stop1": "0,08 €",
+        "stop2": "0,22 €",
+        "reported_stop_distance": "63,6 %",
+        "strike": "280,00 $",
+        "omega": "9,9",
+        "maturity": "15.01.27",
+        "reported_scenario": "582 % / 2.205 %",
+        "reported_crv": "21,89"
+      },
+      "stock": {
+        "wkn": "866197",
+        "indication": "215,11 $",
+        "target1": "272,00 $",
+        "target2": "334,00 $",
+        "stop1": "196,00 $",
+        "stop2": "215,11 $",
+        "gd50": "198,02 $",
+        "gd200": "198,63 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "157/26",
+      "basiswert": "Vertiv",
+      "source": {
+        "document_name": "Hebeltrader_2026-157.pdf",
+        "publication_date": "28.08.2026",
+        "pdf_sha256": "41e16e1bdb2a4bcb769a81c9c7ae6ffa85d705def9e1bfc536106b3ae16f6bb2",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "HM4EB1",
+        "indication": "0,80 €",
+        "recommended_entry": "0,800 €",
+        "explicit_buy_limit": null,
+        "target1": "3,69 €",
+        "target2": "10,15 €",
+        "stop1": "0,44 €",
+        "stop2": "0,80 €",
+        "reported_stop_distance": "45,0 %",
+        "strike": "400,00 $",
+        "omega": "5,7",
+        "maturity": "15.01.27",
+        "reported_scenario": "361 % / 1.169 %",
+        "reported_crv": "17,00"
+      },
+      "stock": {
+        "wkn": "A2PZ5A",
+        "indication": "269,28 $",
+        "target1": "375,00 $",
+        "target2": "498,00 $",
+        "stop1": "244,00 $",
+        "stop2": "269,28 $",
+        "gd50": "283,60 $",
+        "gd200": "257,17 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "161/26",
+      "basiswert": "UnitedHealth",
+      "source": {
+        "document_name": "Hebeltrader_2026-161.pdf",
+        "publication_date": "03.09.2026",
+        "pdf_sha256": "d0ece3248a789b0c93a88bd3688c1f5c3158e5500ea3095a36f523bdbb88979d",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "VH2LU2",
+        "indication": "0,42 €",
+        "recommended_entry": "0,420 €",
+        "explicit_buy_limit": null,
+        "target1": "2,50 €",
+        "target2": "9,88 €",
+        "stop1": "0,16 €",
+        "stop2": "0,42 €",
+        "reported_stop_distance": "61,9 %",
+        "strike": "500,00 $",
+        "omega": "11,4",
+        "maturity": "15.01.27",
+        "reported_scenario": "495 % / 2.252 %",
+        "reported_crv": "22,19"
+      },
+      "stock": {
+        "wkn": "869561",
+        "indication": "399,66 $",
+        "target1": "490,00 $",
+        "target2": "610,00 $",
+        "stop1": "375,00 $",
+        "stop2": "399,66 $",
+        "gd50": "401,68 $",
+        "gd200": "373,14 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "173/26",
+      "basiswert": "Micron",
+      "source": {
+        "document_name": "Hebeltrader_2026-173.pdf",
+        "publication_date": "21.09.2026",
+        "pdf_sha256": "28e46e9bd8ea1e60c6d6279abccee9d37d161cc6abcf2f4a38f5a7516687935d",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "UN87G6",
+        "indication": "5,30 €",
+        "recommended_entry": "5,300 €",
+        "explicit_buy_limit": null,
+        "target1": "18,70 €",
+        "target2": "63,10 €",
+        "stop1": "2,85 €",
+        "stop2": "5,30 €",
+        "reported_stop_distance": "46,2 %",
+        "strike": "1.500,00 €",
+        "omega": "4,6",
+        "maturity": "17.03.27",
+        "reported_scenario": "253 % / 1.091 %",
+        "reported_crv": "14,53"
+      },
+      "stock": {
+        "wkn": "869020",
+        "indication": "1.015,80 €",
+        "target1": "1.390,00 €",
+        "target2": "2.100,00 €",
+        "stop1": "890,00 €",
+        "stop2": "1.015,80 €",
+        "gd50": "936,41 €",
+        "gd200": "694,58 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "176/26",
+      "basiswert": "Salesforce",
+      "source": {
+        "document_name": "Hebeltrader_2026-176.pdf",
+        "publication_date": "24.09.2026",
+        "pdf_sha256": "2a1077f246f9dba5f59473e566c7c93923151fee5d3cc09fe6a9426c69c26e1d",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "JG0AEJ",
+        "indication": "0,46 €",
+        "recommended_entry": "0,460 €",
+        "explicit_buy_limit": null,
+        "target1": "2,18 €",
+        "target2": "8,36 €",
+        "stop1": "0,17 €",
+        "stop2": "0,46 €",
+        "reported_stop_distance": "63,0 %",
+        "strike": "310,00 $",
+        "omega": "8,2",
+        "maturity": "15.01.27",
+        "reported_scenario": "374 % / 1.717 %",
+        "reported_crv": "16,59"
+      },
+      "stock": {
+        "wkn": "A0B87V",
+        "indication": "237,58 $",
+        "target1": "305,00 $",
+        "target2": "402,00 $",
+        "stop1": "218,00 $",
+        "stop2": "237,58 $",
+        "gd50": "219,07 $",
+        "gd200": "207,88 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "192/26",
+      "basiswert": "Costco",
+      "source": {
+        "document_name": "Hebeltrader_2026-192.pdf",
+        "publication_date": "16.10.2026",
+        "pdf_sha256": "4f7c10d0fb43b67f2e2a648193f851c0e902c07b399aa458f8286b5b5f8a7c6f",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "JY5SQZ",
+        "indication": "0,16 €",
+        "recommended_entry": "0,160 €",
+        "explicit_buy_limit": null,
+        "target1": "0,88 €",
+        "target2": "2,46 €",
+        "stop1": "0,07 €",
+        "stop2": "0,16 €",
+        "reported_stop_distance": "56,2 %",
+        "strike": "1.100,00 $",
+        "omega": "12,2",
+        "maturity": "19.02.27",
+        "reported_scenario": "450 % / 1.438 %",
+        "reported_crv": "16,78"
+      },
+      "stock": {
+        "wkn": "888351",
+        "indication": "978,01 $",
+        "target1": "1.162,00 $",
+        "target2": "1.366,00 $",
+        "stop1": "930,00 $",
+        "stop2": "978,01 $",
+        "gd50": "951,55 $",
+        "gd200": "935,79 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "193/26",
+      "basiswert": "JPMorgan Chase",
+      "source": {
+        "document_name": "Hebeltrader_2026-193.pdf",
+        "publication_date": "19.10.2026",
+        "pdf_sha256": "3d17e12a12c16c3a72543ff32bb90b818aeaac6dad5c5ac531a74265be0d61cd",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MN6CYX",
+        "indication": "0,42 €",
+        "recommended_entry": "0,420 €",
+        "explicit_buy_limit": null,
+        "target1": "2,21 €",
+        "target2": "7,58 €",
+        "stop1": "0,15 €",
+        "stop2": "0,42 €",
+        "reported_stop_distance": "64,3 %",
+        "strike": "400,00 $",
+        "omega": "12,4",
+        "maturity": "19.03.27",
+        "reported_scenario": "426 % / 1.705 %",
+        "reported_crv": "16,57"
+      },
+      "stock": {
+        "wkn": "850628",
+        "indication": "339,72 $",
+        "target1": "404,00 $",
+        "target2": "482,00 $",
+        "stop1": "325,00 $",
+        "stop2": "339,72 $",
+        "gd50": "341,56 $",
+        "gd200": "325,94 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "195/26",
+      "basiswert": "Johnson & Johnson",
+      "source": {
+        "document_name": "Hebeltrader_2026-195.pdf",
+        "publication_date": "21.10.2026",
+        "pdf_sha256": "d285b6ec49786c15e6d783eae41bbd9c7416a185f92afbf46594290f8f3a604d",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "JE11C1",
+        "indication": "0,36 €",
+        "recommended_entry": "0,360 €",
+        "explicit_buy_limit": null,
+        "target1": "1,95 €",
+        "target2": "6,70 €",
+        "stop1": "0,13 €",
+        "stop2": "0,36 €",
+        "reported_stop_distance": "63,9 %",
+        "strike": "300,00 $",
+        "omega": "11,1",
+        "maturity": "19.03.27",
+        "reported_scenario": "442 % / 1.761 %",
+        "reported_crv": "17,24"
+      },
+      "stock": {
+        "wkn": "853260",
+        "indication": "259,36 $",
+        "target1": "307,00 $",
+        "target2": "373,00 $",
+        "stop1": "239,00 $",
+        "stop2": "259,36 $",
+        "gd50": "260,93 $",
+        "gd200": "242,28 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "198/26",
+      "basiswert": "SLB",
+      "source": {
+        "document_name": "Hebeltrader_2026-198.pdf",
+        "publication_date": "26.10.2026",
+        "pdf_sha256": "fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "VY95PV",
+        "indication": "0,14 €",
+        "recommended_entry": "0,140 €",
+        "explicit_buy_limit": null,
+        "target1": "0,73 €",
+        "target2": "2,19 €",
+        "stop1": "0,05 €",
+        "stop2": "0,14 €",
+        "reported_stop_distance": "64,3 %",
+        "strike": "65,00 $",
+        "omega": "7,7",
+        "maturity": "19.03.27",
+        "reported_scenario": "421 % / 1.464 %",
+        "reported_crv": "14,67"
+      },
+      "stock": {
+        "wkn": "853390",
+        "indication": "53,06 $",
+        "target1": "69,00 $",
+        "target2": "89,00 $",
+        "stop1": "48,00 $",
+        "stop2": "53,06 $",
+        "gd50": "51,12 $",
+        "gd200": "49,55 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "199/26",
+      "basiswert": "Nasdaq, Inc.",
+      "source": {
+        "document_name": "Hebeltrader_2026-199.pdf",
+        "publication_date": "27.10.2026",
+        "pdf_sha256": "3817b74c93f9db92420fe9013e2ea0c0f93c711e50b747d66c01df11c6dc58e0",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "JY7FDN",
+        "indication": "0,22 €",
+        "recommended_entry": "0,220 €",
+        "explicit_buy_limit": null,
+        "target1": "0,82 €",
+        "target2": "3,05 €",
+        "stop1": "0,08 €",
+        "stop2": "0,22 €",
+        "reported_stop_distance": "63,6 %",
+        "strike": "120,00 $",
+        "omega": "10,0",
+        "maturity": "19.03.27",
+        "reported_scenario": "273 % / 1.286 %",
+        "reported_crv": "12,25"
+      },
+      "stock": {
+        "wkn": "813516",
+        "indication": "104,72 $",
+        "target1": "122,00 $",
+        "target2": "153,00 $",
+        "stop1": "94,00 $",
+        "stop2": "104,72 $",
+        "gd50": "94,53 $",
+        "gd200": "91,28 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "200/26",
+      "basiswert": "Analog Devices",
+      "source": {
+        "document_name": "Hebeltrader_2026-200.pdf",
+        "publication_date": "28.10.2026",
+        "pdf_sha256": "e8f1365890bf789b119713174e67aa1cd9a147bda870f8f4ecccb77c824ad1c2",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MN84GA",
+        "indication": "1,10 €",
+        "recommended_entry": "1,100 €",
+        "explicit_buy_limit": null,
+        "target1": "3,96 €",
+        "target2": "14,20 €",
+        "stop1": "0,45 €",
+        "stop2": "1,10 €",
+        "reported_stop_distance": "59,1 %",
+        "strike": "550,00 $",
+        "omega": "7,2",
+        "maturity": "19.03.27",
+        "reported_scenario": "259 % / 1.191 %",
+        "reported_crv": "12,27"
+      },
+      "stock": {
+        "wkn": "862485",
+        "indication": "425,35 $",
+        "target1": "528,00 $",
+        "target2": "696,00 $",
+        "stop1": "380,00 $",
+        "stop2": "425,35 $",
+        "gd50": "392,70 $",
+        "gd200": "362,61 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "201/26",
+      "basiswert": "Synopsys",
+      "source": {
+        "document_name": "Hebeltrader_2026-201.pdf",
+        "publication_date": "29.10.2026",
+        "pdf_sha256": "46845b99af7f5321d6d835e14fd0081119cf44d19dadd79ad1e6cd037f470713",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MN9WA9",
+        "indication": "0,13 €",
+        "recommended_entry": "0,130 €",
+        "explicit_buy_limit": null,
+        "target1": "0,54 €",
+        "target2": "1,78 €",
+        "stop1": "0,06 €",
+        "stop2": "0,13 €",
+        "reported_stop_distance": "53,8 %",
+        "strike": "650,00 $",
+        "omega": "6,2",
+        "maturity": "19.03.27",
+        "reported_scenario": "315 % / 1.269 %",
+        "reported_crv": "14,71"
+      },
+      "stock": {
+        "wkn": "883703",
+        "indication": "481,89 $",
+        "target1": "620,00 $",
+        "target2": "828,00 $",
+        "stop1": "440,00 $",
+        "stop2": "481,89 $",
+        "gd50": "446,28 $",
+        "gd200": "444,44 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "202/26",
+      "basiswert": "Deutsche Bank",
+      "source": {
+        "document_name": "Hebeltrader_2026-202.pdf",
+        "publication_date": "30.10.2026",
+        "pdf_sha256": "d885c19faf83bc0a7b4eab1b9c5821f9328ae1d9b5cbef0016285519595fd885",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "WB14HL",
+        "indication": "0,65 €",
+        "recommended_entry": "0,650 €",
+        "explicit_buy_limit": null,
+        "target1": "3,00 €",
+        "target2": "9,17 €",
+        "stop1": "0,26 €",
+        "stop2": "0,65 €",
+        "reported_stop_distance": "60,0 %",
+        "strike": "38,00 €",
+        "omega": "9,1",
+        "maturity": "19.03.27",
+        "reported_scenario": "362 % / 1.311 %",
+        "reported_crv": "13,94"
+      },
+      "stock": {
+        "wkn": "514000",
+        "indication": "31,16 €",
+        "target1": "38,50 €",
+        "target2": "47,00 €",
+        "stop1": "29,00 €",
+        "stop2": "31,16 €",
+        "gd50": "30,91 €",
+        "gd200": "30,34 €"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "203/26",
+      "basiswert": "American Electric",
+      "source": {
+        "document_name": "Hebeltrader_2026-203.pdf",
+        "publication_date": "02.11.2026",
+        "pdf_sha256": "f2fd086107ff4bf7ea05a8abe654cbbd45151f5941ebc16a2995329c0d8bc6f0",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "MN6D8E",
+        "indication": "0,17 €",
+        "recommended_entry": "0,170 €",
+        "explicit_buy_limit": null,
+        "target1": "0,89 €",
+        "target2": "2,84 €",
+        "stop1": "0,07 €",
+        "stop2": "0,17 €",
+        "reported_stop_distance": "58,8 %",
+        "strike": "150,00 $",
+        "omega": "12,7",
+        "maturity": "19.03.27",
+        "reported_scenario": "424 % / 1.571 %",
+        "reported_crv": "16,95"
+      },
+      "stock": {
+        "wkn": "850222",
+        "indication": "130,21 $",
+        "target1": "152,00 $",
+        "target2": "180,00 $",
+        "stop1": "122,00 $",
+        "stop2": "130,21 $",
+        "gd50": "125,32 $",
+        "gd200": "125,06 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "204/26",
+      "basiswert": "RTX",
+      "source": {
+        "document_name": "Hebeltrader_2026-204.pdf",
+        "publication_date": "03.11.2026",
+        "pdf_sha256": "4ad03cc9b2d53f444ab390f917c35b0a9aa38f0e6474bf8ad551d61f4ae2e06a",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "FE1C78",
+        "indication": "0,21 €",
+        "recommended_entry": "0,210 €",
+        "explicit_buy_limit": null,
+        "target1": "1,20 €",
+        "target2": "4,64 €",
+        "stop1": "0,10 €",
+        "stop2": "0,21 €",
+        "reported_stop_distance": "52,4 %",
+        "strike": "250,00 $",
+        "omega": "11,4",
+        "maturity": "19.03.27",
+        "reported_scenario": "471 % / 2.110 %",
+        "reported_crv": "24,64"
+      },
+      "stock": {
+        "wkn": "A2PZ0R",
+        "indication": "202,79 $",
+        "target1": "244,00 $",
+        "target2": "298,00 $",
+        "stop1": "186,00 $",
+        "stop2": "202,79 $",
+        "gd50": "194,93 $",
+        "gd200": "190,89 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    },
+    {
+      "issue": "210/26",
+      "basiswert": "Amazon",
+      "source": {
+        "document_name": "Hebeltrader_2026-210.pdf",
+        "publication_date": "11.11.2026",
+        "pdf_sha256": "73437fea2b2faa56baf4fd6b5a44d2f82b7f9562d89b66662d8d3208a6902c50",
+        "register_path": "docs/hebeltrader-identification-rules.md",
+        "source_status": "register_transcription_not_pdf_reverified",
+        "page_refs": {
+          "call_levels": 1,
+          "recommended_entry_if_present": 2,
+          "stock_levels": 3
+        }
+      },
+      "call": {
+        "wkn": "HM55NU",
+        "indication": "0,40 €",
+        "recommended_entry": "0,400 €",
+        "explicit_buy_limit": null,
+        "target1": "2,20 €",
+        "target2": "8,41 €",
+        "stop1": "0,15 €",
+        "stop2": "0,40 €",
+        "reported_stop_distance": "62,5 %",
+        "strike": "340,00 $",
+        "omega": "9,6",
+        "maturity": "19.03.27",
+        "reported_scenario": "450 % / 2.003 %",
+        "reported_crv": "19,62"
+      },
+      "stock": {
+        "wkn": "906866",
+        "indication": "270,87 $",
+        "target1": "337,00 $",
+        "target2": "430,00 $",
+        "stop1": "245,00 $",
+        "stop2": "270,87 $",
+        "gd50": "255,22 $",
+        "gd200": "246,64 $"
+      },
+      "executions": [],
+      "performance": {
+        "verified_stock_return_pct": null,
+        "verified_call_return_pct": null,
+        "realized_net_return_pct": null
+      }
+    }
+  ]
+}

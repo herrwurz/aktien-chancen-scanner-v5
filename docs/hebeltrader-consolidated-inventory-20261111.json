@@ -1,0 +1,3103 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-11",
+  "data_status": "archival_metadata_not_live_filesystem_verification",
+  "sources": [
+    "docs/hebeltrader-identification-rules.md",
+    "docs/hebeltrader-publisher-pdf-inventory.json",
+    "docs/hebeltrader-call-selection-corpus-summary.json"
+  ],
+  "summary": {
+    "pdf_inventory_records": 133,
+    "pdf_unique_hashes": 131,
+    "pdf_unique_issues": 131,
+    "corpus_calls": 134,
+    "register_original_issues": 42,
+    "union_unique_issues": 136
+  },
+  "issues": [
+    {
+      "issue": "2/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-02_EK_halfOK_ff46.pdf",
+          "sha256": "323490abfd12103870ba5d32ea33bdce15c1470e8f3a431476b198991ad910d8",
+          "publication_date": "2025-01-29",
+          "call_wkns": [
+            "SY5DX4"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2502.pdf",
+          "publication_date": null,
+          "wkn": "SY5DX4"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "3/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-03_Zalando_allFail_fe62.pdf",
+          "sha256": "374b61f102043379fd39ca4bc02a43f08a13c9aa1771db7df83511562c2c6677",
+          "publication_date": "2025-01-30",
+          "call_wkns": [
+            "UG0W0H"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2503.pdf",
+          "publication_date": null,
+          "wkn": "UG0W0H"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "4/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-04_Fresenius_allOK_a69f.pdf",
+          "sha256": "f0f3176706f90d8f525ca30ffd54a91d18f6e13655d6eb51e26131c371f3c5fb",
+          "publication_date": "2025-01-31",
+          "call_wkns": [
+            "HT23F2"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-04_Fresenius_allOK.pdf",
+          "publication_date": null,
+          "wkn": "HT23F2"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "5/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-05_Airbus_halfOK_d34f.pdf",
+          "sha256": "0825fd22a15d97fe075be1242ce0897b1c6acc5be4db4c1301595db9ede5160e",
+          "publication_date": "2025-02-03",
+          "call_wkns": [
+            "MJ1XB1"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2505.pdf",
+          "publication_date": null,
+          "wkn": "MJ1XB1"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "8/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-08_INNODATA_6c81.pdf",
+          "sha256": "52e053b7c8ab4eae122a4ce64603d717659f2046db506d77d29e67b38064ca2f",
+          "publication_date": "2025-02-06",
+          "call_wkns": [
+            "MJ8BRD"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2508.pdf",
+          "publication_date": null,
+          "wkn": "MJ8BRD"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "14/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-14_Thyssen_allOK_08b9.pdf",
+          "sha256": "7b21f7a94ef37d125f30842268580ad80928749ca9a33ecd8248692b4b0a9970",
+          "publication_date": "2025-02-14",
+          "call_wkns": [
+            "UP2DQ2"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-14_Thyssen_allOK.pdf",
+          "publication_date": null,
+          "wkn": "UP2DQ2"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "15/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-15_Kontron_halfOK_c0bd.pdf",
+          "sha256": "5648c529420740d041b699e44fc28d0404833245e967bacb2248ad65d70258eb",
+          "publication_date": "2025-02-17",
+          "call_wkns": [
+            "A0X9EJ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-15_Kontron_halfOK.pdf",
+          "publication_date": null,
+          "wkn": "SX04FN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "16/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-16_Bilfinger_allOK_6883.pdf",
+          "sha256": "7b53fbe0b1e6ce29edb47a86efdbb82f6eaf3db66775b79ca7aee22347054964",
+          "publication_date": "2025-02-18",
+          "call_wkns": [
+            "590900"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-16_Bilfinger_allOK.pdf",
+          "publication_date": null,
+          "wkn": "SX04B8"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "17/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-17_Du_rr_1289.pdf",
+          "sha256": "748155f0492842ce23a9260e137ccf5b516210ebb15d4f90bfad2988e32ae0eb",
+          "publication_date": "2025-02-19",
+          "call_wkns": [
+            "HD90XX"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-17_Dürr.pdf",
+          "publication_date": null,
+          "wkn": "HD90XX"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "20/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-20_JD_halfOK_9776.pdf",
+          "sha256": "778e1fb6c5c75c9ccfc18da91662458d46e08b4b9ebe276123860678f3164d7f",
+          "publication_date": "2025-02-24",
+          "call_wkns": [
+            "JV0FUV"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-20_JD_halfOK.pdf",
+          "publication_date": null,
+          "wkn": "JV0FUV"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "21/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-21_Jungheinrich_41ef.pdf",
+          "sha256": "02c78e1d779e62ca385a212e77cc4d8030c584cd9cc916ad247bfa43052a64be",
+          "publication_date": "2025-02-25",
+          "call_wkns": [
+            "HD9ARC"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-21_Jungheinrich.pdf",
+          "publication_date": null,
+          "wkn": "HD9ARC"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "22/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-22_KION_allOK_a1ed.pdf",
+          "sha256": "1213a98de4b76c271025f9c17c615a4739be0e2f64f4604631b0fc8d368a6ed2",
+          "publication_date": "2025-02-26",
+          "call_wkns": [
+            "MJ2DR6"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-22_KION_allOK.pdf",
+          "publication_date": null,
+          "wkn": "MJ2DR6"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "1213a98de4b76c271025f9c17c615a4739be0e2f64f4604631b0fc8d368a6ed2",
+          "call_wkn": "MJ2DR6"
+        }
+      ]
+    },
+    {
+      "issue": "24/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-24_Krones_fail_7919.pdf",
+          "sha256": "d7ce08a48c6079ca5f2cb6a7cd4dd9053f27531e92b2c3adfaa9a249b6f988db",
+          "publication_date": "2025-02-28",
+          "call_wkns": [
+            "633500"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-24_Krones_fail.pdf",
+          "publication_date": null,
+          "wkn": "SJ9Z8M"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "27/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-27_Fielman_halfOK_9948.pdf",
+          "sha256": "2a63446d2548facb227f95cfe792a15efc296d3056c6f3c300c0d66547e82c80",
+          "publication_date": "2025-03-05",
+          "call_wkns": [
+            "HS30GV"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-27_Fielman_halfOK.pdf",
+          "publication_date": null,
+          "wkn": "HS30GV"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "28/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-28_Vinci_f27e.pdf",
+          "sha256": "df1c14628cd8e8e00f1190e6845aa36450a116129f3c57e5f9d3285db49fb630",
+          "publication_date": "2025-03-06",
+          "call_wkns": [
+            "HD959Z"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-28_Vinci.pdf",
+          "publication_date": null,
+          "wkn": "HD959Z"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "29/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-29_Sixt_fail_513d.pdf",
+          "sha256": "6009a46cd108f20db51c6dd37d7f55b9e755af66ec196bbc5d697043ab7a9a41",
+          "publication_date": "2025-03-07",
+          "call_wkns": [
+            "HD9L3G"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-29_Sixt_fail.pdf",
+          "publication_date": null,
+          "wkn": "HD9L3G"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "30/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-30_EON_allOK_1e70.pdf",
+          "sha256": "640c8ae95e3de8543f50eca4650ededc17249021d35554146956d338669cbf00",
+          "publication_date": "2025-03-10",
+          "call_wkns": [
+            "VC0XLW"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-30_EON_allOK.pdf",
+          "publication_date": null,
+          "wkn": "VC0XLW"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "31/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-31_Henkel_fail_d6ac.pdf",
+          "sha256": "60b3d08802a8e8f769c9c06d31448257b7b6f0896696d31234f073284b5d648f",
+          "publication_date": "2025-03-11",
+          "call_wkns": [
+            "SU6X8P"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-31_Henkel_fail.pdf",
+          "publication_date": null,
+          "wkn": "SU6X8P"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "60b3d08802a8e8f769c9c06d31448257b7b6f0896696d31234f073284b5d648f",
+          "call_wkn": "SU6X8P"
+        }
+      ]
+    },
+    {
+      "issue": "32/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-32_Nordex_allFAIL_a671.pdf",
+          "sha256": "2d4e8deb9b0220cb511c94f6a5e04d3900de80067598ebe39fd1e5b062fef6b2",
+          "publication_date": "2025-03-12",
+          "call_wkns": [
+            "HD97QW"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-32_Nordex_allFAIL.pdf",
+          "publication_date": null,
+          "wkn": "HD97QW"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "34/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-34_DHL_863e.pdf",
+          "sha256": "d49984a691d72695d9f120b1cc161e2a03654dbbde822262508d9811006a6785",
+          "publication_date": "2025-03-14",
+          "call_wkns": [
+            "HD94XR"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-34_DHL.pdf",
+          "publication_date": null,
+          "wkn": "HD94XR"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "d49984a691d72695d9f120b1cc161e2a03654dbbde822262508d9811006a6785",
+          "call_wkn": "HD94XR"
+        }
+      ]
+    },
+    {
+      "issue": "37/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-37_RWE_0250.pdf",
+          "sha256": "94e3007bf22034503afdb55c16d6bcfb5bd46f57156995cd3dd3e9a4e1557469",
+          "publication_date": "2025-03-19",
+          "call_wkns": [
+            "MG1W7V"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-37_RWE.pdf",
+          "publication_date": null,
+          "wkn": "MG1W7V"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "38/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-38_6db9.pdf",
+          "sha256": "47382a2bca8bf528e6b4a04991edcb82dc9926cf2e34fbf37d821bc597a0bdd7",
+          "publication_date": "2025-03-20",
+          "call_wkns": [
+            "DQ5JLY"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-38.pdf",
+          "publication_date": null,
+          "wkn": "DQ5JLY"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "42/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-42_Cisco_cc90.pdf",
+          "sha256": "78c2e9a9d38f24eadc45db282c412adc67d487b8b1f7ec07d76fe8f12e83bae7",
+          "publication_date": "2025-03-26",
+          "call_wkns": [
+            "JV2LYN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-42_Cisco.pdf",
+          "publication_date": null,
+          "wkn": "JV2LYN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "49/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-49_AmericanTower_9940.pdf",
+          "sha256": "0b34998bb7bd61f5f996a213011d0a138efcdc2596ee0a3ea18ee6f944225213",
+          "publication_date": "2025-04-04",
+          "call_wkns": [
+            "SU5GCQ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-49_AmericanTower.pdf",
+          "publication_date": null,
+          "wkn": "SU5GCQ"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "52/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-52_Fresenius_halfOK_6e96.pdf",
+          "sha256": "b4a6bf0fb1aebc2bfc2983415cc5ea8de3908f93096d7af699d17cb43b9b50e2",
+          "publication_date": "2025-04-09",
+          "call_wkns": [
+            "VC45QX"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-52_Fresenius_halfOK.pdf",
+          "publication_date": null,
+          "wkn": "VC45QX"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "64/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-64_Safran_d951.pdf",
+          "sha256": "8074931b7043cca10f707871d63549d6bba8868e69ac87b0ed5a9071269af572",
+          "publication_date": "2025-04-29",
+          "call_wkns": [
+            "MK0P0J"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-64_Safran.pdf",
+          "publication_date": null,
+          "wkn": "MK0P0J"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "67/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-67_Broadcom_halfOK_0c81.pdf",
+          "sha256": "759c74af8e58e7432582c27c2db563635de9d9d8dc62247038d9ea0866139aa9",
+          "publication_date": "2025-05-05",
+          "call_wkns": [
+            "MJ6VKG"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-67_Broadcom_halfOK.pdf",
+          "publication_date": null,
+          "wkn": "MJ6VKG"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "69/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-69_Meta_halfOK_a411.pdf",
+          "sha256": "e73f23ac103ca150c6a4da031e2f174a208c89342d275bd16dc35697a0f29b0e",
+          "publication_date": "2025-05-07",
+          "call_wkns": [
+            "JK6GGY"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-69_Meta_halfOK.pdf",
+          "publication_date": null,
+          "wkn": "JK6GGY"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "73/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-73_UBER_9f99.pdf",
+          "sha256": "95883836c57c41ee0027eafe71d1518163fd9874b9246bfe2305ba2f7d346906",
+          "publication_date": "2025-05-13",
+          "call_wkns": [
+            "MJ3CHB"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-73_UBER.pdf",
+          "publication_date": null,
+          "wkn": "MJ3CHB"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "95883836c57c41ee0027eafe71d1518163fd9874b9246bfe2305ba2f7d346906",
+          "call_wkn": "MJ3CHB"
+        }
+      ]
+    },
+    {
+      "issue": "74/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-74_AMAZON_80ab.pdf",
+          "sha256": "1fc27b594e261db8046ecbcae145f8b7a1017c9a3bc57918c6247e33eb21e4c5",
+          "publication_date": "2025-05-14",
+          "call_wkns": [
+            "SW979R"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-74_AMAZON.pdf",
+          "publication_date": null,
+          "wkn": "SW979R"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "1fc27b594e261db8046ecbcae145f8b7a1017c9a3bc57918c6247e33eb21e4c5",
+          "call_wkn": "SW979R"
+        }
+      ]
+    },
+    {
+      "issue": "79/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-79_RWE_1d8c.pdf",
+          "sha256": "36cbd2b9e31430599dfeacbadff0cc9b429f17eae0a050409352aaeeac9cac0a",
+          "publication_date": "2025-05-21",
+          "call_wkns": [
+            "HD4PZF"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-79_RWE.pdf",
+          "publication_date": null,
+          "wkn": "HD4PZF"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "83/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-83_WesternDigital_all_b976.pdf",
+          "sha256": "d0dee23d6da1926e9d958f6f988267d09081a184652cc627bd511ae3089c020e",
+          "publication_date": "2025-05-27",
+          "call_wkns": [
+            "MK1FQG"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-83_WesternDigital_all.pdf",
+          "publication_date": null,
+          "wkn": "MK1FQG"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "84/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-84_Evonik_c88d.pdf",
+          "sha256": "3b8daff759bb7ba1a1de6c21d56b0a2f9987aba92e9e616a4519236575083b41",
+          "publication_date": "2025-05-28",
+          "call_wkns": [
+            "UG3RE1"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-84_Evonik.pdf",
+          "publication_date": null,
+          "wkn": "UG3RE1"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "92/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-92_ALPHABET_3d0d.pdf",
+          "sha256": "53065950b456f8016c78c1459408e2a71ec0ae870b35d980f12b246fb49afa9d",
+          "publication_date": "2025-06-11",
+          "call_wkns": [
+            "SY0LMB"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-92_ALPHABET.pdf",
+          "publication_date": null,
+          "wkn": "SY0LMB"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "53065950b456f8016c78c1459408e2a71ec0ae870b35d980f12b246fb49afa9d",
+          "call_wkn": "SY0LMB"
+        }
+      ]
+    },
+    {
+      "issue": "93/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-93_Emerson_a4ae.pdf",
+          "sha256": "44a147bb0f507bb8120117264fbc5a12d0e40d2bbf231b620c4fd52759dee7af",
+          "publication_date": "2025-06-12",
+          "call_wkns": [
+            "JH4UML"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-93_Emerson.pdf",
+          "publication_date": null,
+          "wkn": "JH4UML"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "95/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-95_Antero_8906.pdf",
+          "sha256": "705122ee2394d2eb03f6f17a50be4c0773ebf89e0af790eed1023c2be60524e7",
+          "publication_date": "2025-06-16",
+          "call_wkns": [
+            "JF3KMQ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-95_Antero.pdf",
+          "publication_date": null,
+          "wkn": "JF3KMQ"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "106/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-106_Textron_a013.pdf",
+          "sha256": "0dce5b59b687d431190c32e99ab96157579c132c058341fd3fdb4c84c06cef78",
+          "publication_date": "2025-07-02",
+          "call_wkns": [
+            "JH5UYA"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-106_Textron.pdf",
+          "publication_date": null,
+          "wkn": "JH5UYA"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "107/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-107_Gilead_1cce.pdf",
+          "sha256": "0a9d9a63e5e32dd74a5818cccbdc2a48513fb5f5384535251a760b02adca27fa",
+          "publication_date": "2025-07-03",
+          "call_wkns": [
+            "MJ2SD9"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-107_Gilead.pdf",
+          "publication_date": null,
+          "wkn": "MJ2SD9"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "110/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-110_Qualcomm_5742.pdf",
+          "sha256": "5ee0c561e846bda613bd3c763bf1284a6e76fe64fcabc7cf5eb7616b6639f642",
+          "publication_date": "2025-07-08",
+          "call_wkns": [
+            "VG1YQN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-110_Qualcomm.pdf",
+          "publication_date": null,
+          "wkn": "VG1YQN"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "5ee0c561e846bda613bd3c763bf1284a6e76fe64fcabc7cf5eb7616b6639f642",
+          "call_wkn": "VG1YQN"
+        }
+      ]
+    },
+    {
+      "issue": "119/25",
+      "pdf_inventory": [],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2025-119.pdf",
+          "publication_date": "2025-07-21",
+          "wkn": "MJ04Q5"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "122/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-122_BMW_7231.pdf",
+          "sha256": "5af7b6845034bb6099e3955a665349eff1ad30fe1fda31125d9fe38afadfa61d",
+          "publication_date": "2025-07-24",
+          "call_wkns": [
+            "SY0N7E"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-122_BMW.pdf",
+          "publication_date": "2025-07-24",
+          "wkn": "SY0N7E"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "128/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-128_Essilor_4d41.pdf",
+          "sha256": "6b980a3da52adc2788514d644b1c0e0f694deb91af032ada2513a060d9074fb9",
+          "publication_date": "2025-08-01",
+          "call_wkns": [
+            "SX0GP6"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-128_Essilor.pdf",
+          "publication_date": "2025-08-01",
+          "wkn": "SX0GP6"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "130/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-130_JJ_473c.pdf",
+          "sha256": "0223ed07b672b4f02379cff6477d24290de3801d89179a0fa4c0e9c2a44268fc",
+          "publication_date": "2025-08-05",
+          "call_wkns": [
+            "HS5RMP"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-130_JJ.pdf",
+          "publication_date": "2025-08-05",
+          "wkn": "HS5RMP"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "136/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-136_TAG_075d.pdf",
+          "sha256": "985fc9037a559d830fb523deafe0d9578d1a7d08abf14cfe8b52c6403380dbe2",
+          "publication_date": "2025-08-13",
+          "call_wkns": [
+            "UG5HMV"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-136_TAG.pdf",
+          "publication_date": "2025-08-13",
+          "wkn": "UG5HMV"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "154/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-154_EON_f834.pdf",
+          "sha256": "0423a87f642930be6ceb136c98edf1e1f003befa1f4a181c96b7eb874003a603",
+          "publication_date": "2025-09-08",
+          "call_wkns": [
+            "MK3AX2"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-154_EON.pdf",
+          "publication_date": "2025-09-08",
+          "wkn": "MK3AX2"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "155/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-155_AMAZON_2d34.pdf",
+          "sha256": "ba067f78cf7a5d7e37983bd91eed46d66d7da56421f59037ff16fd705710bde9",
+          "publication_date": "2025-09-09",
+          "call_wkns": [
+            "JH8180"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-155_AMAZON.pdf",
+          "publication_date": "2025-09-09",
+          "wkn": "JH8180"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "158/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-158_Thales_85c2.pdf",
+          "sha256": "bd2632dd5bb92d9d4df7fa2e8e624ce86e37fe77912bba070d117fc8b7610e8a",
+          "publication_date": "2025-09-12",
+          "call_wkns": [
+            "SX6DHJ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-158_Thales.pdf",
+          "publication_date": "2025-09-12",
+          "wkn": "SX6DHJ"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "bd2632dd5bb92d9d4df7fa2e8e624ce86e37fe77912bba070d117fc8b7610e8a",
+          "call_wkn": "SX6DHJ"
+        }
+      ]
+    },
+    {
+      "issue": "162/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-162_IBM_79e5.pdf",
+          "sha256": "2ce4a8a25560e26ad955f719fa2d9c3307ab890639bfb6bb89f30a6056567952",
+          "publication_date": "2025-09-18",
+          "call_wkns": [
+            "SJ0V41"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2025-162_IBM.pdf",
+          "publication_date": "2025-09-18",
+          "wkn": "SJ0V41"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "169/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-169_halliburton_02dd.pdf",
+          "sha256": "946cb83224e183227109126d07374ed0af405ec0aa5b31d5bda00836756d1c64",
+          "publication_date": "2025-09-29",
+          "call_wkns": [
+            "UG4H12"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2025-169_halliburton.pdf",
+          "publication_date": "2025-09-29",
+          "wkn": "UG4H12"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "946cb83224e183227109126d07374ed0af405ec0aa5b31d5bda00836756d1c64",
+          "call_wkn": "UG4H12"
+        }
+      ]
+    },
+    {
+      "issue": "170/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-170_Silctronic_3271.pdf",
+          "sha256": "a352ff1456d33f08ab90b90c552ef576ca61476fc3c3eb8e4297fc7a0250e7a7",
+          "publication_date": "2025-09-30",
+          "call_wkns": [
+            "DU03TW"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-170_Silctronic.pdf",
+          "publication_date": "2025-09-30",
+          "wkn": "DU03TW"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "171/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-171_Salzgitter_f4ce.pdf",
+          "sha256": "abcf2973a37e6754cafae4ca066f0e85962974cdcd640bceebee886c56f83605",
+          "publication_date": "2025-10-01",
+          "call_wkns": [
+            "UG6WU7"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-171_Salzgitter.pdf",
+          "publication_date": "2025-10-01",
+          "wkn": "UG6WU7"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "abcf2973a37e6754cafae4ca066f0e85962974cdcd640bceebee886c56f83605",
+          "call_wkn": "UG6WU7"
+        }
+      ]
+    },
+    {
+      "issue": "175/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-175_Hannover_5730.pdf",
+          "sha256": "ef86597e85e8e3c5788acf871c7a5df7f126bf69e10aaebb864bb18ae7a9a215",
+          "publication_date": "2025-10-08",
+          "call_wkns": [
+            "MM3GW6"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-175_Hannover.pdf",
+          "publication_date": "2025-10-08",
+          "wkn": "MM3GW6"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "ef86597e85e8e3c5788acf871c7a5df7f126bf69e10aaebb864bb18ae7a9a215",
+          "call_wkn": "MM3GW6"
+        }
+      ]
+    },
+    {
+      "issue": "176/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-176_Schneider_21ab.pdf",
+          "sha256": "d56a0be569b2cc199a7a8ff0c68f17c1590a5f17e08ca24cd0b69a7ef76f0f4a",
+          "publication_date": "2025-10-09",
+          "call_wkns": [
+            "MK3C4P"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-176_Schneider.pdf",
+          "publication_date": "2025-10-09",
+          "wkn": "MK3C4P"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "d56a0be569b2cc199a7a8ff0c68f17c1590a5f17e08ca24cd0b69a7ef76f0f4a",
+          "call_wkn": "MK3C4P"
+        }
+      ]
+    },
+    {
+      "issue": "179/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-179_Gilead_56c3.pdf",
+          "sha256": "988a4db3994490bea234fd1a830bf9762fef7f6a062c690640e01967faf660b0",
+          "publication_date": "2025-10-14",
+          "call_wkns": [
+            "FA8G3Q"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-179_Gilead.pdf",
+          "publication_date": "2025-10-14",
+          "wkn": "FA8G3Q"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "988a4db3994490bea234fd1a830bf9762fef7f6a062c690640e01967faf660b0",
+          "call_wkn": "FA8G3Q"
+        }
+      ]
+    },
+    {
+      "issue": "180/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-180_PepsiCo_732a.pdf",
+          "sha256": "37f4a954b8595d2a50eb3075c4bd6a594ab2573b5ec60e7b72a60a39974ef8c1",
+          "publication_date": "2025-10-15",
+          "call_wkns": [
+            "JF4W9Y"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-180_PepsiCo.pdf",
+          "publication_date": "2025-10-15",
+          "wkn": "JF4W9Y"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "188/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-188_Danahar_57a4.pdf",
+          "sha256": "740728cb48e1c41fd671047df216a6778b69938d0bca4310566ac3bb719129f5",
+          "publication_date": "2025-10-27",
+          "call_wkns": [
+            "MK3FMA"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-188_Danahar.pdf",
+          "publication_date": "2025-10-27",
+          "wkn": "MK3FMA"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "190/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-190_INFINEON_c2f5.pdf",
+          "sha256": "86f72f4c27405717be552cd5f3096dcc1b339c0ffad8a05e96984a9d165e3ca9",
+          "publication_date": "2025-10-29",
+          "call_wkns": [
+            "UG77TR"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2025-190_INFINEON.pdf",
+          "publication_date": "2025-10-29",
+          "wkn": "UG77TR"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "198/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-198_MERZEDES_c92e.pdf",
+          "sha256": "4cced80339085a3aeb42d2039c56a3f849444d2e6d4eda3ddbcb97eeb15b47c6",
+          "publication_date": "2025-11-10",
+          "call_wkns": [
+            "MM6ZLH"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "2025/Hebeltrader_2025-198.pdf",
+          "publication_date": "2025-11-10",
+          "wkn": "MM6ZLH"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "4cced80339085a3aeb42d2039c56a3f849444d2e6d4eda3ddbcb97eeb15b47c6",
+          "call_wkn": "MM6ZLH"
+        }
+      ]
+    },
+    {
+      "issue": "200/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-200_VW_2f0f.pdf",
+          "sha256": "4bcdf4fae3493e3cc8e3290c1280449a820c88ae2a33087607c999776d383f5b",
+          "publication_date": "2025-11-12",
+          "call_wkns": [
+            "MG7H7N"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-200_VW.pdf",
+          "publication_date": "2025-11-12",
+          "wkn": "MG7H7N"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "203/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-203_TotalEnergies_d1aa.pdf",
+          "sha256": "cab4761292c0b6d5b778253c88eafcec9e57433942e6207c659739e71a5e74c9",
+          "publication_date": "2025-11-17",
+          "call_wkns": [
+            "MM7KAA"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-203_TotalEnergies.pdf",
+          "publication_date": "2025-11-17",
+          "wkn": "MM7KAA"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "cab4761292c0b6d5b778253c88eafcec9e57433942e6207c659739e71a5e74c9",
+          "call_wkn": "MM7KAA"
+        }
+      ]
+    },
+    {
+      "issue": "206/25",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2025-206_Vertex_38b6.pdf",
+          "sha256": "99ad59547442281f17033382c21e726f4f4fbd35671d33d5ea2baa547450d690",
+          "publication_date": "2025-11-20",
+          "call_wkns": [
+            "SY7BFN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2025-206_Vertex.pdf",
+          "publication_date": "2025-11-20",
+          "wkn": "SY7BFN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "1/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-01_MTU_3c08.pdf",
+          "sha256": "85c4855f59b489f3a4c353ea871a0e993e4ecde7355c35088c8df65f69f36dfe",
+          "publication_date": "2026-01-07",
+          "call_wkns": [
+            "MK9CNS"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-01_MTU.pdf",
+          "publication_date": "2026-01-07",
+          "wkn": "MK9CNS"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "2/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-02_Rheinmetall_f851.pdf",
+          "sha256": "792721e537eb02a6603325ef673da54824947f070a1a8f54aff3fecae85d048a",
+          "publication_date": "2026-01-08",
+          "call_wkns": [
+            "MK2WCN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-02_Rheinmetall.pdf",
+          "publication_date": "2025-01-08",
+          "wkn": "MK2WCN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "3/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-03_Merck_ec4d.pdf",
+          "sha256": "1066c58ffc28bade3a03d94a6d53740303c3b3d65e120878852325633eb4ceea",
+          "publication_date": "2026-01-09",
+          "call_wkns": [
+            "JZ0PSN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-03_Merck.pdf",
+          "publication_date": "2025-01-09",
+          "wkn": "JZ0PSN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "4/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-04_Deer_1d05.pdf",
+          "sha256": "b572cad45f1c7032cba827e3e7498feee6baa54b94c96051ea5ffa89d786d34e",
+          "publication_date": "2026-01-12",
+          "call_wkns": [
+            "PL893C"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2026-04_Deer.pdf",
+          "publication_date": "2025-01-12",
+          "wkn": "PL893C"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "5/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-05_Alibaba_19b4.pdf",
+          "sha256": "986a81789f78ee65c325e37571991b3f5daf09d2e3f49b95409cbd461e15a862",
+          "publication_date": "2026-01-13",
+          "call_wkns": [
+            "JU5K35"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-05_Alibaba.pdf",
+          "publication_date": "2026-01-13",
+          "wkn": "JU5K35"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "7/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-07_Anheuser_f096.pdf",
+          "sha256": "33383b71ee1817bb9b797b78baec6ef32e9764e4546a5fa936f3798746934e95",
+          "publication_date": "2026-01-15",
+          "call_wkns": [
+            "MK9CL8"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-07_Anheuser.pdf",
+          "publication_date": "2026-01-15",
+          "wkn": "MK9CL8"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "8/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-08_Honeywell_0088.pdf",
+          "sha256": "10ef975e38acb988db44189d9db37ab1453b02737bb31c62ba89f33c609046ae",
+          "publication_date": "2026-01-16",
+          "call_wkns": [
+            "JV67BZ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2026-08_Honeywell.pdf",
+          "publication_date": "2026-01-16",
+          "wkn": "JV67BZ"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "9/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-09_Daimler_706d.pdf",
+          "sha256": "dbc17ac8b38fb249afd8a3a61a24307dd36126150e9fca467bf352e2be29bd8b",
+          "publication_date": "2026-01-19",
+          "call_wkns": [
+            "SJ6B4A"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-09_Daimler.pdf",
+          "publication_date": "2026-01-19",
+          "wkn": "SJ6B4A"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "10/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-10_Fraport_2e66.pdf",
+          "sha256": "9d5293c6d84f0cab6776bbc866892ec68be4a74057d7b2ce89b4ffa00ee29f34",
+          "publication_date": "2026-01-20",
+          "call_wkns": [
+            "HT7GRA"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-10_Fraport.pdf",
+          "publication_date": "2026-01-20",
+          "wkn": "HT7GRA"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "9d5293c6d84f0cab6776bbc866892ec68be4a74057d7b2ce89b4ffa00ee29f34",
+          "call_wkn": "HT7GRA"
+        }
+      ]
+    },
+    {
+      "issue": "15/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-15_EQT_8403.pdf",
+          "sha256": "c362c679ebd007ce0178ff8e0a253064b6f76afc783d74b24d1ddce22eecd2eb",
+          "publication_date": "2026-01-27",
+          "call_wkns": [
+            "JU18XW"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-15_EQT.pdf",
+          "publication_date": "2026-01-27",
+          "wkn": "JU18XW"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "19/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-19_DT_910c.pdf",
+          "sha256": "0d0e2b21ca5919ad40357cd54215328b3bb94f6f90df9cdcdf3bcffeb5b15d7c",
+          "publication_date": "2026-02-09",
+          "call_wkns": [
+            "SY9W4E"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-19_DT.pdf",
+          "publication_date": "2026-02-09",
+          "wkn": "SY9W4E"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "20/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-20_NVIDIA_7525.pdf",
+          "sha256": "e743b585f21f1f68a93b2279b2d94280ed2807ab9684eefea55c61c4538334f0",
+          "publication_date": "2026-02-10",
+          "call_wkns": [
+            "JZ1C5M"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-20_NVIDIA.pdf",
+          "publication_date": "2026-02-10",
+          "wkn": "JZ1C5M"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "25/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-25_TAG_52f0.pdf",
+          "sha256": "da57682b20c78724908dd2d79de344131b82c20cd9ebb625330ad0db61b0ac3a",
+          "publication_date": "2026-02-17",
+          "call_wkns": [
+            "DQ7RMK"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-25_TAG.pdf",
+          "publication_date": "2026-02-17",
+          "wkn": "DQ7RMK"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "26/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-2_Waste_1b7f.pdf",
+          "sha256": "ca53f7e49da8b066e5da757bd3b6c321d53bf636dd1161690fbc6712e84f6cdc",
+          "publication_date": "2026-02-18",
+          "call_wkns": [
+            "SX6G74"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-2_Waste.pdf",
+          "publication_date": "2026-02-18",
+          "wkn": "SX6G74"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "28/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-28_Occidential_8ca2.pdf",
+          "sha256": "5cf163130e2839c4df6d6a98506a47fa6c5cf46f6ff74d15263a22522b166fe5",
+          "publication_date": "2026-02-20",
+          "call_wkns": [
+            "HS761Z"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-28_Occidential.pdf",
+          "publication_date": "2026-02-20",
+          "wkn": "HS761Z"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "29/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-29_Cisco_3471.pdf",
+          "sha256": "6cce6a9a35fdea6da9c93a5e80100612c6ca2eba0de30098eefea114304c4cca",
+          "publication_date": "2026-02-23",
+          "call_wkns": [
+            "MM21XT"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-29_Cisco.pdf",
+          "publication_date": "2026-02-23",
+          "wkn": "MM21XT"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "30/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-30_Beierstorfer_027d.pdf",
+          "sha256": "5402470d49e2a5111e320b036af09bda58d74b098a8473f37f646911f5b94d13",
+          "publication_date": "2026-02-24",
+          "call_wkns": [
+            "HS8LYB"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-30_Beierstorfer.pdf",
+          "publication_date": "2026-02-24",
+          "wkn": "HS8LYB"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "31/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-31_Shell_4f03.pdf",
+          "sha256": "5601445b2eadd10523235ab0da31fcbcf16149c1bade3405192e1888009ba52b",
+          "publication_date": "2026-02-25",
+          "call_wkns": [
+            "HD77XT"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2026-31_Shell.pdf",
+          "publication_date": "2026-02-25",
+          "wkn": "HD77XT"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "37/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-37_GeneralDynamic_045b.pdf",
+          "sha256": "db9792996676ad51cba70478ad0b654c072f097c37cbf58263c97a6c3ee30e3b",
+          "publication_date": "2026-03-05",
+          "call_wkns": [
+            "PK64C5"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-37_GeneralDynamic.pdf",
+          "publication_date": "2026-03-05",
+          "wkn": "PK64C5"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "39/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-39_Leonardo_958f.pdf",
+          "sha256": "46dda6fd2d0b8dfef2a40df0c22665305a0e3d48ac2c0ea4ed1b62ebec08788a",
+          "publication_date": "2026-03-09",
+          "call_wkns": [
+            "UN38WD"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-39_Leonardo.pdf",
+          "publication_date": "2023-03-09",
+          "wkn": "UN38WD"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "40/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-40_Boing_ca26.pdf",
+          "sha256": "a93305b6ee2d2a087388f6e88ae78ae3d2c994151b2d443a53514a19b28f3dea",
+          "publication_date": "2026-03-10",
+          "call_wkns": [
+            "FA5PD9"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-40_Boing.pdf",
+          "publication_date": "2026-03-10",
+          "wkn": "FA5PD9"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "42/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-42_Vertex_4e8b.pdf",
+          "sha256": "b276c40949ebdbe2cdf4810a4f477f50f5263a7a4a2e7de5381734511776faea",
+          "publication_date": "2026-03-12",
+          "call_wkns": [
+            "MJ825Z"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-42_Vertex.pdf",
+          "publication_date": "2026-03-12",
+          "wkn": "MJ825Z"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "43/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-43_Thales_a782.pdf",
+          "sha256": "909d101ccd16a9daf93bcdf7a926dd10e9b55669dbf0111f90c9538ee5eb3a99",
+          "publication_date": "2026-03-13",
+          "call_wkns": [
+            "FA0XFC"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-43_Thales.pdf",
+          "publication_date": "2026-03-13",
+          "wkn": "FA0XFC"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "46/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-46_AirLiquid_cdea.pdf",
+          "sha256": "cf72f13b15712cd10024315b33bb6fa6291be3684fa1b546084c26ef742e640d",
+          "publication_date": "2026-03-18",
+          "call_wkns": [
+            "MM51LF"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-46_AirLiquid.pdf",
+          "publication_date": "2026-03-18",
+          "wkn": "MM51LF"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "cf72f13b15712cd10024315b33bb6fa6291be3684fa1b546084c26ef742e640d",
+          "call_wkn": "MM51LF"
+        }
+      ]
+    },
+    {
+      "issue": "49/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-49_ATT_f44e.pdf",
+          "sha256": "a2faf34e71baca9ef086192bd21760ae4f6bc18527c6025cc11dbbd4059bcfdd",
+          "publication_date": "2026-03-23",
+          "call_wkns": [
+            "UN4WB9"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-49_ATT.pdf",
+          "publication_date": "2026-03-23",
+          "wkn": "UN4WB9"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "57/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-57_Allianz_30d4.pdf",
+          "sha256": "d6c4cb8caab6b1ec9e73751910b095466d6ca703bff560631b6cffca38be51e5",
+          "publication_date": "2026-04-02",
+          "call_wkns": [
+            "SJ796D"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2026-57_Allianz.pdf",
+          "publication_date": "2026-04-02",
+          "wkn": "SJ796D"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "61/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-61_JPMorganCase_1227.pdf",
+          "sha256": "31d5944d5c5d4fe9e8d6467c071957f07aa6389e44ed1516de5be44b29de7d4f",
+          "publication_date": "2026-04-10",
+          "call_wkns": [
+            "850628"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-61_JPMorganCase.pdf",
+          "publication_date": "2026-04-10",
+          "wkn": "UQ2KJ7"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "65/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-65_Siemens_52b6.pdf",
+          "sha256": "7f6c400d7679cc00983f93c4040be041f29a6bfa24c91188af557728db944ff7",
+          "publication_date": "2026-04-16",
+          "call_wkns": [
+            "HT9446"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2026-65_Siemens.pdf",
+          "publication_date": "2026-04-16",
+          "wkn": "HT9446"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "70/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-70_Cosco_dc48.pdf",
+          "sha256": "87ee85ccef82cdc308ee4f9ff939be46d46fe37a3c27cae6af204543d86e35c6",
+          "publication_date": "2026-04-23",
+          "call_wkns": [
+            "PL68FN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-70_Cosco.pdf",
+          "publication_date": "2026-04-23",
+          "wkn": "PL68FN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "78/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-78_CrowedStrike_1501.pdf",
+          "sha256": "c8d29f6bed0385c2ed06a8b7bc8aaf8ffd5c7e19e4464b8d063feb512ab011f2",
+          "publication_date": "2026-05-06",
+          "call_wkns": [
+            "VH7V7R"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "all/Hebeltrader_2026-78_CrowedStrike.pdf",
+          "publication_date": "2026-05-06",
+          "wkn": "VH7V7R"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "81/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-81_UnitedHealth_7479.pdf",
+          "sha256": "857ac9dbb347c5fa8137a83aa065e91b92e885ce26dfff3a7ab014997be462aa",
+          "publication_date": "2026-05-11",
+          "call_wkns": [
+            "FD09J0"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-81.pdf",
+          "publication_date": "2026-05-11",
+          "wkn": "FD09J0"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "857ac9dbb347c5fa8137a83aa065e91b92e885ce26dfff3a7ab014997be462aa",
+          "call_wkn": "FD09J0"
+        }
+      ]
+    },
+    {
+      "issue": "83/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-83_AgioEagle_1650.pdf",
+          "sha256": "f9fb87a3d3732762ce8c70fcf3397f8a24e9aa4277a598e8b35b27b23afb8ef9",
+          "publication_date": "2026-05-13",
+          "call_wkns": [
+            "JE0ASR"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-83_AgioEagle.pdf",
+          "publication_date": "2026-05-13",
+          "wkn": "JE0ASR"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "84/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-84_Elli_be15.pdf",
+          "sha256": "5a9f342af3f89aabbbd0b628584840256c4535db407963dad79b3a109a9e715e",
+          "publication_date": "2026-05-15",
+          "call_wkns": [
+            "PK32CV"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-84_Elli.pdf",
+          "publication_date": "2026-05-15",
+          "wkn": "PK32CV"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "87/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-87_VISA_ce9d.pdf",
+          "sha256": "e2ac39225ad33403ae8cc466c160e2992213ebca3f2ff7100510838b8d73fb10",
+          "publication_date": "2026-05-20",
+          "call_wkns": [
+            "MM5H8Q"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-87_VISA.pdf",
+          "publication_date": "2026-05-20",
+          "wkn": "MM5H8Q"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "89/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-89_Honeywell_03df.pdf",
+          "sha256": "4714a2f935c2afc9e7e083f6f1227a7a902be2748e36a4ab1a74f2693f2ffabb",
+          "publication_date": "2026-05-22",
+          "call_wkns": [
+            "MN2ZUN"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-89_Honeywell.pdf",
+          "publication_date": "2026-05-22",
+          "wkn": "MN2ZUN"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "90/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-90_Amgen_0f12.pdf",
+          "sha256": "6bc189df76e3cea1ce86fbcd49aa092858b9a339077228da3a4f149c35c870b9",
+          "publication_date": "2026-05-26",
+          "call_wkns": [
+            "MM5GNP"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-90.pdf",
+          "publication_date": "2026-05-26",
+          "wkn": "MM5GNP"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "93/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-93_204e.pdf",
+          "sha256": "a6621fe098c49c1d398e3c926748b954e70ee62fd08db61cc387c1eaf46cb0f7",
+          "publication_date": "2026-05-29",
+          "call_wkns": [
+            "DU0UHF"
+          ]
+        },
+        {
+          "filename": "Hebeltrader_2026-93_Adidas_f0d2.pdf",
+          "sha256": "a6621fe098c49c1d398e3c926748b954e70ee62fd08db61cc387c1eaf46cb0f7",
+          "publication_date": "2026-05-29",
+          "call_wkns": [
+            "DU0UHF"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-93_Adidas.pdf",
+          "publication_date": "2026-05-29",
+          "wkn": "DU0UHF"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "a6621fe098c49c1d398e3c926748b954e70ee62fd08db61cc387c1eaf46cb0f7",
+          "call_wkn": "DU0UHF"
+        }
+      ]
+    },
+    {
+      "issue": "94/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-94_Cloudflare_1f7c.pdf",
+          "sha256": "7f714281eba9b9f7a6b2502661917177e94ee73b3103790b4e38ede4c55a5d51",
+          "publication_date": "2026-06-01",
+          "call_wkns": [
+            "PJ9G85"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "half/Hebeltrader_2026-94_Cloudflare.pdf",
+          "publication_date": "2026-06-01",
+          "wkn": "PJ9G85"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "95/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-95_17ba.pdf",
+          "sha256": "56c34f7beec04959ca0c4e3620355a182c2ca99eecb9fb52e00e8b1e4e7c7ed7",
+          "publication_date": "2026-06-02",
+          "call_wkns": [
+            "DU8WQY"
+          ]
+        },
+        {
+          "filename": "Hebeltrader_2026-95_ENI_c986.pdf",
+          "sha256": "56c34f7beec04959ca0c4e3620355a182c2ca99eecb9fb52e00e8b1e4e7c7ed7",
+          "publication_date": "2026-06-02",
+          "call_wkns": [
+            "DU8WQY"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-95.pdf",
+          "publication_date": "2026-06-02",
+          "wkn": "DU8WQY"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "96/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-96_Continental_2495.pdf",
+          "sha256": "a507a8ae13b36b432f88f799aabe5963edc6d8fe329820b82f27fdd47e537d3b",
+          "publication_date": "2026-06-03",
+          "call_wkns": [
+            "VH7S65"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-96_Continental.pdf",
+          "publication_date": "2026-06-03",
+          "wkn": "VH7S65"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "97/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-97_Deere_6fd2.pdf",
+          "sha256": "e69148fff43a451961a3e6bd5e407434d04d7f80398e4bea181557a964cd933d",
+          "publication_date": "2026-06-05",
+          "call_wkns": [
+            "FE20SD"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-97_Deere.pdf",
+          "publication_date": "2026-06-05",
+          "wkn": "FE20SD"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "98/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-98_810e.pdf",
+          "sha256": "39f4669c1057d79600fce565a241faf8f1ed0bac7f6b149734e0cfd3eb839e63",
+          "publication_date": "2026-06-08",
+          "call_wkns": [
+            "PJ9RC8"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-98.pdf",
+          "publication_date": "2026-06-08",
+          "wkn": "PJ9RC8"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "101/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-101_Carrier_757e.pdf",
+          "sha256": "185b3420eb14a37b1b4b467bce265f0e66f8bcae0d4d9a71350339371eac2bec",
+          "publication_date": "2026-06-11",
+          "call_wkns": [
+            "JY0TWR"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-101_Carrier.pdf",
+          "publication_date": "2026-06-11",
+          "wkn": "JY0TWR"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "115/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-115_SiemensEn_fa60.pdf",
+          "sha256": "36f11997488019b0334dcb042f66b82d3c2bf9fb8575058e09b4c2625e3e0335",
+          "publication_date": "2026-07-01",
+          "call_wkns": [
+            "JE6F0C"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-115_SiemensEn.pdf",
+          "publication_date": "2026-07-01",
+          "wkn": "JE6F0C"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "117/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-117_AirL_0baf.pdf",
+          "sha256": "d4716f8ef09b4297c7b51e384d06524324e0a897eed22e1de1da66eaf860f765",
+          "publication_date": "2026-07-03",
+          "call_wkns": [
+            "MR1BYH"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-117_AirL.pdf",
+          "publication_date": "2026-07-03",
+          "wkn": "MR1BYH"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "119/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-119_Thermo_bdc3.pdf",
+          "sha256": "ece24412340b0f353750f6271765036c683775fd8d9baeb9ada7dcde527ce8ce",
+          "publication_date": "2026-07-07",
+          "call_wkns": [
+            "SY7B4G"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-119_Thermo.pdf",
+          "publication_date": "2026-07-07",
+          "wkn": "SY7B4G"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "120/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-120_General_0d0f.pdf",
+          "sha256": "90abcfc5cb3afa0aae0d13298d834f5e76fd62aafa855f9796375a953543763d",
+          "publication_date": "2026-07-08",
+          "call_wkns": [
+            "PK64DH"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-120_General.pdf",
+          "publication_date": "2026-07-08",
+          "wkn": "PK64DH"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "121/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-121_ENI_a2ac.pdf",
+          "sha256": "2a6ad7b09c86143c83a2ab538ae74a65843a14dae282f3ab9f7dee914eb8a669",
+          "publication_date": "2026-07-09",
+          "call_wkns": [
+            "DU9B9Q"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-121_ENI.pdf",
+          "publication_date": "2026-07-09",
+          "wkn": "DU9B9Q"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "137/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-137_BASF_7a75.pdf",
+          "sha256": "849540e787f76871d10dc45670225b9cf9646471b49913a7e430ef8601c9aab8",
+          "publication_date": "2026-07-31",
+          "call_wkns": [
+            "MJ7DUX"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-137.pdf",
+          "publication_date": "2026-07-31",
+          "wkn": "MJ7DUX"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "849540e787f76871d10dc45670225b9cf9646471b49913a7e430ef8601c9aab8",
+          "call_wkn": "MJ7DUX"
+        }
+      ]
+    },
+    {
+      "issue": "140/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-140_Thales_397a.pdf",
+          "sha256": "ddf194d00945242ca9003b3289f3df20295c8a3befe821a763bc2f3c703a43be",
+          "publication_date": "2026-08-05",
+          "call_wkns": [
+            "DN3NVH"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-140_Thales.pdf",
+          "publication_date": "2026-08-05",
+          "wkn": "DN3NVH"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "ddf194d00945242ca9003b3289f3df20295c8a3befe821a763bc2f3c703a43be",
+          "call_wkn": "DN3NVH"
+        }
+      ]
+    },
+    {
+      "issue": "141/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-141_Leonardo_3c6d.pdf",
+          "sha256": "fc16a36c9f4f324f4ac2f7fb9bd564ed5c47e5ed2a5485a526cc7112b2594acf",
+          "publication_date": "2026-08-06",
+          "call_wkns": [
+            "VJ2RFH"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-141_Leonardo.pdf",
+          "publication_date": "2026-08-06",
+          "wkn": "VJ2RFH"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "fc16a36c9f4f324f4ac2f7fb9bd564ed5c47e5ed2a5485a526cc7112b2594acf",
+          "call_wkn": "VJ2RFH"
+        }
+      ]
+    },
+    {
+      "issue": "143/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-143_Broadacom_b972.pdf",
+          "sha256": "77ec7d8adf28abf5f885d3d86c5111b76c3db67f7b12ec430ff887f002834d5c",
+          "publication_date": "2026-08-10",
+          "call_wkns": [
+            "MN8GZP"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-143_Broadacom.pdf",
+          "publication_date": "2026-08-10",
+          "wkn": "MN8GZP"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "77ec7d8adf28abf5f885d3d86c5111b76c3db67f7b12ec430ff887f002834d5c",
+          "call_wkn": "MN8GZP"
+        }
+      ]
+    },
+    {
+      "issue": "144/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-144_Pfizer_e212.pdf",
+          "sha256": "3ff4cec182b7ef53af18b7b288b4140e7a54eda5273dca7cfa607e366f0816ec",
+          "publication_date": "2026-08-11",
+          "call_wkns": [
+            "WA4R5Q"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-144_Pfizer.pdf",
+          "publication_date": "2026-08-11",
+          "wkn": "WA4R5Q"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "3ff4cec182b7ef53af18b7b288b4140e7a54eda5273dca7cfa607e366f0816ec",
+          "call_wkn": "WA4R5Q"
+        }
+      ]
+    },
+    {
+      "issue": "146/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-146_LAM_f81e.pdf",
+          "sha256": "35919d4d21c89570cb31bc6735601f454db20a0039cee6552fd412707224b720",
+          "publication_date": "2026-08-13",
+          "call_wkns": [
+            "DN252P"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-146_LAM.pdf",
+          "publication_date": "2026-08-13",
+          "wkn": "DN252P"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "147/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-147_KKR_27bc.pdf",
+          "sha256": "11fee499737838c9f2f4140745ed3726394395b5fc0b9d3981c1fc61e2850586",
+          "publication_date": "2026-08-14",
+          "call_wkns": [
+            "VH62T5"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "fail/Hebeltrader_2026-147_KKR.pdf",
+          "publication_date": "2026-08-14",
+          "wkn": "VH62T5"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "11fee499737838c9f2f4140745ed3726394395b5fc0b9d3981c1fc61e2850586",
+          "call_wkn": "VH62T5"
+        }
+      ]
+    },
+    {
+      "issue": "151/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-151_SAP_8a48.pdf",
+          "sha256": "c330ca57db50bbcb82fd4e4ff38ff7b88d12bf64549c76e993eff59f32009419",
+          "publication_date": "2026-08-20",
+          "call_wkns": [
+            "UP9A9X"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-151_SAP.pdf",
+          "publication_date": "2026-08-20",
+          "wkn": "UP9A9X"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "c330ca57db50bbcb82fd4e4ff38ff7b88d12bf64549c76e993eff59f32009419",
+          "call_wkn": "UP9A9X"
+        }
+      ]
+    },
+    {
+      "issue": "154/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-154_Danahar_3e28.pdf",
+          "sha256": "273406c7f4dba976a6f4ac227f42177f6e1a57d8f96fdc63a941c9dec7ff43c9",
+          "publication_date": "2026-08-25",
+          "call_wkns": [
+            "JY3SF7"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-154_Danahar.pdf",
+          "publication_date": "2026-08-25",
+          "wkn": "JY3SF7"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "273406c7f4dba976a6f4ac227f42177f6e1a57d8f96fdc63a941c9dec7ff43c9",
+          "call_wkn": "JY3SF7"
+        }
+      ]
+    },
+    {
+      "issue": "157/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-157_Vertiv_b43b.pdf",
+          "sha256": "41e16e1bdb2a4bcb769a81c9c7ae6ffa85d705def9e1bfc536106b3ae16f6bb2",
+          "publication_date": "2026-08-28",
+          "call_wkns": [
+            "HM4EB1"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-157_Vertiv.pdf",
+          "publication_date": "2026-08-28",
+          "wkn": "HM4EB1"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "41e16e1bdb2a4bcb769a81c9c7ae6ffa85d705def9e1bfc536106b3ae16f6bb2",
+          "call_wkn": "HM4EB1"
+        }
+      ]
+    },
+    {
+      "issue": "161/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-161_UnitedHealth_7ed8.pdf",
+          "sha256": "d0ece3248a789b0c93a88bd3688c1f5c3158e5500ea3095a36f523bdbb88979d",
+          "publication_date": "2026-09-03",
+          "call_wkns": [
+            "VH2LU2"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-161_UnitedHealth.pdf",
+          "publication_date": "2026-09-03",
+          "wkn": "VH2LU2"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "d0ece3248a789b0c93a88bd3688c1f5c3158e5500ea3095a36f523bdbb88979d",
+          "call_wkn": "VH2LU2"
+        }
+      ]
+    },
+    {
+      "issue": "166/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-166_5e66.pdf",
+          "sha256": "4c0e025c624cfb332ac80932818820a9cf18d29414b1ca3eba36ff482596d40a",
+          "publication_date": "2026-09-10",
+          "call_wkns": [
+            "VH4VNA"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-166_CON.pdf",
+          "publication_date": "2026-09-10",
+          "wkn": "VH4VNA"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "167/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-167_31f9.pdf",
+          "sha256": "64bc9d704e254f6feb563b982c350d5be7c44cd5bb41a3f5f33c2b8c93480174",
+          "publication_date": "2026-09-11",
+          "call_wkns": [
+            "PM03B1"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-167_BP.pdf",
+          "publication_date": "2026-09-11",
+          "wkn": "PM03B1"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "173/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-173_Micron_af6b.pdf",
+          "sha256": "28e46e9bd8ea1e60c6d6279abccee9d37d161cc6abcf2f4a38f5a7516687935d",
+          "publication_date": "2026-09-21",
+          "call_wkns": [
+            "UN87G6"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-173_Micron.pdf",
+          "publication_date": "2026-09-21",
+          "wkn": "UN87G6"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "28e46e9bd8ea1e60c6d6279abccee9d37d161cc6abcf2f4a38f5a7516687935d",
+          "call_wkn": "UN87G6"
+        }
+      ]
+    },
+    {
+      "issue": "176/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-176_SAL_6c40.pdf",
+          "sha256": "2a1077f246f9dba5f59473e566c7c93923151fee5d3cc09fe6a9426c69c26e1d",
+          "publication_date": "2026-09-24",
+          "call_wkns": [
+            "JG0AEJ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-176_SAL.pdf",
+          "publication_date": "2026-09-24",
+          "wkn": "JG0AEJ"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "2a1077f246f9dba5f59473e566c7c93923151fee5d3cc09fe6a9426c69c26e1d",
+          "call_wkn": "JG0AEJ"
+        }
+      ]
+    },
+    {
+      "issue": "190/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-190_ZUR_6b25.pdf",
+          "sha256": "dc641a6800c4108a1b44d0533d3f8ac94baf911d6e741e73bcf2b9c855bc5275",
+          "publication_date": "2026-10-14",
+          "call_wkns": [
+            "UN6E7X"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-190_ZUR.pdf",
+          "publication_date": "2026-10-14",
+          "wkn": "UN6E7X"
+        }
+      ],
+      "original_register": []
+    },
+    {
+      "issue": "192/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-192_Costco_c7dd.pdf",
+          "sha256": "4f7c10d0fb43b67f2e2a648193f851c0e902c07b399aa458f8286b5b5f8a7c6f",
+          "publication_date": "2026-10-16",
+          "call_wkns": [
+            "JY5SQZ"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-192_COS.pdf",
+          "publication_date": "2026-10-16",
+          "wkn": "JY5SQZ"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "4f7c10d0fb43b67f2e2a648193f851c0e902c07b399aa458f8286b5b5f8a7c6f",
+          "call_wkn": "JY5SQZ"
+        }
+      ]
+    },
+    {
+      "issue": "193/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-193_JPM_8cfd.pdf",
+          "sha256": "3d17e12a12c16c3a72543ff32bb90b818aeaac6dad5c5ac531a74265be0d61cd",
+          "publication_date": "2026-10-19",
+          "call_wkns": [
+            "MN6CYX"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-193_JPM.pdf",
+          "publication_date": "2026-10-19",
+          "wkn": "MN6CYX"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "3d17e12a12c16c3a72543ff32bb90b818aeaac6dad5c5ac531a74265be0d61cd",
+          "call_wkn": "MN6CYX"
+        }
+      ]
+    },
+    {
+      "issue": "195/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-195_JNJ_e639.pdf",
+          "sha256": "d285b6ec49786c15e6d783eae41bbd9c7416a185f92afbf46594290f8f3a604d",
+          "publication_date": "2026-10-21",
+          "call_wkns": [
+            "JE11C1"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-195_JNJ.pdf",
+          "publication_date": "2026-10-21",
+          "wkn": "JE11C1"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "d285b6ec49786c15e6d783eae41bbd9c7416a185f92afbf46594290f8f3a604d",
+          "call_wkn": "JE11C1"
+        }
+      ]
+    },
+    {
+      "issue": "198/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-198_SLB_1c4b.pdf",
+          "sha256": "fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+          "publication_date": "2026-10-26",
+          "call_wkns": [
+            "VY95PV"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-198_SLB.pdf",
+          "publication_date": "2026-10-26",
+          "wkn": "VY95PV"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4",
+          "call_wkn": "VY95PV"
+        }
+      ]
+    },
+    {
+      "issue": "199/26",
+      "pdf_inventory": [],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-199_NDQ.pdf",
+          "publication_date": "2026-10-27",
+          "wkn": "JY7FDN"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "3817b74c93f9db92420fe9013e2ea0c0f93c711e50b747d66c01df11c6dc58e0",
+          "call_wkn": "JY7FDN"
+        }
+      ]
+    },
+    {
+      "issue": "200/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-200_ANA_f93f.pdf",
+          "sha256": "e8f1365890bf789b119713174e67aa1cd9a147bda870f8f4ecccb77c824ad1c2",
+          "publication_date": "2026-10-28",
+          "call_wkns": [
+            "MN84GA"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-200_ANA.pdf",
+          "publication_date": "2026-10-28",
+          "wkn": "MN84GA"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "e8f1365890bf789b119713174e67aa1cd9a147bda870f8f4ecccb77c824ad1c2",
+          "call_wkn": "MN84GA"
+        }
+      ]
+    },
+    {
+      "issue": "201/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-201_SYN_fd55.pdf",
+          "sha256": "46845b99af7f5321d6d835e14fd0081119cf44d19dadd79ad1e6cd037f470713",
+          "publication_date": "2026-10-29",
+          "call_wkns": [
+            "MN9WA9"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-201_SYN.pdf",
+          "publication_date": "2026-10-29",
+          "wkn": "MN9WA9"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "46845b99af7f5321d6d835e14fd0081119cf44d19dadd79ad1e6cd037f470713",
+          "call_wkn": "MN9WA9"
+        }
+      ]
+    },
+    {
+      "issue": "202/26",
+      "pdf_inventory": [
+        {
+          "filename": "Hebeltrader_2026-202_2822.pdf",
+          "sha256": "d885c19faf83bc0a7b4eab1b9c5821f9328ae1d9b5cbef0016285519595fd885",
+          "publication_date": "2026-10-30",
+          "call_wkns": [
+            "WB14HL"
+          ]
+        }
+      ],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-202_DB.pdf",
+          "publication_date": "2026-10-30",
+          "wkn": "WB14HL"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "d885c19faf83bc0a7b4eab1b9c5821f9328ae1d9b5cbef0016285519595fd885",
+          "call_wkn": "WB14HL"
+        }
+      ]
+    },
+    {
+      "issue": "203/26",
+      "pdf_inventory": [],
+      "call_corpus": [
+        {
+          "filename": "Hebeltrader_2026-203_AEP.pdf",
+          "publication_date": "2026-11-02",
+          "wkn": "MN6D8E"
+        }
+      ],
+      "original_register": [
+        {
+          "pdf_sha256": "f2fd086107ff4bf7ea05a8abe654cbbd45151f5941ebc16a2995329c0d8bc6f0",
+          "call_wkn": "MN6D8E"
+        }
+      ]
+    },
+    {
+      "issue": "204/26",
+      "pdf_inventory": [],
+      "call_corpus": [],
+      "original_register": [
+        {
+          "pdf_sha256": "4ad03cc9b2d53f444ab390f917c35b0a9aa38f0e6474bf8ad551d61f4ae2e06a",
+          "call_wkn": "FE1C78"
+        }
+      ]
+    },
+    {
+      "issue": "210/26",
+      "pdf_inventory": [],
+      "call_corpus": [],
+      "original_register": [
+        {
+          "pdf_sha256": "73437fea2b2faa56baf4fd6b5a44d2f82b7f9562d89b66662d8d3208a6902c50",
+          "call_wkn": "HM55NU"
+        }
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "issue": "15/25",
+      "kind": "wkn_role_or_extraction",
+      "corpus": "SX04FN",
+      "pdf": [
+        "A0X9EJ"
+      ]
+    },
+    {
+      "issue": "16/25",
+      "kind": "wkn_role_or_extraction",
+      "corpus": "SX04B8",
+      "pdf": [
+        "590900"
+      ]
+    },
+    {
+      "issue": "24/25",
+      "kind": "wkn_role_or_extraction",
+      "corpus": "SJ9Z8M",
+      "pdf": [
+        "633500"
+      ]
+    },
+    {
+      "issue": "2/26",
+      "kind": "publication_date",
+      "corpus": "2025-01-08",
+      "pdf": "2026-01-08"
+    },
+    {
+      "issue": "3/26",
+      "kind": "publication_date",
+      "corpus": "2025-01-09",
+      "pdf": "2026-01-09"
+    },
+    {
+      "issue": "4/26",
+      "kind": "publication_date",
+      "corpus": "2025-01-12",
+      "pdf": "2026-01-12"
+    },
+    {
+      "issue": "39/26",
+      "kind": "publication_date",
+      "corpus": "2023-03-09",
+      "pdf": "2026-03-09"
+    },
+    {
+      "issue": "61/26",
+      "kind": "wkn_role_or_extraction",
+      "corpus": "UQ2KJ7",
+      "pdf": [
+        "850628"
+      ]
+    }
+  ]
+}
