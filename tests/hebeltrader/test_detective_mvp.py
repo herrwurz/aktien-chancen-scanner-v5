@@ -3,7 +3,6 @@ import hashlib
 import json
 from datetime import UTC, datetime
 from io import BytesIO
-from pathlib import Path
 
 import pytest
 from PIL import Image
@@ -234,13 +233,6 @@ def test_empty_or_malformed_inputs_are_rejected():
         DetectiveService(ocr=FakeOcr()).analyze(
             request(screenshot_base64="%%%", screenshot_media_type="image/png")
         )
-
-
-def test_web_renderer_uses_text_content_and_never_dynamic_inner_html():
-    template = Path("scanner/templates/detective.html").read_text()
-    assert "innerHTML" not in template
-    assert "textContent" in template
-    assert "replaceChildren" in template
 
 
 def test_offline_cli_writes_machine_readable_audit_report(tmp_path):

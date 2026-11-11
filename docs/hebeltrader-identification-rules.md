@@ -35,7 +35,7 @@ und genauen Veröffentlichungsuhrzeiten bleiben unbekannt.
 |---|---|---|---|---|---|
 | HT-001 | „Chip-Gigant im Ausnahmezustand: Die Gewinnmaschine läuft auf Hochtouren!“; HEBELTRADER 200/26; 28.10.2026 | Analog Devices (ADI) | MN84GA | FALSCH (Nutzerrekonstruktion) | Ersttipp: Lattice Semiconductor. Nutzerfall 18. Historische unkalibrierte Angabe: 95 %. Ankereffekt und Bestätigungssuche nach frühem Lattice-Tipp; spezifische Unternehmensereignisse hätten stärker geprüft werden müssen; unkalibrierte 95-%-Angabe. Volltext vorhanden. |
 | HT-002 | „Gewinnstärke, Kaufsignal, Turbo-Hebel – das Setup für den Volltreffer!“; HEBELTRADER 190/26; 14.10.2026 | Zurich Insurance Group | UN6E7X | FALSCH (Nutzerrekonstruktion) | Ersttipp: UnitedHealth Group. Nutzerfall 03. Allgemeine Gewinn- und defensive Branchenhinweise waren nicht spezifisch genug. Volltext vorhanden. |
-| HT-003 | „Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!“; HEBELTRADER 192/26; 16.10.2026 | Costco Wholesale (COST) | JY55QZ | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Costco. Nutzerfall 01.  Volltext vorhanden. |
+| HT-003 | „Wachstum ohne Ende – Handels-Gigant vor der Mega-Aufholjagd!“; HEBELTRADER 192/26; 16.10.2026 | Costco Wholesale (COST) | JY5SQZ | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Costco. Nutzerfall 01. Original-PDF 192/26, S. 1: JY5SQZ. Frühere WKN-Angabe: JY55QZ. Volltext vorhanden. |
 | HT-004 | „Comeback mit Ansage: Dieser Tech-Titel startet durch!“; HEBELTRADER 176/26; 24.09.2026 | Salesforce (CRM) | JG0AEJ | FALSCH (Nutzerrekonstruktion) | Ersttipp: Zoom. Nutzerfall 04. Generisches Tech-Comeback-Narrativ überbewertet. Volltext vorhanden. |
 | HT-005 | „Gewinnsprung voraus: Der unterschätzte KI-Profiteur!“; HEBELTRADER 173/26; 21.09.2026 | Micron Technology (MU) | UN87G6 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: Micron. Nutzerfall 05.  Volltext vorhanden. |
 | HT-006 | „Gesundheitsriese vor der Neubewertung!“; HEBELTRADER 161/26; 03.09.2026 | UnitedHealth Group (UNH) | VH2LU2 | RICHTIG (Nutzerrekonstruktion) | Ersttipp: UnitedHealth. Nutzerfall 06.  Volltext vorhanden. |
@@ -86,9 +86,213 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 ### FE-003 – Lockheed statt RTX (HEBELTRADER 204/26, 03.11.2026)
 - **Ursprüngliche Antwort:** Lockheed Martin Rang 1 (Evidenz 56), RTX Rang 2 (46), General Dynamics Rang 3; 0 bestätigte Kernhinweise.
 - **Tatsächliche Nutzerauflösung:** RTX.
+- **Originalcall laut Nutzer (nachgetragen am 11.11.2026):** **FE1C78**, ISIN **DE000FE1C780**, Société Générale, klassischer Call, Basispreis **250 USD**, Bezugsverhältnis 0,1, finaler Bewertungstag **19.03.2027**. Teaser-Szenario +2.110 % bei Ziel 2. Original-PDF 204/26, S. 1–3: Einstieg **0,21 €**, Stopp 1 **0,10 €**, Ziele **1,20 € / 4,64 €**. Separates Kauflimit offen. [Emittenten-Stammdaten](https://www.sg-zertifikate.de/product-details/fe1c78)
 - **Ursache:** Generische US-Rüstungs-/Auftragsboom-Sprache trifft alle Primes gleich; der Teaser-Diskriminator **„mehrere Weltmarktführer unter einem Dach“** plus Wartungsverträge / Rekord-Auftragsbestand / angehobene Jahresprognose wurde nicht als Primärbeleg gegen Pure-Play-Primes (LMT/NOC/GD) gewichtet. KI-Belegstellen-Anzahl ≠ Score.
 - **Regel:** Bei US-Rüstung mit Multi-Segment-/Dach-Cue gezielt Raytheon/Collins/Pratt-/Aftermarket-/Guidance-Belege suchen; Pure-Play-Primes ohne Multi-Segment-Evidenz soft demoten; EU-Rüster hart filtern.
 - **Regressionstest:** `tests/hebeltrader/test_defense_fingerprint.py` — RTX-IR vor Lockheed bei HT-204-Teasertext.
+
+## Amazon (AMZN) – Nutzerauflösung vom 11.11.2026
+
+| Feld | Befund |
+|---|---|
+| Teaser | „KI-Boom, Rekordgewinne, Wachstumsturbo – Digitalriese im Aufwärtsrausch!“ |
+| Beworbene Szenarien | +450 % bei Ziel 1, +2.003 % bei Ziel 2 |
+| Erster Aktientipp im Chat | Amazon vor Microsoft und Alphabet. Amazon vom Nutzer bestätigt. |
+| Erstvorschlag für den Call | JE69D8, J.P. Morgan, 320 USD, Bewertungstag 19.03.2027. Eigenvorschlag im Chat mit Limit 1 von 0,70 € und Stop 1 von 0,35 €. |
+| Originalcall laut Nutzer | **HM55NU**, ISIN **DE000HM55NU0**, HSBC, klassischer Amazon-Call, **340 USD**, Bezugsverhältnis **0,1**, Bewertungstag **19.03.2027**. [Produktdaten und Quote](https://www.onvista.de/derivate/Optionsscheine/327852098-HM55NU-DE000HM55NU0) |
+| Original-PDF 210/26 (11.11.2026), S. 1–3 | Einstieg **0,40 €**, Stopp 1 **0,15 €**, Derivatziel 1/2 **2,20 € / 8,41 €**, Aktienziele **337 / 430 USD**. Separates Kauflimit und Veröffentlichungsuhrzeit offen. |
+| Beobachteter Marktstand | 11.11.2026 vormittags: 0,43 € Geld / 0,44 € Brief, Omega 9,47. Referenzaktienkurs 270,87 USD (Nasdaq-Schluss 10.11.). Strike-Abstand +25,5 % gegenüber +18,1 % bei JE69D8. Marktquote und Report-Ordermarken separat erfassen. |
+
+**Vergleich mit belegten Originalen.** HEBELTRADER 199/26 (27.10.2026, Original-PDF, S. 1–2) empfiehlt für Nasdaq Inc. JY7FDN mit gleichem Laufzeitdatum, 120 USD Basispreis gegenüber 104,72 USD Aktienindikation (+14,6 %), 0,22 € empfohlener Einstieg, 0,08 € Stop 1 (−63,6 %) und Omega 10,0. Bei diesem Fall sieht Wittmer eine Teilgewinnmitnahme am ersten Ziel mit anschließendem Anheben des Stopps auf den Einstieg vor. Beim Thermo-Fisher-Fall HT-027 / SY7B4G dokumentiert das Original-PDF 62 % Stopprisiko und +514 % / +2.096 % in den Zielszenarien. Das sind Einzelbeobachtungen, aus denen sich kein fester Stoppprozentsatz und kein fester Strike-Abstand ableiten lassen.
+
+**Suchregel und Regressionserwartung.** Bei einem angefragten Laufzeitdatum die verfügbaren Strikes bis in den deutlich aus dem Geld liegenden Bereich vergleichen. Im Amazon-Fall gehören 320 und 340 USD in die Vorauswahl. Strike-Abstand, Omega, Bezugsverhältnis, Geld/Brief, Stopprisiko und Rendite bei beiden Aktienzielen gemeinsam vergleichen, sobald diese Ziele belegt sind. Ein günstigerer Spread oder derselbe Bewertungstag allein erklärt Wittmers Auswahl nicht. Erwartetes Ergebnis für diesen aufgelösten Entwicklungsfall: Aktie Amazon richtig, ursprünglicher Call-Vorschlag JE69D8 und später aufgelöste WKN HM55NU separat erhalten, HM55NU in der Vergleichsauswahl und PDF-belegte Ordermarken getrennt von den vorher vorgeschlagenen Marken. Die dokumentierte historische Benchmark wird durch diese nachträgliche Auflösung nicht erweitert.
+
+## Deutsche Bank (DBK) – „Vom Tief zum Triumph“
+
+- **Auflösung:** Der Nutzer bestätigte Deutsche Bank als Aktie und nannte am 11.11.2026 **WB14HL** als Originalcall. Teaser-Szenario: bis zu +1.311 %. Original-PDF: Ausgabe 202/26 vom 30.10.2026. Der Ersttipp ist nicht belegt.
+- **Produktdaten:** ISIN **DE000WB14HL0**, UBS, klassischer Call, Basispreis **38 EUR**, Bezugsverhältnis **1,0**, Bewertungstag **19.03.2027**. Original-PDF 202/26, S. 1–3: Einstieg **0,65 €**, Stopp 1 **0,26 €**, Ziele **3,00 € / 9,17 €**. Separates Kauflimit offen. [Stammdaten der Börse Stuttgart](https://www.boerse-stuttgart.de/de-de/produkte/hebelprodukte/optionsscheine/stuttgart/wb14hl/).
+- **Vergleich:** WB14HL, RTX-Call FE1C78 und Amazon-Call HM55NU teilen den Bewertungstag 19.03.2027. Das ist ein belegtes gemeinsames Merkmal dieser Fälle. Für einen historischen Vergleich des Strike-Abstands ist der Basiswertkurs zum Zeitpunkt des jeweiligen Reports erforderlich.
+
+## American Electric Power (AEP) – Originalcall laut Nutzer
+
+- **Nutzerangabe vom 11.11.2026:** **MN6D8E**, ISIN **DE000MN6D8E8**, Morgan Stanley, klassischer Call, Basispreis **150 USD**, Bezugsverhältnis **0,1**, Bewertungstag **19.03.2027**. [Endgültige Bedingungen des Emittenten](https://zertifikate.morganstanley.com/download/final-terms/de000mn6d8x8).
+- **Original-PDF 203/26 (02.11.2026), S. 1–3:** Belegt MN6D8E für die Ausgabe mit +1.571 % bei Ziel 2. Einstieg **0,17 €**, Stopp 1 **0,07 €**, Ziele **0,89 € / 2,84 €**. Separates Kauflimit offen. Die Rückmeldung zum ursprünglichen Aktientipp bleibt erhalten: Der erste Tipp war laut Nutzer falsch, der zweite (AEP) richtig. Identität des Ersttipps hier nicht belegt. Die Zuordnung gilt für 203/26.
+- **Vergleich:** Derselbe Bewertungstag wie bei den dokumentierten Originalcalls auf Amazon, RTX und Deutsche Bank.
+
+## Original-PDF 199/26 – Nasdaq Inc. (NDAQ), 27.10.2026
+
+Quelle: `Hebeltrader_2026-199.pdf`, SHA-256 `3817b74c93f9db92420fe9013e2ea0c0f93c711e50b747d66c01df11c6dc58e0`. Nur die für die Analyse benötigten Daten und Seitenbelege sind hier erfasst.
+
+| Ebene | WKN | Referenzkurs | Empfohlener Einstieg | Ziel 1 | Ziel 2 | Stopp 1 | Stopp 2 | Beleg |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| Call | JY7FDN | 0,22 € (08:15 Uhr) | 0,220 € | 0,82 € | 3,05 € | 0,08 € | 0,22 € | S. 1–2 |
+| Aktie | 813516 | 104,72 USD | offen | 122 USD | 153 USD | 94 USD | 104,72 USD | S. 3 |
+
+Call: Basispreis 120 USD, Laufzeitdatum 19.03.2027, Omega 10,0, implizite Volatilität laut Report ca. 30 %. Szenario bei 0,220 € Einstieg: +273 % / +1.286 %, Stopprisiko −64 % (rechnerisch −63,6 %), tabellarisches CRV 12,25. S. 2 zeigt weitere Einstiegsszenarien von 0,242 € bis 0,330 €. Die Redaktion bezeichnet 0,220 € als empfohlenen Einstieg. Ein separates Feld „Limit 1“ ist nicht ausgewiesen. Aktien-Stoppdistanz zur Referenzindikation: −10,2 %.
+
+**Anlagegrundsätze laut Ausgabe 199/26, S. 6.** Die Redaktion beschreibt ein tägliches Screening auf Aufwärtstrend, Fundamentaldaten und CRV über 2. Zur Ableitung der Marken nennt sie gleitende Durchschnitte und historische Volatilität. Bei Ziel 1 wird die Hälfte verkauft und der Stopp für den Rest auf den Einstieg angehoben. Spätestens 20 Handelstage nach Ziel 1 wird der Stopp auf 80 % von Ziel 1 gesetzt. Positionen, die nach mindestens 20 Handelstagen im Minus liegen, werden geschlossen. Offene Derivate sollen spätestens 20 Handelstage vor Laufzeitende geschlossen werden. Liegt die Aktie weniger als 2 % vom empfohlenen Stopp entfernt, sieht die Ausgabe vom Einstieg ab. Wurde Ziel 1 bereits vor dem Einstieg erreicht, sieht sie nur eine halbe Position mit Stopp auf dem ursprünglich empfohlenen Einstieg vor.
+
+## Moonshot-Scanner-Chat – zuletzt auffindbare HEBELTRADER-Fälle
+
+| Ausgabe / Datum | Teaser und Szenario | Stand der Auflösung |
+|---|---|---|
+| [208/26](https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20826-5137.html), 09.11.2026 | Windkraft-Gigant mit Rekordaufträgen und steigenden Margen; bis +2.027 %. | Ersttipp im Chat: Nordex, damals unkalibriert mit 95 % angegeben. FG233E war ein späterer Assistentenvorschlag nach der Nutzerpräferenz „bis März 2027“. Originalaktie, Original-WKN, Limit und Stop offen. |
+| [209/26](https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20926-5138.html), 10.11.2026 | Cloud und KI, Umsatzmeilenstein, operativer Gewinnanstieg und Ausbruch nach einem Tief Ende Juli; +324 % / +1.564 %. | Ausgabe und Szenarien sind beim Verlag belegt. Eine belastbare Auflösung, Original-WKN, Limit und Stop liegen im vorliegenden Material nicht vor. |
+
+Für die Auswertung bleiben empfohlener Einstieg/Kauflimit, Ziel 1 und Stopp 1 getrennte Felder. Der Berichtskurs ist eine Indikation. Aus Szenariorenditen oder persönlichen Ordermarken werden fehlende Originalwerte nicht abgeleitet.
+
+## Originalcall-Sammlung – 42 Ausgaben aus dem ZIP vom 11.11.2026
+
+Das Archiv enthält 43 PDFs. Die zweite Datei zu 74/25 ist bytegleich und zählt einmal. Die Tabellen beziehen sich auf den historischen Stand der jeweiligen Ausgabe.
+
+- **Seite 1** belegt WKN, Kursindikation, Derivatziel 1/2, Stopp 1/2, Basispreis, Omega und Laufzeitdatum. Der Stoppabstand ist positiv dargestellt und berechnet sich als `(1 − Stopp 1 / Kursindikation) × 100`.
+- **Seite 2** belegt die als empfohlenen Einstieg bezeichnete erste Zeile der Szenariotabelle, soweit vorhanden. In allen 20 Ausgaben mit einer solchen Tabelle stimmt der Einstieg mit der Kursindikation überein. Ein separates Kauflimit ist in den ausgewerteten Orderblöcken nicht ausgewiesen. Ein Strich bedeutet, dass kein Wert dieser Kategorie übernommen wurde.
+- **Seite 3** belegt die separat erfassten Aktienmarken und gleitenden Durchschnitte. Das Laufzeitdatum ist die Angabe aus dem Report.
+
+### Call-Marken und Szenarien
+
+| Ausgabe | Basiswert | Call-WKN | Indikation | Empf. Einstieg | Ziel 1 | Ziel 2 | Stopp 1 | Stopp 2 | Stoppabstand | Basispreis | Omega | Laufzeitdatum | Szenario Ziel 1 / 2 | CRV |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|
+| 22/25 | KION | MJ2DR6 | 0,31 € | — | 0,65 € | 1,31 € | 0,19 € | 0,31 € | 38,7 % | 45,00 € | 5,0 | 19.09.25 | — | — |
+| 31/25 | Henkel Vz. | SU6X8P | 0,11 € | — | 0,35 € | 1,05 € | 0,05 € | 0,11 € | 54,5 % | 105,00 € | 12,1 | 19.12.25 | — | — |
+| 34/25 | DHL Group | HD94XR | 0,092 € | — | 0,206 € | 0,753 € | 0,027 € | 0,092 € | 70,7 % | 48,00 € | 9,8 | 17.09.25 | — | — |
+| 73/25 | Uber | MJ3CHB | 0,16 € | — | 0,36 € | 1,30 € | 0,05 € | 0,16 € | 68,8 % | 130,00 $ | 7,1 | 19.12.25 | — | — |
+| 74/25 | Amazon | SW979R | 0,32 € | — | 1,07 € | 2,58 € | 0,13 € | 0,32 € | 59,4 % | 280,00 $ | 9,2 | 19.12.25 | — | — |
+| 92/25 | Alphabet | SY0LMB | 0,12 € | — | 0,50 € | 1,47 € | 0,05 € | 0,12 € | 58,3 % | 260,00 $ | 10,2 | 19.12.25 | — | — |
+| 110/25 | Qualcomm | VG1YQN | 0,225 € | — | 1,250 € | 3,510 € | 0,130 € | 0,225 € | 42,2 % | 210,00 $ | 8,9 | 16.01.26 | — | — |
+| 158/25 | Thales | SX6DHJ | 0,50 € | — | 1,53 € | 5,91 € | 0,20 € | 0,50 € | 60,0 % | 300,00 € | 8,9 | 20.03.26 | — | — |
+| 169/25 | Halliburton | UG4H12 | 0,065 € | — | 0,250 € | 0,680 € | 0,020 € | 0,065 € | 69,2 % | 32,00 $ | 7,1 | 18.03.26 | — | — |
+| 171/25 | Salzgitter | UG6WU7 | 0,43 € | — | 2,55 € | 11,14 € | 0,12 € | 0,43 € | 72,1 % | 35,00 € | 8,5 | 18.03.26 | — | — |
+| 175/25 | Hannover Rück | MM3GW6 | 0,27 € | — | 1,09 € | 3,62 € | 0,12 € | 0,27 € | 55,6 % | 315,00 € | 14,1 | 20.03.26 | — | — |
+| 176/25 | Schneider Electric | MK3C4P | 0,39 € | — | 1,46 € | 4,80 € | 0,15 € | 0,39 € | 61,5 % | 320,00 € | 9,5 | 20.03.26 | — | — |
+| 179/25 | Gilead Sciences | FA8G3Q | 0,050 € | — | 0,230 € | 1,150 € | 0,013 € | 0,050 € | 74,0 % | 160,00 $ | 13,0 | 20.03.26 | — | — |
+| 198/25 | Mercedes-Benz | MM6ZLH | 0,42 € | — | 1,86 € | 11,00 € | 0,12 € | 0,42 € | 71,4 % | 75,00 € | 13,0 | 20.03.26 | — | — |
+| 203/25 | TotalEnergies | MM7KAA | 0,33 € | — | 2,70 € | 12,26 € | 0,12 € | 0,33 € | 63,6 % | 65,00 € | 17,5 | 20.03.26 | — | — |
+| 10/26 | Fraport | HT7GRA | 0,105 € | — | 0,490 € | 1,940 € | 0,030 € | 0,105 € | 71,4 % | 90,00 € | 10,80 | 17.06.26 | — | — |
+| 46/26 | Air Liquide | MM51LF | 0,135 € | — | 0,570 € | 2,030 € | 0,055 € | 0,135 € | 59,3 % | 210,00 € | 13,8 | 18.09.26 | — | — |
+| 81/26 | UnitedHealth | FD09J0 | 0,68 € | — | 2,35 € | 9,12 € | 0,23 € | 0,68 € | 66,2 % | 450,00 $ | 10,2 | 18.09.26 | — | — |
+| 93/26 | Adidas | DU0UHF | 0,19 € | — | 1,39 € | 5,61 € | 0,07 € | 0,19 € | 63,2 % | 220,00 € | 10,2 | 18.09.26 | — | — |
+| 137/26 | BASF | MJ7DUX | 0,07 € | — | 0,33 € | 1,40 € | 0,035 € | 0,07 € | 50,0 % | 62,00 € | 11,8 | 18.12.26 | — | — |
+| 140/26 | Thales | DN3NVH | 0,30 € | — | 1,96 € | 8,15 € | 0,11 € | 0,30 € | 63,3 % | 330,00 € | 10,8 | 18.12.26 | — | — |
+| 141/26 | Leonardo | VJ2RFH | 0,70 € | — | 4,62 € | 20,08 € | 0,26 € | 0,70 € | 62,9 % | 80,00 € | 9,3 | 17.12.26 | — | — |
+| 143/26 | Broadcom | MN8GZP | 0,59 € | 0,590 € | 2,49 € | 9,46 € | 0,34 € | 0,59 € | 42,4 % | 680,00 $ | 7,1 | 18.12.26 | 322 % / 1.503 % | 21,54 |
+| 144/26 | Pfizer | WA4R5Q | 0,175 € | 0,175 € | 1,04 € | 4,78 € | 0,06 € | 0,175 € | 65,7 % | 33,00 $ | 14,1 | 18.12.26 | 494 % / 2.631 % | 23,78 |
+| 147/26 | KKR | VH62T5 | 0,19 € | 0,190 € | 0,77 € | 3,49 € | 0,06 € | 0,19 € | 68,4 % | 160,00 $ | 7,9 | 15.01.27 | 305 % / 1.737 % | 14,92 |
+| 151/26 | SAP | UP9A9X | 0,14 € | 0,140 € | 1,16 € | 5,34 € | 0,05 € | 0,14 € | 64,3 % | 260,00 € | 10,6 | 18.12.26 | 729 % / 3.714 % | 34,56 |
+| 154/26 | Danaher | JY3SF7 | 0,22 € | 0,220 € | 1,50 € | 5,07 € | 0,08 € | 0,22 € | 63,6 % | 280,00 $ | 9,9 | 15.01.27 | 582 % / 2.205 % | 21,89 |
+| 157/26 | Vertiv | HM4EB1 | 0,80 € | 0,800 € | 3,69 € | 10,15 € | 0,44 € | 0,80 € | 45,0 % | 400,00 $ | 5,7 | 15.01.27 | 361 % / 1.169 % | 17,00 |
+| 161/26 | UnitedHealth | VH2LU2 | 0,42 € | 0,420 € | 2,50 € | 9,88 € | 0,16 € | 0,42 € | 61,9 % | 500,00 $ | 11,4 | 15.01.27 | 495 % / 2.252 % | 22,19 |
+| 173/26 | Micron | UN87G6 | 5,30 € | 5,300 € | 18,70 € | 63,10 € | 2,85 € | 5,30 € | 46,2 % | 1.500,00 € | 4,6 | 17.03.27 | 253 % / 1.091 % | 14,53 |
+| 176/26 | Salesforce | JG0AEJ | 0,46 € | 0,460 € | 2,18 € | 8,36 € | 0,17 € | 0,46 € | 63,0 % | 310,00 $ | 8,2 | 15.01.27 | 374 % / 1.717 % | 16,59 |
+| 192/26 | Costco | JY5SQZ | 0,16 € | 0,160 € | 0,88 € | 2,46 € | 0,07 € | 0,16 € | 56,2 % | 1.100,00 $ | 12,2 | 19.02.27 | 450 % / 1.438 % | 16,78 |
+| 193/26 | JPMorgan Chase | MN6CYX | 0,42 € | 0,420 € | 2,21 € | 7,58 € | 0,15 € | 0,42 € | 64,3 % | 400,00 $ | 12,4 | 19.03.27 | 426 % / 1.705 % | 16,57 |
+| 195/26 | Johnson & Johnson | JE11C1 | 0,36 € | 0,360 € | 1,95 € | 6,70 € | 0,13 € | 0,36 € | 63,9 % | 300,00 $ | 11,1 | 19.03.27 | 442 % / 1.761 % | 17,24 |
+| 198/26 | SLB | VY95PV | 0,14 € | 0,140 € | 0,73 € | 2,19 € | 0,05 € | 0,14 € | 64,3 % | 65,00 $ | 7,7 | 19.03.27 | 421 % / 1.464 % | 14,67 |
+| 199/26 | Nasdaq, Inc. | JY7FDN | 0,22 € | 0,220 € | 0,82 € | 3,05 € | 0,08 € | 0,22 € | 63,6 % | 120,00 $ | 10,0 | 19.03.27 | 273 % / 1.286 % | 12,25 |
+| 200/26 | Analog Devices | MN84GA | 1,10 € | 1,100 € | 3,96 € | 14,20 € | 0,45 € | 1,10 € | 59,1 % | 550,00 $ | 7,2 | 19.03.27 | 259 % / 1.191 % | 12,27 |
+| 201/26 | Synopsys | MN9WA9 | 0,13 € | 0,130 € | 0,54 € | 1,78 € | 0,06 € | 0,13 € | 53,8 % | 650,00 $ | 6,2 | 19.03.27 | 315 % / 1.269 % | 14,71 |
+| 202/26 | Deutsche Bank | WB14HL | 0,65 € | 0,650 € | 3,00 € | 9,17 € | 0,26 € | 0,65 € | 60,0 % | 38,00 € | 9,1 | 19.03.27 | 362 % / 1.311 % | 13,94 |
+| 203/26 | American Electric | MN6D8E | 0,17 € | 0,170 € | 0,89 € | 2,84 € | 0,07 € | 0,17 € | 58,8 % | 150,00 $ | 12,7 | 19.03.27 | 424 % / 1.571 % | 16,95 |
+| 204/26 | RTX | FE1C78 | 0,21 € | 0,210 € | 1,20 € | 4,64 € | 0,10 € | 0,21 € | 52,4 % | 250,00 $ | 11,4 | 19.03.27 | 471 % / 2.110 % | 24,64 |
+| 210/26 | Amazon | HM55NU | 0,40 € | 0,400 € | 2,20 € | 8,41 € | 0,15 € | 0,40 € | 62,5 % | 340,00 $ | 9,6 | 19.03.27 | 450 % / 2.003 % | 19,62 |
+
+### Aktienmarken
+
+| Ausgabe | Basiswert | Aktien-WKN | Indikation | Ziel 1 | Ziel 2 | Stopp 1 | Stopp 2 | GD50 | GD200 |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|
+| 22/25 | KION | KGX888 | 39,16 € | 47,00 € | 57,50 € | 36,20 € | 39,16 € | 35,06 € | 36,43 € |
+| 31/25 | Henkel Vz. | 604843 | 86,72 € | 97,80 € | 113,50 € | 81,70 € | 86,72 € | 84,11 € | 82,15 € |
+| 34/25 | DHL Group | 555200 | 41,72 € | 46,30 € | 55,50 € | 37,80 € | 41,72 € | 36,76 € | 37,39 € |
+| 73/25 | Uber | A2PHHG | 88,10 $ | 102,00 $ | 134,00 $ | 77,00 $ | 88,10 $ | 75,21 $ | 72,10 $ |
+| 74/25 | Amazon | 906866 | 211,37 $ | 250,00 $ | 299,00 $ | 197,00 $ | 211,37 $ | 190,29 $ | 199,44 $ |
+| 92/25 | Alphabet | A14Y6H | 180,01 $ | 214,00 $ | 254,00 $ | 166,00 $ | 180,01 $ | 162,76 $ | 173,06 $ |
+| 110/25 | Qualcomm | 883121 | 158,09 $ | 202,00 $ | 247,00 $ | 150,00 $ | 158,09 $ | 151,17 $ | 158,61 $ |
+| 158/25 | Thales | 850842 | 243,70 € | 286,00 € | 355,00 € | 217,00 € | 243,70 € | 234,19 € | 218,61 € |
+| 169/25 | Halliburton | 853986 | 25,11 $ | 31,50 $ | 39,50 $ | 23,00 $ | 25,11 $ | 22,34 $ | 23,87 $ |
+| 171/25 | Salzgitter | 620200 | 25,74 € | 34,00 € | 46,00 € | 22,50 € | 25,74 € | 23,04 € | 21,66 € |
+| 175/25 | Hannover Rück | 840221 | 266,20 € | 304,00 € | 350,00 € | 253,00 € | 266,20 € | 254,64 € | 258,61 € |
+| 176/25 | Schneider Electric | 860180 | 248,80 € | 295,00 € | 362,00 € | 225,00 € | 248,80 € | 230,35 € | 226,07 € |
+| 179/25 | Gilead Sciences | 885823 | 118,21 $ | 138,50 $ | 170,00 $ | 106,00 $ | 118,21 $ | 113,90 $ | 106,72 $ |
+| 198/25 | Mercedes-Benz | 710000 | 58,36 € | 70,00 € | 86,00 € | 53,00 € | 58,36 € | 54,26 € | 54,16 € |
+| 203/25 | TotalEnergies | 850727 | 56,23 € | 65,00 € | 76,50 € | 52,50 € | 56,23 € | 53,27 € | 53,97 € |
+| 10/26 | Fraport | 577330 | 74,65 € | 88,00 € | 109,00 € | 67,00 € | 74,65 € | 72,07 € | 68,29 € |
+| 46/26 | Air Liquide | 850133 | 172,22 € | 198,00 € | 228,00 € | 166,00 € | 172,22 € | 168,68 € | 168,00 € |
+| 81/26 | UnitedHealth | 869561 | 379,98 $ | 445,00 $ | 554,00 $ | 346,00$ | 379,98 $ | 325,72 $ | 332,61 $ |
+| 93/26 | Adidas | A1EWWW | 167,15 € | 218,00 € | 276,00 € | 154,00 € | 167,15 € | 147,28 € | 161,04 € |
+| 137/26 | BASF | BASF11 | 51,24 € | 62,00 € | 76,00 € | 47,50 € | 51,24 € | 49,18 € | 48,30 € |
+| 140/26 | Thales | 850842 | 262,40 € | 324,00 € | 410,00 € | 238,00 € | 262,40 € | 235,18 € | 237,51 € |
+| 141/26 | Leonardo | A0ETQX | 57,40 € | 75,00 € | 99,00 € | 53,00 € | 57,40 € | 52,57 € | 52,20 € |
+| 143/26 | Broadcom | A2JG9Z | 427,76 $ | 562,00 $ | 758,00 $ | 378,00 $ | 427,76 $ | 393,14 $ | 363,08 $ |
+| 144/26 | Pfizer | 852009 | 27,05 $ | 32,00 $ | 38,50 $ | 25,00 $ | 27,05 $ | 25,32 $ | 25,70 $ |
+| 147/26 | KKR | A2LQV6 | 115,30 $ | 152,00 $ | 198,00 $ | 103,00 $ | 115,30 $ | 100,51 $ | 105,88 $ |
+| 151/26 | SAP | 716460 | 185,90 € | 240,00 € | 310,00 € | 168,00 € | 185,90 € | 157,84 € | 170,60 € |
+| 154/26 | Danaher | 866197 | 215,11 $ | 272,00 $ | 334,00 $ | 196,00 $ | 215,11 $ | 198,02 $ | 198,63 $ |
+| 157/26 | Vertiv | A2PZ5A | 269,28 $ | 375,00 $ | 498,00 $ | 244,00 $ | 269,28 $ | 283,60 $ | 257,17 $ |
+| 161/26 | UnitedHealth | 869561 | 399,66 $ | 490,00 $ | 610,00 $ | 375,00 $ | 399,66 $ | 401,68 $ | 373,14 $ |
+| 173/26 | Micron | 869020 | 1.015,80 € | 1.390,00 € | 2.100,00 € | 890,00 € | 1.015,80 € | 936,41 € | 694,58 € |
+| 176/26 | Salesforce | A0B87V | 237,58 $ | 305,00 $ | 402,00 $ | 218,00 $ | 237,58 $ | 219,07 $ | 207,88 $ |
+| 192/26 | Costco | 888351 | 978,01 $ | 1.162,00 $ | 1.366,00 $ | 930,00 $ | 978,01 $ | 951,55 $ | 935,79 $ |
+| 193/26 | JPMorgan Chase | 850628 | 339,72 $ | 404,00 $ | 482,00 $ | 325,00 $ | 339,72 $ | 341,56 $ | 325,94 $ |
+| 195/26 | Johnson & Johnson | 853260 | 259,36 $ | 307,00 $ | 373,00 $ | 239,00 $ | 259,36 $ | 260,93 $ | 242,28 $ |
+| 198/26 | SLB | 853390 | 53,06 $ | 69,00 $ | 89,00 $ | 48,00 $ | 53,06 $ | 51,12 $ | 49,55 $ |
+| 199/26 | Nasdaq, Inc. | 813516 | 104,72 $ | 122,00 $ | 153,00 $ | 94,00 $ | 104,72 $ | 94,53 $ | 91,28 $ |
+| 200/26 | Analog Devices | 862485 | 425,35 $ | 528,00 $ | 696,00 $ | 380,00 $ | 425,35 $ | 392,70 $ | 362,61 $ |
+| 201/26 | Synopsys | 883703 | 481,89 $ | 620,00 $ | 828,00 $ | 440,00 $ | 481,89 $ | 446,28 $ | 444,44 $ |
+| 202/26 | Deutsche Bank | 514000 | 31,16 € | 38,50 € | 47,00 € | 29,00 € | 31,16 € | 30,91 € | 30,34 € |
+| 203/26 | American Electric | 850222 | 130,21 $ | 152,00 $ | 180,00 $ | 122,00 $ | 130,21 $ | 125,32 $ | 125,06 $ |
+| 204/26 | RTX | A2PZ0R | 202,79 $ | 244,00 $ | 298,00 $ | 186,00 $ | 202,79 $ | 194,93 $ | 190,89 $ |
+| 210/26 | Amazon | 906866 | 270,87 $ | 337,00 $ | 430,00 $ | 245,00 $ | 270,87 $ | 255,22 $ | 246,64 $ |
+
+### Originaldateien und Seitenbelege
+
+| Ausgabe | Datum | PDF (S. 1–3) | SHA-256 |
+|---|---|---|---|
+| 22/25 | 26.02.2025 | Hebeltrader_2025-22.pdf | `1213a98de4b76c271025f9c17c615a4739be0e2f64f4604631b0fc8d368a6ed2` |
+| 31/25 | 11.03.2025 | Hebeltrader_2025-31.pdf | `60b3d08802a8e8f769c9c06d31448257b7b6f0896696d31234f073284b5d648f` |
+| 34/25 | 14.03.2025 | Hebeltrader_2025-34.pdf | `d49984a691d72695d9f120b1cc161e2a03654dbbde822262508d9811006a6785` |
+| 73/25 | 13.05.2025 | Hebeltrader_2025-73.pdf | `95883836c57c41ee0027eafe71d1518163fd9874b9246bfe2305ba2f7d346906` |
+| 74/25 | 14.05.2025 | Hebeltrader_2025-74.pdf | `1fc27b594e261db8046ecbcae145f8b7a1017c9a3bc57918c6247e33eb21e4c5` |
+| 92/25 | 11.06.2025 | Hebeltrader_2025-92_ALPHABET.pdf | `53065950b456f8016c78c1459408e2a71ec0ae870b35d980f12b246fb49afa9d` |
+| 110/25 | 08.07.2025 | Hebeltrader_2025-110_Qualcomm.pdf | `5ee0c561e846bda613bd3c763bf1284a6e76fe64fcabc7cf5eb7616b6639f642` |
+| 158/25 | 12.09.2025 | Hebeltrader_2025-158.pdf | `bd2632dd5bb92d9d4df7fa2e8e624ce86e37fe77912bba070d117fc8b7610e8a` |
+| 169/25 | 29.09.2025 | Hebeltrader_2025-169.pdf | `946cb83224e183227109126d07374ed0af405ec0aa5b31d5bda00836756d1c64` |
+| 171/25 | 01.10.2025 | Hebeltrader_2025-171.pdf | `abcf2973a37e6754cafae4ca066f0e85962974cdcd640bceebee886c56f83605` |
+| 175/25 | 08.10.2025 | Hebeltrader_2025-175.pdf | `ef86597e85e8e3c5788acf871c7a5df7f126bf69e10aaebb864bb18ae7a9a215` |
+| 176/25 | 09.10.2025 | Hebeltrader_2025-176.pdf | `d56a0be569b2cc199a7a8ff0c68f17c1590a5f17e08ca24cd0b69a7ef76f0f4a` |
+| 179/25 | 14.10.2025 | Hebeltrader_2025-179.pdf | `988a4db3994490bea234fd1a830bf9762fef7f6a062c690640e01967faf660b0` |
+| 198/25 | 10.11.2025 | Hebeltrader_2025-198.pdf | `4cced80339085a3aeb42d2039c56a3f849444d2e6d4eda3ddbcb97eeb15b47c6` |
+| 203/25 | 17.11.2025 | Hebeltrader_2025-203.pdf | `cab4761292c0b6d5b778253c88eafcec9e57433942e6207c659739e71a5e74c9` |
+| 10/26 | 20.01.2026 | Hebeltrader_2026-10.pdf | `9d5293c6d84f0cab6776bbc866892ec68be4a74057d7b2ce89b4ffa00ee29f34` |
+| 46/26 | 18.03.2026 | Hebeltrader_2026-46.pdf | `cf72f13b15712cd10024315b33bb6fa6291be3684fa1b546084c26ef742e640d` |
+| 81/26 | 11.05.2026 | Hebeltrader_2026-81_UnitedHealth.pdf | `857ac9dbb347c5fa8137a83aa065e91b92e885ce26dfff3a7ab014997be462aa` |
+| 93/26 | 29.05.2026 | Hebeltrader_2026-93_adidas.pdf | `a6621fe098c49c1d398e3c926748b954e70ee62fd08db61cc387c1eaf46cb0f7` |
+| 137/26 | 31.07.2026 | Hebeltrader_2026-137.pdf | `849540e787f76871d10dc45670225b9cf9646471b49913a7e430ef8601c9aab8` |
+| 140/26 | 05.08.2026 | Hebeltrader_2026-140.pdf | `ddf194d00945242ca9003b3289f3df20295c8a3befe821a763bc2f3c703a43be` |
+| 141/26 | 06.08.2026 | Hebeltrader_2026-141.pdf | `fc16a36c9f4f324f4ac2f7fb9bd564ed5c47e5ed2a5485a526cc7112b2594acf` |
+| 143/26 | 10.08.2026 | Hebeltrader_2026-143.pdf | `77ec7d8adf28abf5f885d3d86c5111b76c3db67f7b12ec430ff887f002834d5c` |
+| 144/26 | 11.08.2026 | Hebeltrader_2026-144.pdf | `3ff4cec182b7ef53af18b7b288b4140e7a54eda5273dca7cfa607e366f0816ec` |
+| 147/26 | 14.08.2026 | Hebeltrader_2026-147.pdf | `11fee499737838c9f2f4140745ed3726394395b5fc0b9d3981c1fc61e2850586` |
+| 151/26 | 20.08.2026 | Hebeltrader_2026-151.pdf | `c330ca57db50bbcb82fd4e4ff38ff7b88d12bf64549c76e993eff59f32009419` |
+| 154/26 | 25.08.2026 | Hebeltrader_2026-154.pdf | `273406c7f4dba976a6f4ac227f42177f6e1a57d8f96fdc63a941c9dec7ff43c9` |
+| 157/26 | 28.08.2026 | Hebeltrader_2026-157.pdf | `41e16e1bdb2a4bcb769a81c9c7ae6ffa85d705def9e1bfc536106b3ae16f6bb2` |
+| 161/26 | 03.09.2026 | Hebeltrader_2026-161.pdf | `d0ece3248a789b0c93a88bd3688c1f5c3158e5500ea3095a36f523bdbb88979d` |
+| 173/26 | 21.09.2026 | Hebeltrader_2026-173.pdf | `28e46e9bd8ea1e60c6d6279abccee9d37d161cc6abcf2f4a38f5a7516687935d` |
+| 176/26 | 24.09.2026 | Hebeltrader_2026-176.pdf | `2a1077f246f9dba5f59473e566c7c93923151fee5d3cc09fe6a9426c69c26e1d` |
+| 192/26 | 16.10.2026 | Hebeltrader_2026-192.pdf | `4f7c10d0fb43b67f2e2a648193f851c0e902c07b399aa458f8286b5b5f8a7c6f` |
+| 193/26 | 19.10.2026 | Hebeltrader_2026-193.pdf | `3d17e12a12c16c3a72543ff32bb90b818aeaac6dad5c5ac531a74265be0d61cd` |
+| 195/26 | 21.10.2026 | Hebeltrader_2026-195.pdf | `d285b6ec49786c15e6d783eae41bbd9c7416a185f92afbf46594290f8f3a604d` |
+| 198/26 | 26.10.2026 | Hebeltrader_2026-198.pdf | `fca10fe1a464f5cfca21aca6e3a6c153e71dc575345d665e862b546bc8d926c4` |
+| 199/26 | 27.10.2026 | Hebeltrader_2026-199.pdf | `3817b74c93f9db92420fe9013e2ea0c0f93c711e50b747d66c01df11c6dc58e0` |
+| 200/26 | 28.10.2026 | Hebeltrader_2026-200.pdf | `e8f1365890bf789b119713174e67aa1cd9a147bda870f8f4ecccb77c824ad1c2` |
+| 201/26 | 29.10.2026 | Hebeltrader_2026-201.pdf | `46845b99af7f5321d6d835e14fd0081119cf44d19dadd79ad1e6cd037f470713` |
+| 202/26 | 30.10.2026 | Hebeltrader_2026-202.pdf | `d885c19faf83bc0a7b4eab1b9c5821f9328ae1d9b5cbef0016285519595fd885` |
+| 203/26 | 02.11.2026 | Hebeltrader_2026-203.pdf | `f2fd086107ff4bf7ea05a8abe654cbbd45151f5941ebc16a2995329c0d8bc6f0` |
+| 204/26 | 03.11.2026 | Hebeltrader_2026-204.pdf | `4ad03cc9b2d53f444ab390f917c35b0a9aa38f0e6474bf8ad551d61f4ae2e06a` |
+| 210/26 | 11.11.2026 | Hebeltrader_2026-210.pdf | `73437fea2b2faa56baf4fd6b5a44d2f82b7f9562d89b66662d8d3208a6902c50` |
+
+### Beobachtetes Stoppmuster
+
+Die 20 Calls mit ausdrücklich dokumentiertem Einstieg haben einen medianen Stoppabstand von **62,2 %** und eine Spannweite von **42,4 % bis 68,4 %**. Über alle 42 Calls liegt der Median bei **62,7 %** gegenüber der Kursindikation. In allen 42 Ausgaben entspricht Stopp 2 numerisch der Call-Indikation. Diese Stichprobe liefert einen Vergleichswert für spätere Analysen. Für einen konkreten Call ist seine eigene Ordermarke maßgeblich.
 
 ## Offene Erfassungs- und Verifikationsaufgaben
 
