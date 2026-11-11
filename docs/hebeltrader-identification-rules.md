@@ -86,6 +86,7 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 ### FE-003 – Lockheed statt RTX (HEBELTRADER 204/26, 03.11.2026)
 - **Ursprüngliche Antwort:** Lockheed Martin Rang 1 (Evidenz 56), RTX Rang 2 (46), General Dynamics Rang 3; 0 bestätigte Kernhinweise.
 - **Tatsächliche Nutzerauflösung:** RTX.
+- **Originalcall laut Nutzer (nachgetragen am 11.11.2026):** **FE1C78**, ISIN **DE000FE1C780**, Société Générale, klassischer Call, Basispreis **250 USD**, Bezugsverhältnis 0,1, finaler Bewertungstag **19.03.2027**. Teaser-Szenario +2.110 % bei Ziel 2. Original-Limit 1 und Stop 1 offen. [Emittenten-Stammdaten](https://www.sg-zertifikate.de/product-details/fe1c78)
 - **Ursache:** Generische US-Rüstungs-/Auftragsboom-Sprache trifft alle Primes gleich; der Teaser-Diskriminator **„mehrere Weltmarktführer unter einem Dach“** plus Wartungsverträge / Rekord-Auftragsbestand / angehobene Jahresprognose wurde nicht als Primärbeleg gegen Pure-Play-Primes (LMT/NOC/GD) gewichtet. KI-Belegstellen-Anzahl ≠ Score.
 - **Regel:** Bei US-Rüstung mit Multi-Segment-/Dach-Cue gezielt Raytheon/Collins/Pratt-/Aftermarket-/Guidance-Belege suchen; Pure-Play-Primes ohne Multi-Segment-Evidenz soft demoten; EU-Rüster hart filtern.
 - **Regressionstest:** `tests/hebeltrader/test_defense_fingerprint.py` — RTX-IR vor Lockheed bei HT-204-Teasertext.
@@ -105,6 +106,12 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 **Vergleich mit belegten Originalen.** HEBELTRADER 199/26 (27.10.2026, Original-PDF, S. 1–2) empfiehlt für Nasdaq Inc. JY7FDN mit gleichem Laufzeitdatum, 120 USD Basispreis gegenüber 104,72 USD Aktienindikation (+14,6 %), 0,22 € empfohlener Einstieg, 0,08 € Stop 1 (−63,6 %) und Omega 10,0. Bei diesem Fall sieht Wittmer eine Teilgewinnmitnahme am ersten Ziel mit anschließendem Anheben des Stopps auf den Einstieg vor. Beim Thermo-Fisher-Fall HT-027 / SY7B4G dokumentiert das Original-PDF 62 % Stopprisiko und +514 % / +2.096 % in den Zielszenarien. Das sind Einzelbeobachtungen, aus denen sich kein fester Stoppprozentsatz und kein fester Strike-Abstand ableiten lassen.
 
 **Suchregel und Regressionserwartung.** Bei einem angefragten Laufzeitdatum die verfügbaren Strikes bis in den deutlich aus dem Geld liegenden Bereich vergleichen. Im Amazon-Fall gehören 320 und 340 USD in die Vorauswahl. Strike-Abstand, Omega, Bezugsverhältnis, Geld/Brief, Stopprisiko und Rendite bei beiden Aktienzielen gemeinsam vergleichen, sobald diese Ziele belegt sind. Ein günstigerer Spread oder derselbe Bewertungstag allein erklärt Wittmers Auswahl nicht. Erwartetes Ergebnis für diesen aufgelösten Entwicklungsfall: Aktie Amazon richtig, ursprünglicher Call-Vorschlag JE69D8 und später aufgelöste WKN HM55NU separat erhalten, HM55NU in der Vergleichsauswahl, fehlende Original-Ordermarken offen. Die dokumentierte historische Benchmark wird durch diese nachträgliche Auflösung nicht erweitert.
+
+## Deutsche Bank (DBK) – „Vom Tief zum Triumph“
+
+- **Auflösung:** Der Nutzer bestätigte Deutsche Bank als Aktie und nannte am 11.11.2026 **WB14HL** als Originalcall. Teaser-Szenario: bis zu +1.311 %. Ersttipp und Veröffentlichungsdatum sind in der vorliegenden Falldokumentation nicht belegt.
+- **Produktdaten:** ISIN **DE000WB14HL0**, UBS, klassischer Call, Basispreis **38 EUR**, Bezugsverhältnis **1,0**, Bewertungstag **19.03.2027**. Original-Limit 1 und Stop 1 offen. [Stammdaten der Börse Stuttgart](https://www.boerse-stuttgart.de/de-de/produkte/hebelprodukte/optionsscheine/stuttgart/wb14hl/).
+- **Vergleich:** WB14HL, RTX-Call FE1C78 und Amazon-Call HM55NU teilen den Bewertungstag 19.03.2027. Das ist ein belegtes gemeinsames Merkmal dieser Fälle. Für einen historischen Vergleich des Strike-Abstands ist der Basiswertkurs zum Zeitpunkt des jeweiligen Reports erforderlich.
 
 ## Offene Erfassungs- und Verifikationsaufgaben
 
