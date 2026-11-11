@@ -119,6 +119,28 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 - **Offene Felder:** Die WKN wurde ohne Ausgabenummer genannt. Zuordnung zu einem bestimmten Stromhunger-Teaser, Original-Limit 1 und Stop 1 bleiben offen.
 - **Vergleich:** Derselbe Bewertungstag wie bei den dokumentierten Originalcalls auf Amazon, RTX und Deutsche Bank.
 
+## Original-PDF 199/26 – Nasdaq Inc. (NDAQ), 27.10.2026
+
+Quelle: `Hebeltrader_2026-199.pdf`, SHA-256 `3817b74c93f9db92420fe9013e2ea0c0f93c711e50b747d66c01df11c6dc58e0`. Nur die für die Analyse benötigten Daten und Seitenbelege sind hier erfasst.
+
+| Ebene | WKN | Referenzkurs | Empfohlener Einstieg | Ziel 1 | Ziel 2 | Stopp 1 | Stopp 2 | Beleg |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| Call | JY7FDN | 0,22 € (08:15 Uhr) | 0,220 € | 0,82 € | 3,05 € | 0,08 € | 0,22 € | S. 1–2 |
+| Aktie | 813516 | 104,72 USD | offen | 122 USD | 153 USD | 94 USD | 104,72 USD | S. 3 |
+
+Call: Basispreis 120 USD, Laufzeitdatum 19.03.2027, Omega 10,0, implizite Volatilität laut Report ca. 30 %. Szenario bei 0,220 € Einstieg: +273 % / +1.286 %, Stopprisiko −64 % (rechnerisch −63,6 %), tabellarisches CRV 12,25. S. 2 zeigt weitere Einstiegsszenarien von 0,242 € bis 0,330 €. Die Redaktion bezeichnet 0,220 € als empfohlenen Einstieg. Ein separates Feld „Limit 1“ ist nicht ausgewiesen. Aktien-Stoppdistanz zur Referenzindikation: −10,2 %.
+
+**Anlagegrundsätze laut Ausgabe 199/26, S. 6.** Die Redaktion beschreibt ein tägliches Screening auf Aufwärtstrend, Fundamentaldaten und CRV über 2. Zur Ableitung der Marken nennt sie gleitende Durchschnitte und historische Volatilität. Bei Ziel 1 wird die Hälfte verkauft und der Stopp für den Rest auf den Einstieg angehoben. Spätestens 20 Handelstage nach Ziel 1 wird der Stopp auf 80 % von Ziel 1 gesetzt. Positionen, die nach mindestens 20 Handelstagen im Minus liegen, werden geschlossen. Offene Derivate sollen spätestens 20 Handelstage vor Laufzeitende geschlossen werden. Liegt die Aktie weniger als 2 % vom empfohlenen Stopp entfernt, sieht die Ausgabe vom Einstieg ab. Wurde Ziel 1 bereits vor dem Einstieg erreicht, sieht sie nur eine halbe Position mit Stopp auf dem ursprünglich empfohlenen Einstieg vor.
+
+## Moonshot-Scanner-Chat – zuletzt auffindbare HEBELTRADER-Fälle
+
+| Ausgabe / Datum | Teaser und Szenario | Stand der Auflösung |
+|---|---|---|
+| [208/26](https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20826-5137.html), 09.11.2026 | Windkraft-Gigant mit Rekordaufträgen und steigenden Margen; bis +2.027 %. | Ersttipp im Chat: Nordex, damals unkalibriert mit 95 % angegeben. FG233E war ein späterer Assistentenvorschlag nach der Nutzerpräferenz „bis März 2027“. Originalaktie, Original-WKN, Limit und Stop offen. |
+| [209/26](https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-20926-5138.html), 10.11.2026 | Cloud und KI, Umsatzmeilenstein, operativer Gewinnanstieg und Ausbruch nach einem Tief Ende Juli; +324 % / +1.564 %. | Ausgabe und Szenarien sind beim Verlag belegt. Eine belastbare Auflösung, Original-WKN, Limit und Stop liegen im vorliegenden Material nicht vor. |
+
+Für die Auswertung bleiben empfohlener Einstieg/Kauflimit, Ziel 1 und Stopp 1 getrennte Felder. Der Berichtskurs ist eine Indikation. Aus Szenariorenditen oder persönlichen Ordermarken werden fehlende Originalwerte nicht abgeleitet.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.
