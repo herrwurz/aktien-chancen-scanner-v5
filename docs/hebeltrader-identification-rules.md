@@ -90,6 +90,22 @@ Die **ursprünglichen 15 Fälle**: 9 richtig, 5 falsch, 1 ungelöst (**Williams*
 - **Regel:** Bei US-Rüstung mit Multi-Segment-/Dach-Cue gezielt Raytheon/Collins/Pratt-/Aftermarket-/Guidance-Belege suchen; Pure-Play-Primes ohne Multi-Segment-Evidenz soft demoten; EU-Rüster hart filtern.
 - **Regressionstest:** `tests/hebeltrader/test_defense_fingerprint.py` — RTX-IR vor Lockheed bei HT-204-Teasertext.
 
+## Amazon (AMZN) – Nutzerauflösung vom 11.11.2026
+
+| Feld | Befund |
+|---|---|
+| Teaser | „KI-Boom, Rekordgewinne, Wachstumsturbo – Digitalriese im Aufwärtsrausch!“ |
+| Beworbene Szenarien | +450 % bei Ziel 1, +2.003 % bei Ziel 2 |
+| Erster Aktientipp im Chat | Amazon vor Microsoft und Alphabet. Amazon vom Nutzer bestätigt. |
+| Erstvorschlag für den Call | JE69D8, J.P. Morgan, 320 USD, Bewertungstag 19.03.2027. Eigenvorschlag im Chat mit Limit 1 von 0,70 € und Stop 1 von 0,35 €. |
+| Originalcall laut Nutzer | **HM55NU**, ISIN **DE000HM55NU0**, HSBC, klassischer Amazon-Call, **340 USD**, Bezugsverhältnis **0,1**, Bewertungstag **19.03.2027**. [Produktdaten und Quote](https://www.onvista.de/derivate/Optionsscheine/327852098-HM55NU-DE000HM55NU0) |
+| Offene Originaldaten | Ausgabenummer, Veröffentlichungszeitpunkt, Einstiegskurs/Limit 1, Stop 1 und Aktienkursziele im Originalreport. |
+| Beobachteter Marktstand | 11.11.2026 vormittags: 0,43 € Geld / 0,44 € Brief, Omega 9,47. Referenzaktienkurs 270,87 USD (Nasdaq-Schluss 10.11.). Strike-Abstand +25,5 % gegenüber +18,1 % bei JE69D8. Marktquote und Report-Ordermarken separat erfassen. |
+
+**Vergleich mit belegten Originalen.** HEBELTRADER 199/26 (27.10.2026, Original-PDF, S. 1–2) empfiehlt für Nasdaq Inc. JY7FDN mit gleichem Laufzeitdatum, 120 USD Basispreis gegenüber 104,72 USD Aktienindikation (+14,6 %), 0,22 € empfohlener Einstieg, 0,08 € Stop 1 (−63,6 %) und Omega 10,0. Bei diesem Fall sieht Wittmer eine Teilgewinnmitnahme am ersten Ziel mit anschließendem Anheben des Stopps auf den Einstieg vor. Beim Thermo-Fisher-Fall HT-027 / SY7B4G dokumentiert das Original-PDF 62 % Stopprisiko und +514 % / +2.096 % in den Zielszenarien. Das sind Einzelbeobachtungen, aus denen sich kein fester Stoppprozentsatz und kein fester Strike-Abstand ableiten lassen.
+
+**Suchregel und Regressionserwartung.** Bei einem angefragten Laufzeitdatum die verfügbaren Strikes bis in den deutlich aus dem Geld liegenden Bereich vergleichen. Im Amazon-Fall gehören 320 und 340 USD in die Vorauswahl. Strike-Abstand, Omega, Bezugsverhältnis, Geld/Brief, Stopprisiko und Rendite bei beiden Aktienzielen gemeinsam vergleichen, sobald diese Ziele belegt sind. Ein günstigerer Spread oder derselbe Bewertungstag allein erklärt Wittmers Auswahl nicht. Erwartetes Ergebnis für diesen aufgelösten Entwicklungsfall: Aktie Amazon richtig, ursprünglicher Call-Vorschlag JE69D8 und später aufgelöste WKN HM55NU separat erhalten, HM55NU in der Vergleichsauswahl, fehlende Original-Ordermarken offen. Die dokumentierte historische Benchmark wird durch diese nachträgliche Auflösung nicht erweitert.
+
 ## Offene Erfassungs- und Verifikationsaufgaben
 
 - Vollständige, autorisiert verfügbare historische Blindtest-Protokolle einschließlich **aller falschen und ungelösten** Fälle rekonstruieren; **keine** erfundenen Teaser-Überschriften oder Datierungen.
