@@ -529,12 +529,12 @@
       "confidence_status": null,
       "actual_company": "Costco Wholesale",
       "actual_ticker": "COST",
-      "derivative_wkn": "JY55QZ",
+      "derivative_wkn": "JY5SQZ",
       "outcome": "correct",
       "source_status": "user_reconstructed_conversation",
       "key_clues": null,
       "contradicting_clues": null,
-      "failure_analysis": null,
+      "failure_analysis": "Original-PDF 192/26, S. 1: JY5SQZ. Frühere WKN-Angabe: JY55QZ.",
       "evidence_sources": [
         {
           "type": "user_supplied_teaser",
@@ -545,6 +545,13 @@
           "type": "user_reconstruction",
           "reference": "18-case development request, 2026-10-28",
           "verified_primary_source": false
+        },
+        {
+          "type": "user_supplied_publisher_pdf",
+          "reference": "Hebeltrader_2026-192.pdf, p. 1",
+          "sha256": "4f7c10d0fb43b67f2e2a648193f851c0e902c07b399aa458f8286b5b5f8a7c6f",
+          "verified_primary_source": true,
+          "verification_scope": "Publisher issue confirms Costco as the underlying and JY5SQZ as the call. JY55QZ was the earlier reconstructed WKN."
         }
       ],
       "resolution_date": null,

@@ -174,8 +174,11 @@ def test_reference_import_is_authenticated_and_separate_from_case_journal(tmp_pa
         client.get("/api/hebeltrader/references", auth=("admin", "private-password")).status_code
         == 404
     )
+    from hashlib import sha256
+
     from scanner import reference_library
 
+    monkeypatch.setattr(reference_library, "SHA256", sha256(payload).hexdigest())
     monkeypatch.setattr(reference_library, "download", lambda: payload)
     response = client.post("/api/hebeltrader/references/import", auth=("admin", "private-password"))
     assert response.status_code == 200
