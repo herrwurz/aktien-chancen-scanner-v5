@@ -1,24 +1,26 @@
-# HEBELTRADER-Teaser-Detektiv und separater Marktscanner
+# HEBELTRADER-Wissensbasis und Marktscanner
 
-Neue [eingefrorene Erstprognose zu HEBELTRADER 198/26](docs/hebeltrader-19826-initial.md):
-assistentengestützte Quellenrecherche; die spätere PDF-Auflösung bestätigt SLB auf Rang 1.
+## HEBELTRADER im Chat
 
-[Automatische Erfassung öffentlicher HEBELTRADER-Ausgaben](docs/hebeltrader-catalog-monitor.md):
-mit echten Ausgaben und wiederholtem Lauf geprüft; Aktienidentifikation bleibt separat offen.
+Der Chat ist der Arbeitsort für „Wer ist?“-Analysen. Das
+[Fallregister](docs/hebeltrader-identification-rules.md) dokumentiert die Recherchemethodik,
+ursprüngliche Tipps, Fehlversuche und spätere Auflösungen. Es enthält außerdem **42 ausgewertete
+Originalausgaben** mit Call-WKNs, Einstiegen, Stopps, Kurszielen und PDF-Seitenbelegen.
+Das [strukturierte Fallregister](data/hebeltrader/teaser-cases.json) ergänzt die historischen
+Referenzfälle.
 
-HEBELTRADER-Teaser werden im Chat analysiert. Das
-[Fallregister](docs/hebeltrader-identification-rules.md) enthält Ersttipps,
-Auflösungen und belegte Originalcalls. Die historischen Import- und
-Diagnosewerkzeuge bleiben über die Kommandozeile verfügbar. Das
-Marktscanner-Dashboard ist unter `/` und `/market-scanner` erreichbar.
+Die separate Teaser-Webanwendung und ihr Coolify-Workflow wurden in
+[#144](https://github.com/herrwurz/aktien-chancen-scanner-v5/pull/144) entfernt.
+Die [historischen Import- und Diagnosewerkzeuge](docs/hebeltrader.md) sind über die
+Kommandozeile verfügbar. Historische Dokumentation:
+[SLB-Fall 198/26](docs/hebeltrader-19826-initial.md),
+[Ausgabenkatalog](docs/hebeltrader-catalog-monitor.md) und
+[HS5RMP-Derivatepilot](docs/hebeltrader-hs5rmp-backtest-v18.md).
 
-Der aktuelle HS5RMP-Derivatepilot ist in
-[Scanner V6 V1.8](docs/hebeltrader-hs5rmp-backtest-v18.md) dokumentiert. Ohne autorisierte,
-ausreichende Bid-/Ask-Historie wird keine Optionsscheinrendite ausgegeben.
+## Separater Marktscanner
 
-Historisches HEBELTRADER-Modul: [Import, Datenmodell, Prüfung und Deployment](docs/hebeltrader.md).
-Es verwendet dieselbe Datenbank mit additiver Migration `0002` und einen optionalen
-Compose-Service im Profil `analysis`; der normale Krypto-Scanner bleibt getrennt.
+Das Marktscanner-Dashboard ist unter `/` und `/market-scanner` erreichbar,
+wenn der Marktscanner gestartet wird.
 
 Docker-based Python scanner for crypto, stocks and future leveraged-instrument analysis.
 
@@ -334,12 +336,11 @@ Die [Anbieterentscheidung](docs/research-provider-decision.md) und der
 Zeitbezug, unveränderliche Caches und den aktuellen Live-Coverage-Blocker. Der Dienst
 erzeugt Evidenz und Identitätsprüfungen, aber keine Kauf- oder Strategieentscheidung.
 
-V2.3 verbindet den Detektiv explizit mit Fixture-, archivierter oder begrenzter Live-Recherche.
+Der historische Diagnosepfad V2.3 nutzte Testdaten, archivierte Quellen und begrenzte Live-Recherche.
 Der [Betriebs-, Quellen- und Abnahmebericht](docs/research-v23.md) beschreibt SEC-XBRL-Fakten,
 GLEIF-Identitäten, Point-in-time-Grenzen und den realen Blindteaser-Versuch. Die Anwendung ist
 wegen begrenzter Branchen- und internationaler Nachrichtenevidenz noch nicht allgemein für
 unbekannte Teaser einsetzbar und liefert bei Mehrdeutigkeit `unresolved`.
 
-Die V3.1-Webrecherche erhält blockierte Quellen über Tavily Extract beziehungsweise begrenzte,
-archivierte Suchtreffer. Sie zeigt deren Quellenklasse und zeitliche Verwendbarkeit, gewichtet
-spezifische Belege stärker und weist punktgleiche Spitzenkandidaten als Gleichstand aus.
+Die historische Rechercheimplementierung V3.1 nutzte Tavily Extract und archivierte Suchtreffer.
+Sie dokumentierte Quellenklasse und zeitliche Verfügbarkeit der Belege.
