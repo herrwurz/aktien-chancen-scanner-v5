@@ -1,0 +1,481 @@
+[
+  {
+    "symbol": "AMZN",
+    "url": "https://finance.yahoo.com/quote/AMZN/history/?period1=1747267200&period2=1766188800",
+    "retrieved_at": "2026-11-11T11:05:06.901Z",
+    "file": "data/AMZN.csv",
+    "sha256": "dcc077ef090b78776b7fd50fe22d9992181cd0acfd6ce254c6e38dbd9ca36170",
+    "rows": 152,
+    "currency": "USD",
+    "metadata": [
+      "NasdaqGS - Nasdaq Real Time Price•USD",
+      "# Amazon.com, Inc. (AMZN)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FAMZN%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "DHL.DE",
+    "url": "https://finance.yahoo.com/quote/DHL.DE/history/?period1=1741996800&period2=1758153600",
+    "retrieved_at": "2026-11-11T11:05:06.902Z",
+    "file": "data/DHL.DE.csv",
+    "sha256": "08e59aaaf4c6aaa674aecb9b93ec0fe6be9a4a35d813e7c01388c1daf8a6cfc1",
+    "rows": 130,
+    "currency": "EUR",
+    "metadata": [
+      "# DHL AG (DHL.DE)",
+      "Currency in EUR",
+      "| Date | Open | High | Low | Close    Close price adjusted for splits. | Adj Close    Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-05-05",
+        "kind": "dividend",
+        "value": "1.85"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "KGX.DE",
+    "url": "https://finance.yahoo.com/quote/KGX.DE/history/?period1=1740614400&period2=1758326400",
+    "retrieved_at": "2026-11-11T11:05:06.903Z",
+    "file": "data/KGX.DE.csv",
+    "sha256": "175e5cbff04af0fe231021d34c9ab527e3e0e0374770c7671c781cdfa12f5c75",
+    "rows": 144,
+    "currency": "EUR",
+    "metadata": [
+      "XETRA - Delayed Quote•EUR",
+      "# KION GROUP AG (KGX.DE)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FKGX.DE%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-05-28",
+        "kind": "dividend",
+        "value": "0.82"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "HEN3.DE",
+    "url": "https://finance.yahoo.com/quote/HEN3.DE/history/?period1=1741737600&period2=1766188800",
+    "retrieved_at": "2026-11-11T11:05:06.904Z",
+    "file": "data/HEN3.DE.csv",
+    "sha256": "5cd6e7751c8adb263d7dc52347c7c332c5f2de20fd7cbabcfe9545113b9654a0",
+    "rows": 200,
+    "currency": "EUR",
+    "metadata": [
+      "XETRA - Delayed Quote•EUR",
+      "# Henkel AG & Co. KGaA (HEN3.DE)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FHEN3.DE%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-04-29",
+        "kind": "dividend",
+        "value": "2.04"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "UBER",
+    "url": "https://finance.yahoo.com/quote/UBER/history/?period1=1747180800&period2=1766188800",
+    "retrieved_at": "2026-11-11T11:05:06.904Z",
+    "file": "data/UBER.csv",
+    "sha256": "0fd539157abf6d606cbe28305344e116521f5f32afcd160b13ee1631be7de68e",
+    "rows": 153,
+    "currency": "USD",
+    "metadata": [
+      "NYSE - Nasdaq Real Time Price•USD",
+      "# Uber Technologies, Inc. (UBER)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FUBER%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "GOOG",
+    "url": "https://finance.yahoo.com/quote/GOOG/history/?period1=1749686400&period2=1766188800",
+    "retrieved_at": "2026-11-11T11:05:06.905Z",
+    "file": "data/GOOG.csv",
+    "sha256": "c37fb6722a3a6b030c9ac02a2610b11a561dbe9c2ceb0f77aad8c3d904781ced",
+    "rows": 133,
+    "currency": "USD",
+    "metadata": [
+      "NasdaqGS - Nasdaq Real Time Price•USD",
+      "# Alphabet Inc. (GOOG)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FGOOG%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-12-08",
+        "kind": "dividend",
+        "value": "0.21"
+      },
+      {
+        "date": "2025-09-08",
+        "kind": "dividend",
+        "value": "0.21"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "HAL",
+    "url": "https://finance.yahoo.com/quote/HAL/history/?period1=1759190400&period2=1773878400",
+    "retrieved_at": "2026-11-11T11:05:06.906Z",
+    "file": "data/HAL.csv",
+    "sha256": "9613fcb30d6c586a8bf7bc34b266027f212d1b5c7aa0a4f31d4f382bcd18f9df",
+    "rows": 117,
+    "currency": "USD",
+    "metadata": [
+      "# Halliburton Company (HAL)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FHAL%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2026-03-04",
+        "kind": "dividend",
+        "value": "0.17"
+      },
+      {
+        "date": "2025-12-03",
+        "kind": "dividend",
+        "value": "0.17"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "HO.PA",
+    "url": "https://finance.yahoo.com/quote/HO.PA/history/?period1=1757721600&period2=1774051200",
+    "retrieved_at": "2026-11-11T11:05:06.906Z",
+    "file": "data/HO.PA.csv",
+    "sha256": "d0d1ce3aed7c8739c5c219e7ff43c1e47e2b249c4a41a3d448298930d3ed1fff",
+    "rows": 132,
+    "currency": "EUR",
+    "metadata": [
+      "Paris - Delayed Quote•EUR",
+      "# Thales S.A. (HO.PA)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FHO.PA%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-12-02",
+        "kind": "dividend",
+        "value": "0.95"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "QCOM",
+    "url": "https://finance.yahoo.com/quote/QCOM/history/?period1=1752019200&period2=1768608000",
+    "retrieved_at": "2026-11-11T11:05:06.907Z",
+    "file": "data/QCOM.csv",
+    "sha256": "809ae9ca253df27c62a8ec651959ba899dff677b9cbdd36017b52f257a330fd8",
+    "rows": 134,
+    "currency": "USD",
+    "metadata": [
+      "NasdaqGS - Nasdaq Real Time Price•USD",
+      "# QUALCOMM Incorporated (QCOM)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FQCOM%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-12-04",
+        "kind": "dividend",
+        "value": "0.89"
+      },
+      {
+        "date": "2025-09-04",
+        "kind": "dividend",
+        "value": "0.89"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "SZG.DE",
+    "url": "https://finance.yahoo.com/quote/SZG.DE/history/?period1=1759363200&period2=1773878400",
+    "retrieved_at": "2026-11-11T11:05:06.908Z",
+    "file": "data/SZG.DE.csv",
+    "sha256": "7cad7c140a4e10ac1c8dd49c39cfb5ed954d3f37ca916b30b6c8c458c44b3e8e",
+    "rows": 115,
+    "currency": "EUR",
+    "metadata": [
+      "XETRA - Delayed Quote • EUR ",
+      "# Salzgitter AG (SZG.DE)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FSZG.DE%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close    Close price adjusted for splits. | Adj Close    Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "MBG.DE",
+    "url": "https://finance.yahoo.com/quote/MBG.DE/history/?period1=1762819200&period2=1774051200",
+    "retrieved_at": "2026-11-11T11:05:06.908Z",
+    "file": "data/MBG.DE.csv",
+    "sha256": "0d31862c8216113d688e6a26208976a059a2eaa5c2f87d8623c88b9c0efce8fc",
+    "rows": 89,
+    "currency": "EUR",
+    "metadata": [
+      "# Mercedes-Benz Group AG (MBG.DE)",
+      "Currency in EUR",
+      "| Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "HNR1.DE",
+    "url": "https://finance.yahoo.com/quote/HNR1.DE/history/?period1=1759968000&period2=1774051200",
+    "retrieved_at": "2026-11-11T11:05:06.908Z",
+    "file": "data/HNR1.DE.csv",
+    "sha256": "aaf0e769a2b7d04be8c8afce0e2a8de66f5063414fea4b6bdb240afead521455",
+    "rows": 112,
+    "currency": "EUR",
+    "metadata": [
+      "XETRA - Delayed Quote • EUR ",
+      "# Hannover Rück SE (HNR1.DE)",
+      "Currency in EUR[Download](/plus/gold/?.done=%2Fquote%2FHNR1.DE%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close    Close price adjusted for splits. | Adj Close    Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "TTE.PA",
+    "url": "https://finance.yahoo.com/quote/TTE.PA/history/?period1=1763424000&period2=1774051200",
+    "retrieved_at": "2026-11-11T11:05:06.909Z",
+    "file": "data/TTE.PA.csv",
+    "sha256": "ea9c72b28941f0cd31a68fb7802050d33713a1b23a2c4312a7025e91a6070d4a",
+    "rows": 86,
+    "currency": "EUR",
+    "metadata": [
+      "Paris - Delayed Quote•EUR",
+      "# TotalEnergies SE (TTE.PA)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FTTE.PA%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2025-12-31",
+        "kind": "dividend",
+        "value": "0.85"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "GILD",
+    "url": "https://finance.yahoo.com/quote/GILD/history/?period1=1760486400&period2=1774051200",
+    "retrieved_at": "2026-11-11T11:05:06.909Z",
+    "file": "data/GILD.csv",
+    "sha256": "0bc12d4ee086933c8e6c4a4cecd49e904e0dba9a64fb5ff24f6f823eef18cc2b",
+    "rows": 108,
+    "currency": "USD",
+    "metadata": [
+      "NasdaqGS - Nasdaq Real Time Price•USD",
+      "# Gilead Sciences, Inc. (GILD)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FGILD%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2026-03-13",
+        "kind": "dividend",
+        "value": "0.82"
+      },
+      {
+        "date": "2025-12-15",
+        "kind": "dividend",
+        "value": "0.79"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "SU.PA",
+    "url": "https://finance.yahoo.com/quote/SU.PA/history/?period1=1760054400&period2=1774051200",
+    "retrieved_at": "2026-11-11T11:05:06.910Z",
+    "file": "data/SU.PA.csv",
+    "sha256": "ae9360cf0d6359d4fbcaa2d1939de92e246bfdee492b6eda6fa2db5f29a186de",
+    "rows": 113,
+    "currency": "EUR",
+    "metadata": [
+      "Paris - Delayed Quote•EUR",
+      "# Schneider Electric S.E. (SU.PA)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FSU.PA%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "ADS.DE",
+    "url": "https://finance.yahoo.com/quote/ADS.DE/history/?period1=1780099200&period2=1789776000",
+    "retrieved_at": "2026-11-11T11:05:06.911Z",
+    "file": "data/ADS.DE.csv",
+    "sha256": "d6890a01f643f0b1005014923ae996b505292707a6ac7d034bc707d60cca99e9",
+    "rows": 80,
+    "currency": "EUR",
+    "metadata": [
+      "XETRA - Delayed Quote • EUR ",
+      "# adidas AG (ADS.DE)",
+      "Currency in EUR[Download](/plus/gold/?.done=%2Fquote%2FADS.DE%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close    Close price adjusted for splits. | Adj Close    Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "UNH",
+    "url": "https://finance.yahoo.com/quote/UNH/history/?period1=1778544000&period2=1789776000",
+    "retrieved_at": "2026-11-11T11:05:06.911Z",
+    "file": "data/UNH.csv",
+    "sha256": "47b6fade2abfe9c342eb3d07f90cf0c0d2a9c8e2fc9c7c66240ecdef8a4243e6",
+    "rows": 90,
+    "currency": "USD",
+    "metadata": [
+      "NYSE - Delayed Quote•USD",
+      "# UnitedHealth Group Incorporated (UNH)",
+      "Currency in USD[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FUNH%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2026-09-14",
+        "kind": "dividend",
+        "value": "2.32"
+      },
+      {
+        "date": "2026-06-15",
+        "kind": "dividend",
+        "value": "2.32"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "AI.PA",
+    "url": "https://finance.yahoo.com/quote/AI.PA/history/?period1=1773878400&period2=1789776000",
+    "retrieved_at": "2026-11-11T11:05:06.912Z",
+    "file": "data/AI.PA.csv",
+    "sha256": "c740c250119d287aa84fa936b80f8f0d6fb3f57839eb5f06941a2d018a18d1b5",
+    "rows": 129,
+    "currency": "EUR",
+    "metadata": [
+      "Paris - Delayed Quote•EUR",
+      "# L'Air Liquide S.A. (AI.PA)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FAI.PA%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2026-06-08",
+        "kind": "split",
+        "value": "11:10"
+      },
+      {
+        "date": "2026-05-18",
+        "kind": "dividend",
+        "value": "3.363636"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  },
+  {
+    "symbol": "FRA.DE",
+    "url": "https://finance.yahoo.com/quote/FRA.DE/history/?period1=1768953600&period2=1781740800",
+    "retrieved_at": "2026-11-11T11:05:06.913Z",
+    "file": "data/FRA.DE.csv",
+    "sha256": "bc7e996069bd0d164ff4d7085063a3a390a8e94756f6aafb516c876757479dc2",
+    "rows": 103,
+    "currency": "EUR",
+    "metadata": [
+      "XETRA - Delayed Quote•EUR",
+      "# Fraport AG (FRA.DE)",
+      "Currency in EUR[Download](https://finance.yahoo.com/plus/gold/?.done=%2Fquote%2FFRA.DE%2Fhistory%2F&ncid=100001727)",
+      "| Date | Open | High | Low | Close Close price adjusted for splits. | Adj Close Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Volume |"
+    ],
+    "corporate_actions": [
+      {
+        "date": "2026-05-13",
+        "kind": "dividend",
+        "value": "1"
+      }
+    ],
+    "source_type": "Yahoo Finance daily table via Tavily extraction",
+    "independent_full_series_validation": false,
+    "calendar_completeness_verified": false,
+    "redistribution_license_verified": false
+  }
+]
