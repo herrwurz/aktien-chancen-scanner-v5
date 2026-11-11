@@ -6,24 +6,11 @@ assistentengestützte Quellenrecherche; die spätere PDF-Auflösung bestätigt S
 [Automatische Erfassung öffentlicher HEBELTRADER-Ausgaben](docs/hebeltrader-catalog-monitor.md):
 mit echten Ausgaben und wiederholtem Lauf geprüft; Aktienidentifikation bleibt separat offen.
 
-V3.1 ergänzt ein dauerhaftes Falljournal, spätere Auflösungen, historische Verfügbarkeit
-und öffentliche RSS-Entdeckung: [V3.1 Bedienung und Abnahme](docs/teaser-intelligence-v31.md).
-Veraltete Tests können append-only archiviert werden. Neue Fälle lassen sich vor der Auflösung
-als prospektive Blindtests markieren und nach belegter Auflösung ausdrücklich als prospektive
-Referenzen freigeben; die ursprüngliche Rangliste bleibt unverändert.
-
-Primäre Funktion ist die Identifikation unbekannter Aktien aus öffentlichen Teasern:
-[Bedienung und Grenzen](docs/hebeltrader-primary.md),
-[Abnahmebericht](docs/hebeltrader-primary-acceptance.md). Der Startbildschirm zeigt den
-Detektiv; der allgemeine Marktscanner bleibt unter `/market-scanner` erreichbar.
-
-Der neue Recherchepfad nutzt Originalseiten, dieselbe Hinweismatrix für alle Kandidaten,
-aktive Gegenrecherche und eine eingefrorene Top-3-Rangliste. Unzureichende Belege führen
-zu **nicht identifiziert**. Unabhängige Identifikationsqualität ist noch nicht nachgewiesen.
-
-Die bisherigen [V3-Diagnosewerkzeuge](docs/hebeltrader-detective-v3.md) und der
-[Offline-MVP](docs/architecture-hebeltrader-detective-mvp.md) bleiben erhalten; deren sechs
-synthetische Adapterunternehmen werden im neuen Primärworkflow nicht verwendet.
+HEBELTRADER-Teaser werden im Chat analysiert. Das
+[Fallregister](docs/hebeltrader-identification-rules.md) enthält Ersttipps,
+Auflösungen und belegte Originalcalls. Die historischen Import- und
+Diagnosewerkzeuge bleiben über die Kommandozeile verfügbar. Das
+Marktscanner-Dashboard ist unter `/` und `/market-scanner` erreichbar.
 
 Der aktuelle HS5RMP-Derivatepilot ist in
 [Scanner V6 V1.8](docs/hebeltrader-hs5rmp-backtest-v18.md) dokumentiert. Ohne autorisierte,

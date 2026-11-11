@@ -3,8 +3,8 @@ import pytest
 from scanner import http_entrypoint
 
 
-@pytest.mark.parametrize("factory", ["scanner.main:create_app", "scanner.web:create_web_app"])
-def test_explicit_container_factory(monkeypatch, factory):
+def test_explicit_container_factory(monkeypatch):
+    factory = "scanner.main:create_app"
     monkeypatch.setenv("SCANNER_APP_FACTORY", factory)
     calls = []
     monkeypatch.setattr(http_entrypoint.uvicorn, "run", lambda *a, **k: calls.append((a, k)))

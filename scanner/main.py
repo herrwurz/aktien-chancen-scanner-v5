@@ -1,55 +1,19 @@
-import base64
-import binascii
-import hashlib
-import hmac
-import json
-import sqlite3
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Literal
 
-import httpx
-from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from scanner.config import Settings
 from scanner.db import create_db, create_sessions
 from scanner.domain import Candle
-from scanner.hebeltrader.detective.call_search import search_calls_for_report
-from scanner.hebeltrader.detective.case_journal import CaseJournal
-from scanner.hebeltrader.detective.external_research import (
-    ApiConfigurationError,
-    build_public_research,
-)
-from scanner.hebeltrader.detective.factory import build_detective, live_api_access_status
-from scanner.hebeltrader.detective.investigation import (
-    InvestigationRequest,
-    Investigator,
-    canonical_company,
-)
-from scanner.hebeltrader.detective.resolution import ResolutionRequest
-from scanner.hebeltrader.detective.schemas import DetectiveRequest
-from scanner.hebeltrader.detective.workflow import run_case
-from scanner.hebeltrader.parser import extract_pdf
 from scanner.models import Base, Evaluation, MarketCandle, ScanRun
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
-
-
-class ArchiveCaseRequest(BaseModel):
-    reason: str = Field(min_length=3, max_length=500)
-
-
-class PromoteReferenceRequest(BaseModel):
-    source: str = Field(min_length=3, max_length=500)
-
-
-class ProspectiveCaseRequest(BaseModel):
-    basis: str = Field(min_length=3, max_length=500)
 
 
 def evidence(evaluation):
@@ -102,26 +66,6 @@ def filtered(statement, values):
     return statement.limit(values["limit"]).offset(values["offset"])
 
 
-class SolutionPdfRequest(BaseModel):
-    pdf_base64: str = Field(min_length=1, max_length=28_000_000)
-    case_id: str | None = Field(default=None, min_length=3, max_length=80)
-    persist: bool = False
-
-
-class DatasetPromotionRequest(BaseModel):
-    name: str = Field(min_length=1, max_length=300)
-    source: str = Field(min_length=3, max_length=500)
-    ticker: str | None = Field(default=None, max_length=32)
-    stock_wkn: str | None = Field(default=None, max_length=12)
-    call_wkn: str | None = Field(default=None, pattern=r"^[A-Z0-9]{6}$")
-    notes: str | None = Field(default=None, max_length=2000)
-
-
-class CallSearchRequest(BaseModel):
-    report: dict
-    enabled: bool = True
-
-
 def create_app(settings: Settings | None = None, engine=None):
     settings = settings or Settings()
     owned_engine = engine is None
@@ -135,7 +79,6 @@ def create_app(settings: Settings | None = None, engine=None):
             engine.dispose()
 
     app = FastAPI(title="Multi-Asset Chancen-Scanner V6", version="0.1.0", lifespan=lifespan)
-    detective = build_detective(settings)
 
     @app.exception_handler(SQLAlchemyError)
     async def database_error(request, exc):
@@ -203,6 +146,7 @@ def create_app(settings: Settings | None = None, engine=None):
                 for r in records
             ]
 
+    @app.get("/")
     @app.get("/market-scanner")
     def dashboard(request: Request):
         values = dict(
@@ -217,272 +161,5 @@ def create_app(settings: Settings | None = None, engine=None):
                 "configured_provider": settings.provider,
             },
         )
-
-    @app.get("/")
-    @app.get("/hebeltrader")
-    def hebeltrader_detective(request: Request):
-        return templates.TemplateResponse(request=request, name="detective.html", context={})
-
-    @app.get("/api/hebeltrader/updates")
-    def teaser_updates(limit: int = Query(20, ge=1, le=100)):
-        from scanner.hebeltrader.detective.monitor import notification_feed
-
-        try:
-            return notification_feed(settings.detective_public_root, limit)
-        except sqlite3.Error:
-            raise HTTPException(503, "Teaser notifications unavailable") from None
-
-    @app.post("/api/hebeltrader/investigate")
-    def investigate(payload: InvestigationRequest, request: Request):
-        if settings.detective_public_allow_network:
-            expected = settings.detective_live_api_token
-            if expected is None or not expected.get_secret_value().strip():
-                raise HTTPException(503, "Public research API authorization is not configured")
-            provided = request.headers.get("X-Research-Authorization", "")
-            if not hmac.compare_digest(expected.get_secret_value(), provided):
-                raise HTTPException(403, "Research authorization required")
-        try:
-            domains = (
-                json.loads(settings.detective_primary_domains.read_text())
-                if settings.detective_primary_domains
-                else {}
-            )
-            web = build_public_research(settings, domains)
-            issuers = (
-                json.loads(settings.detective_product_issuers.read_text())
-                if settings.detective_product_issuers
-                else {}
-            )
-            return run_case(
-                Investigator(settings.detective_public_root, web=web, product_issuers=issuers),
-                payload,
-                register_path=settings.detective_case_register,
-            )
-        except ApiConfigurationError as exc:
-            raise HTTPException(503, str(exc)) from None
-        except (ValueError, httpx.HTTPError) as exc:
-            raise HTTPException(422, "Public research unavailable: " + type(exc).__name__) from None
-
-    def case_access(request: Request):
-        expected = settings.detective_live_api_token
-        if expected is None or not expected.get_secret_value().strip():
-            raise HTTPException(503, "Case journal access token is not configured")
-        if not hmac.compare_digest(
-            expected.get_secret_value(), request.headers.get("X-Research-Authorization", "")
-        ):
-            raise HTTPException(403, "Case journal authorization required")
-
-    @app.post("/api/hebeltrader/cases/solution-pdf")
-    def case_solution_pdf(payload: SolutionPdfRequest, request: Request):
-        case_access(request)
-        try:
-            data = base64.b64decode(payload.pdf_base64, validate=True)
-            extraction = extract_pdf(data)
-        except (binascii.Error, ValueError):
-            raise HTTPException(422, "Solution PDF could not be read") from None
-        recommendation = extraction.recommendations[0].values if extraction.recommendations else {}
-        issue = (
-            f"{extraction.issue_number}/{extraction.issue_year}" if extraction.issue_number else ""
-        )
-        extracted = {
-            "name": recommendation.get("stock_name"),
-            "stock_wkn": recommendation.get("stock_wkn"),
-            "call_wkn": recommendation.get("derivative_wkn"),
-            "issue": issue,
-            "flags": [flag.get("code") for flag in extraction.flags],
-        }
-        result = {
-            **extracted,
-            "pdf_sha256": hashlib.sha256(data).hexdigest(),
-            "persisted": False,
-            "solution_pdf": None,
-        }
-        if payload.persist:
-            if not payload.case_id:
-                raise HTTPException(422, "case_id required when persisting solution PDF")
-            journal = CaseJournal(settings.detective_public_root / "cases")
-            try:
-                stored = journal.store_solution_pdf(payload.case_id, data, extracted=extracted)
-            except ValueError as exc:
-                raise HTTPException(422, str(exc)) from None
-            result["persisted"] = True
-            result["solution_pdf"] = stored
-            result["listed_as_official"] = bool(stored.get("listed_as_official"))
-            result["competition_mode"] = journal.case(payload.case_id).get("competition_mode")
-        return result
-
-    @app.get("/api/hebeltrader/cases")
-    def case_list(
-        request: Request,
-        include_archived: bool = False,
-        listing: Literal["official", "out_of_competition", "all"] = "official",
-    ):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").cases(
-                include_archived, listing=listing
-            )
-        except ValueError as exc:
-            raise HTTPException(422, str(exc)) from None
-
-    @app.post("/api/hebeltrader/cases/reconcile")
-    def case_reconcile(request: Request):
-        """Persist PDF listing and auto-resolve clear reports. Never delete a case."""
-        case_access(request)
-        try:
-            return CaseJournal(
-                settings.detective_public_root / "cases"
-            ).reconcile_operator_listing()
-        except ValueError as exc:
-            raise HTTPException(422, str(exc)) from None
-
-    @app.get("/api/hebeltrader/quality")
-    def case_quality(request: Request):
-        case_access(request)
-        return CaseJournal(settings.detective_public_root / "cases").quality()
-
-    @app.get("/api/hebeltrader/cases/{case_id}")
-    def case_detail(case_id: str, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").case(case_id)
-        except ValueError:
-            raise HTTPException(404, "Case unavailable or integrity check failed") from None
-
-    @app.post("/api/hebeltrader/cases/{case_id}/archive")
-    def case_archive(case_id: str, payload: ArchiveCaseRequest, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").archive(
-                case_id, payload.reason
-            )
-        except ValueError:
-            raise HTTPException(404, "Case unavailable or archive request invalid") from None
-
-    @app.post("/api/hebeltrader/cases/{case_id}/restore")
-    def case_restore(case_id: str, payload: ArchiveCaseRequest, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").restore(
-                case_id, payload.reason
-            )
-        except ValueError:
-            raise HTTPException(404, "Case unavailable or restore request invalid") from None
-
-    @app.post("/api/hebeltrader/cases/{case_id}/delete")
-    def case_delete(case_id: str, payload: ArchiveCaseRequest, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").delete(
-                case_id, payload.reason
-            )
-        except ValueError:
-            raise HTTPException(404, "Case unavailable or delete request invalid") from None
-
-    @app.get("/api/hebeltrader/prospective-references")
-    def prospective_references(request: Request):
-        case_access(request)
-        return CaseJournal(settings.detective_public_root / "cases").references()
-
-    @app.post("/api/hebeltrader/cases/{case_id}/reference-promotion")
-    def case_reference_promotion(case_id: str, payload: PromoteReferenceRequest, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").promote_reference(
-                case_id, payload.source
-            )
-        except ValueError as exc:
-            raise HTTPException(422, str(exc)) from None
-
-    @app.post("/api/hebeltrader/cases/{case_id}/prospective")
-    def case_mark_prospective(case_id: str, payload: ProspectiveCaseRequest, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").mark_prospective(
-                case_id, payload.basis
-            )
-        except ValueError as exc:
-            raise HTTPException(422, str(exc)) from None
-
-    @app.post("/api/hebeltrader/cases/{case_id}/resolution")
-    def case_resolution(case_id: str, payload: ResolutionRequest, request: Request):
-        case_access(request)
-        journal = CaseJournal(settings.detective_public_root / "cases")
-        try:
-            resolution = payload.model_dump(exclude_none=True)
-            if "asset_id" not in resolution:
-                # Same keying as discovered candidates, so a typed name still matches rank.
-                resolution["asset_id"] = (
-                    "company:"
-                    + hashlib.sha256(canonical_company(payload.name).encode()).hexdigest()
-                )
-            result = journal.resolve(case_id, resolution)
-            journal.export_register(settings.detective_public_root / "case-register.md")
-            if settings.detective_case_register:
-                journal.export_register(settings.detective_case_register)
-            return result
-        except ValueError:
-            raise HTTPException(
-                422, "Resolution requires a valid frozen case and provenance"
-            ) from None
-
-    @app.post("/api/hebeltrader/cases/{case_id}/dataset-promotion")
-    def case_dataset_promotion(case_id: str, payload: DatasetPromotionRequest, request: Request):
-        case_access(request)
-        try:
-            return CaseJournal(settings.detective_public_root / "cases").promote_to_dataset(
-                case_id, payload.model_dump(exclude_none=True)
-            )
-        except ValueError as exc:
-            raise HTTPException(422, str(exc)) from None
-
-    @app.post("/api/hebeltrader/detective/analyze")
-    def analyze_hebeltrader_teaser(payload: DetectiveRequest, request: Request):
-        access = live_api_access_status(settings, request.headers.get("X-Research-Authorization"))
-        if access == "token_missing":
-            raise HTTPException(status_code=503, detail="Live research API token is not configured")
-        if access == "unauthorized":
-            raise HTTPException(status_code=403, detail="Live research authorization required")
-        try:
-            return detective.analyze(payload)
-        except ValueError as exc:
-            raise HTTPException(status_code=422, detail=str(exc)) from exc
-
-    @app.post("/api/hebeltrader/calls/search")
-    def call_search(payload: CallSearchRequest, request: Request):
-        """Dry-run Call search for top underlyings — never a trading recommendation."""
-        if settings.detective_public_allow_network:
-            expected = settings.detective_live_api_token
-            if expected is None or not expected.get_secret_value().strip():
-                raise HTTPException(503, "Public research API authorization is not configured")
-            provided = request.headers.get("X-Research-Authorization", "")
-            if not hmac.compare_digest(expected.get_secret_value(), provided):
-                raise HTTPException(403, "Research authorization required")
-        try:
-            domains = (
-                json.loads(settings.detective_primary_domains.read_text())
-                if settings.detective_primary_domains
-                else {}
-            )
-            web = (
-                build_public_research(settings, domains)
-                if settings.detective_public_allow_network
-                else None
-            )
-            issuers = (
-                json.loads(settings.detective_product_issuers.read_text())
-                if settings.detective_product_issuers
-                else {}
-            )
-            return search_calls_for_report(
-                payload.report,
-                web=web,
-                issuer_domains=issuers,
-                enabled=payload.enabled,
-            )
-        except ApiConfigurationError as exc:
-            raise HTTPException(503, str(exc)) from None
-        except (ValueError, httpx.HTTPError, TypeError) as exc:
-            raise HTTPException(422, "Call search unavailable: " + type(exc).__name__) from None
 
     return app

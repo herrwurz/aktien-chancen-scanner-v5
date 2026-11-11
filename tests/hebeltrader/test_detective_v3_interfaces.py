@@ -139,19 +139,3 @@ def test_pdf_reaches_same_service_pipeline_with_sha_and_page_provenance():
     assert result["input_sources"][0]["sha256"]
     assert result["input_sources"][0]["pages"][0]["method"] == "pdf_text"
     assert result["candidates"][0]["identity"]["ticker"] == "ALP"
-
-
-def test_template_uses_dom_text_content_instead_of_html_injection():
-    template = open("scanner/templates/detective.html", encoding="utf-8").read()
-    assert "innerHTML" not in template
-    assert "textContent" in template
-    assert "c.identity||c" in template
-    assert "failure_code" in template
-    assert "Technische Details" in template
-    assert "tech-details" in template
-    assert "Top-Auswahl" in template
-    assert "search_queries" in template
-    assert "Primärbelege" in template
-    assert "coverage_warnings" in template
-    assert "requires_manual_review" in template
-    assert "Kandidatendetails" not in template

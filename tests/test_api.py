@@ -40,9 +40,9 @@ def test_dashboard_and_health(client):
     assert "BTCUSDT" in page.text
     assert "fixture" in page.text
     assert "Keine Handelsfreigabe" in page.text
-    detective = client.get("/hebeltrader")
-    assert detective.status_code == 200
-    assert "HEBELTRADER analysieren" in detective.text
+    assert client.get("/").text == page.text
+    assert client.get("/hebeltrader").status_code == 404
+    assert client.post("/api/hebeltrader/investigate", json={}).status_code == 404
 
 
 def test_signals_include_evidence_and_are_read_only(client):
@@ -55,24 +55,6 @@ def test_signals_include_evidence_and_are_read_only(client):
     assert signal["actionable"] is False
     assert signal["candle_close_time"] < signal["evaluated_at"]
     assert client.post("/api/signals", json={}).status_code == 405
-
-
-def test_detective_text_api_returns_explained_unconfirmed_candidates(client):
-    response = client.post(
-        "/api/hebeltrader/detective/analyze",
-        json={
-            "teaser_text": (
-                "US-Gesundheitskonzern mit Pharma und Medizintechnik. Call WKN HS5RMP."
-            ),
-            "publication_at": "2025-08-05T08:15:00+02:00",
-        },
-    )
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["identification"]["selected_wkn"] == "853260"
-    assert payload["derivative_candidate"]["candidates"][0]["confirmed"] is False
-    assert payload["automatic_confirmation"] is False
-    assert client.post("/api/hebeltrader/detective/analyze", json={}).status_code == 422
 
 
 def test_filters_and_pagination(client):
@@ -113,35 +95,3 @@ def test_readiness_requires_migration():
 def test_invalid_configuration_rejected(values):
     with pytest.raises(ValueError):
         Settings(_env_file=None, **values)
-
-
-def test_primary_detective_is_home_and_market_scanner_is_separate(client):
-    page = client.get("/")
-    assert page.status_code == 200
-    assert "Teasertext" in page.text
-    assert "/market-scanner" in page.text
-    assert "BTCUSDT" in client.get("/market-scanner").text
-
-
-def test_primary_api_abstains_without_public_sources_and_does_not_use_case_labels(client):
-    response = client.post(
-        "/api/hebeltrader/investigate",
-        json={"teaser_text": "Unbekannter Tech-Konzern mit Comeback."},
-    )
-    assert response.status_code == 200
-    assert response.json()["identification"]["status"] == "not_identified"
-    assert response.json()["countercandidate_count"] == 0
-    assert response.json()["derivative_candidate"]["status"] == "not_identified"
-    assert (
-        client.post(
-            "/api/hebeltrader/investigate",
-            json={"teaser_text": "Test", "resolution": "a hidden answer"},
-        ).status_code
-        == 422
-    )
-
-
-def test_teaser_updates_are_read_only_and_empty_before_monitoring(client):
-    assert client.get("/api/hebeltrader/updates").status_code == 200
-    assert client.get("/api/hebeltrader/updates").json() == []
-    assert client.post("/api/hebeltrader/updates", json={}).status_code == 405
