@@ -141,6 +141,12 @@ Call: Basispreis 120 USD, Laufzeitdatum 19.03.2027, Omega 10,0, implizite Volati
 
 Für die Auswertung bleiben empfohlener Einstieg/Kauflimit, Ziel 1 und Stopp 1 getrennte Felder. Der Berichtskurs ist eine Indikation. Aus Szenariorenditen oder persönlichen Ordermarken werden fehlende Originalwerte nicht abgeleitet.
 
+## HEBELTRADER 211/26 – Ersttipp vom 12.11.2026
+
+- **Ersttipp:** Advanced Micro Devices (AMD), mittlere Sicherheit. Stärkste Gegenkandidaten: CoreWeave (CRWV) und Celestica (CLS).
+- **Belege:** AMD meldete 45 % Umsatzwachstum, 97 % Wachstum im Rechenzentrumsgeschäft und 2,09 USD bereinigten Gewinn je Aktie gegenüber 1,95 USD Konsens. Am 11.11. lag der Schlusskurs von 552,90 USD über dem Vortageshoch von 539,25 USD. Das Tageshoch von 567,65 USD blieb unter dem Oktoberhoch von 658,52 USD. Der Bezug des Teasers auf ein Rekordhoch bleibt offen. [AMD-Quartalsbericht](https://ir.amd.com/news-events/press-releases/detail/1303/amd-reports-third-quarter-2026-financial-results) · [Reuters](https://www.reuters.com/business/amd-forecasts-quarterly-revenue-above-estimates-data-center-growth-accelerates-2026-11-03/) · [Kursverlauf](https://stockanalysis.com/stocks/amd/history/)
+- **Status:** Unaufgelöst. Der Nutzer kauft den Report nicht. Aktie und Original-WKN bleiben unbestätigt. Der Fall geht erst bei belegter Auflösung in die Trefferquote ein. [Verlagsteaser](https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-21126-5145.html)
+
 ## Originalcall-Sammlung – 42 Ausgaben aus dem ZIP vom 11.11.2026
 
 Das Archiv enthält 43 PDFs. Die zweite Datei zu 74/25 ist bytegleich und zählt einmal. Die Tabellen beziehen sich auf den historischen Stand der jeweiligen Ausgabe.
