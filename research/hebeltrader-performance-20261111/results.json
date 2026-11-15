@@ -1,0 +1,2230 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-11",
+  "baseline_commit": "3bc4b9a",
+  "method": "archived_daily_stock_observations_and_evidence_gated_call_audit_v1",
+  "input_sha256": {
+    "docs/hebeltrader-identification-rules.md": "3263c2e2029f28271a1b2192fc8747e166894fa6151070905a3fa224a1246164",
+    "docs/hebeltrader-originalreports-42.json": "bad436a31e9f4992a6e02eaf7f5433870b8586be84a1060c765e1f0d7fc995a8",
+    "market-sources.json": "0da42e8b59f7abc8a3506bc2b5482f32398e5fcc9cf68eef3e7a2621d07c650d",
+    "evidence.json": "f36a951e38eab9d5d3329f9bbd05c8782b9099f2938cb0c9ae0b4d1904d77dff",
+    "research-log.json": "ddb4de5fc2da1f6ca12f1920e8d398a690d7c489d2ee5bc7a935d8668cbcd889",
+    "reproduce.py": "6fe189368312e3d4aa00e68873f143fdb377a7a30c3699f14b1f883e6a8750fa"
+  },
+  "totals": {
+    "universe": 42,
+    "budget_eur": 21000,
+    "expired": 19,
+    "expired_budget_eur": 9500,
+    "remaining_not_researched": 23,
+    "verified_executable_call_simulations": 0,
+    "call_strategy_pnl_eur": null,
+    "real_trade_pnl_eur": null,
+    "settlement_counterfactuals": 2,
+    "stock_series_imported": 19,
+    "stock_observation_cases_provisional": 17
+  },
+  "records": [
+    {
+      "issue": "22/25",
+      "underlying": "KION",
+      "wkn": "MJ2DR6",
+      "publication_date": "2025-02-26",
+      "report_maturity": "2025-09-19",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.31",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1612,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.72",
+        "cash_eur": "0.28"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "KGX.DE",
+        "source_file": "data/KGX.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/KGX.DE/history/?period1=1740614400&period2=1758326400",
+        "currency": "EUR",
+        "rows": 144,
+        "first_date": "2025-02-27",
+        "last_date": "2025-09-19",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2025-03-06",
+            "threshold": "47.00",
+            "observed_high": "48.11"
+          },
+          "target2": {
+            "date": "2025-08-07",
+            "threshold": "57.50",
+            "observed_high": "57.8"
+          },
+          "stop1": {
+            "date": "2025-04-03",
+            "threshold": "36.20",
+            "observed_low": "34.91"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "31/25",
+      "underlying": "Henkel Vz.",
+      "wkn": "SU6X8P",
+      "publication_date": "2025-03-11",
+      "report_maturity": "2025-12-19",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.11",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 4545,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.95",
+        "cash_eur": "0.05"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "HEN3.DE",
+        "source_file": "data/HEN3.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/HEN3.DE/history/?period1=1741737600&period2=1766188800",
+        "currency": "EUR",
+        "rows": 200,
+        "first_date": "2025-03-12",
+        "last_date": "2025-12-19",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2025-03-12",
+            "threshold": "81.70",
+            "observed_low": "74.98"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "34/25",
+      "underlying": "DHL Group",
+      "wkn": "HD94XR",
+      "publication_date": "2025-03-14",
+      "report_maturity": "2025-09-17",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.092",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 5434,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.93",
+        "cash_eur": "0.07"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "DHL.DE",
+        "source_file": "data/DHL.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/DHL.DE/history/?period1=1741996800&period2=1758153600",
+        "currency": "EUR",
+        "rows": 130,
+        "first_date": "2025-03-17",
+        "last_date": "2025-09-17",
+        "flat_ohlc_rows": 14,
+        "status": "blocked",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption",
+          "missing_or_zero_volume",
+          "incomplete_intraday_ranges"
+        ],
+        "first_observed_touches": null,
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "73/25",
+      "underlying": "Uber",
+      "wkn": "MJ3CHB",
+      "publication_date": "2025-05-13",
+      "report_maturity": "2025-12-19",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.16",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 3125,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "500.00",
+        "cash_eur": "0.00"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "UBER",
+        "source_file": "data/UBER.csv",
+        "source_url": "https://finance.yahoo.com/quote/UBER/history/?period1=1747180800&period2=1766188800",
+        "currency": "USD",
+        "rows": 153,
+        "first_date": "2025-05-14",
+        "last_date": "2025-12-19",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": null
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "74/25",
+      "underlying": "Amazon",
+      "wkn": "SW979R",
+      "publication_date": "2025-05-14",
+      "report_maturity": "2025-12-19",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.32",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1562,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.84",
+        "cash_eur": "0.16"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "AMZN",
+        "source_file": "data/AMZN.csv",
+        "source_url": "https://finance.yahoo.com/quote/AMZN/history/?period1=1747267200&period2=1766188800",
+        "currency": "USD",
+        "rows": 152,
+        "first_date": "2025-05-15",
+        "last_date": "2025-12-19",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2025-10-31",
+            "threshold": "250.00",
+            "observed_high": "250.5"
+          },
+          "target2": null,
+          "stop1": null
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": [
+          {
+            "date": "2025-10-31",
+            "source_url": "https://www.statmuse.com/money/ask/amzn-stock-price-oct-2025",
+            "price_matches": {
+              "open": true,
+              "high": true,
+              "low": true,
+              "close": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "issue": "92/25",
+      "underlying": "Alphabet",
+      "wkn": "SY0LMB",
+      "publication_date": "2025-06-11",
+      "report_maturity": "2025-12-19",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.12",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 4166,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.92",
+        "cash_eur": "0.08"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "GOOG",
+        "source_file": "data/GOOG.csv",
+        "source_url": "https://finance.yahoo.com/quote/GOOG/history/?period1=1749686400&period2=1766188800",
+        "currency": "USD",
+        "rows": 133,
+        "first_date": "2025-06-12",
+        "last_date": "2025-12-19",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2025-08-29",
+            "threshold": "214.00",
+            "observed_high": "215.34"
+          },
+          "target2": {
+            "date": "2025-09-18",
+            "threshold": "254.00",
+            "observed_high": "254.14"
+          },
+          "stop1": {
+            "date": "2025-06-23",
+            "threshold": "166.00",
+            "observed_low": "163.33"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "110/25",
+      "underlying": "Qualcomm",
+      "wkn": "VG1YQN",
+      "publication_date": "2025-07-08",
+      "report_maturity": "2026-01-16",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.225",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2222,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.95",
+        "cash_eur": "0.05"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "QCOM",
+        "source_file": "data/QCOM.csv",
+        "source_url": "https://finance.yahoo.com/quote/QCOM/history/?period1=1752019200&period2=1768608000",
+        "currency": "USD",
+        "rows": 134,
+        "first_date": "2025-07-09",
+        "last_date": "2026-01-16",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2025-10-27",
+            "threshold": "202.00",
+            "observed_high": "205.95"
+          },
+          "target2": null,
+          "stop1": {
+            "date": "2025-07-31",
+            "threshold": "150.00",
+            "observed_low": "145.58"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "158/25",
+      "underlying": "Thales",
+      "wkn": "SX6DHJ",
+      "publication_date": "2025-09-12",
+      "report_maturity": "2026-03-20",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.50",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1000,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "500.00",
+        "cash_eur": "0.00"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "HO.PA",
+        "source_file": "data/HO.PA.csv",
+        "source_url": "https://finance.yahoo.com/quote/HO.PA/history/?period1=1757721600&period2=1774051200",
+        "currency": "EUR",
+        "rows": 132,
+        "first_date": "2025-09-15",
+        "last_date": "2026-03-20",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2025-12-02",
+            "threshold": "217.00",
+            "observed_low": "216.2"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "169/25",
+      "underlying": "Halliburton",
+      "wkn": "UG4H12",
+      "publication_date": "2025-09-29",
+      "report_maturity": "2026-03-18",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.065",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 7692,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.98",
+        "cash_eur": "0.02"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "HAL",
+        "source_file": "data/HAL.csv",
+        "source_url": "https://finance.yahoo.com/quote/HAL/history/?period1=1759190400&period2=1773878400",
+        "currency": "USD",
+        "rows": 117,
+        "first_date": "2025-09-30",
+        "last_date": "2026-03-18",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2026-01-05",
+            "threshold": "31.50",
+            "observed_high": "33.03"
+          },
+          "target2": null,
+          "stop1": {
+            "date": "2025-10-10",
+            "threshold": "23.00",
+            "observed_low": "21.97"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": [
+          {
+            "date": "2026-03-18",
+            "source_url": "https://www.onemarkets.de/de/productpage.html/DE000UG4H121",
+            "price_matches": {
+              "close": true
+            }
+          }
+        ]
+      },
+      "hold_to_redemption_scenario": {
+        "class": "counterfactual_hold_to_redemption_not_wittmer_strategy",
+        "settlement_evidence": {
+          "issue": "169/25",
+          "wkn": "UG4H12",
+          "isin": "DE000UG4H121",
+          "issuer": "UniCredit Bank GmbH",
+          "source_url": "https://www.onemarkets.de/de/productpage.html/DE000UG4H121",
+          "retrieved_on": "2026-11-11",
+          "valuation_date": "2026-03-18",
+          "payment_date": "2026-03-25",
+          "underlying_fixing": "36.22",
+          "underlying_currency": "USD",
+          "strike": "32",
+          "ratio": "0.1",
+          "fx_date": "2026-03-19",
+          "eurusd": "1.1488",
+          "settlement_eur": "0.37",
+          "bid_ask_history_available": false,
+          "evidence_status": "issuer_redemption_information"
+        },
+        "executable_purchase_verified": false,
+        "fee_scenarios": [
+          {
+            "quantity": 7692,
+            "purchase_fee_eur": "0",
+            "purchase_value_eur": "499.98",
+            "cash_eur": "0.02",
+            "redemption_eur": "2846.04",
+            "redemption_fee_assumption_eur": "0",
+            "pnl_eur": "2346.06",
+            "return_on_500_budget_pct": "469.212"
+          },
+          {
+            "quantity": 7615,
+            "purchase_fee_eur": "5",
+            "purchase_value_eur": "494.98",
+            "cash_eur": "0.02",
+            "redemption_eur": "2817.55",
+            "redemption_fee_assumption_eur": "5",
+            "pnl_eur": "2312.57",
+            "return_on_500_budget_pct": "462.514"
+          }
+        ]
+      }
+    },
+    {
+      "issue": "171/25",
+      "underlying": "Salzgitter",
+      "wkn": "UG6WU7",
+      "publication_date": "2025-10-01",
+      "report_maturity": "2026-03-18",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.43",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1162,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.66",
+        "cash_eur": "0.34"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "SZG.DE",
+        "source_file": "data/SZG.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/SZG.DE/history/?period1=1759363200&period2=1773878400",
+        "currency": "EUR",
+        "rows": 115,
+        "first_date": "2025-10-02",
+        "last_date": "2026-03-18",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption",
+          "missing_or_zero_volume"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2025-10-08",
+            "threshold": "34.00",
+            "observed_high": "34.3"
+          },
+          "target2": {
+            "date": "2026-01-07",
+            "threshold": "46.00",
+            "observed_high": "46.78"
+          },
+          "stop1": null
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": [
+          {
+            "date": "2026-03-18",
+            "source_url": "https://www.onemarkets.de/de/productpage.html/DE000UG6WU77",
+            "price_matches": {
+              "close": true
+            }
+          }
+        ]
+      },
+      "hold_to_redemption_scenario": {
+        "class": "counterfactual_hold_to_redemption_not_wittmer_strategy",
+        "settlement_evidence": {
+          "issue": "171/25",
+          "wkn": "UG6WU7",
+          "isin": "DE000UG6WU77",
+          "issuer": "UniCredit Bank GmbH",
+          "source_url": "https://www.onemarkets.de/de/productpage.html/DE000UG6WU77",
+          "retrieved_on": "2026-11-11",
+          "valuation_date": "2026-03-18",
+          "payment_date": "2026-03-25",
+          "underlying_fixing": "40.54",
+          "underlying_currency": "EUR",
+          "strike": "35",
+          "ratio": "1",
+          "settlement_eur": "5.54",
+          "bid_ask_history_available": false,
+          "evidence_status": "issuer_redemption_information"
+        },
+        "executable_purchase_verified": false,
+        "fee_scenarios": [
+          {
+            "quantity": 1162,
+            "purchase_fee_eur": "0",
+            "purchase_value_eur": "499.66",
+            "cash_eur": "0.34",
+            "redemption_eur": "6437.48",
+            "redemption_fee_assumption_eur": "0",
+            "pnl_eur": "5937.82",
+            "return_on_500_budget_pct": "1187.564"
+          },
+          {
+            "quantity": 1151,
+            "purchase_fee_eur": "5",
+            "purchase_value_eur": "494.93",
+            "cash_eur": "0.07",
+            "redemption_eur": "6376.54",
+            "redemption_fee_assumption_eur": "5",
+            "pnl_eur": "5871.61",
+            "return_on_500_budget_pct": "1174.322"
+          }
+        ]
+      }
+    },
+    {
+      "issue": "175/25",
+      "underlying": "Hannover Rück",
+      "wkn": "MM3GW6",
+      "publication_date": "2025-10-08",
+      "report_maturity": "2026-03-20",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.27",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1851,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.77",
+        "cash_eur": "0.23"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "HNR1.DE",
+        "source_file": "data/HNR1.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/HNR1.DE/history/?period1=1759968000&period2=1774051200",
+        "currency": "EUR",
+        "rows": 112,
+        "first_date": "2025-10-09",
+        "last_date": "2026-03-20",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2025-10-16",
+            "threshold": "253.00",
+            "observed_low": "252.8"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "176/25",
+      "underlying": "Schneider Electric",
+      "wkn": "MK3C4P",
+      "publication_date": "2025-10-09",
+      "report_maturity": "2026-03-20",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.39",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1282,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.98",
+        "cash_eur": "0.02"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "SU.PA",
+        "source_file": "data/SU.PA.csv",
+        "source_url": "https://finance.yahoo.com/quote/SU.PA/history/?period1=1760054400&period2=1774051200",
+        "currency": "EUR",
+        "rows": 113,
+        "first_date": "2025-10-10",
+        "last_date": "2026-03-20",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2025-11-18",
+            "threshold": "225.00",
+            "observed_low": "224.25"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "179/25",
+      "underlying": "Gilead Sciences",
+      "wkn": "FA8G3Q",
+      "publication_date": "2025-10-14",
+      "report_maturity": "2026-03-20",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.050",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 10000,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "500.00",
+        "cash_eur": "0.00"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "GILD",
+        "source_file": "data/GILD.csv",
+        "source_url": "https://finance.yahoo.com/quote/GILD/history/?period1=1760486400&period2=1774051200",
+        "currency": "USD",
+        "rows": 108,
+        "first_date": "2025-10-15",
+        "last_date": "2026-03-20",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2026-01-27",
+            "threshold": "138.50",
+            "observed_high": "141.71"
+          },
+          "target2": null,
+          "stop1": null
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "198/25",
+      "underlying": "Mercedes-Benz",
+      "wkn": "MM6ZLH",
+      "publication_date": "2025-11-10",
+      "report_maturity": "2026-03-20",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.42",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1190,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "MBG.DE",
+        "source_file": "data/MBG.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/MBG.DE/history/?period1=1762819200&period2=1774051200",
+        "currency": "EUR",
+        "rows": 89,
+        "first_date": "2025-11-11",
+        "last_date": "2026-03-20",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2026-03-19",
+            "threshold": "53.00",
+            "observed_low": "51.6"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "203/25",
+      "underlying": "TotalEnergies",
+      "wkn": "MM7KAA",
+      "publication_date": "2025-11-17",
+      "report_maturity": "2026-03-20",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.33",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1515,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.95",
+        "cash_eur": "0.05"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "TTE.PA",
+        "source_file": "data/TTE.PA.csv",
+        "source_url": "https://finance.yahoo.com/quote/TTE.PA/history/?period1=1763424000&period2=1774051200",
+        "currency": "EUR",
+        "rows": 86,
+        "first_date": "2025-11-18",
+        "last_date": "2026-03-20",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2026-02-12",
+            "threshold": "65.00",
+            "observed_high": "65.79"
+          },
+          "target2": {
+            "date": "2026-03-19",
+            "threshold": "76.50",
+            "observed_high": "79.44"
+          },
+          "stop1": null
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "10/26",
+      "underlying": "Fraport",
+      "wkn": "HT7GRA",
+      "publication_date": "2026-01-20",
+      "report_maturity": "2026-06-17",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.105",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 4761,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.91",
+        "cash_eur": "0.09"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "FRA.DE",
+        "source_file": "data/FRA.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/FRA.DE/history/?period1=1768953600&period2=1781740800",
+        "currency": "EUR",
+        "rows": 103,
+        "first_date": "2026-01-21",
+        "last_date": "2026-06-17",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2026-05-05",
+            "threshold": "67.00",
+            "observed_low": "66.8"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "46/26",
+      "underlying": "Air Liquide",
+      "wkn": "MM51LF",
+      "publication_date": "2026-03-18",
+      "report_maturity": "2026-09-18",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.135",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 3703,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.91",
+        "cash_eur": "0.09"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "AI.PA",
+        "source_file": "data/AI.PA.csv",
+        "source_url": "https://finance.yahoo.com/quote/AI.PA/history/?period1=1773878400&period2=1789776000",
+        "currency": "EUR",
+        "rows": 129,
+        "first_date": "2026-03-19",
+        "last_date": "2026-09-18",
+        "flat_ohlc_rows": 0,
+        "status": "blocked",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption",
+          "capital_action_requires_historical_level_adjustment"
+        ],
+        "first_observed_touches": null,
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "81/26",
+      "underlying": "UnitedHealth",
+      "wkn": "FD09J0",
+      "publication_date": "2026-05-11",
+      "report_maturity": "2026-09-18",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.68",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 735,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "UNH",
+        "source_file": "data/UNH.csv",
+        "source_url": "https://finance.yahoo.com/quote/UNH/history/?period1=1778544000&period2=1789776000",
+        "currency": "USD",
+        "rows": 90,
+        "first_date": "2026-05-12",
+        "last_date": "2026-09-18",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": {
+            "date": "2026-07-16",
+            "threshold": "445.00",
+            "observed_high": "461.62"
+          },
+          "target2": null,
+          "stop1": null
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "93/26",
+      "underlying": "Adidas",
+      "wkn": "DU0UHF",
+      "publication_date": "2026-05-29",
+      "report_maturity": "2026-09-18",
+      "expired_by_cutoff": true,
+      "budget_eur": "500",
+      "entry_eur": "0.19",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2631,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.89",
+        "cash_eur": "0.11"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_evaluable",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      },
+      "blockers": [
+        "no_historical_timestamped_bid_ask_series",
+        "no_historical_quote_size_or_liquidity",
+        "entry_is_indication_proxy_not_proven_fill",
+        "historical_issue_rule_scope_unverified",
+        "publication_time_unknown",
+        "original_pdf_not_reverified",
+        "product_trading_calendar_unverified"
+      ],
+      "stock_observations": {
+        "symbol": "ADS.DE",
+        "source_file": "data/ADS.DE.csv",
+        "source_url": "https://finance.yahoo.com/quote/ADS.DE/history/?period1=1780099200&period2=1789776000",
+        "currency": "EUR",
+        "rows": 80,
+        "first_date": "2026-06-01",
+        "last_date": "2026-09-18",
+        "flat_ohlc_rows": 0,
+        "status": "provisional_observed_touches_only",
+        "warnings": [
+          "single_provider_series",
+          "calendar_completeness_not_verified",
+          "publication_day_excluded_assumption"
+        ],
+        "first_observed_touches": {
+          "target1": null,
+          "target2": null,
+          "stop1": {
+            "date": "2026-07-30",
+            "threshold": "154.00",
+            "observed_low": "147.05"
+          }
+        },
+        "interpretation": "Earliest observed rows only; null means not seen, not proof of no touch. Independent thresholds, no Call fills or strategy outcomes.",
+        "independent_checks": []
+      }
+    },
+    {
+      "issue": "137/26",
+      "underlying": "BASF",
+      "wkn": "MJ7DUX",
+      "publication_date": "2026-07-31",
+      "report_maturity": "2026-12-18",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.07",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 7142,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.94",
+        "cash_eur": "0.06"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "140/26",
+      "underlying": "Thales",
+      "wkn": "DN3NVH",
+      "publication_date": "2026-08-05",
+      "report_maturity": "2026-12-18",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.30",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1666,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "141/26",
+      "underlying": "Leonardo",
+      "wkn": "VJ2RFH",
+      "publication_date": "2026-08-06",
+      "report_maturity": "2026-12-17",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.70",
+      "entry_basis": "report_indication_proxy_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 714,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "143/26",
+      "underlying": "Broadcom",
+      "wkn": "MN8GZP",
+      "publication_date": "2026-08-10",
+      "report_maturity": "2026-12-18",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.590",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 847,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.73",
+        "cash_eur": "0.27"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "144/26",
+      "underlying": "Pfizer",
+      "wkn": "WA4R5Q",
+      "publication_date": "2026-08-11",
+      "report_maturity": "2026-12-18",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.175",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2857,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.98",
+        "cash_eur": "0.02"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "147/26",
+      "underlying": "KKR",
+      "wkn": "VH62T5",
+      "publication_date": "2026-08-14",
+      "report_maturity": "2027-01-15",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.190",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2631,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.89",
+        "cash_eur": "0.11"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "151/26",
+      "underlying": "SAP",
+      "wkn": "UP9A9X",
+      "publication_date": "2026-08-20",
+      "report_maturity": "2026-12-18",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.140",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 3571,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.94",
+        "cash_eur": "0.06"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "154/26",
+      "underlying": "Danaher",
+      "wkn": "JY3SF7",
+      "publication_date": "2026-08-25",
+      "report_maturity": "2027-01-15",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.220",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2272,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.84",
+        "cash_eur": "0.16"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "157/26",
+      "underlying": "Vertiv",
+      "wkn": "HM4EB1",
+      "publication_date": "2026-08-28",
+      "report_maturity": "2027-01-15",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.800",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 625,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "500.00",
+        "cash_eur": "0.00"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "161/26",
+      "underlying": "UnitedHealth",
+      "wkn": "VH2LU2",
+      "publication_date": "2026-09-03",
+      "report_maturity": "2027-01-15",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.420",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1190,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "173/26",
+      "underlying": "Micron",
+      "wkn": "UN87G6",
+      "publication_date": "2026-09-21",
+      "report_maturity": "2027-03-17",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "5.300",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 94,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "498.20",
+        "cash_eur": "1.80"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "176/26",
+      "underlying": "Salesforce",
+      "wkn": "JG0AEJ",
+      "publication_date": "2026-09-24",
+      "report_maturity": "2027-01-15",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.460",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1086,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.56",
+        "cash_eur": "0.44"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "192/26",
+      "underlying": "Costco",
+      "wkn": "JY5SQZ",
+      "publication_date": "2026-10-16",
+      "report_maturity": "2027-02-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.160",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 3125,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "500.00",
+        "cash_eur": "0.00"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "193/26",
+      "underlying": "JPMorgan Chase",
+      "wkn": "MN6CYX",
+      "publication_date": "2026-10-19",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.420",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1190,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "195/26",
+      "underlying": "Johnson & Johnson",
+      "wkn": "JE11C1",
+      "publication_date": "2026-10-21",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.360",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1388,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.68",
+        "cash_eur": "0.32"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "198/26",
+      "underlying": "SLB",
+      "wkn": "VY95PV",
+      "publication_date": "2026-10-26",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.140",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 3571,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.94",
+        "cash_eur": "0.06"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "199/26",
+      "underlying": "Nasdaq, Inc.",
+      "wkn": "JY7FDN",
+      "publication_date": "2026-10-27",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.220",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2272,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.84",
+        "cash_eur": "0.16"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "200/26",
+      "underlying": "Analog Devices",
+      "wkn": "MN84GA",
+      "publication_date": "2026-10-28",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "1.100",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 454,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.40",
+        "cash_eur": "0.60"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "201/26",
+      "underlying": "Synopsys",
+      "wkn": "MN9WA9",
+      "publication_date": "2026-10-29",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.130",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 3846,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.98",
+        "cash_eur": "0.02"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "202/26",
+      "underlying": "Deutsche Bank",
+      "wkn": "WB14HL",
+      "publication_date": "2026-10-30",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.650",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 769,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.85",
+        "cash_eur": "0.15"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "203/26",
+      "underlying": "American Electric",
+      "wkn": "MN6D8E",
+      "publication_date": "2026-11-02",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.170",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2941,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.97",
+        "cash_eur": "0.03"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "204/26",
+      "underlying": "RTX",
+      "wkn": "FE1C78",
+      "publication_date": "2026-11-03",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.210",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 2380,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "499.80",
+        "cash_eur": "0.20"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    },
+    {
+      "issue": "210/26",
+      "underlying": "Amazon",
+      "wkn": "HM55NU",
+      "publication_date": "2026-11-11",
+      "report_maturity": "2027-03-19",
+      "expired_by_cutoff": false,
+      "budget_eur": "500",
+      "entry_eur": "0.400",
+      "entry_basis": "recommended_entry_assumed_fill",
+      "allocation_zero_fees": {
+        "quantity": 1250,
+        "purchase_fee_eur": "0",
+        "purchase_value_eur": "500.00",
+        "cash_eur": "0.00"
+      },
+      "wittmer_call_simulation": {
+        "status": "not_researched_in_this_expired_batch",
+        "verified_executable": false,
+        "pnl_eur": null,
+        "return_pct": null,
+        "events": []
+      },
+      "model_price_simulation": {
+        "status": "not_run_missing_historical_product_terms_and_volatility",
+        "pnl_eur": null
+      },
+      "real_trades": {
+        "status": "no_execution_receipts_in_input",
+        "pnl_eur": null,
+        "executions": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "as_of": "2026-11-11",
+  "baseline_commit": "3bc4b9a",
+  "settlements": [
+    {"issue":"169/25","wkn":"UG4H12","isin":"DE000UG4H121","issuer":"UniCredit Bank GmbH","source_url":"https://www.onemarkets.de/de/productpage.html/DE000UG4H121","retrieved_on":"2026-11-11","valuation_date":"2026-03-18","payment_date":"2026-03-25","underlying_fixing":"36.22","underlying_currency":"USD","strike":"32","ratio":"0.1","fx_date":"2026-03-19","eurusd":"1.1488","settlement_eur":"0.37","bid_ask_history_available":false,"evidence_status":"issuer_redemption_information"},
+    {"issue":"171/25","wkn":"UG6WU7","isin":"DE000UG6WU77","issuer":"UniCredit Bank GmbH","source_url":"https://www.onemarkets.de/de/productpage.html/DE000UG6WU77","retrieved_on":"2026-11-11","valuation_date":"2026-03-18","payment_date":"2026-03-25","underlying_fixing":"40.54","underlying_currency":"EUR","strike":"35","ratio":"1","settlement_eur":"5.54","bid_ask_history_available":false,"evidence_status":"issuer_redemption_information"}
+  ],
+  "validation": [
+    {"symbol":"AMZN","date":"2025-10-31","open":"250.10","high":"250.50","low":"243.98","close":"244.22","source_url":"https://www.statmuse.com/money/ask/amzn-stock-price-oct-2025","status":"independent_single_bar_match_price_fields_only","note":"Volumen weicht geringfügig ab; keine vollständige Serienvalidierung. Ein Suchtreffer auf einen Nachrichtenartikel nennt abweichend 258,60 USD; der Artikel wurde nicht als Kursquelle verwendet."},
+    {"symbol":"HAL","date":"2026-03-18","close":"36.22","source_url":"https://www.onemarkets.de/de/productpage.html/DE000UG4H121","status":"issuer_fixing_cross_check"},
+    {"symbol":"SZG.DE","date":"2026-03-18","close":"40.54","source_url":"https://www.onemarkets.de/de/productpage.html/DE000UG6WU77","status":"issuer_fixing_cross_check"}
+  ],
+  "capital_actions": [
+    {"symbol":"AI.PA","factor":"1.1","provider_ex_date":"2026-06-08","issuer_allocation_date":"2026-06-10","source_url":"https://www.airliquide.com/investors/individual-shareholders/benefits","product_url":"https://www.gs.de/de/produkte/hebelprodukte/call-put-optionsscheine/air-liquide/DE000MM51LF4","original_strike":"210","current_strike":"190.9091","status":"adjustment_required_dates_have_different_meanings","note":"Eine Gratisaktie je zehn Aktien. Ex-Tag aus Kursprovider, Zuteilungstag von Gesellschaft; Emittenten-Anpassungsmitteilung und historische Produktbedingungen fehlen. Kein automatisches Überschreiben von Originalmarken, keine freigegebene Ereigniswertung."}
+  ],
+  "access_failures": [
+    {"url":"https://query1.finance.yahoo.com/v8/finance/chart/UBER?period1=1747180800&period2=1766275200&interval=1d","status":"HTTP_429","fallback":"HTML daily tables via Tavily"},
+    {"url":"https://query2.finance.yahoo.com/v8/finance/chart/UBER?period1=1747180800&period2=1766275200&interval=1d","status":"HTTP_429","fallback":"HTML daily tables via Tavily"},
+    {"url":"https://stooq.com/q/d/l/?s=uber.us&i=d&d1=20250513&d2=20251219","status":"HTTP_200_HTML_BROWSER_CHALLENGE_NOT_CSV","accepted":false},
+    {"url":"https://easyeuwax.boerse-stuttgart.de/de-de/produkte/hebelprodukte/optionsscheine/stuttgart/mm6zlh","status":"redirected_to_generic_landing_page","accepted":false},
+    {"url":"https://www.goyax.de/derivate/DE000SY0LMB9/alphabet-inc-c-shares-os-call-260-2025-12","status":"search_or_listing_page_no_verified_historical_quotes","accepted":false}
+  ],
+  "rule_evidence": {
+    "source":"docs/hebeltrader-identification-rules.md#original-pdf-19926--nasdaq-inc-ndaq-27102026",
+    "issue":"199/26","pdf_page":6,
+    "rules":["50 Prozent Teilverkauf bei Ziel 1, Reststopp auf Einstieg","spätestens 20 Handelstage nach Ziel 1: Stopp auf 80 Prozent von Ziel 1","nach mindestens 20 Handelstagen im Minus: Position schließen","spätestens 20 Handelstage vor Laufzeitende schließen","kein Einstieg bei weniger als 2 Prozent Aktienabstand zum empfohlenen Stopp","Ziel 1 vor Einstieg erreicht: halbe Position und Stopp auf ursprünglichen Einstieg"],
+    "scope_for_expired_19":"not_verified_in_each_historical_issue",
+    "unresolved_semantics":["Aktien- oder Call-Trigger je Regel und historische Fassungen","Handelskalender von Produkt, Basiswert und Emittent","Kontrollzeitpunkt für Verlustregel ab Tag 20","Priorität gleichzeitiger Ereignisse und Wirksamkeit angehobener Stopps","letzter Handelstag versus Bewertungstag versus Rückzahlungstag"]
+  }
+}
