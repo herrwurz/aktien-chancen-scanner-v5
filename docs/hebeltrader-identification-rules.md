@@ -156,6 +156,15 @@ Für die Auswertung bleiben empfohlener Einstieg/Kauflimit, Ziel 1 und Stopp 1 g
 - **Ergebnis:** Ersttipp PayPal falsch, soweit die Nutzerangabe die Auflösung von 218/26 bezeichnet. PepsiCo als Nutzerauflösung erfasst. Empfohlener Einstieg, separates Kauflimit, Stopps und Ziele bleiben offen; eine tatsächliche Transaktion wurde nicht gemeldet.
 - **Fehleranalyse:** Die zeitliche Nähe des PayPal-Führungsumbaus wurde zu stark gewichtet. PepsiCos gesenkte Gewinnprognose wurde als Gegenargument gewertet, obwohl der Teaser steigende Umsätze und eine erwartete Wende beschreibt. Künftig Bewertungsabschlag und Vergleichsgruppe vertieft prüfen und eine gesenkte Gewinnprognose bei einem Turnaround-Teaser nicht für sich allein abwerten. Die Bezeichnung „Turbo-Call“ im Teaser belegt die Produktart nicht; WA4LY4 wird als klassischer Optionsschein geführt.
 
+## HEBELTRADER 217/26 – Nutzerauflösung Palo Alto Networks (23.11.2026)
+
+- **Ausgabe:** 217/26, 20.11.2026; KI-Wachstum, starke Quartalszahlen, steigende Gewinnprognosen und mögliche Erholung nach Korrektur; beworbenes Szenario +2.146 %. [Verlag](https://www.boersenmedien.de/produkt/hebeltrader/hebeltrader-21726-5158.html)
+- **Unveränderte ursprüngliche Rangfolge:** 1. Nvidia (subjektiv 70 %), 2. Palo Alto Networks, 3. AMD. Weitere geprüfte Gegenkandidaten Palantir, Cisco und CoreWeave.
+- **Nutzerauflösung:** JY285N, am 23.11.2026 ausdrücklich als Rückmeldung zur Analyse von 217/26 genannt. Der Datenanbieter bestätigt Palo Alto Networks als Basiswert. Original-PDF und Seitenbelege fehlen.
+- **Produktstammdaten laut finanzen.net und onvista:** J.P. Morgan; Call-Optionsschein auf Palo Alto Networks (PANW); ISIN DE000JY285N2; Basispreis 500 USD; Bezugsverhältnis 0,1; Bewertungstag 19.03.2027; Zahltag 30.03.2027. Ein unabhängiger Emittentenbeleg steht aus. [finanzen.net](https://www.finanzen.net/optionsscheine/auf-palo-alto-networks/jy285n) · [onvista](https://www.onvista.de/derivate/Optionsscheine/334044938-JY285N-DE000JY285N2)
+- **Ergebnis:** Ersttipp falsch; richtiger Kandidat auf Rang 2, damit Top-3-Treffer. Nutzerauflösung ist belegt durch die Chatangabe, keine Originalreport-Verifikation. Keine bestätigte Transaktion. Empfohlener Einstieg, separates Kauflimit, Stopps und Ziele bleiben offen.
+- **Fehleranalyse:** Nvidias starke Korrektur und höhere Analystenschätzungen wurden gegenüber den frischeren Palo-Alto-Zahlen vom 18.11.2026, der angehobenen EPS-Prognose und dem konkreten KI-Ausbau zu stark gewichtet. Eine bereits begonnene Gegenbewegung ist mit einem Teaser über einen möglichen weiteren Befreiungsschlag vereinbar. Allgemeine KI-Wachstumshinweise rechtfertigen ohne eindeutige Unternehmensmerkmale keine hohe Konfidenz.
+
 ## Originalcall-Sammlung – 42 Ausgaben aus dem ZIP vom 11.11.2026
 
 Das Archiv enthält 43 PDFs. Die zweite Datei zu 74/25 ist bytegleich und zählt einmal. Die Tabellen beziehen sich auf den historischen Stand der jeweiligen Ausgabe.
